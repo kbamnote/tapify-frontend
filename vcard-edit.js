@@ -1910,7 +1910,8 @@ async function loadVcardData(id) {
         });
 
         if (response.status === 401) {
-            window.location.href = 'login.html';
+            const prefix = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/')) ? '../' : '';
+            window.location.href = prefix + 'login.html';
             return;
         }
 
@@ -2250,7 +2251,8 @@ async function callUpdateAPI(data, sectionName) {
         });
 
         if (response.status === 401) {
-            window.location.href = 'login.html';
+            const prefix = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/')) ? '../' : '';
+            window.location.href = prefix + 'login.html';
             return false;
         }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit vCard - Tapify Admin Panel</title>
+    <title>Edit vCard - Tapify Dashboard</title>
 
     <link rel="icon" type="image/png" href="../images/tapify-logo-gold.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -91,15 +91,15 @@
                 <div class="header-dropdown profile-dropdown">
                     <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
                         <img src="../images/tapify-logo-gold.png" alt="Profile" class="profile-avatar">
-                        <span>Tapify World</span>
+                        <span id="headerProfileName">Loading...</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="dropdown-menu profile-menu" id="profileDropdown">
                         <div class="profile-info">
                             <img src="../images/tapify-logo-gold.png" alt="Profile">
                             <div>
-                                <strong>Tapify World</strong>
-                                <small>printworldonline1@gmail.com</small>
+                                <strong id="headerUserName">Loading...</strong>
+                                <small id="headerUserEmail"></small>
                             </div>
                         </div>
                         <hr>

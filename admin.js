@@ -290,7 +290,27 @@ async function logout() {
     }
     localStorage.removeItem('tapify_user');
     sessionStorage.removeItem('tapify_user');
-    window.location.href = 'login.html';
+    const prefix = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/')) ? '../' : '';
+    window.location.href = prefix + 'login.html';
+}
+
+function loadUserInfo() {
+    const userStr = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
+    if (!userStr) return;
+
+    try {
+        const user = JSON.parse(userStr);
+        if (document.getElementById('headerUserName')) document.getElementById('headerUserName').textContent = user.name;
+        if (document.getElementById('headerUserEmail')) document.getElementById('headerUserEmail').textContent = user.email;
+        if (document.getElementById('headerProfileName')) document.getElementById('headerProfileName').textContent = user.name;
+        
+        // Update avatar if exists
+        if (user.avatar && document.getElementById('headerProfileImg')) {
+            document.getElementById('headerProfileImg').src = user.avatar;
+        }
+    } catch (e) {
+        console.error('Failed to load user info', e);
+    }
 }
 
 // ===== ANIMATE STATS COUNTERS =====
@@ -321,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAnalyticsChart();
     setupSidebarSearch();
     checkAuth();
+    loadUserInfo();
 
     // Animate counters after a small delay
     setTimeout(animateCounters, 300);
