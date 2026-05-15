@@ -429,14 +429,6 @@
 <script src="admin.js"></script>
 <script>
     // Auto-generate URL from name
-    document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('tapify_user') || '{}');
-        const adminSection = document.getElementById('adminCustomerSection');
-        if (adminSection && user.role !== 'admin') {
-            adminSection.remove();
-        }
-    });
-
     document.getElementById('vcardName').addEventListener('input', (e) => {
         const urlAlias = document.getElementById('urlAlias');
         if (!urlAlias.dataset.userEdited) {
