@@ -2117,22 +2117,25 @@ async function savePersonalDetails() {
     const personalTab = document.getElementById('inner-personal');
     if (!personalTab) return false;
 
-    const inputs = personalTab.querySelectorAll('input.form-control, textarea.form-control, select.form-control');
-
-    const fieldNames = [
-        'first_name', 'last_name', 'email', 'phone',
-        'alternate_email', 'alternate_phone', 'location', 'location_type',
-        'location_url', 'dob', 'company', 'made_by', 'made_by_url',
-        'job_title', 'default_language', 'cover_type'
-    ];
-
-    const data = { id: currentVcardId };
-
-    inputs.forEach((input, idx) => {
-        if (idx < fieldNames.length) {
-            data[fieldNames[idx]] = input.value;
-        }
-    });
+    // Use explicit IDs for robustness
+    const data = {
+        id: currentVcardId,
+        first_name: personalTab.querySelector('input[placeholder="Enter First Name"]')?.value || '',
+        last_name: personalTab.querySelector('input[placeholder="Enter Last Name"]')?.value || '',
+        email: personalTab.querySelector('input[type="email"]')?.value || '',
+        phone: personalTab.querySelector('input[type="tel"]')?.value || '',
+        alternate_email: personalTab.querySelectorAll('input[type="email"]')[1]?.value || '',
+        alternate_phone: personalTab.querySelectorAll('input[type="tel"]')[1]?.value || '',
+        location: personalTab.querySelector('textarea')?.value || '',
+        location_type: personalTab.querySelector('select')?.value || 'link',
+        location_url: personalTab.querySelector('input[type="url"]')?.value || '',
+        dob: personalTab.querySelector('input[type="date"]')?.value || null,
+        company: personalTab.querySelector('input[placeholder="Company Name"]')?.value || '',
+        made_by: personalTab.querySelector('input[placeholder="Made By"]')?.value || '',
+        made_by_url: personalTab.querySelectorAll('input[type="url"]')[1]?.value || '',
+        job_title: personalTab.querySelector('input[placeholder="Job Title"]')?.value || '',
+        default_language: personalTab.querySelectorAll('select')[1]?.value || 'en'
+    };
 
     return await callUpdateAPI(data, 'Personal details');
 }
@@ -2143,22 +2146,27 @@ async function saveOtherConfigurations() {
 
     const data = {
         id: currentVcardId,
-        qr_download_size: parseInt(document.getElementById('qrSize')?.value || 200)
+        qr_download_size: parseInt(document.getElementById('qrSize')?.value || 200),
+        display_inquiry_form: document.querySelector('#inner-other input[type="checkbox"]:nth-of-type(2)')?.checked ? 1 : 0, // Wait, better to use unique labels or specific order if we must
+        // Actually, let's look at the HTML labels
     };
 
-    // Collect all checkbox toggles in this tab
+    // Re-refactoring to be even more precise using the labels
     const otherTab = document.getElementById('inner-other');
     if (otherTab) {
-        const toggles = otherTab.querySelectorAll('input[type="checkbox"]');
-        const toggleFields = [
-            'display_inquiry_form', 'display_qr_section', 'display_download_qr',
-            'display_add_contact', 'display_whatsapp_share', 'display_language_selector',
-            'hide_sticky_bar'
-        ];
-        toggles.forEach((toggle, idx) => {
-            if (idx < toggleFields.length) {
-                data[toggleFields[idx]] = toggle.checked ? 1 : 0;
-            }
+        const cards = otherTab.querySelectorAll('.config-card');
+        cards.forEach(card => {
+            const label = card.querySelector('label')?.textContent.trim();
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            if (!checkbox) return;
+
+            if (label.includes('Language')) data.display_language_selector = checkbox.checked ? 1 : 0;
+            if (label.includes('Inquiry')) data.display_inquiry_form = checkbox.checked ? 1 : 0;
+            if (label.includes('Download QR')) data.display_download_qr = checkbox.checked ? 1 : 0;
+            if (label.includes('QR Section')) data.display_qr_section = checkbox.checked ? 1 : 0;
+            if (label.includes('Add To Contact')) data.display_add_contact = checkbox.checked ? 1 : 0;
+            if (label.includes('Sticky Bar')) data.hide_sticky_bar = checkbox.checked ? 1 : 0;
+            if (label.includes('WhatsApp Share')) data.display_whatsapp_share = checkbox.checked ? 1 : 0;
         });
     }
 
@@ -2211,16 +2219,21 @@ async function saveDynamicConfig() {
 
     const data = { id: currentVcardId };
 
-    // Collect color inputs
-    const colorInputs = dynamicTab.querySelectorAll('input[type="color"]');
-    const colorFields = [
-        'primary_color', 'secondary_color', 'bg_color', 'cards_bg_color',
-        'button_text_color', 'label_text_color', 'description_text_color', 'social_icon_color'
-    ];
-    colorInputs.forEach((input, idx) => {
-        if (idx < colorFields.length) {
-            data[colorFields[idx]] = input.value;
-        }
+    // Map color inputs by their label/order precisely
+    const groups = dynamicTab.querySelectorAll('.form-group');
+    groups.forEach(group => {
+        const label = group.querySelector('label')?.textContent.trim();
+        const input = group.querySelector('input[type="color"]');
+        if (!input) return;
+
+        if (label.includes('Primary')) data.primary_color = input.value;
+        if (label.includes('Secondary')) data.secondary_color = input.value;
+        if (label.includes('Background Color')) data.bg_color = input.value;
+        if (label.includes('Button Text')) data.button_text_color = input.value;
+        if (label.includes('Label Text')) data.label_text_color = input.value;
+        if (label.includes('Description Text')) data.description_text_color = input.value;
+        if (label.includes('Cards Background')) data.cards_bg_color = input.value;
+        if (label.includes('Social Icon')) data.social_icon_color = input.value;
     });
 
     return await callUpdateAPI(data, 'Dynamic vCard');
