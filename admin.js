@@ -223,12 +223,33 @@ function setupSidebarSearch() {
 
 // ===== AUTHENTICATION CHECK =====
 function checkAuth() {
-    const user = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
-    // Demo: If no user logged in, redirect to login
-    // Uncomment in production:
-    // if (!user && !window.location.pathname.includes('login.html')) {
-    //     window.location.href = 'login.html';
-    // }
+    const userStr = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
+    const isLoginPage = window.location.pathname.includes('login.html');
+    const isAdminPath = window.location.pathname.includes('/admin/');
+    const isUserPath = window.location.pathname.includes('/dashboard/');
+
+    if (!userStr) {
+        if (!isLoginPage && (isAdminPath || isUserPath)) {
+            // Not logged in, go to login
+            const prefix = (isAdminPath || isUserPath) ? '../' : '';
+            window.location.href = prefix + 'login.html';
+        }
+        return;
+    }
+    
+    try {
+        const user = JSON.parse(userStr);
+        // Admin Page protection
+        if (isAdminPath && user.role !== 'admin') {
+            window.location.href = '../dashboard/dashboard.html';
+        }
+        // User Dashboard protection (optional, admins can see user dashboard if they want)
+        if (isUserPath && !user.role) {
+            window.location.href = '../login.html';
+        }
+    } catch (e) {
+        console.error('Auth check error', e);
+    }
 }
 
 // ===== HANDLE WINDOW RESIZE =====

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item active"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon"></i><span>Appointments</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon"></i><span>Inquiries</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+        </nav>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">User Management</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="showAddUserModal()">
+                    <i class="fas fa-user-plus"></i> Add User
+                </button>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>vCards</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- Loaded by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+        const USER_API = 'https://tapify-backend-production.up.railway.app/api/admin/users/list.php';
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(USER_API, { credentials: 'include' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const tbody = document.getElementById('userTableBody');
+                    tbody.innerHTML = result.data.users.map(user => `
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <div style="width:35px;height:35px;background:#8338ec;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold">
+                                        ${user.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600">${user.name}</div>
+                                        <div style="font-size:0.75rem;color:#6b7280">${user.role.toUpperCase()}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${user.email}</td>
+                            <td>${user.vcards_count}</td>
+                            <td>
+                                <span class="badge ${user.status == 1 ? 'bg-success' : 'bg-danger'}">
+                                    ${user.status == 1 ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td>${user.last_login || 'Never'}</td>
+                            <td>
+                                <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
+                                <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

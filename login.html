@@ -489,7 +489,12 @@
                     }
 
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        const user = result.data.user;
+                        if (user.role === 'admin') {
+                            window.location.href = 'admin/dashboard.html';
+                        } else {
+                            window.location.href = 'dashboard/dashboard.html';
+                        }
                     }, 1500);
                 } else {
                     showAlert(result.message || 'Login failed', 'error');

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .settings-container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .settings-card { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 18px; overflow: hidden; }
+        .settings-card-header { padding: 20px 25px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px; }
+        .settings-card-header i { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .settings-card-header h3 { margin: 0 0 3px; font-size: 1.05rem; color: #1a2035; }
+        .settings-card-header p { margin: 0; font-size: 0.85rem; color: #6b7280; }
+
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 25px; border-bottom: 1px solid #f3f4f6; transition: all 0.3s; text-decoration: none; color: inherit; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row:hover { background: #f9fafb; }
+        .setting-row .label { display: flex; align-items: center; gap: 12px; }
+        .setting-row .label i { color: #8338ec; width: 24px; text-align: center; }
+        .setting-row .label-text strong { display: block; font-size: 0.92rem; color: #1a2035; }
+        .setting-row .label-text small { color: #6b7280; font-size: 0.8rem; }
+        .setting-row .arrow { color: #9ca3af; }
+
+        .danger-zone .settings-card-header { background: rgba(239,68,68,0.05); }
+        .danger-zone .settings-card-header i { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .danger-zone .setting-row .label i { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="email-settings.html" class="nav-item"><i class="fas fa-envelope nav-icon" style="background:#fef3c7;color:#f59e0b"></i><span>Email Settings</span></a>
+            <a href="settings.html" class="nav-item active"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Settings</h1>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="settings-container">
+
+                <!-- Account Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i style="background:rgba(131,56,236,0.1);color:#8338ec"><i class="fas fa-user"></i></i>
+                        <div>
+                            <h3>Account</h3>
+                            <p>Manage your profile and personal information</p>
+                        </div>
+                    </div>
+                    <a href="profile.html" class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="label-text">
+                                <strong>Profile Settings</strong>
+                                <small>Edit your name, email, phone, password, avatar</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </a>
+                    <a href="manage-subscription.html" class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-gem"></i>
+                            <div class="label-text">
+                                <strong>Subscription Plan</strong>
+                                <small>View and manage your plan</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </a>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i style="background:rgba(245,158,11,0.1);color:#f59e0b"><i class="fas fa-bell"></i></i>
+                        <div>
+                            <h3>Notifications</h3>
+                            <p>Configure how you receive alerts</p>
+                        </div>
+                    </div>
+                    <a href="email-settings.html" class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-envelope"></i>
+                            <div class="label-text">
+                                <strong>Email Notifications</strong>
+                                <small>Configure SMTP and email triggers</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </a>
+                </div>
+
+                <!-- Storage & Data -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i style="background:rgba(59,130,246,0.1);color:#3b82f6"><i class="fas fa-database"></i></i>
+                        <div>
+                            <h3>Storage & Data</h3>
+                            <p>Manage your files and storage usage</p>
+                        </div>
+                    </div>
+                    <a href="storage.html" class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-hdd"></i>
+                            <div class="label-text">
+                                <strong>Storage Usage</strong>
+                                <small>View your storage consumption</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </a>
+                </div>
+
+                <!-- About -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <i style="background:rgba(16,185,129,0.1);color:#10b981"><i class="fas fa-info-circle"></i></i>
+                        <div>
+                            <h3>About Tapify</h3>
+                            <p>Version and system info</p>
+                        </div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-code-branch"></i>
+                            <div class="label-text">
+                                <strong>Version</strong>
+                                <small>Tapify SaaS v1.0</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-building"></i>
+                            <div class="label-text">
+                                <strong>Powered by</strong>
+                                <small>MRPRINT WORLD PRIVATE LIMITED</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-card danger-zone">
+                    <div class="settings-card-header">
+                        <i><i class="fas fa-exclamation-triangle"></i></i>
+                        <div>
+                            <h3>Account Actions</h3>
+                            <p>Sign out from your account</p>
+                        </div>
+                    </div>
+                    <a href="#" onclick="confirmLogout(event)" class="setting-row">
+                        <div class="label">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <div class="label-text">
+                                <strong>Logout</strong>
+                                <small>Sign out from your Tapify account</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="admin-footer"><p>All Rights Reserved © 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p></footer>
+    </div>
+
+<script src="../admin.js"></script>
+<script>
+function confirmLogout(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to logout?')) {
+        fetch('https://tapify-backend-production.up.railway.app/api/logout.php', { method: 'POST', credentials: 'include' })
+            .then(() => { window.location.href = 'login.html'; })
+            .catch(() => { window.location.href = 'login.html'; });
+    }
+}
+</script>
+
+</body>
+</html>
+
+

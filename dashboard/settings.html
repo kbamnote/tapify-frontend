@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - Tapify Admin</title>
-    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link rel="icon" type="image/png" href="../images/tapify-logo-gold.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="../admin-style.css">
     <style>
         .settings-container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
         .settings-card { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 18px; overflow: hidden; }
@@ -35,20 +35,26 @@
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-logo">
-                <img src="images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+                <img src="../images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
             </a>
         </div>
         <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
-            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
-            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
-            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
-            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
-            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
-            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
-            <a href="email-settings.html" class="nav-item"><i class="fas fa-envelope nav-icon" style="background:#fef3c7;color:#f59e0b"></i><span>Email Settings</span></a>
-            <a href="settings.html" class="nav-item active"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
-        </nav>
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-chart-pie nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="appointments.html" class="nav-item">
+                <i class="fas fa-calendar-check nav-icon"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="inquiries.html" class="nav-item">
+                <i class="fas fa-info-circle nav-icon"></i>
+                <span>Inquiries</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user nav-icon"></i>
+                <span>My Profile</span>
+            </a></nav>
         <div class="sidebar-footer">
             <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
         </div>
@@ -194,7 +200,7 @@
         <footer class="admin-footer"><p>All Rights Reserved © 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p></footer>
     </div>
 
-<script src="admin.js"></script>
+<script src="../admin.js"></script>
 <script>
 function confirmLogout(e) {
     e.preventDefault();
@@ -208,4 +214,6 @@ function confirmLogout(e) {
 
 </body>
 </html>
+
+
 
