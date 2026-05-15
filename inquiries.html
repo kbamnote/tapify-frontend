@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiries - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="vcards-style.css">
+    <style>
+        .inq-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-card h3 { font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #1a2035; }
+        .stat-card.unread .value { color: #f59e0b; }
+        .stat-card.today .value { color: #8338ec; }
+        .stat-card.week .value { color: #3b82f6; }
+
+        .filters-bar { background: white; border-radius: 14px; padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .filters-bar input, .filters-bar select { padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.9rem; background: #f9fafb; }
+        .filters-bar input:focus, .filters-bar select:focus { outline: none; border-color: #8338ec; background: white; }
+        .filters-bar input { flex: 1; min-width: 200px; }
+
+        .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-tab { background: transparent; border: 1.5px solid #e5e7eb; padding: 8px 18px; border-radius: 50px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: #6b7280; transition: all 0.3s; }
+        .filter-tab.active, .filter-tab:hover { background: #8338ec; color: white; border-color: #8338ec; }
+
+        .actions-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+        .btn-bulk { padding: 8px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; background: white; cursor: pointer; font-family: inherit; font-size: 0.82rem; font-weight: 600; transition: all 0.3s; }
+        .btn-bulk:hover { background: #f3f4f6; }
+        .btn-mark-all { color: #8338ec; border-color: rgba(131,56,236,0.3); }
+        .btn-clear-read { color: #ef4444; border-color: #fecaca; }
+
+        .inquiry-card { background: white; border-radius: 14px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #e5e7eb; transition: all 0.3s; }
+        .inquiry-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .inquiry-card.unread { border-left-color: #f59e0b; background: rgba(245,158,11,0.02); }
+        .inquiry-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+        .inquiry-customer { flex: 1; min-width: 250px; }
+        .inquiry-customer h4 { font-size: 1.05rem; margin: 0 0 6px; color: #1a2035; display: flex; align-items: center; gap: 8px; }
+        .inquiry-meta-row { display: flex; gap: 14px; flex-wrap: wrap; color: #6b7280; font-size: 0.85rem; margin: 3px 0; }
+        .inquiry-meta-row span { display: inline-flex; align-items: center; gap: 5px; }
+        .inquiry-meta-row a { color: #8338ec; text-decoration: none; }
+        .inquiry-meta-row a:hover { text-decoration: underline; }
+        .inquiry-time { color: #9ca3af; font-size: 0.78rem; text-align: right; white-space: nowrap; }
+        .inquiry-vcard-tag { background: rgba(131,56,236,0.1); color: #8338ec; padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+        .inquiry-message { background: #f9fafb; border-radius: 10px; padding: 14px 18px; color: #374151; font-size: 0.92rem; line-height: 1.6; margin: 12px 0; border-left: 3px solid #8338ec; }
+        .inquiry-footer { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding-top: 14px; border-top: 1px solid #f3f4f6; flex-wrap: wrap; }
+        .inquiry-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-action { padding: 7px 14px; border: 1px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer; font-family: inherit; font-size: 0.78rem; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; color: inherit; }
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .btn-whatsapp { background: #25D366; color: white; border-color: #25D366; }
+        .btn-call { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .btn-email { background: #ef4444; color: white; border-color: #ef4444; }
+        .btn-mark-read { color: #8338ec; }
+        .btn-delete { color: #ef4444; border-color: #fecaca; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        .unread-dot { width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .empty-state { text-align: center; padding: 80px 20px; color: #9ca3af; background: white; border-radius: 14px; }
+        .empty-state i { font-size: 4rem; opacity: 0.3; margin-bottom: 15px; }
+
+        .badge-status { padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-unread { background: #fef3c7; color: #92400e; }
+        .badge-read { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item active"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Inquiries</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="images/tapify-logo-gold.png" alt="Profile" class="profile-avatar"><span>Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="inq-container">
+
+                <div class="stats-row">
+                    <div class="stat-card"><h3>Total Inquiries</h3><div class="value" id="statTotal">0</div></div>
+                    <div class="stat-card unread"><h3>Unread</h3><div class="value" id="statUnread">0</div></div>
+                    <div class="stat-card today"><h3>Today</h3><div class="value" id="statToday">0</div></div>
+                    <div class="stat-card week"><h3>This Week</h3><div class="value" id="statWeek">0</div></div>
+                </div>
+
+                <div class="filters-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Search by name, email, phone, or message..." oninput="filterClient()">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">All</button>
+                        <button class="filter-tab" data-filter="unread" onclick="setFilter('unread')">Unread</button>
+                        <button class="filter-tab" data-filter="today" onclick="setFilter('today')">Today</button>
+                    </div>
+                    <select id="vcardFilter" onchange="loadInquiries()">
+                        <option value="0">All vCards</option>
+                    </select>
+                    <div class="actions-toolbar">
+                        <button class="btn-bulk btn-mark-all" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
+                        <button class="btn-bulk btn-clear-read" onclick="clearRead()"><i class="fas fa-trash"></i> Clear Read</button>
+                        <button class="btn-bulk" onclick="loadInquiries()"><i class="fas fa-sync"></i> Refresh</button>
+                    </div>
+                </div>
+
+                <div id="inquiriesContainer">
+                    <div style="text-align:center;padding:60px;color:#9ca3af"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="admin-footer">
+            <p>All Rights Reserved © 2026 <strong>Tapify</strong></p>
+        </footer>
+    </div>
+
+<script src="admin.js"></script>
+<script>
+const INQ_API = '../backend/api/inquiries/';
+let allInquiries = [];
+let currentFilter = 'all';
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadVcards();
+    loadInquiries();
+});
+
+async function loadVcards() {
+    try {
+        const response = await fetch('../backend/api/vcards/list.php', { credentials: 'include' });
+        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        const result = await response.json();
+        if (result.success) {
+            const select = document.getElementById('vcardFilter');
+            result.data.vcards.forEach(v => {
+                select.innerHTML += `<option value="${v.id}">${escapeHtml(v.vcard_name)}</option>`;
+            });
+        }
+    } catch (err) {}
+}
+
+function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.filter-tab[data-filter="${f}"]`).classList.add('active');
+    loadInquiries();
+}
+
+async function loadInquiries() {
+    const container = document.getElementById('inquiriesContainer');
+    container.innerHTML = '<div style="text-align:center;padding:60px;color:#9ca3af"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+    const vcardId = document.getElementById('vcardFilter').value;
+
+    try {
+        const url = `${INQ_API}list.php?filter=${currentFilter}&vcard_id=${vcardId}`;
+        const response = await fetch(url, { credentials: 'include' });
+        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        const result = await response.json();
+
+        if (!result.success) {
+            container.innerHTML = `<p style="color:#ef4444;text-align:center;padding:40px">${result.message}</p>`;
+            return;
+        }
+
+        allInquiries = result.data.inquiries;
+        renderInquiries(allInquiries);
+        updateStats(result.data.stats);
+    } catch (err) {
+        container.innerHTML = '<p style="color:#ef4444;text-align:center;padding:40px">Failed to load inquiries</p>';
+    }
+}
+
+function renderInquiries(inquiries) {
+    const container = document.getElementById('inquiriesContainer');
+    if (inquiries.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No Inquiries ${currentFilter !== 'all' ? '('+currentFilter+')' : 'Yet'}</h3>
+            <p>${currentFilter !== 'all' ? 'Try a different filter' : 'Inquiries will appear here when customers fill the contact form on your vCards.'}</p>
+        </div>`;
+        return;
+    }
+
+    container.innerHTML = inquiries.map(i => {
+        const phoneClean = (i.phone || '').replace(/\D/g, '');
+        return `
+        <div class="inquiry-card ${!i.is_read ? 'unread' : ''}" data-id="${i.id}">
+            <div class="inquiry-header">
+                <div class="inquiry-customer">
+                    <span class="inquiry-vcard-tag">
+                        <i class="fas fa-id-card"></i> ${escapeHtml(i.vcard_name)}
+                    </span>
+                    <h4>
+                        ${!i.is_read ? '<span class="unread-dot"></span>' : ''}
+                        ${escapeHtml(i.name)}
+                        <span class="badge-status ${i.is_read ? 'badge-read' : 'badge-unread'}">${i.is_read ? 'Read' : 'New'}</span>
+                    </h4>
+                    <div class="inquiry-meta-row">
+                        ${i.email ? `<span><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(i.email)}">${escapeHtml(i.email)}</a></span>` : ''}
+                        ${i.phone ? `<span><i class="fas fa-phone"></i> <a href="tel:${escapeHtml(i.phone)}">${escapeHtml(i.phone)}</a></span>` : ''}
+                    </div>
+                </div>
+                <div class="inquiry-time">
+                    <div><i class="fas fa-clock"></i> ${i.time_ago}</div>
+                    <small style="color:#9ca3af">${i.created_at_formatted}</small>
+                </div>
+            </div>
+
+            ${i.message ? `<div class="inquiry-message">${escapeHtml(i.message).replace(/\n/g, '<br>')}</div>` : ''}
+
+            <div class="inquiry-footer">
+                <span style="color:#6b7280;font-size:0.85rem">
+                    <i class="fas fa-link"></i>
+                    <a href="/${i.vcard_url_alias}" target="_blank" style="color:#8338ec;text-decoration:none">View vCard</a>
+                </span>
+                <div class="inquiry-actions">
+                    ${i.phone ? `
+                        <a href="https://wa.me/${phoneClean}" target="_blank" class="btn-action btn-whatsapp" onclick="markRead(${i.id})">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="tel:${escapeHtml(i.phone)}" class="btn-action btn-call" onclick="markRead(${i.id})">
+                            <i class="fas fa-phone"></i> Call
+                        </a>
+                    ` : ''}
+                    ${i.email ? `
+                        <a href="mailto:${escapeHtml(i.email)}?subject=Re: Your inquiry" class="btn-action btn-email" onclick="markRead(${i.id})">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                    ` : ''}
+                    <button class="btn-action btn-mark-read" onclick="toggleRead(${i.id}, ${i.is_read ? 0 : 1})">
+                        <i class="fas ${i.is_read ? 'fa-envelope' : 'fa-check'}"></i> Mark ${i.is_read ? 'Unread' : 'Read'}
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deleteInquiry(${i.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function updateStats(stats) {
+    document.getElementById('statTotal').textContent = stats.total;
+    document.getElementById('statUnread').textContent = stats.unread;
+    document.getElementById('statToday').textContent = stats.today;
+    document.getElementById('statWeek').textContent = stats.this_week;
+}
+
+function filterClient() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allInquiries.filter(i =>
+        (i.name || '').toLowerCase().includes(query) ||
+        (i.email || '').toLowerCase().includes(query) ||
+        (i.phone || '').includes(query) ||
+        (i.message || '').toLowerCase().includes(query)
+    );
+    renderInquiries(filtered);
+}
+
+async function markRead(id) {
+    try {
+        await fetch(`${INQ_API}mark-read.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id, is_read: 1 })
+        });
+        const inq = allInquiries.find(i => i.id == id);
+        if (inq) inq.is_read = true;
+    } catch (err) {}
+}
+
+async function toggleRead(id, isRead) {
+    try {
+        const response = await fetch(`${INQ_API}mark-read.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id, is_read: isRead })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast(`Marked as ${isRead ? 'read' : 'unread'}`, 'success');
+            loadInquiries();
+        } else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed', 'error'); }
+}
+
+async function markAllRead() {
+    if (!confirm('Mark all inquiries as read?')) return;
+    try {
+        const response = await fetch(`${INQ_API}mark-all-read.php`, {
+            method: 'POST', credentials: 'include'
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast(`${result.data.updated} inquiries marked as read`, 'success');
+            loadInquiries();
+        } else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed', 'error'); }
+}
+
+async function deleteInquiry(id) {
+    if (!confirm('Delete this inquiry? Cannot be undone!')) return;
+    try {
+        const response = await fetch(`${INQ_API}delete.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id })
+        });
+        const result = await response.json();
+        if (result.success) { showToast('Deleted', 'success'); loadInquiries(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Delete failed', 'error'); }
+}
+
+async function clearRead() {
+    if (!confirm('Delete ALL read inquiries? Cannot be undone!')) return;
+    try {
+        const response = await fetch(`${INQ_API}bulk-delete.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ filter: 'read' })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast(`${result.data.deleted} read inquiries deleted`, 'success');
+            loadInquiries();
+        } else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed', 'error'); }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.innerHTML = `<i class="fas ${icon}"></i><div class="toast-content"><p class="toast-title">${type === 'success' ? 'Success' : 'Error'}</p><p class="toast-msg">${message}</p></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
+}
+</script>
+
+</body>
+</html>

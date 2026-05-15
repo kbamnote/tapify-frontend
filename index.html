@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tapify - India's #1 Digital Profile & NFC Business Card Maker Platform. Share your contact details and social profiles with one tap or scan.">
+    <meta name="keywords" content="NFC business card, digital business card, smart card, tapify, networking">
+    <title>Tapify - The Future of Business Networking | India's #1 NFC Card Platform</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- =============== NAVBAR =============== -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-white.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <a href="login.html" class="btn btn-signin">
+                    <i class="fas fa-user me-2"></i>Sign In
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =============== HERO SECTION =============== -->
+    <section class="hero-section" id="home">
+        <div class="hero-bg-pattern"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6 hero-text" data-aos="fade-right">
+                    <span class="hero-badge">
+                        <i class="fas fa-star me-2"></i>1000+ Satisfied Customers
+                    </span>
+                    <h1 class="hero-title">
+                        India's <span class="text-gold">#1</span> Digital Profile<br>
+                        Maker Platform.
+                    </h1>
+                    <p class="hero-subtitle">
+                        The Ultimate Future of Business Card. Instantly share Your Contact details &amp; Social Profiles with just one Tap or Scan.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="login.html" class="btn btn-primary-cta">
+                            Get Started Now <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#features" class="btn btn-outline-cta">
+                            Learn More
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h3>10K+</h3>
+                            <p>Active Users</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>50K+</h3>
+                            <p>Cards Delivered</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>4.9★</h3>
+                            <p>User Rating</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-visual" data-aos="fade-left">
+                    <div class="phone-card-mockup">
+                        <!-- NFC Card -->
+                        <div class="nfc-card">
+                            <div class="card-shine"></div>
+                            <div class="card-content">
+                                <img src="images/tapify-logo-gold.png" alt="Tapify" class="card-logo">
+                                <div class="card-chip">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <div class="card-name">JOHN DOE</div>
+                                <div class="card-title">CEO &amp; Founder</div>
+                            </div>
+                        </div>
+                        <!-- Phone Mockup -->
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div class="phone-notch"></div>
+                                <div class="phone-content">
+                                    <div class="profile-avatar"></div>
+                                    <h4>John Doe</h4>
+                                    <p>CEO at Tapify</p>
+                                    <button class="save-btn">
+                                        <i class="fas fa-user-plus me-2"></i>Save Contact
+                                    </button>
+                                    <div class="social-icons-row">
+                                        <span><i class="fab fa-whatsapp"></i></span>
+                                        <span><i class="fas fa-phone"></i></span>
+                                        <span><i class="fas fa-envelope"></i></span>
+                                        <span><i class="fab fa-instagram"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Floating Social Icons -->
+                        <div class="floating-icon icon-1"><i class="fab fa-whatsapp"></i></div>
+                        <div class="floating-icon icon-2"><i class="fab fa-instagram"></i></div>
+                        <div class="floating-icon icon-3"><i class="fab fa-linkedin-in"></i></div>
+                        <div class="floating-icon icon-4"><i class="fab fa-facebook-f"></i></div>
+                        <div class="floating-icon icon-5"><i class="fab fa-google"></i></div>
+                        <div class="floating-icon icon-6"><i class="fas fa-map-marker-alt"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Video Widget -->
+        <div class="floating-video-widget" id="videoWidget">
+            <button class="video-close" onclick="closeVideoWidget()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-thumbnail">
+                <i class="fas fa-play-circle play-icon"></i>
+                <div class="video-overlay-text">
+                    <small>WATCH NOW</small>
+                    <p>KYA AAP EK BUSINESS OWNER HAIN?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== TRUSTED CUSTOMERS =============== -->
+    <section class="trusted-section">
+        <div class="container">
+            <h2 class="section-heading text-center">Our Trusted Customers</h2>
+            <p class="section-subheading text-center">Brands that trust Tapify for their networking needs</p>
+        </div>
+        <div class="logo-slider">
+            <div class="logo-track">
+                <div class="logo-item"><span style="background:#FF6B6B">TATA</span></div>
+                <div class="logo-item"><span style="background:#4ECDC4">RELIANCE</span></div>
+                <div class="logo-item"><span style="background:#45B7D1">INFOSYS</span></div>
+                <div class="logo-item"><span style="background:#FFA07A">WIPRO</span></div>
+                <div class="logo-item"><span style="background:#98D8C8">HDFC</span></div>
+                <div class="logo-item"><span style="background:#F7DC6F">ICICI</span></div>
+                <div class="logo-item"><span style="background:#BB8FCE">SBM BANK</span></div>
+                <div class="logo-item"><span style="background:#85C1E2">AXIS</span></div>
+                <!-- Duplicated for infinite scroll -->
+                <div class="logo-item"><span style="background:#FF6B6B">TATA</span></div>
+                <div class="logo-item"><span style="background:#4ECDC4">RELIANCE</span></div>
+                <div class="logo-item"><span style="background:#45B7D1">INFOSYS</span></div>
+                <div class="logo-item"><span style="background:#FFA07A">WIPRO</span></div>
+                <div class="logo-item"><span style="background:#98D8C8">HDFC</span></div>
+                <div class="logo-item"><span style="background:#F7DC6F">ICICI</span></div>
+                <div class="logo-item"><span style="background:#BB8FCE">SBM BANK</span></div>
+                <div class="logo-item"><span style="background:#85C1E2">AXIS</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== TESTIMONIALS / WATCH CUSTOMERS =============== -->
+    <section class="testimonials-section">
+        <div class="container">
+            <p class="section-tag">TESTIMONIALS</p>
+            <h2 class="section-heading text-center">Watch What Our Customers Say</h2>
+            <p class="section-subheading text-center">Real stories from real Tapify users</p>
+
+            <div class="testimonials-slider">
+                <button class="slider-arrow arrow-left" onclick="slideTestimonials(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="testimonials-track" id="testimonialsTrack">
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Girish Parpillewar</h5>
+                        <p>Vice President at SBM Bank</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Anshuman Singh</h5>
+                        <p>Founder of Scaler</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Aditya Kulkarni</h5>
+                        <p>Founder of Stoa</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Imtiaz Ahamed</h5>
+                        <p>Founder at Company</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Priya Sharma</h5>
+                        <p>Marketing Director</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="video-thumb-wrap">
+                            <div class="video-placeholder" style="background: linear-gradient(135deg, #30cfd0, #330867);">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <h5>Rahul Verma</h5>
+                        <p>Tech Entrepreneur</p>
+                    </div>
+                </div>
+                <button class="slider-arrow arrow-right" onclick="slideTestimonials(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== SMART CARD FEATURES =============== -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <p class="section-tag">SMART CARD FEATURES</p>
+            <h2 class="section-heading text-center">All Contact Details In One Place</h2>
+            <p class="section-subheading text-center">Everything you need for modern networking, packed into one smart card</p>
+
+            <div class="row g-4 mt-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h4>All Contact Details In One Place</h4>
+                        <p>Store and share contact details, phone numbers, social media in one NFC Smart Business Card.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Safe &amp; Secure Contact Transfer</h4>
+                        <p>Worry-free contact sharing with secure and private transfer technology.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-print"></i>
+                        </div>
+                        <h4>Free From Printing Pain</h4>
+                        <p>Sustainable networking with no printing costs. Update your details anytime.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h4>QR Code For Non NFC Phone</h4>
+                        <p>Includes QR code option for phones without NFC capability. Universal compatibility.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h4>Durable &amp; Sustainable Card</h4>
+                        <p>Eco-conscious, long-lasting design. Built to last for years of professional use.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <h4>Pocket Friendly &amp; Cost Effective</h4>
+                        <p>Affordable pricing for professionals. One-time investment, lifetime networking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== HOW IT WORKS =============== -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <p class="section-tag-light">AS EASY AS 1-2-3</p>
+            <h2 class="section-heading-light text-center">How NFC Cards Work?</h2>
+            <p class="section-subheading-light text-center">Three simple steps to revolutionize your networking</p>
+
+            <div class="row g-4 mt-5">
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <div class="step-icon">
+                            <i class="fas fa-hand-point-up"></i>
+                        </div>
+                        <h4>Tap to Connect</h4>
+                        <p>Hold your NFC card near the back of an Android phone or top edge of an Apple phone.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <div class="step-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4>Instant Notification</h4>
+                        <p>The phone shows an instant notification. Accept it to open your digital profile page.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <div class="step-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h4>Share &amp; Save Contact</h4>
+                        <p>Interactive display shows your contacts with option to save directly to mobile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== COMPARISON TABLE =============== -->
+    <section class="comparison-section">
+        <div class="container">
+            <p class="section-tag">COMPARISON</p>
+            <h2 class="section-heading text-center">Why Choose One Touch Smart Business Card?</h2>
+            <p class="section-subheading text-center">See how Tapify compares with traditional business cards</p>
+
+            <div class="comparison-wrapper">
+                <div class="comparison-col comparison-traditional">
+                    <h3><i class="fas fa-times-circle me-2"></i>Traditional Business Card</h3>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Recurring Printing Cost</li>
+                        <li><i class="fas fa-times"></i> Not Waterproof</li>
+                        <li><i class="fas fa-times"></i> Makes your wallet bulky</li>
+                        <li><i class="fas fa-times"></i> Old School Approach</li>
+                        <li><i class="fas fa-times"></i> Not Eco-friendly</li>
+                        <li><i class="fas fa-times"></i> Costly Visiting Cards</li>
+                    </ul>
+                </div>
+                <div class="vs-badge">VS</div>
+                <div class="comparison-col comparison-smart">
+                    <h3><i class="fas fa-check-circle me-2"></i>One Touch Smart Card</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> No Recurring Cost</li>
+                        <li><i class="fas fa-check"></i> 100% Waterproof</li>
+                        <li><i class="fas fa-check"></i> Single Lightweight Card</li>
+                        <li><i class="fas fa-check"></i> Smart Professional Approach</li>
+                        <li><i class="fas fa-check"></i> Eco-friendly Solution</li>
+                        <li><i class="fas fa-check"></i> Pocket Friendly Card</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== FAQ =============== -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <p class="section-tag">FAQ</p>
+            <h2 class="section-heading text-center">Frequently Asked Questions</h2>
+            <p class="section-subheading text-center">Got questions? We've got answers</p>
+
+            <div class="accordion mt-5" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            How does Tapify work?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Tapify uses NFC (Near Field Communication) technology. Simply tap your Tapify card on any NFC-enabled smartphone, and your digital profile instantly opens — no app required. For non-NFC phones, a QR code option is also provided.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            What is the Insight of the Kit?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            The Tapify Insight Kit is a complete networking package that includes everything you need to elevate your professional presence — from physical NFC cards to digital profile management tools.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            What does the Insight Kit include?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            The Insight Kit includes: Premium NFC Business Card, Google Review Card, NFC Keychain, Digital vCard Profile, WhatsApp Store integration, Analytics Dashboard, and Lifetime support.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            What Exclusive VIP Benefits are offered?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            VIP members enjoy 5% discount on all products, priority customer support, VIP entry to networking events, free design consultations, and early access to new features.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            I received the card, how do I add details?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Once you receive your card, log in to your Tapify dashboard using the credentials provided. Navigate to vCards section, click "Add New" and fill in your details. Your card will be activated within minutes.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                            Can I gift Tapify Card?
+                        </button>
+                    </h2>
+                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Absolutely! Tapify cards make excellent corporate and personal gifts. We offer special gifting packaging and bulk discounts for orders above 10 cards.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                            What is the material of the card?
+                        </button>
+                    </h2>
+                    <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Tapify cards come in premium materials: PVC (Standard), Glossy White, Matt Black finish, and Premium Metal cards. All are waterproof and durable for years of use.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                            What if I lose my card?
+                        </button>
+                    </h2>
+                    <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            No worries! You can instantly block your card from the dashboard, and order a replacement at just ₹1499. Your digital profile remains safe and accessible.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+                            Do you provide custom designed cards?
+                        </button>
+                    </h2>
+                    <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes! We offer custom-designed cards with your logo, brand colors, and unique designs. Our design team works with you to create something truly memorable.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq10">
+                            Do you provide discount on bulk purchase?
+                        </button>
+                    </h2>
+                    <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, we offer attractive bulk discounts: 10-49 cards (10% off), 50-99 cards (15% off), 100+ cards (20% off). Contact our sales team for custom enterprise pricing.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== CTA SECTION =============== -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Ready to Transform Your Networking?</h2>
+                <p>Join 10,000+ professionals who've already upgraded to smart networking with Tapify.</p>
+                <a href="login.html" class="btn btn-primary-cta">
+                    Get Your Tapify Card <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== FOOTER =============== -->
+    <footer class="footer-section" id="contact">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <img src="images/tapify-logo-white.png" alt="Tapify" class="footer-logo">
+                        <p>Your Smart NFC Card Solution! Upgrade your networking game with modern, tap-to-share NFC business cards. Future of professional networking is here.</p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Explore Tapify</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Products</a></li>
+                        <li><a href="#">Add-on Services</a></li>
+                        <li><a href="#">Shop NFC</a></li>
+                        <li><a href="#">All Categories</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Useful Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="login.html">My Account</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#faq">FAQs</a></li>
+                        <li><a href="#">How NFC Works?</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5>Available Payment Methods</h5>
+                    <div class="payment-methods">
+                        <span class="payment-badge">UPI</span>
+                        <span class="payment-badge">Visa</span>
+                        <span class="payment-badge">Mastercard</span>
+                        <span class="payment-badge">RuPay</span>
+                        <span class="payment-badge">Net Banking</span>
+                    </div>
+                    <p class="security-text">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        We care about you and the safety of your purchases!
+                    </p>
+                    <p class="security-text">
+                        <i class="fas fa-check-circle me-2"></i>
+                        All products are 100% Safe, Secure and Verified
+                    </p>
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="popular-services-title">Popular Services:</p>
+                        <p class="popular-services-list">
+                            NFC Card Mumbai | NFC Card Delhi | NFC Card Bangalore | NFC Card Hyderabad | NFC Card Chennai | NFC Card Kolkata | NFC Card Pune | NFC Card Ahmedabad | NFC Card Jaipur | NFC Card Lucknow | Digital Visiting Card | Smart Business Card India
+                        </p>
+                    </div>
+                </div>
+                <div class="row mt-3 align-items-center">
+                    <div class="col-md-6">
+                        <p class="copyright">© 2026 Tapify. All Rights Reserved. An Innovative Product from MRPRINT WORLD PRIVATE LIMITED.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <a href="#" class="footer-policy">Terms</a>
+                        <a href="#" class="footer-policy">Privacy</a>
+                        <a href="#" class="footer-policy">Shipping</a>
+                        <a href="#" class="footer-policy">Refund</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =============== FLOATING WHATSAPP BUTTON =============== -->
+    <a href="https://wa.me/917841840840" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-pulse"></span>
+    </a>
+
+    <!-- =============== COOKIE CONSENT BANNER =============== -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="container">
+            <div class="cookie-content">
+                <p>
+                    <i class="fas fa-cookie-bite me-2"></i>
+                    Your experience on this site will be improved by allowing cookies.
+                </p>
+                <div class="cookie-buttons">
+                    <button class="btn btn-allow" onclick="acceptCookies()">Allow Cookies</button>
+                    <button class="btn btn-decline" onclick="declineCookies()">Decline</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- Custom JS -->
+    <script src="main.js"></script>
+</body>
+</html>

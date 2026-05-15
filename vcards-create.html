@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New vCard - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="vcards-style.css">
+    <style>
+        .create-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .create-card {
+            background: var(--white, #ffffff);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .create-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .create-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a2035;
+            margin: 0 0 10px;
+        }
+
+        .create-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #1a2035;
+            margin-bottom: 8px;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #1a2035;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8338ec;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(131, 56, 236, 0.1);
+        }
+
+        .form-group .hint {
+            font-size: 0.78rem;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .url-preview {
+            display: flex;
+            align-items: center;
+            background: #f9fafb;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .url-preview .url-prefix {
+            padding: 12px 14px;
+            background: rgba(131, 56, 236, 0.05);
+            color: #8338ec;
+            font-size: 0.88rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .url-preview input {
+            border: none !important;
+            background: transparent !important;
+            padding-left: 14px !important;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cancel {
+            padding: 12px 28px;
+            background: #f9fafb;
+            color: #1a2035;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+            color: #1a2035;
+        }
+
+        .btn-create {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #8338ec, #a855f7);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(131, 56, 236, 0.3);
+        }
+
+        .btn-create:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(131, 56, 236, 0.4);
+        }
+
+        .btn-create:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.88rem;
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #8338ec;
+        }
+
+        @media (max-width: 600px) {
+            .create-card { padding: 25px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =============== SIDEBAR =============== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify">
+                <span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="sidebarSearch">
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie nav-icon icon-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="vcards.html" class="nav-item active">
+                <i class="fas fa-id-card nav-icon icon-vcards"></i>
+                <span>vCards</span>
+            </a>
+            <a href="whatsapp-stores.html" class="nav-item">
+                <i class="fab fa-whatsapp nav-icon icon-whatsapp"></i>
+                <span>WhatsApp Stores</span>
+            </a>
+            <a href="whatsapp-orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag nav-icon icon-orders"></i>
+                <span>WhatsApp Product Order</span>
+            </a>
+            <a href="inquiries.html" class="nav-item">
+                <i class="fas fa-info-circle nav-icon icon-inquiries"></i>
+                <span>Inquiries</span>
+            </a>
+            <a href="appointments.html" class="nav-item">
+                <i class="fas fa-calendar-check nav-icon icon-appointments"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="product-orders.html" class="nav-item">
+                <i class="fas fa-box-open nav-icon icon-product-orders"></i>
+                <span>Product Orders</span>
+            </a>
+            <a href="virtual-backgrounds.html" class="nav-item">
+                <i class="fas fa-image nav-icon icon-backgrounds"></i>
+                <span>Virtual Backgrounds</span>
+            </a>
+            <a href="storage.html" class="nav-item">
+                <i class="fas fa-hdd nav-icon icon-storage"></i>
+                <span>Storage</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog nav-icon icon-settings"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn">
+                <i class="fas fa-gem"></i>
+                <span>Manage Subscription</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- =============== MAIN CONTENT WRAPPER =============== -->
+    <div class="admin-main" id="adminMain">
+
+        <!-- =============== TOP HEADER =============== -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Create New vCard</h1>
+            </div>
+
+            <div class="header-right">
+                <div class="header-dropdown">
+                    <button class="header-btn lang-btn" onclick="toggleDropdown('langDropdown')">
+                        <span class="flag-icon">🇺🇸</span>
+                        <span>English</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="langDropdown">
+                        <a href="#"><span class="flag-icon">🇺🇸</span> English</a>
+                        <a href="#"><span class="flag-icon">🇮🇳</span> हिन्दी</a>
+                    </div>
+                </div>
+
+                <button class="header-btn theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+
+                <button class="header-btn notif-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="images/tapify-logo-gold.png" alt="Profile" class="profile-avatar">
+                        <span>Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <div class="profile-info">
+                            <img src="images/tapify-logo-gold.png" alt="Profile">
+                            <div>
+                                <strong>Tapify World</strong>
+                                <small>admin@tapify.com</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <a href="profile.html"><i class="fas fa-user"></i> Account Settings</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- =============== PAGE CONTENT =============== -->
+        <div class="page-content">
+            <div class="create-container">
+                <a href="vcards.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to vCards
+                </a>
+                <div class="create-card">
+                    <div class="create-header">
+                        <h1>🎨 Create Your vCard</h1>
+                        <p>Fill in the basic details to get started. You can customize everything later.</p>
+                    </div>
+
+                    <form id="createVcardForm" onsubmit="handleCreate(event)">
+                        <div class="form-group">
+                            <label>vCard Name <span class="required">*</span></label>
+                            <input type="text" name="vcard_name" id="vcardName" placeholder="e.g., John Doe Personal Card" required minlength="2" maxlength="150">
+                            <p class="hint">This is the internal name to identify this vCard</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>vCard URL</label>
+                            <div class="url-preview">
+                                <span class="url-prefix" id="urlPrefix">testing.mrprintworld.com/</span>
+                                <input type="text" name="url_alias" id="urlAlias" placeholder="auto-generated-from-name">
+                            </div>
+                            <p class="hint">Leave blank to auto-generate from name. Only lowercase letters, numbers, and hyphens.</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" name="first_name" placeholder="John">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" name="last_name" placeholder="Doe">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Occupation / Title</label>
+                            <input type="text" name="occupation" placeholder="e.g., CEO, Software Engineer, Doctor">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" placeholder="contact@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone" placeholder="9876543210">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Company / Organization</label>
+                            <input type="text" name="company" placeholder="Your Company Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description / Bio</label>
+                            <textarea name="description" rows="3" placeholder="Brief description about you or your business..."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="vcards.html" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn-create" id="submitBtn">
+                                <i class="fas fa-rocket"></i>
+                                <span>Create vCard</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="admin-footer">
+            <p>All Rights Reserved © 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </footer>
+    </div>
+
+<script src="admin.js"></script>
+<script>
+    // Auto-generate URL from name
+    document.getElementById('vcardName').addEventListener('input', (e) => {
+        const urlAlias = document.getElementById('urlAlias');
+        if (!urlAlias.dataset.userEdited) {
+            const slug = e.target.value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            urlAlias.value = slug;
+        }
+    });
+
+    document.getElementById('urlAlias').addEventListener('input', (e) => {
+        e.target.dataset.userEdited = '1';
+        e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    });
+
+    // Set URL prefix dynamically
+    document.getElementById('urlPrefix').textContent = window.location.host + '/';
+
+    // Handle form submit
+    async function handleCreate(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const btn = document.getElementById('submitBtn');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Creating...</span>';
+
+        try {
+            const response = await fetch('../backend/api/vcards/create.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+
+            if (response.status === 401) {
+                alert('Please login first');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('✓ vCard created successfully! Redirecting to edit...', 'success');
+                setTimeout(() => {
+                    window.location.href = `vcards-edit.html?id=${result.data.vcard_id}`;
+                }, 1200);
+            } else {
+                showToast(result.message || 'Failed to create vCard', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-rocket"></i> <span>Create vCard</span>';
+            }
+        } catch (err) {
+            console.error('Create error:', err);
+            showToast('Connection error: ' + err.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-rocket"></i> <span>Create vCard</span>';
+        }
+    }
+
+    function showToast(message, type) {
+        const existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        const title = type === 'success' ? 'Success' : 'Error';
+        toast.innerHTML = `<i class="fas ${icon}"></i><div class="toast-content"><p class="toast-title">${title}</p><p class="toast-msg">${message}</p></div>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
+    }
+
+    console.log('%c➕ Create vCard Page', 'color: #8338ec; font-weight: bold;');
+</script>
+
+</body>
+</html>

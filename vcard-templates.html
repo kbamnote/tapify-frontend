@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Card Templates - Tapify | 42 Premium NFC Business Card Designs</title>
+    <meta name="description" content="Browse 42 premium V-Card templates - NFC Business Card designs for every profession. Choose from Architect, Doctor, Lawyer, Photographer & more.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Templates Gallery Specific Styles */
+        .templates-hero {
+            background: linear-gradient(135deg, #8338ec 0%, #a855f7 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .templates-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255,215,0,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .templates-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: #FFD700;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .templates-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .templates-hero h1 span {
+            color: #FFD700;
+        }
+
+        .templates-hero p {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Search & Filter Section */
+        .templates-controls {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 60px rgba(131, 56, 236, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .templates-search {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 500px;
+        }
+
+        .templates-search i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .templates-search input {
+            width: 100%;
+            height: 50px;
+            padding: 0 20px 0 48px;
+            background: #f5f7fb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .templates-search input:focus {
+            outline: none;
+            border-color: #8338ec;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(131, 56, 236, 0.1);
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 9px 18px;
+            background: #f5f7fb;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-pill:hover {
+            border-color: #8338ec;
+            color: #8338ec;
+        }
+
+        .filter-pill.active {
+            background: linear-gradient(135deg, #8338ec, #a855f7);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(131, 56, 236, 0.3);
+        }
+
+        .templates-count {
+            font-weight: 700;
+            color: #8338ec;
+            font-size: 0.95rem;
+        }
+
+        /* Templates Grid */
+        .templates-section {
+            padding: 60px 0 80px;
+            background: #f9fafb;
+        }
+
+        .templates-grid-public {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+            margin-top: 30px;
+        }
+
+        .template-card-public {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .template-card-public:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(131, 56, 236, 0.2);
+            border-color: #8338ec;
+        }
+
+        .template-image-wrapper {
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        }
+
+        .template-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .template-card-public:hover .template-image-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .template-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(26, 32, 53, 0.9) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .template-card-public:hover .template-overlay {
+            opacity: 1;
+        }
+
+        .template-view-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(20px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .template-card-public:hover .template-view-btn {
+            transform: translateY(0);
+        }
+
+        .template-view-btn:hover {
+            transform: translateY(0) scale(1.05);
+            color: #1a2035;
+        }
+
+        .template-featured-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+            z-index: 5;
+            letter-spacing: 0.5px;
+        }
+
+        .template-info-public {
+            padding: 20px 22px;
+        }
+
+        .template-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a2035;
+            margin: 0 0 4px;
+        }
+
+        .template-category {
+            display: inline-block;
+            font-size: 0.78rem;
+            color: #8338ec;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* No results */
+        .no-templates {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .no-templates i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1a2035 0%, #243055 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(131, 56, 236, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 50%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .cta-section h2 span {
+            color: #FFD700;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.85);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta-primary, .btn-cta-secondary {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta-primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5);
+            color: #1a2035;
+        }
+
+        .btn-cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .templates-hero { padding: 100px 0 60px; }
+            .templates-hero h1 { font-size: 2.2rem; }
+            .templates-controls { flex-direction: column; align-items: stretch; }
+            .templates-grid-public { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+            .template-image-wrapper { height: 240px; }
+            .cta-section h2 { font-size: 1.8rem; }
+        }
+
+        /* ===== NAVBAR OVERRIDE for white background pages ===== */
+        .main-navbar {
+            background: #1a2035 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 12px 0;
+        }
+        .main-navbar .navbar-brand .logo-img {
+            height: 50px;
+            filter: drop-shadow(0 2px 6px rgba(255,215,0,0.3));
+        }
+        .main-navbar .navbar-nav .nav-link {
+            color: #ffffff !important;
+            font-weight: 500;
+            padding: 8px 18px !important;
+            font-size: 0.95rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .navbar-nav .nav-link:hover {
+            color: #FFD700 !important;
+        }
+        .main-navbar .navbar-nav .nav-link.active {
+            color: #FFD700 !important;
+        }
+        .main-navbar .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            transition: width 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .main-navbar .navbar-nav .nav-link:hover::after,
+        .main-navbar .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+        .main-navbar .btn-signin {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035 !important;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        .main-navbar .btn-signin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+            color: #1a2035 !important;
+        }
+        .main-navbar .navbar-toggler {
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 10px;
+        }
+        .main-navbar .navbar-toggler .toggler-icon span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #FFD700;
+            margin: 5px 0;
+        }
+        .templates-hero { padding-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION (Same as homepage) -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-gold.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="toggler-icon"><span></span><span></span><span></span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="vcard-templates.html">V-Card Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a href="login.html" class="btn-signin">
+                        <i class="fas fa-user"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="templates-hero">
+        <div class="container templates-hero-content">
+            <span class="badge-pill"><i class="fas fa-star"></i> 42 Premium Templates</span>
+            <h1>Choose Your Perfect <span>V-Card Design</span></h1>
+            <p>Explore our complete collection of NFC business card templates designed for every profession — from Doctors and Lawyers to Photographers and Musicians.</p>
+        </div>
+    </section>
+
+    <!-- SEARCH & FILTERS -->
+    <div class="container">
+        <div class="templates-controls">
+            <div class="templates-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="vcardSearch" placeholder="Search templates by name or category...">
+            </div>
+            <div>
+                <span class="templates-count" id="vcardCount">42 Templates</span>
+            </div>
+        </div>
+
+        <div class="filter-pills" style="margin-top: 25px; justify-content: center;">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="Corporate">Corporate</button>
+            <button class="filter-pill" data-filter="Professional">Professional</button>
+            <button class="filter-pill" data-filter="Medical">Medical</button>
+            <button class="filter-pill" data-filter="Beauty">Beauty</button>
+            <button class="filter-pill" data-filter="Tech">Tech</button>
+            <button class="filter-pill" data-filter="Food">Food</button>
+            <button class="filter-pill" data-filter="Travel">Travel</button>
+            <button class="filter-pill" data-filter="Photography">Photography</button>
+        </div>
+    </div>
+
+    <!-- TEMPLATES GRID -->
+    <section class="templates-section">
+        <div class="container">
+            <div class="templates-grid-public" id="vcardTemplatesGrid">
+                <!-- Templates loaded by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Ready to Create Your <span>Digital Card?</span></h2>
+            <p>Sign up today and get started with your NFC-enabled business card. Join 1000+ satisfied customers across India.</p>
+            <div class="cta-buttons">
+                <a href="login.html" class="btn-cta-primary">
+                    <i class="fas fa-rocket"></i> Get Started Now
+                </a>
+                <a href="https://wa.me/917841840840" target="_blank" class="btn-cta-secondary">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (Simple) -->
+    <footer style="background: #0f1729; color: rgba(255,255,255,0.7); padding: 30px 0; text-align: center;">
+        <div class="container">
+            <p style="margin: 0; font-size: 0.9rem;">© 2026 <strong style="color: #FFD700;">Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 42 Real Templates from tapifyworld.com
+        const vcardTemplates = [
+            { id: 'vcard42', name: 'Social Vcard 2', category: 'Social', image: 'https://tapifyworld.com/assets/img/templates/vcard42.png', demoUrl: 'https://tapifyworld.com/vcard42' },
+            { id: 'vcard41', name: 'Social Vcard', category: 'Social', image: 'https://tapifyworld.com/assets/img/templates/vcard41.png', demoUrl: 'https://tapifyworld.com/vcard41' },
+            { id: 'vcard40', name: 'Bio White', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard40.png', demoUrl: 'https://tapifyworld.com/vcard40' },
+            { id: 'vcard39', name: 'Bio Black', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard39.png', demoUrl: 'https://tapifyworld.com/vcard39' },
+            { id: 'vcard38', name: 'Architecture', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard38.png', demoUrl: 'https://tapifyworld.com/vcard38' },
+            { id: 'vcard37', name: 'Flower Garden', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard37.png', demoUrl: 'https://tapifyworld.com/flower-garden' },
+            { id: 'vcard36', name: 'Travel Agency', category: 'Travel', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard36.png', demoUrl: 'https://tapifyworld.com/travel-agency' },
+            { id: 'vcard35', name: 'Real Estate', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard35.png', demoUrl: 'https://tapifyworld.com/real-estate' },
+            { id: 'vcard34', name: 'Photographer', category: 'Photography', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard34.png', demoUrl: 'https://tapifyworld.com/photographer' },
+            { id: 'vcard33', name: 'Musician', category: 'Social', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard33.png', demoUrl: 'https://tapifyworld.com/musician' },
+            { id: 'vcard32', name: 'Interior Designer', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard32.png', demoUrl: 'https://tapifyworld.com/interior-designer' },
+            { id: 'vcard31', name: 'Handyman Services', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard31.png', demoUrl: 'https://tapifyworld.com/handyman' },
+            { id: 'vcard30', name: 'Taxi Service', category: 'Travel', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard30.png', demoUrl: 'https://tapifyworld.com/taxi-service-vcard' },
+            { id: 'vcard29', name: 'Marriage', category: 'Social', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard29.png', demoUrl: 'https://tapifyworld.com/marriage' },
+            { id: 'vcard28', name: 'Pet Clinic', category: 'Medical', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard28.png', demoUrl: 'https://tapifyworld.com/petclinic' },
+            { id: 'vcard27', name: 'Pet Shop', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard27.png', demoUrl: 'https://tapifyworld.com/petshop' },
+            { id: 'vcard26', name: 'Retail E-commerce', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard26.png', demoUrl: 'https://tapifyworld.com/retailer' },
+            { id: 'vcard25', name: 'Social Services', category: 'Social', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard25.png', demoUrl: 'https://tapifyworld.com/social-services-template' },
+            { id: 'vcard24', name: 'School Templates', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard24.png', demoUrl: 'https://tapifyworld.com/teacher-template' },
+            { id: 'vcard23', name: 'Consulting Services', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard23.png', demoUrl: 'https://tapifyworld.com/consultant' },
+            { id: 'vcard22', name: 'Dynamic vCard', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard22.png', demoUrl: 'https://tapifyworld.com/dynamic', featured: true },
+            { id: 'vcard21', name: 'Social Media', category: 'Social', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard21.png', demoUrl: 'https://tapifyworld.com/social-influencers-vcard' },
+            { id: 'vcard20', name: 'Culinary Food Services', category: 'Food', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard20.png', demoUrl: 'https://tapifyworld.com/chef-vcard' },
+            { id: 'vcard19', name: 'Fashion Beauty', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard19.png', demoUrl: 'https://tapifyworld.com/artist-makeup' },
+            { id: 'vcard18', name: 'CEO/CXO', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard18.png', demoUrl: 'https://tapifyworld.com/ceo-vcard' },
+            { id: 'vcard17', name: 'Programmer', category: 'Tech', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard17.png', demoUrl: 'https://tapifyworld.com/developer' },
+            { id: 'vcard16', name: 'Lawyer', category: 'Professional', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard16.png', demoUrl: 'https://tapifyworld.com/lawyer' },
+            { id: 'vcard15', name: 'Salon', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard15.png', demoUrl: 'https://tapifyworld.com/stylish-salon' },
+            { id: 'vcard14', name: 'Event Management', category: 'Social', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard14.png', demoUrl: 'https://tapifyworld.com/event-planner' },
+            { id: 'vcard13', name: 'Hospital', category: 'Medical', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard13.png', demoUrl: 'https://tapifyworld.com/doctor' },
+            { id: 'vcard12', name: 'Gym', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard12.png', demoUrl: 'https://tapifyworld.com/trainer-gym' },
+            { id: 'vcard11', name: 'Portfolio', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard11.png', demoUrl: 'https://tapifyworld.com/portfolio' },
+            { id: 'vcard10', name: 'Pro Network', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard10.png', demoUrl: 'https://tapifyworld.com/pro-network-vcard' },
+            { id: 'vcard9', name: 'Corporate Identity', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard9.png', demoUrl: 'https://tapifyworld.com/corporate-identity-vcard' },
+            { id: 'vcard8', name: 'Corporate Classic', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard8.png', demoUrl: 'https://tapifyworld.com/corporate-classic-vcard' },
+            { id: 'vcard7', name: 'Business Beacon', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard7.png', demoUrl: 'https://tapifyworld.com/digital-marketing' },
+            { id: 'vcard6', name: 'Modern Edge', category: 'Tech', image: 'https://tapifyworld.com/assets/img/templates/vcard6.png', demoUrl: 'https://tapifyworld.com/modern-edge' },
+            { id: 'vcard5', name: 'Corporate Connect', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard5.png', demoUrl: 'https://tapifyworld.com/cor-connect' },
+            { id: 'vcard4', name: 'Professional', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard4.png', demoUrl: 'https://tapifyworld.com/professional' },
+            { id: 'vcard3', name: 'Clean Canvas', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard3.png', demoUrl: 'https://tapifyworld.com/Clean-Canvas' },
+            { id: 'vcard2', name: 'Executive Profile', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard2.png', demoUrl: 'https://tapifyworld.com/vcard2' },
+            { id: 'vcard1', name: 'Simple Contact', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard1.png', demoUrl: 'https://tapifyworld.com/vcard1' }
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        function renderTemplates() {
+            const grid = document.getElementById('vcardTemplatesGrid');
+            const counter = document.getElementById('vcardCount');
+
+            const filtered = vcardTemplates.filter(t => {
+                const matchesFilter = currentFilter === 'all' || t.category === currentFilter;
+                const matchesSearch = !currentSearch ||
+                    t.name.toLowerCase().includes(currentSearch) ||
+                    t.category.toLowerCase().includes(currentSearch);
+                return matchesFilter && matchesSearch;
+            });
+
+            counter.textContent = filtered.length === vcardTemplates.length
+                ? `${vcardTemplates.length} Templates`
+                : `${filtered.length} of ${vcardTemplates.length} Templates`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-templates">
+                        <i class="fas fa-search"></i>
+                        <h3 style="color:#1a2035">No templates found</h3>
+                        <p>Try a different search or filter</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(t => `
+                <div class="template-card-public" onclick="window.open('${t.demoUrl}', '_blank')">
+                    <div class="template-image-wrapper">
+                        <img src="${t.image}" alt="${t.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500/8338ec/FFD700?text=${encodeURIComponent(t.name)}'">
+                        ${t.featured ? '<span class="template-featured-badge"><i class="fas fa-star"></i> Featured</span>' : ''}
+                        <div class="template-overlay">
+                            <a href="${t.demoUrl}" target="_blank" class="template-view-btn" onclick="event.stopPropagation()">
+                                <i class="fas fa-eye"></i> View Live Demo
+                            </a>
+                        </div>
+                    </div>
+                    <div class="template-info-public">
+                        <h3 class="template-name">${t.name}</h3>
+                        <span class="template-category">${t.category}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search
+        document.getElementById('vcardSearch').addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase().trim();
+            renderTemplates();
+        });
+
+        // Filter pills
+        document.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentFilter = pill.dataset.filter;
+                renderTemplates();
+            });
+        });
+
+        // Initial render
+        renderTemplates();
+
+        console.log('%c🎨 V-Card Templates Page Loaded - 42 Templates', 'color: #8338ec; font-size: 14px; font-weight: bold;');
+    </script>
+</body>
+</html>

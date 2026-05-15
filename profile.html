@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <style>
+        .profile-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .profile-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 20px; }
+        .profile-header { background: linear-gradient(135deg, #8338ec, #a855f7); padding: 50px 30px 80px; text-align: center; color: white; position: relative; }
+        .profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: -50px; }
+        .profile-avatar { width: 130px; height: 130px; border-radius: 50%; border: 5px solid white; object-fit: cover; box-shadow: 0 8px 24px rgba(0,0,0,0.15); background: white; }
+        .profile-avatar-placeholder { width: 130px; height: 130px; border-radius: 50%; border: 5px solid white; background: white; color: #8338ec; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .avatar-upload-btn { position: absolute; bottom: 5px; right: 5px; background: white; color: #8338ec; width: 38px; height: 38px; border-radius: 50%; border: 3px solid #8338ec; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .avatar-upload-btn:hover { transform: scale(1.1); }
+
+        .profile-body { padding: 70px 30px 30px; }
+        .profile-name { font-size: 1.7rem; font-weight: 700; color: #1a2035; text-align: center; margin: 0 0 5px; }
+        .profile-email { color: #6b7280; text-align: center; margin: 0 0 20px; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; padding: 20px 0; border-top: 1px solid #f3f4f6; border-bottom: 1px solid #f3f4f6; margin-bottom: 25px; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.6rem; font-weight: 700; color: #8338ec; }
+        .stat-label { font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .form-section { margin-bottom: 30px; }
+        .form-section h3 { font-size: 1.1rem; color: #1a2035; margin: 0 0 18px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px; }
+        .form-section h3 i { color: #8338ec; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: #1a2035; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.92rem; background: #f9fafb; }
+        .form-group input:focus { outline: none; border-color: #8338ec; background: white; box-shadow: 0 0 0 3px rgba(131,56,236,0.1); }
+        .form-group input:disabled { background: #f3f4f6; cursor: not-allowed; opacity: 0.7; }
+        .form-group .hint { font-size: 0.78rem; color: #6b7280; margin-top: 5px; }
+
+        .verified-badge { display: inline-flex; align-items: center; gap: 4px; background: #d1fae5; color: #065f46; padding: 3px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 600; margin-left: 8px; }
+
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 20px; border-top: 1px solid #f3f4f6; }
+        .btn-save { background: linear-gradient(135deg, #8338ec, #a855f7); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-family: inherit; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(131,56,236,0.3); transition: all 0.3s; }
+        .btn-save:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .info-item { background: #f9fafb; padding: 14px 18px; border-radius: 10px; }
+        .info-item label { font-size: 0.72rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .info-item .value { color: #1a2035; font-weight: 600; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="email-settings.html" class="nav-item"><i class="fas fa-envelope nav-icon" style="background:#fef3c7;color:#f59e0b"></i><span>Email Settings</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">My Profile</h1>
+            </div>
+            <div class="header-right">
+                <a href="dashboard.html" style="color:#6b7280;text-decoration:none;font-size:0.88rem"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="profile-container">
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar-wrap">
+                            <div id="avatarContainer">
+                                <div class="profile-avatar-placeholder" id="avatarPlaceholder">T</div>
+                            </div>
+                            <label class="avatar-upload-btn" title="Upload photo">
+                                <i class="fas fa-camera"></i>
+                                <input type="file" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="profile-body">
+                        <h2 class="profile-name" id="profileName">Loading...</h2>
+                        <p class="profile-email" id="profileEmail">—</p>
+
+                        <div class="stat-row">
+                            <div class="stat-item"><div class="stat-value" id="statVcards">0</div><div class="stat-label">vCards</div></div>
+                            <div class="stat-item"><div class="stat-value" id="statStores">0</div><div class="stat-label">Stores</div></div>
+                            <div class="stat-item"><div class="stat-value" id="statRole">User</div><div class="stat-label">Role</div></div>
+                            <div class="stat-item"><div class="stat-value" id="statSince">—</div><div class="stat-label">Member Since</div></div>
+                        </div>
+
+                        <!-- Edit Profile Form -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-user"></i> Edit Profile</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="editName" maxlength="150">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address *</label>
+                                    <input type="email" id="editEmail" maxlength="150">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="editPhone" maxlength="20" placeholder="9876543210">
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-save" id="btnSaveProfile" onclick="saveProfile()">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Change Password -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-lock"></i> Change Password</h3>
+                            <div class="form-group">
+                                <label>Current Password *</label>
+                                <input type="password" id="currentPassword">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>New Password *</label>
+                                    <input type="password" id="newPassword">
+                                    <p class="hint">Minimum 6 characters</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password *</label>
+                                    <input type="password" id="confirmPassword">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-save" id="btnChangePassword" onclick="changePassword()" style="background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 8px 20px rgba(239,68,68,0.3)">
+                                    <i class="fas fa-key"></i> Change Password
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Info -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-info-circle"></i> Account Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>User ID</label>
+                                    <div class="value" id="infoUserId">—</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Last Login</label>
+                                    <div class="value" id="infoLastLogin">—</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Account Created</label>
+                                    <div class="value" id="infoCreatedAt">—</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Email Verified</label>
+                                    <div class="value" id="infoVerified">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="admin-footer"><p>All Rights Reserved © 2026 <strong>Tapify</strong></p></footer>
+    </div>
+
+<script src="admin.js"></script>
+<script>
+const API = '../backend/api/profile/';
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProfile();
+});
+
+async function loadProfile() {
+    try {
+        const response = await fetch(`${API}get.php`, { credentials: 'include' });
+        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        const result = await response.json();
+
+        if (!result.success) { showToast(result.message, 'error'); return; }
+
+        const u = result.data.user;
+        const s = result.data.stats;
+
+        // Header
+        const initial = (u.name || 'T').charAt(0).toUpperCase();
+        if (u.avatar_url) {
+            document.getElementById('avatarContainer').innerHTML =
+                `<img src="${u.avatar_url}?t=${Date.now()}" class="profile-avatar" id="profileAvatar">`;
+        } else {
+            document.getElementById('avatarPlaceholder').textContent = initial;
+        }
+
+        document.getElementById('profileName').textContent = u.name || '—';
+        document.getElementById('profileEmail').textContent = u.email || '—';
+
+        // Stats
+        document.getElementById('statVcards').textContent = s.total_vcards;
+        document.getElementById('statStores').textContent = s.total_stores;
+        document.getElementById('statRole').textContent = u.role.charAt(0).toUpperCase() + u.role.slice(1);
+        document.getElementById('statSince').textContent = u.member_since;
+
+        // Form values
+        document.getElementById('editName').value = u.name || '';
+        document.getElementById('editEmail').value = u.email || '';
+        document.getElementById('editPhone').value = u.phone || '';
+
+        // Info
+        document.getElementById('infoUserId').textContent = '#' + u.id;
+        document.getElementById('infoLastLogin').textContent = u.last_login_formatted || 'Never';
+        document.getElementById('infoCreatedAt').textContent = u.created_at_formatted || '—';
+        document.getElementById('infoVerified').innerHTML = u.email_verified
+            ? '<span class="verified-badge"><i class="fas fa-check"></i> Verified</span>'
+            : '<span style="color:#f59e0b">⚠ Not verified</span>';
+    } catch (err) {
+        showToast('Connection error: ' + err.message, 'error');
+    }
+}
+
+async function saveProfile() {
+    const btn = document.getElementById('btnSaveProfile');
+    const data = {
+        name: document.getElementById('editName').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        phone: document.getElementById('editPhone').value.trim()
+    };
+
+    if (!data.name) { showToast('Name required', 'error'); return; }
+    if (!data.email) { showToast('Email required', 'error'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    try {
+        const response = await fetch(`${API}update.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('Profile updated successfully!', 'success');
+            loadProfile();
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (err) { showToast('Failed: ' + err.message, 'error'); }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+}
+
+async function changePassword() {
+    const btn = document.getElementById('btnChangePassword');
+    const data = {
+        current_password: document.getElementById('currentPassword').value,
+        new_password: document.getElementById('newPassword').value,
+        confirm_password: document.getElementById('confirmPassword').value
+    };
+
+    if (!data.current_password) { showToast('Current password required', 'error'); return; }
+    if (!data.new_password) { showToast('New password required', 'error'); return; }
+    if (data.new_password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+    if (data.new_password !== data.confirm_password) { showToast('Passwords do not match', 'error'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Changing...';
+
+    try {
+        const response = await fetch(`${API}change-password.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('Password changed! Logging out...', 'success');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            setTimeout(() => {
+                fetch('../backend/api/logout.php', { method: 'POST', credentials: 'include' });
+                window.location.href = 'login.html';
+            }, 2000);
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (err) { showToast('Failed: ' + err.message, 'error'); }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-key"></i> Change Password';
+}
+
+async function uploadAvatar(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('Max 2MB allowed', 'error'); return; }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    showToast('Uploading...', 'success');
+    try {
+        const response = await fetch(`${API}upload-avatar.php`, {
+            method: 'POST', credentials: 'include', body: formData
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            showToast('✓ Avatar updated!', 'success');
+            loadProfile();
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (err) { showToast('Upload failed', 'error'); }
+    input.value = '';
+}
+
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.innerHTML = `<i class="fas ${icon}"></i><div class="toast-content"><p class="toast-title">${type === 'success' ? 'Success' : 'Error'}</p><p class="toast-msg">${message}</p></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
+}
+</script>
+
+</body>
+</html>

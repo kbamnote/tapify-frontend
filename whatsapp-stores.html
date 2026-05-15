@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Stores - Tapify Admin</title>
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="vcards-style.css">
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify">
+                <span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="sidebarSearch">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item active"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Product Order</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn">
+                <i class="fas fa-gem"></i><span>Manage Subscription</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">WhatsApp Stores</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown">
+                    <button class="header-btn lang-btn" onclick="toggleDropdown('langDropdown')">
+                        <span class="flag-icon">🇺🇸</span><span>English</span><i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="langDropdown">
+                        <a href="#"><span class="flag-icon">🇺🇸</span> English</a>
+                        <a href="#"><span class="flag-icon">🇮🇳</span> हिन्दी</a>
+                    </div>
+                </div>
+                <button class="header-btn theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+                <button class="header-btn notif-btn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="images/tapify-logo-gold.png" alt="Profile" class="profile-avatar">
+                        <span>Tapify World</span><i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <div class="profile-info">
+                            <img src="images/tapify-logo-gold.png" alt="Profile">
+                            <div><strong>Tapify World</strong><small>printworldonline1@gmail.com</small></div>
+                        </div>
+                        <hr>
+                        <a href="profile.html"><i class="fas fa-user"></i> Account Settings</a>
+                        <a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+
+            <!-- Toolbar -->
+            <div class="vcards-toolbar">
+                <div class="toolbar-left">
+                    <div class="vcards-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="storeSearch" placeholder="Search WhatsApp stores...">
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <a href="whatsapp-stores-create.html" class="btn-new-vcard">
+                        <i class="fas fa-plus"></i><span>New WhatsApp Store</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stores Table -->
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>STORE NAME</th>
+                            <th class="th-center">WHATSAPP NO</th>
+                            <th class="th-center">ORDERS</th>
+                            <th class="th-center">VIEWS</th>
+                            <th class="th-center">STATUS</th>
+                            <th class="th-center">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="storesTableBody"></tbody>
+                </table>
+
+                <div class="no-data" id="noDataMsg" style="display: none;">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>No WhatsApp Stores Yet</h3>
+                    <p>Create your first WhatsApp store to start selling products via WhatsApp.</p>
+                    <a href="whatsapp-stores-create.html" class="btn-new-vcard">
+                        <i class="fas fa-plus"></i> Create First Store
+                    </a>
+                </div>
+            </div>
+
+            <div class="pagination-wrapper">
+                <div class="page-info">
+                    Showing <strong>1</strong> result(s)
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="admin-footer">
+            <p>All Rights Reserved © 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </footer>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>Delete Store?</h3>
+            <p id="deleteMessage">Are you sure you want to delete this store?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+    <script src="whatsapp-stores.js"></script>
+</body>
+</html>

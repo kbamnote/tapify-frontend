@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Backgrounds - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="vcards-style.css">
+    <style>
+        .info-banner {
+            background: linear-gradient(135deg, rgba(131, 56, 236, 0.08), rgba(168, 85, 247, 0.05));
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .info-banner i { color: var(--primary); margin-right: 8px; }
+
+        .vbg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .vbg-card {
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .vbg-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .vbg-preview {
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vbg-preview::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .vbg-actions {
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+        }
+
+        .vbg-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .vbg-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .vbg-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 0.82rem;
+        }
+
+        .vbg-download { background: rgba(131, 56, 236, 0.12); color: var(--primary); }
+        .vbg-download:hover { background: var(--primary); color: white; }
+        .vbg-share { background: rgba(37, 211, 102, 0.12); color: #25D366; }
+        .vbg-share:hover { background: #25D366; color: white; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="sidebarSearch">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Product Order</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item active"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn">
+                <i class="fas fa-gem"></i><span>Manage Subscription</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Virtual Backgrounds</h1>
+            </div>
+            <div class="header-right">
+                <button class="header-btn theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+                <button class="header-btn notif-btn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="images/tapify-logo-gold.png" alt="Profile" class="profile-avatar">
+                        <span>Tapify World</span><i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <div class="profile-info">
+                            <img src="images/tapify-logo-gold.png" alt="Profile">
+                            <div><strong>Tapify World</strong><small>printworldonline1@gmail.com</small></div>
+                        </div>
+                        <hr>
+                        <a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="info-banner">
+                <strong><i class="fas fa-info-circle"></i> Note:</strong>
+                Virtual Backgrounds will give you the business card images in which your logo, name, address, and phone will be written. We are exporting standard sizes of horizontal and vertical virtual backgrounds, which will be useful when you want to design your NFC card. You can directly give these images to NFC printing handlers. Also, you can share this with your friends too directly or set it as a profile/cover image.
+            </div>
+
+            <div class="vcards-toolbar">
+                <div class="toolbar-left">
+                    <div class="vcards-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search backgrounds...">
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn-new-vcard">
+                        <i class="fas fa-plus"></i><span>Add Custom</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="vbg-grid" id="vbgGrid"></div>
+        </main>
+
+        <footer class="admin-footer">
+            <p>All Rights Reserved © 2026 <strong>Tapify</strong></p>
+        </footer>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        const backgrounds = [
+            { name: 'Blue Geometric', bg: 'linear-gradient(135deg, #1e3a8a, #3b82f6)', icon: '◆' },
+            { name: 'Dark Modern', bg: 'linear-gradient(135deg, #1e293b, #475569)', icon: 'A' },
+            { name: 'Black Polygon', bg: 'linear-gradient(135deg, #0f172a, #334155)', icon: '◆' },
+            { name: 'Blue Wave', bg: 'linear-gradient(135deg, #f1f5f9, #cbd5e1)', icon: '👤' },
+            { name: 'Purple White', bg: 'linear-gradient(135deg, #faf5ff, #e9d5ff)', icon: '◆' },
+            { name: 'Maroon Mandala', bg: 'linear-gradient(135deg, #881337, #be123c)', icon: '◯' },
+            { name: 'Yellow Burst', bg: 'linear-gradient(135deg, #fef9c3, #fbbf24)', icon: '◆' },
+            { name: 'Dark Teal', bg: 'linear-gradient(135deg, #134e4a, #14b8a6)', icon: '◆' },
+            { name: 'Orange Yellow', bg: 'linear-gradient(135deg, #f59e0b, #fbbf24)', icon: '👤' },
+            { name: 'Teal Wave', bg: 'linear-gradient(135deg, #14b8a6, #ccfbf1)', icon: '◆' },
+            { name: 'Pink Gradient', bg: 'linear-gradient(135deg, #fce7f3, #f9a8d4)', icon: '🌸' },
+            { name: 'Green Nature', bg: 'linear-gradient(135deg, #10b981, #6ee7b7)', icon: '🍃' }
+        ];
+
+        function renderBackgrounds() {
+            const grid = document.getElementById('vbgGrid');
+            grid.innerHTML = backgrounds.map(b => `
+                <div class="vbg-card">
+                    <div class="vbg-preview" style="background: ${b.bg}">
+                        ${b.icon}
+                    </div>
+                    <div class="vbg-actions">
+                        <span class="vbg-name">${b.name}</span>
+                        <div class="vbg-buttons">
+                            <button class="vbg-btn vbg-download" title="Download"><i class="fas fa-download"></i></button>
+                            <button class="vbg-btn vbg-share" title="Share"><i class="fas fa-share-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderBackgrounds);
+    </script>
+</body>
+</html>

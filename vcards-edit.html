@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit vCard - Tapify Admin Panel</title>
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="vcard-edit-style.css">
+</head>
+<body>
+
+    <!-- =============== SIDEBAR =============== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify">
+                <span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="sidebarSearch">
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie nav-icon icon-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="vcards.html" class="nav-item active">
+                <i class="fas fa-id-card nav-icon icon-vcards"></i>
+                <span>vCards</span>
+            </a>
+            <a href="whatsapp-stores.html" class="nav-item">
+                <i class="fab fa-whatsapp nav-icon icon-whatsapp"></i>
+                <span>WhatsApp Stores</span>
+            </a>
+            <a href="whatsapp-orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag nav-icon icon-orders"></i>
+                <span>WhatsApp Product Order</span>
+            </a>
+            <a href="inquiries.html" class="nav-item">
+                <i class="fas fa-info-circle nav-icon icon-inquiries"></i>
+                <span>Inquiries</span>
+            </a>
+            <a href="appointments.html" class="nav-item">
+                <i class="fas fa-calendar-check nav-icon icon-appointments"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="product-orders.html" class="nav-item">
+                <i class="fas fa-box-open nav-icon icon-product-orders"></i>
+                <span>Product Orders</span>
+            </a>
+            <a href="virtual-backgrounds.html" class="nav-item">
+                <i class="fas fa-image nav-icon icon-backgrounds"></i>
+                <span>Virtual Backgrounds</span>
+            </a>
+            <a href="storage.html" class="nav-item">
+                <i class="fas fa-hdd nav-icon icon-storage"></i>
+                <span>Storage</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog nav-icon icon-settings"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn">
+                <i class="fas fa-gem"></i>
+                <span>Manage Subscription</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- =============== MAIN CONTENT =============== -->
+    <div class="admin-main" id="adminMain">
+
+        <!-- TOP HEADER -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">vCards</h1>
+            </div>
+
+            <div class="header-right">
+                <div class="header-dropdown">
+                    <button class="header-btn lang-btn" onclick="toggleDropdown('langDropdown')">
+                        <span class="flag-icon">🇺🇸</span>
+                        <span>English</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="langDropdown">
+                        <a href="#"><span class="flag-icon">🇺🇸</span> English</a>
+                        <a href="#"><span class="flag-icon">🇮🇳</span> हिन्दी</a>
+                    </div>
+                </div>
+                <button class="header-btn theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="header-btn notif-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="images/tapify-logo-gold.png" alt="Profile" class="profile-avatar">
+                        <span>Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <div class="profile-info">
+                            <img src="images/tapify-logo-gold.png" alt="Profile">
+                            <div>
+                                <strong>Tapify World</strong>
+                                <small>printworldonline1@gmail.com</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <a href="profile.html"><i class="fas fa-user"></i> Account Settings</a>
+                        <a href="login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- VCARD EDIT CONTENT -->
+        <main class="admin-content vcard-edit-content">
+
+            <!-- Page Header -->
+            <div class="edit-header">
+                <h2 id="editPageTitle">Edit vCard</h2>
+                <a href="vcards.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+
+            <!-- Edit Wrapper: Sub-sidebar + Content -->
+            <div class="edit-wrapper">
+
+                <!-- SUB-SIDEBAR (Tabs Menu) -->
+                <aside class="edit-sub-sidebar" id="editSubSidebar">
+                    <button class="sub-sidebar-toggle" onclick="toggleSubSidebar()">
+                        <i class="fas fa-bars"></i> Sections Menu
+                    </button>
+
+                    <ul class="sub-nav">
+                        <li class="sub-nav-item active" data-tab="basic-details">
+                            <i class="fas fa-info-circle"></i> Basic Details
+                        </li>
+                        <li class="sub-nav-item" data-tab="vcard-templates">
+                            <i class="fas fa-th-large"></i> vCard Templates
+                        </li>
+                        <li class="sub-nav-item" data-tab="dynamic-vcard">
+                            <i class="fas fa-palette"></i> Dynamic vCard
+                        </li>
+                        <li class="sub-nav-item" data-tab="business-hours">
+                            <i class="fas fa-clock"></i> Business Hours
+                        </li>
+                        <li class="sub-nav-item" data-tab="qr-code">
+                            <i class="fas fa-qrcode"></i> Customize QR Code
+                        </li>
+                        <li class="sub-nav-item" data-tab="services">
+                            <i class="fas fa-concierge-bell"></i> Services
+                        </li>
+                        <li class="sub-nav-item" data-tab="products">
+                            <i class="fas fa-box"></i> Products
+                        </li>
+                        <li class="sub-nav-item" data-tab="instaembed">
+                            <i class="fab fa-instagram"></i> InstaEmbed
+                        </li>
+                        <li class="sub-nav-item" data-tab="galleries">
+                            <i class="fas fa-images"></i> Galleries
+                        </li>
+                        <li class="sub-nav-item" data-tab="blogs">
+                            <i class="fas fa-blog"></i> Blogs
+                        </li>
+                        <li class="sub-nav-item" data-tab="testimonials">
+                            <i class="fas fa-comment"></i> Testimonials
+                        </li>
+                        <li class="sub-nav-item" data-tab="iframes">
+                            <i class="fas fa-window-restore"></i> Iframes
+                        </li>
+                        <li class="sub-nav-item" data-tab="appointments">
+                            <i class="fas fa-calendar-alt"></i> Appointments
+                        </li>
+                        <li class="sub-nav-item" data-tab="social-links">
+                            <i class="fas fa-share-alt"></i> Social Links - Website
+                        </li>
+                        <li class="sub-nav-item" data-tab="custom-links">
+                            <i class="fas fa-link"></i> Custom Links
+                        </li>
+                        <li class="sub-nav-item" data-tab="banner">
+                            <i class="fas fa-flag"></i> Banner
+                        </li>
+                        <li class="sub-nav-item" data-tab="advanced">
+                            <i class="fas fa-cogs"></i> Advanced
+                        </li>
+                        <li class="sub-nav-item" data-tab="fonts">
+                            <i class="fas fa-font"></i> Fonts
+                        </li>
+                        <li class="sub-nav-item" data-tab="seo">
+                            <i class="fas fa-search"></i> SEO
+                        </li>
+                        <li class="sub-nav-item" data-tab="privacy">
+                            <i class="fas fa-shield-alt"></i> Privacy Policy
+                        </li>
+                        <li class="sub-nav-item" data-tab="terms">
+                            <i class="fas fa-file-contract"></i> Terms &amp; Conditions
+                        </li>
+                        <li class="sub-nav-item" data-tab="manage-section">
+                            <i class="fas fa-th-list"></i> Manage Section
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- CONTENT AREA -->
+                <div class="edit-content-area">
+
+                    <!-- ============ TAB 1: BASIC DETAILS ============ -->
+                    <div class="tab-content active" id="tab-basic-details">
+
+                        <!-- Inner Tabs -->
+                        <div class="inner-tabs">
+                            <button class="inner-tab active" data-inner="basic">Basic Details</button>
+                            <button class="inner-tab" data-inner="personal">Personal Details</button>
+                            <button class="inner-tab" data-inner="other">Other Configurations</button>
+                        </div>
+
+                        <!-- Inner: Basic Details -->
+                        <div class="inner-tab-content active" id="inner-basic">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>URL Alias <span class="required">*</span> <i class="fas fa-question-circle help-icon" title="Unique URL for your vCard"></i></label>
+                                    <div class="url-input-group">
+                                        <input type="text" class="form-control" id="urlAlias" value="tapify" placeholder="my-vcard-page-url">
+                                        <button class="btn-regenerate" onclick="regenerateUrl()" title="Generate Random">
+                                            <i class="fas fa-sync"></i>
+                                        </button>
+                                    </div>
+                                    <small class="form-hint">https://tapifyworld.com/<strong id="urlPreview">tapify</strong></small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>vCard Name <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="vcardName" value="Tapify World" placeholder="Enter vCard Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Occupation</label>
+                                    <input type="text" class="form-control" id="occupation" placeholder="Enter Occupation">
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Description</label>
+                                    <div class="rich-editor-toolbar">
+                                        <button type="button" onclick="formatText('bold')"><b>B</b></button>
+                                        <button type="button" onclick="formatText('italic')"><i>I</i></button>
+                                        <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                                        <button type="button" onclick="formatText('strikeThrough')"><s>S</s></button>
+                                        <span class="divider">|</span>
+                                        <button type="button" onclick="formatText('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                                        <button type="button" onclick="formatText('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                                        <span class="divider">|</span>
+                                        <select onchange="formatText('formatBlock', this.value)">
+                                            <option value="p">Normal</option>
+                                            <option value="h1">Heading 1</option>
+                                            <option value="h2">Heading 2</option>
+                                            <option value="h3">Heading 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="rich-editor" contenteditable="true" id="description">
+                                        <p>Tapify is an innovative and registered brand of MrPrint World Pvt. Ltd., created to transform traditional marketing into smart digital networking solutions.</p>
+                                        <p>We specialize in NFC-enabled products such as NFC Business Cards, NFC Review Cards, NFC Standees, NFC Keychains, NFC Tags, and Digital Mini Websites that allow you to instantly share your business information with just one tap. <strong>Tapify helps you connect, convert, and grow.</strong></p>
+                                    </div>
+                                    <button class="btn-ai-description" onclick="generateAIDescription()">
+                                        <i class="fas fa-magic"></i> AI Description
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Cover Type</label>
+                                    <select class="form-control" id="coverType">
+                                        <option value="image">Image</option>
+                                        <option value="color">Color</option>
+                                        <option value="gradient">Gradient</option>
+                                        <option value="video">Video</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Cover Image <i class="fas fa-question-circle help-icon"></i></label>
+                                    <div class="image-upload" onclick="triggerFileInput('coverImage')">
+                                        <input type="file" id="coverImage" accept="image/png,image/jpg,image/jpeg" hidden>
+                                        <div class="upload-preview" id="coverPreview">
+                                            <div class="cover-placeholder">
+                                                <i class="fas fa-image"></i>
+                                                <p>Click to upload cover</p>
+                                            </div>
+                                        </div>
+                                        <button class="upload-edit-btn"><i class="fas fa-pen"></i></button>
+                                    </div>
+                                    <small class="form-hint">Allowed: png, jpg, jpeg</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Profile Image <i class="fas fa-question-circle help-icon"></i></label>
+                                    <div class="image-upload profile-upload" onclick="triggerFileInput('profileImage')">
+                                        <input type="file" id="profileImage" accept="image/png,image/jpg,image/jpeg" hidden>
+                                        <div class="upload-preview profile-preview" id="profilePreview">
+                                            <img src="images/tapify-logo-gold.png" alt="Profile">
+                                        </div>
+                                        <button class="upload-edit-btn"><i class="fas fa-pen"></i></button>
+                                    </div>
+                                    <small class="form-hint">Allowed: png, jpg, jpeg</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Favicon Image <i class="fas fa-question-circle help-icon"></i></label>
+                                    <div class="image-upload favicon-upload" onclick="triggerFileInput('faviconImage')">
+                                        <input type="file" id="faviconImage" accept="image/png,image/jpg,image/jpeg" hidden>
+                                        <div class="upload-preview favicon-preview" id="faviconPreview">
+                                            <img src="images/tapify-logo-gold.png" alt="Favicon">
+                                        </div>
+                                        <button class="upload-edit-btn"><i class="fas fa-pen"></i></button>
+                                    </div>
+                                    <small class="form-hint">Allowed: png, jpg, jpeg</small>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn-save" onclick="saveAndNext('basic')">
+                                    Save &amp; Next <i class="fas fa-arrow-right"></i>
+                                </button>
+                                <button class="btn-discard" onclick="discardChanges()">Discard</button>
+                            </div>
+                        </div>
+
+                        <!-- Inner: Personal Details -->
+                        <div class="inner-tab-content" id="inner-personal">
+                            <h3 class="section-title">vCard Details</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>First Name <span class="required">*</span></label>
+                                    <input type="text" class="form-control" value="Tapify" placeholder="Enter First Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name <span class="required">*</span></label>
+                                    <input type="text" class="form-control" value="World" placeholder="Enter Last Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" value="info.tapify1@gmail.com" placeholder="Enter Email">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <div class="phone-input-group">
+                                        <span class="country-code">🇮🇳 +91</span>
+                                        <input type="tel" class="form-control" value="7378633753" placeholder="Phone Number">
+                                    </div>
+                                    <small class="form-hint text-success"><i class="fas fa-check-circle"></i> Valid Number</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Alternate Email</label>
+                                    <input type="email" class="form-control" value="abid.printworld@gmail.com" placeholder="Alternate Email">
+                                </div>
+                                <div class="form-group">
+                                    <label>Alternate Phone</label>
+                                    <div class="phone-input-group">
+                                        <span class="country-code">🇮🇳 +91</span>
+                                        <input type="tel" class="form-control" value="9027706666" placeholder="Alternate Phone">
+                                    </div>
+                                    <small class="form-hint text-success"><i class="fas fa-check-circle"></i> Valid Number</small>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Location</label>
+                                    <textarea class="form-control" rows="2" placeholder="Enter Location">Shailesh Nagar, Behind Kohinoor Lawn, Wathoda, Nagpur 440008 Maharashtra</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Location Type</label>
+                                    <select class="form-control">
+                                        <option value="link" selected>Link</option>
+                                        <option value="map">Map Embed</option>
+                                        <option value="address">Plain Address</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Location URL</label>
+                                    <input type="url" class="form-control" value="https://share.google/PShuhYDESwb6SwjtP" placeholder="Google Maps URL">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Date Of Birth</label>
+                                    <input type="date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Company</label>
+                                    <input type="text" class="form-control" value="An Innovative Product of Mrprint World Pvt. Ltd." placeholder="Company Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Made By</label>
+                                    <input type="text" class="form-control" value="Mrprint World Pvt Ltd" placeholder="Made By">
+                                </div>
+                                <div class="form-group">
+                                    <label>Made By URL</label>
+                                    <input type="url" class="form-control" value="https://wa.me/917841840840" placeholder="URL">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Job Title</label>
+                                    <input type="text" class="form-control" value="The Future of Business Networking" placeholder="Job Title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Default Language</label>
+                                    <select class="form-control">
+                                        <option value="en" selected>English</option>
+                                        <option value="hi">Hindi</option>
+                                        <option value="ar">Arabic</option>
+                                        <option value="es">Spanish</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Cover Image Type</label>
+                                    <select class="form-control">
+                                        <option value="cover" selected>Cover</option>
+                                        <option value="banner">Banner</option>
+                                        <option value="hero">Hero</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn-save">Save &amp; Next <i class="fas fa-arrow-right"></i></button>
+                                <button class="btn-discard">Discard</button>
+                            </div>
+                        </div>
+
+                        <!-- Inner: Other Configurations -->
+                        <div class="inner-tab-content" id="inner-other">
+                            <div class="config-grid">
+                                <div class="config-card">
+                                    <label>Display Language Localization</label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Display Inquiry Form</label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Display Download QR Icon</label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Display QR Section</label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Display Add To Contact <i class="fas fa-question-circle help-icon"></i></label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Hide vCard Sticky Bar <i class="fas fa-question-circle help-icon"></i></label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-card">
+                                    <label>Display WhatsApp Share <i class="fas fa-question-circle help-icon"></i></label>
+                                    <label class="status-toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="max-width: 500px; margin-top: 25px;">
+                                <label>QR Code Download Size: <strong id="qrSizeValue">200px</strong></label>
+                                <input type="range" class="form-range" min="100" max="500" value="200" id="qrSize" oninput="document.getElementById('qrSizeValue').textContent = this.value + 'px'">
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn-save">Save</button>
+                                <button class="btn-discard">Discard</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 2: VCARD TEMPLATES ============ -->
+                    <div class="tab-content" id="tab-vcard-templates">
+                        <div class="templates-header">
+                            <div>
+                                <h3 class="section-title" style="margin-bottom: 5px; padding-bottom: 0; border: none;">
+                                    Select Template <span class="required">*</span>
+                                    <span class="template-count" id="templateCount">42 Templates</span>
+                                </h3>
+                                <p style="color: var(--text-gray); font-size: 0.85rem; margin: 0;">Choose from our collection of 42 professionally designed templates</p>
+                            </div>
+                            <div class="template-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="templateSearch" placeholder="Search templates...">
+                            </div>
+                        </div>
+                        <div class="templates-grid" id="templatesGrid">
+                            <!-- Templates loaded by JS -->
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 3: DYNAMIC VCARD ============ -->
+                    <div class="tab-content" id="tab-dynamic-vcard">
+                        <div class="dynamic-wrapper">
+                            <div class="dynamic-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Primary Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#8338ec" class="color-picker">
+                                            <input type="text" value="#8338ec" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Background Secondary Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#a855f7" class="color-picker">
+                                            <input type="text" value="#a855f7" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Background Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#1a2035" class="color-picker">
+                                            <input type="text" value="#1a2035" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Button Text Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#ffffff" class="color-picker">
+                                            <input type="text" value="#ffffff" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Label Text Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#FFD700" class="color-picker">
+                                            <input type="text" value="#FFD700" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description Text Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#cccccc" class="color-picker">
+                                            <input type="text" value="#cccccc" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cards Background</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#243055" class="color-picker">
+                                            <input type="text" value="#243055" class="color-text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Social Icon Color</label>
+                                        <div class="color-input">
+                                            <input type="color" value="#ffffff" class="color-picker">
+                                            <input type="text" value="#ffffff" class="color-text">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Sticky Button Position</label>
+                                    <div class="btn-group-toggle">
+                                        <button class="btn-toggle active">Left</button>
+                                        <button class="btn-toggle">Right</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Button Styles</label>
+                                    <div class="button-styles">
+                                        <button class="style-btn active" style="background:#FFD700;color:#1a2035;">Style 1</button>
+                                        <button class="style-btn" style="background:#8338ec;color:#fff;">Style 2</button>
+                                        <button class="style-btn" style="background:#25D366;color:#fff;">Style 3</button>
+                                        <button class="style-btn" style="background:#10b981;color:#fff;">Style 4</button>
+                                        <button class="style-btn" style="border:2px solid #8338ec;color:#8338ec;background:transparent;">Style 5</button>
+                                        <button class="style-btn" style="border:2px dashed #8338ec;color:#8338ec;background:transparent;">Style 6</button>
+                                        <button class="style-btn" style="border:2px solid #1a2035;color:#1a2035;background:transparent;">Style 7</button>
+                                        <button class="style-btn" style="background:#e2e8f0;color:#1a2035;">Style 8</button>
+                                        <button class="style-btn" style="background:linear-gradient(135deg,#8338ec,#a855f7);color:#fff;">Style 9</button>
+                                        <button class="style-btn" style="background:#fff;color:#1a2035;border:1px solid #ddd;box-shadow:0 4px 8px rgba(0,0,0,0.1);">Style 10</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button class="btn-save">Save</button>
+                                    <button class="btn-discard">Discard</button>
+                                </div>
+                            </div>
+
+                            <!-- Live Preview -->
+                            <div class="dynamic-preview">
+                                <div class="phone-preview">
+                                    <div class="phone-preview-screen">
+                                        <div class="preview-cover"></div>
+                                        <div class="preview-avatar">TW</div>
+                                        <h3 class="preview-name">Tapify World</h3>
+                                        <p class="preview-title">Future of Networking</p>
+                                        <p class="preview-desc">Lorem ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                        <div class="preview-socials">
+                                            <span><i class="fab fa-facebook-f"></i></span>
+                                            <span><i class="fab fa-whatsapp"></i></span>
+                                            <span><i class="fab fa-linkedin-in"></i></span>
+                                            <span><i class="fab fa-instagram"></i></span>
+                                            <span><i class="fab fa-twitter"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 4: BUSINESS HOURS ============ -->
+                    <div class="tab-content" id="tab-business-hours">
+                        <div class="business-hours-list" id="businessHoursList">
+                            <!-- Days loaded by JS -->
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 5: QR CODE ============ -->
+                    <div class="tab-content" id="tab-qr-code">
+                        <div class="qr-customize-card">
+                            <div class="form-group">
+                                <label>QR-Code Color</label>
+                                <div class="color-input">
+                                    <input type="color" value="#000000" class="color-picker" id="qrColor">
+                                    <input type="text" value="#000000" class="color-text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Background Color</label>
+                                <div class="color-input">
+                                    <input type="color" value="#ffffff" class="color-picker" id="qrBgColor">
+                                    <input type="text" value="#ffffff" class="color-text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Select Style</label>
+                                <select class="form-control">
+                                    <option value="square" selected>Square</option>
+                                    <option value="rounded">Rounded</option>
+                                    <option value="dots">Dots</option>
+                                    <option value="classy">Classy</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Select Eye Style</label>
+                                <select class="form-control">
+                                    <option value="square" selected>Square</option>
+                                    <option value="rounded">Rounded</option>
+                                    <option value="leaf">Leaf</option>
+                                    <option value="circle">Circle</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="status-toggle-row">
+                                    <span>Use This Configuration</span>
+                                    <label class="status-toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-save">Save</button>
+                                <button class="btn-discard">Discard</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 6: SERVICES ============ -->
+                    <div class="tab-content" id="tab-services">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search services...">
+                            </div>
+                            <div class="toolbar-right-group">
+                                <label class="status-toggle-row">
+                                    <span>Display Images with Slider</span>
+                                    <label class="status-toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </label>
+                                <button class="btn-add" onclick="showAddService()">
+                                    <i class="fas fa-plus"></i> Add Service
+                                </button>
+                            </div>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>ICON</th>
+                                    <th>NAME</th>
+                                    <th>SERVICE URL</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servicesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 7: PRODUCTS ============ -->
+                    <div class="tab-content" id="tab-products">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search products...">
+                            </div>
+                            <button class="btn-add" onclick="showAddProduct()">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>ICON</th>
+                                    <th>NAME</th>
+                                    <th>PRODUCT URL</th>
+                                    <th class="th-center">PRICE</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 8: INSTAEMBED ============ -->
+                    <div class="tab-content" id="tab-instaembed">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <div class="toolbar-right-group">
+                                <button class="btn-help">
+                                    <i class="fas fa-question-circle"></i> How it works?
+                                </button>
+                                <button class="btn-add" onclick="openAddModal('instaembed')">
+                                    <i class="fas fa-plus"></i> Add Embed-Tag
+                                </button>
+                            </div>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>TYPE</th>
+                                    <th>EMBED-TAG</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="instaembedTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 9: GALLERIES ============ -->
+                    <div class="tab-content" id="tab-galleries">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <button class="btn-add" onclick="showAddGallery()">
+                                <i class="fas fa-plus"></i> Add Gallery
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>TYPE</th>
+                                    <th>LINK</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="galleriesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 10: BLOGS ============ -->
+                    <div class="tab-content" id="tab-blogs">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <button class="btn-add" onclick="showAddBlog()">
+                                <i class="fas fa-plus"></i> Add Blog
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>ICON</th>
+                                    <th>TITLE</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blogsTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 11: TESTIMONIALS ============ -->
+                    <div class="tab-content" id="tab-testimonials">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <button class="btn-add" onclick="showAddTestimonial()">
+                                <i class="fas fa-plus"></i> Add Testimonial
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>IMAGE</th>
+                                    <th>NAME</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="testimonialsTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 12: IFRAMES ============ -->
+                    <div class="tab-content" id="tab-iframes">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <button class="btn-add" onclick="openAddModal('iframe')">
+                                <i class="fas fa-plus"></i> Add Iframe
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="iframesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 13: APPOINTMENTS ============ -->
+                    <div class="tab-content" id="tab-appointments">
+                        <div class="appointment-days" id="appointmentDays"></div>
+                        <div class="form-group" style="margin-top: 25px;">
+                            <label>Appointment Type</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="appointmentType" value="free" checked>
+                                    <span>Free</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="appointmentType" value="paid">
+                                    <span>Paid</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 14: SOCIAL LINKS ============ -->
+                    <div class="tab-content" id="tab-social-links">
+                        <p class="info-note">
+                            <i class="fas fa-info-circle"></i>
+                            Note: Uploaded icon name should be "WeChat.png" / "Tumbler.png" / "XXX.png", while downloading .vcf file that name will be used as label.
+                        </p>
+                        <button class="btn-add float-right" onclick="addSocialLink()">
+                            <i class="fas fa-plus"></i> Add Social Link
+                        </button>
+                        <div class="social-links-grid" id="socialLinksGrid"></div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 15: CUSTOM LINKS ============ -->
+                    <div class="tab-content" id="tab-custom-links">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <button class="btn-add" onclick="showAddCustomLink()">
+                                <i class="fas fa-plus"></i> Add Custom Link
+                            </button>
+                        </div>
+                        <table class="vcards-table">
+                            <thead>
+                                <tr>
+                                    <th>LINK NAME</th>
+                                    <th>LINK</th>
+                                    <th class="th-center">SHOW AS BUTTON</th>
+                                    <th class="th-center">OPEN IN NEW TAB</th>
+                                    <th class="th-center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customLinksTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============ TAB 16: BANNER ============ -->
+                    <div class="tab-content" id="tab-banner">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Title <span class="required">*</span></label>
+                                <input type="text" class="form-control" value="NFC Kit" placeholder="Banner Title">
+                            </div>
+                            <div class="form-group">
+                                <label>URL <span class="required">*</span></label>
+                                <input type="url" class="form-control" value="https://wa.link/q33dol" placeholder="Banner URL">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Description <span class="required">*</span></label>
+                                <textarea class="form-control" rows="6" placeholder="Banner Description">All-in-One Smart Networking & Branding Solution. Introducing the Tapify NFC Complete Kit — a powerful business growth package designed for modern entrepreneurs who want smart networking, strong online reputation, and priority branding support.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Banner Button <span class="required">*</span></label>
+                                <input type="text" class="form-control" value="Shop Now" placeholder="Button Text">
+                            </div>
+                            <div class="form-group">
+                                <label class="status-toggle-row">
+                                    <span>Show Banner</span>
+                                    <label class="status-toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 17: ADVANCED ============ -->
+                    <div class="tab-content" id="tab-advanced">
+                        <div class="form-group">
+                            <label>Password <i class="fas fa-question-circle help-icon" title="Protect your vCard with a password"></i></label>
+                            <div class="password-input">
+                                <input type="password" class="form-control" placeholder="Set vCard Password" id="advPassword">
+                                <button class="password-toggle-btn" onclick="togglePasswordView('advPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Custom CSS</label>
+                            <textarea class="form-control code-textarea" rows="6" placeholder="Enter Custom CSS"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Custom JS</label>
+                            <textarea class="form-control code-textarea" rows="6" placeholder="Enter Custom JS"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="status-toggle-row">
+                                <span>Remove Branding <i class="fas fa-question-circle help-icon"></i></span>
+                                <label class="status-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 18: FONTS ============ -->
+                    <div class="tab-content" id="tab-fonts">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Font Family</label>
+                                <select class="form-control">
+                                    <option value="default" selected>Default (Poppins)</option>
+                                    <option value="roboto">Roboto</option>
+                                    <option value="lato">Lato</option>
+                                    <option value="opensans">Open Sans</option>
+                                    <option value="montserrat">Montserrat</option>
+                                    <option value="raleway">Raleway</option>
+                                    <option value="inter">Inter</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Font Size</label>
+                                <input type="number" class="form-control" placeholder="Font size in px (e.g. 16)">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 19: SEO ============ -->
+                    <div class="tab-content" id="tab-seo">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Site Title</label>
+                                <input type="text" class="form-control" value="Nagpur, Maharashtra" placeholder="Site Title">
+                            </div>
+                            <div class="form-group">
+                                <label>Home Title</label>
+                                <input type="text" class="form-control" value="Tapify | Business Cards, ID Cards, Magazines, Signages, Labels & Stickers" placeholder="Home Title">
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Keyword</label>
+                                <input type="text" class="form-control" value="Business Cards, ID Cards, Magazines, Signages, Labels & Stickers in Nagpur, Maharashtra">
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Description</label>
+                                <input type="text" class="form-control" value="Tapify offers premium Business Cards, ID Cards, Magazines, Signages, Labels & Stickers with high-quality printing, modern designs, and fast d...">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Google Analytics</label>
+                                <textarea class="form-control code-textarea" rows="5" placeholder="Google Analytics Code"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 20: PRIVACY POLICY ============ -->
+                    <div class="tab-content" id="tab-privacy">
+                        <div class="form-group">
+                            <label>Privacy Policy <span class="required">*</span></label>
+                            <div class="rich-editor-toolbar">
+                                <select onchange="formatText('formatBlock', this.value)">
+                                    <option value="p">Normal</option>
+                                    <option value="h1">H1</option>
+                                    <option value="h2">H2</option>
+                                </select>
+                                <button type="button" onclick="formatText('bold')"><b>B</b></button>
+                                <button type="button" onclick="formatText('italic')"><i>I</i></button>
+                                <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                            </div>
+                            <div class="rich-editor large-editor" contenteditable="true">
+                                <p>Welcome to <strong>TapifyWorld.com</strong> ("TapifyWorld", "we", "us", or "our"). This Privacy Policy explains how we collect, use, store, share, and protect your personal information when you visit our website and use our services.</p>
+                                <p><strong>1. INFORMATION WE COLLECT</strong></p>
+                                <p>We collect information to operate effectively and provide you with the best user experience.</p>
+                                <p><strong>a. Personal Information You Provide:</strong></p>
+                                <ul>
+                                    <li>Name, email address, phone number</li>
+                                    <li>Profile information you enter when creating your digital business card</li>
+                                    <li>Social media links, profile photo, company details</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 21: TERMS ============ -->
+                    <div class="tab-content" id="tab-terms">
+                        <div class="form-group">
+                            <label>Terms &amp; Conditions <span class="required">*</span></label>
+                            <div class="rich-editor-toolbar">
+                                <select onchange="formatText('formatBlock', this.value)">
+                                    <option value="p">Normal</option>
+                                    <option value="h1">H1</option>
+                                    <option value="h2">H2</option>
+                                </select>
+                                <button type="button" onclick="formatText('bold')"><b>B</b></button>
+                                <button type="button" onclick="formatText('italic')"><i>I</i></button>
+                                <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                            </div>
+                            <div class="rich-editor large-editor" contenteditable="true">
+                                <p>Please read these Terms &amp; Conditions ("Terms") carefully before using <strong>TapifyWorld.com</strong> ("we", "our", "us").</p>
+                                <p><strong>1. ACCEPTANCE OF TERMS</strong></p>
+                                <p>By accessing or using TapifyWorld.com, you agree to be bound by these Terms. If you do not agree, please do not use our site or services.</p>
+                                <p><strong>2. USE OF SERVICES</strong></p>
+                                <p>TapifyWorld provides digital NFC business card services, QR sharing, profile creation, and related digital networking tools.</p>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                    <!-- ============ TAB 22: MANAGE SECTION ============ -->
+                    <div class="tab-content" id="tab-manage-section">
+                        <div class="manage-section-card">
+                            <h4>Show/Hide Sections on Public vCard</h4>
+                            <p class="text-muted mb-3">Toggle the sections you want to display on your vCard's public page.</p>
+
+                            <div class="manage-grid">
+                                <label class="manage-item">
+                                    <input type="checkbox" checked disabled>
+                                    <span>Header</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Contact</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Services</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Galleries</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Products</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Testimonials</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Blogs</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Business Hours</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Appointments</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Map</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox">
+                                    <span>Banner</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>Instagram Feed</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox">
+                                    <span>Iframes</span>
+                                </label>
+                                <label class="manage-item">
+                                    <input type="checkbox" checked>
+                                    <span>News Letter Popup</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-save">Save</button>
+                            <button class="btn-discard">Discard</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="admin-footer">
+            <p>All Rights Reserved © 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </footer>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Generic Add Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeAddModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 id="modalTitle">Add Item</h3>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="saveModalItem()">Save</button>
+                <button class="btn-cancel" onclick="closeAddModal()">Discard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+    <script src="vcard-edit.js"></script>
+</body>
+</html>

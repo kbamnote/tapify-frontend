@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Store Templates - Tapify | 8 WhatsApp Store Designs</title>
+    <meta name="description" content="Browse 8 premium WhatsApp Web Store templates - perfect for Beauty, Restaurant, Grocery, Fashion, Jewellery & more.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .templates-hero {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .templates-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255,215,0,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .templates-hero-content { position: relative; z-index: 2; }
+
+        .badge-pill {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: #FFD700;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .templates-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .templates-hero h1 span { color: #FFD700; }
+
+        .templates-hero p {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .templates-controls {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 60px rgba(37, 211, 102, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .templates-search {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 500px;
+        }
+
+        .templates-search i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .templates-search input {
+            width: 100%;
+            height: 50px;
+            padding: 0 20px 0 48px;
+            background: #f5f7fb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .templates-search input:focus {
+            outline: none;
+            border-color: #25D366;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1);
+        }
+
+        .templates-count {
+            font-weight: 700;
+            color: #25D366;
+            font-size: 0.95rem;
+        }
+
+        .templates-section {
+            padding: 60px 0 80px;
+            background: #f9fafb;
+        }
+
+        .templates-grid-public {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .template-card-public {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .template-card-public:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(37, 211, 102, 0.2);
+            border-color: #25D366;
+        }
+
+        .template-image-wrapper {
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        }
+
+        .template-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .template-card-public:hover .template-image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .template-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(20, 83, 45, 0.9) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .template-card-public:hover .template-overlay { opacity: 1; }
+
+        .template-view-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(20px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .template-card-public:hover .template-view-btn { transform: translateY(0); }
+        .template-view-btn:hover { transform: translateY(0) scale(1.05); color: #1a2035; }
+
+        .template-theme-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(20, 83, 45, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 5;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .template-popular-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a2035;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+            z-index: 5;
+        }
+
+        .template-info-public {
+            padding: 22px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .template-info-content {
+            flex: 1;
+        }
+
+        .template-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a2035;
+            margin: 0 0 4px;
+        }
+
+        .template-category {
+            font-size: 0.82rem;
+            color: #25D366;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .template-whatsapp-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .no-templates {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .no-templates i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #1a2035 0%, #243055 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(37, 211, 102, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 50%);
+        }
+
+        .cta-content { position: relative; z-index: 2; }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .cta-section h2 span { color: #FFD700; }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.85);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta-primary, .btn-cta-secondary {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta-primary {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+            color: white;
+        }
+
+        .btn-cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: white;
+        }
+
+        @media (max-width: 768px) {
+            .templates-hero { padding: 100px 0 60px; }
+            .templates-hero h1 { font-size: 2.2rem; }
+            .templates-controls { flex-direction: column; align-items: stretch; }
+            .templates-grid-public { grid-template-columns: 1fr; gap: 18px; }
+            .template-image-wrapper { height: 240px; }
+            .cta-section h2 { font-size: 1.8rem; }
+        }
+
+        /* ===== NAVBAR OVERRIDE ===== */
+        .main-navbar {
+            background: #1a2035 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 12px 0;
+        }
+        .main-navbar .navbar-brand .logo-img {
+            height: 50px;
+            filter: drop-shadow(0 2px 6px rgba(255,215,0,0.3));
+        }
+        .main-navbar .navbar-nav .nav-link {
+            color: #ffffff !important;
+            font-weight: 500;
+            padding: 8px 18px !important;
+            font-size: 0.95rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .navbar-nav .nav-link:hover {
+            color: #FFD700 !important;
+        }
+        .main-navbar .navbar-nav .nav-link.active {
+            color: #25D366 !important;
+        }
+        .main-navbar .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #25D366;
+            transition: width 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .main-navbar .navbar-nav .nav-link:hover::after,
+        .main-navbar .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+        .main-navbar .btn-signin {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+        .main-navbar .btn-signin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
+            color: #ffffff !important;
+        }
+        .main-navbar .navbar-toggler {
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 10px;
+        }
+        .main-navbar .navbar-toggler .toggler-icon span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #25D366;
+            margin: 5px 0;
+        }
+        .templates-hero { padding-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-gold.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="toggler-icon"><span></span><span></span><span></span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="webstore-templates.html">Web Store Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a href="login.html" class="btn-signin">
+                        <i class="fas fa-user"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="templates-hero">
+        <div class="container templates-hero-content">
+            <span class="badge-pill"><i class="fab fa-whatsapp"></i> 8 Premium Store Themes</span>
+            <h1>Build Your <span>WhatsApp Store</span> Today</h1>
+            <p>Sell directly on WhatsApp with our beautifully designed store templates. Perfect for Beauty, Restaurant, Grocery, Fashion, and more!</p>
+        </div>
+    </section>
+
+    <!-- SEARCH -->
+    <div class="container">
+        <div class="templates-controls">
+            <div class="templates-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="storeSearch" placeholder="Search store templates...">
+            </div>
+            <div>
+                <span class="templates-count" id="storeCount">8 Templates</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEMPLATES GRID -->
+    <section class="templates-section">
+        <div class="container">
+            <div class="templates-grid-public" id="storeTemplatesGrid"></div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Ready to Sell on <span>WhatsApp?</span></h2>
+            <p>Start your online store in minutes. Connect with customers directly through WhatsApp and grow your business.</p>
+            <div class="cta-buttons">
+                <a href="login.html" class="btn-cta-primary">
+                    <i class="fab fa-whatsapp"></i> Create Your Store
+                </a>
+                <a href="https://wa.me/917841840840" target="_blank" class="btn-cta-secondary">
+                    <i class="fas fa-phone"></i> Talk to Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: #0f1729; color: rgba(255,255,255,0.7); padding: 30px 0; text-align: center;">
+        <div class="container">
+            <p style="margin: 0; font-size: 0.9rem;">© 2026 <strong style="color: #FFD700;">Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const storeTemplates = [
+            { name: 'Beauty Product', category: 'Beauty & Cosmetics', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/beauty_product.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/ethereal-beauty', theme: 'Theme 1' },
+            { name: 'Ecommerce', category: 'General Store', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/ecommerce.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/prime-store', theme: 'Theme 2', popular: true },
+            { name: 'Restaurant', category: 'Food & Dining', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/restaurant.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/mahejbani', theme: 'Theme 3' },
+            { name: 'Grocery Store', category: 'Grocery & Daily Needs', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/grocery_store.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/grocery-store', theme: 'Theme 4' },
+            { name: 'Cloth Store', category: 'Fashion & Apparel', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/cloth_store.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/cloth-store', theme: 'Theme 5' },
+            { name: 'Home Decor', category: 'Interior & Decor', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/home_decor.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/home-decor', theme: 'Theme 6' },
+            { name: 'Jewellery', category: 'Jewelry & Luxury', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/jewellery.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/the-royal-jewellers', theme: 'Theme 7' },
+            { name: 'Travel', category: 'Travel & Tourism', image: 'https://tapifyworld.com/assets/img/whatsapp_store_templates/travel.png', demoUrl: 'https://tapifyworld.com/whatsapp-store/desi-miles-tour-&-travels', theme: 'Theme 8' }
+        ];
+
+        let currentSearch = '';
+
+        function renderStoreTemplates() {
+            const grid = document.getElementById('storeTemplatesGrid');
+            const counter = document.getElementById('storeCount');
+
+            const filtered = storeTemplates.filter(t =>
+                !currentSearch ||
+                t.name.toLowerCase().includes(currentSearch) ||
+                t.category.toLowerCase().includes(currentSearch)
+            );
+
+            counter.textContent = filtered.length === storeTemplates.length
+                ? `${storeTemplates.length} Templates`
+                : `${filtered.length} of ${storeTemplates.length} Templates`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-templates">
+                        <i class="fas fa-search"></i>
+                        <h3 style="color:#1a2035">No templates found</h3>
+                        <p>Try a different search</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(t => `
+                <div class="template-card-public" onclick="window.open('${t.demoUrl}', '_blank')">
+                    <div class="template-image-wrapper">
+                        <img src="${t.image}" alt="${t.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x280/25D366/FFFFFF?text=${encodeURIComponent(t.name)}'">
+                        ${t.popular ? '<span class="template-popular-badge"><i class="fas fa-star"></i> Popular</span>' : ''}
+                        <span class="template-theme-badge">${t.theme}</span>
+                        <div class="template-overlay">
+                            <a href="${t.demoUrl}" target="_blank" class="template-view-btn" onclick="event.stopPropagation()">
+                                <i class="fas fa-eye"></i> View Live Demo
+                            </a>
+                        </div>
+                    </div>
+                    <div class="template-info-public">
+                        <div class="template-info-content">
+                            <h3 class="template-name">${t.name}</h3>
+                            <span class="template-category">${t.category}</span>
+                        </div>
+                        <div class="template-whatsapp-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('storeSearch').addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase().trim();
+            renderStoreTemplates();
+        });
+
+        renderStoreTemplates();
+        console.log('%c🛒 Web Store Templates Loaded - 8 Themes', 'color: #25D366; font-size: 14px; font-weight: bold;');
+    </script>
+</body>
+</html>

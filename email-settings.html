@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Settings - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="images/tapify-logo-gold.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+    <style>
+        .email-container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .config-card { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .config-card h2 { font-size: 1.3rem; color: #1a2035; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
+        .config-card h2 i { color: #8338ec; }
+        .config-card p.subtitle { color: #6b7280; margin: 0 0 25px; font-size: 0.92rem; }
+        .status-banner { padding: 16px 20px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 14px; }
+        .status-banner.configured { background: #d1fae5; border-left: 4px solid #10b981; }
+        .status-banner.not-configured { background: #fef3c7; border-left: 4px solid #f59e0b; }
+        .status-banner i { font-size: 1.5rem; }
+        .status-banner.configured i { color: #10b981; }
+        .status-banner.not-configured i { color: #f59e0b; }
+        .status-banner h4 { margin: 0 0 4px; font-size: 1rem; }
+        .status-banner p { margin: 0; font-size: 0.88rem; color: #4b5563; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+        .info-row { background: #f9fafb; padding: 14px 18px; border-radius: 10px; }
+        .info-row label { display: block; font-size: 0.72rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 4px; }
+        .info-row .value { color: #1a2035; font-weight: 600; font-size: 0.92rem; word-break: break-all; }
+        .info-row .value code { background: white; padding: 2px 6px; border-radius: 4px; border: 1px solid #e5e7eb; font-size: 0.85em; }
+        .toggles-list { display: flex; flex-direction: column; gap: 10px; }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #f9fafb; border-radius: 10px; }
+        .toggle-row .info { display: flex; align-items: center; gap: 12px; }
+        .toggle-row .info i { color: #8338ec; }
+        .toggle-row .info strong { font-size: 0.92rem; }
+        .toggle-row .info p { margin: 2px 0 0; font-size: 0.78rem; color: #6b7280; }
+        .toggle-pill { padding: 5px 12px; border-radius: 50px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .toggle-pill.on { background: #d1fae5; color: #065f46; }
+        .toggle-pill.off { background: #fee2e2; color: #991b1b; }
+        .test-section { background: linear-gradient(135deg, #8338ec, #a855f7); border-radius: 16px; padding: 30px; color: white; margin-bottom: 20px; }
+        .test-section h3 { margin: 0 0 8px; font-size: 1.2rem; }
+        .test-section p { margin: 0 0 20px; opacity: 0.9; font-size: 0.92rem; }
+        .test-form { display: flex; gap: 10px; flex-wrap: wrap; }
+        .test-form input { flex: 1; min-width: 250px; padding: 12px 16px; border: none; border-radius: 10px; font-family: inherit; font-size: 0.92rem; }
+        .test-form input:focus { outline: 2px solid white; }
+        .btn-test { background: white; color: #8338ec; border: none; padding: 12px 28px; border-radius: 10px; font-family: inherit; font-weight: 700; cursor: pointer; font-size: 0.92rem; transition: all 0.3s; }
+        .btn-test:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .btn-test:disabled { opacity: 0.6; cursor: not-allowed; }
+        .setup-guide { background: #fef3c7; border-radius: 12px; padding: 20px 25px; }
+        .setup-guide h4 { color: #92400e; margin: 0 0 12px; }
+        .setup-guide ol { margin: 0; padding-left: 20px; color: #78350f; }
+        .setup-guide ol li { margin-bottom: 8px; line-height: 1.6; font-size: 0.9rem; }
+        .setup-guide code { background: white; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="images/tapify-logo-gold.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="email-settings.html" class="nav-item active"><i class="fas fa-envelope nav-icon" style="background:#fef3c7;color:#f59e0b"></i><span>Email Settings</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Email Settings</h1>
+            </div>
+            <div class="header-right">
+                <a href="dashboard.html" style="color:#6b7280;text-decoration:none;font-size:0.88rem"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="email-container">
+
+                <div id="statusBanner"></div>
+
+                <div class="config-card">
+                    <h2><i class="fas fa-cog"></i> SMTP Configuration</h2>
+                    <p class="subtitle">Current email server settings</p>
+                    <div class="info-grid" id="configGrid"></div>
+                </div>
+
+                <div class="test-section">
+                    <h3><i class="fas fa-paper-plane"></i> Test Email Configuration</h3>
+                    <p>Send a test email to verify your SMTP settings are working correctly.</p>
+                    <div class="test-form">
+                        <input type="email" id="testEmail" placeholder="Recipient email (default: admin email)">
+                        <button class="btn-test" id="testBtn" onclick="sendTestEmail()"><i class="fas fa-paper-plane"></i> Send Test Email</button>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <h2><i class="fas fa-bell"></i> Notification Triggers</h2>
+                    <p class="subtitle">When emails are sent automatically</p>
+                    <div class="toggles-list" id="togglesList"></div>
+                </div>
+
+                <div class="config-card">
+                    <h2><i class="fas fa-question-circle"></i> Setup Guide</h2>
+                    <p class="subtitle">How to configure email password</p>
+                    <div class="setup-guide">
+                        <h4>📧 Set up info@tapify.in in Hostinger:</h4>
+                        <ol>
+                            <li>Login to <strong>Hostinger Panel</strong> → <strong>Emails</strong> → <strong>Email Accounts</strong></li>
+                            <li>Click <strong>"Create Email Account"</strong></li>
+                            <li>Email: <code>info@tapify.in</code> with strong password</li>
+                            <li>SSH/FTP me <code>backend/config/email.php</code> open करें</li>
+                            <li>Line: <code>'password' => 'YOUR_EMAIL_PASSWORD_HERE'</code> me अपना password डालें</li>
+                            <li>Save → "Send Test Email" button click करें</li>
+                            <li>✅ Email मिले तो सब काम कर रहा है!</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="admin-footer"><p>All Rights Reserved © 2026 <strong>Tapify</strong></p></footer>
+    </div>
+
+<script src="admin.js"></script>
+<script>
+const API = '../backend/api/email/';
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadStatus();
+});
+
+async function loadStatus() {
+    try {
+        const response = await fetch(`${API}status.php`, { credentials: 'include' });
+        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        const result = await response.json();
+
+        if (!result.success) {
+            showToast(result.message, 'error');
+            return;
+        }
+
+        renderStatus(result.data);
+    } catch (err) { showToast('Failed to load: ' + err.message, 'error'); }
+}
+
+function renderStatus(d) {
+    // Status banner
+    const banner = document.getElementById('statusBanner');
+    if (d.configured) {
+        banner.innerHTML = `
+            <div class="status-banner configured">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <h4>✅ Email System Configured</h4>
+                    <p>Your email is ready to send notifications via SMTP.</p>
+                </div>
+            </div>`;
+    } else {
+        banner.innerHTML = `
+            <div class="status-banner not-configured">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h4>⚠️ Password Not Configured</h4>
+                    <p>Update password in <code>backend/config/email.php</code> to enable email notifications.</p>
+                </div>
+            </div>`;
+    }
+
+    // Config grid
+    const grid = document.getElementById('configGrid');
+    grid.innerHTML = `
+        <div class="info-row">
+            <label>SMTP Host</label>
+            <div class="value"><code>${d.host}</code></div>
+        </div>
+        <div class="info-row">
+            <label>SMTP Port</label>
+            <div class="value"><code>${d.port}</code></div>
+        </div>
+        <div class="info-row">
+            <label>Username</label>
+            <div class="value">${d.username}</div>
+        </div>
+        <div class="info-row">
+            <label>From Email</label>
+            <div class="value">${d.from_email}</div>
+        </div>
+        <div class="info-row">
+            <label>From Name</label>
+            <div class="value">${d.from_name}</div>
+        </div>
+        <div class="info-row">
+            <label>Admin Email</label>
+            <div class="value">${d.admin_email}</div>
+        </div>
+    `;
+
+    // Toggles
+    const toggles = document.getElementById('togglesList');
+    const toggleData = [
+        { key: 'notifications_enabled', icon: 'fa-bell', title: 'All Email Notifications', desc: 'Master switch for all emails' },
+        { key: 'notify_new_inquiry', icon: 'fa-info-circle', title: 'New Inquiry Notification', desc: 'Email admin when customer submits inquiry' },
+        { key: 'send_inquiry_confirmation', icon: 'fa-reply', title: 'Inquiry Confirmation', desc: 'Send "thank you" email to customer' },
+        { key: 'notify_new_appointment', icon: 'fa-calendar-check', title: 'New Appointment Notification', desc: 'Email admin when appointment booked' },
+        { key: 'send_appointment_confirmation', icon: 'fa-check', title: 'Appointment Confirmation', desc: 'Send confirmation email to customer' },
+        { key: 'notify_new_order', icon: 'fa-shopping-bag', title: 'New Order Notification', desc: 'Email admin when WhatsApp store order placed' },
+    ];
+
+    toggles.innerHTML = toggleData.map(t => `
+        <div class="toggle-row">
+            <div class="info">
+                <i class="fas ${t.icon}"></i>
+                <div>
+                    <strong>${t.title}</strong>
+                    <p>${t.desc}</p>
+                </div>
+            </div>
+            <span class="toggle-pill ${d[t.key] ? 'on' : 'off'}">${d[t.key] ? 'ON' : 'OFF'}</span>
+        </div>
+    `).join('');
+}
+
+async function sendTestEmail() {
+    const btn = document.getElementById('testBtn');
+    const email = document.getElementById('testEmail').value.trim();
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+    try {
+        const response = await fetch(`${API}test.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            showToast(result.message, 'success');
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (err) { showToast('Failed: ' + err.message, 'error'); }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Test Email';
+}
+
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.innerHTML = `<i class="fas ${icon}"></i><div class="toast-content"><p class="toast-title">${type === 'success' ? 'Success' : 'Error'}</p><p class="toast-msg">${message}</p></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 5000);
+}
+</script>
+
+</body>
+</html>
