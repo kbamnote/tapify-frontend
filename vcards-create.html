@@ -439,7 +439,7 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Creating...</span>';
 
         try {
-            const response = await fetch('../backend/api/vcards/create.php', {
+            const response = await fetch('https://tapify-backend-production.up.railway.app/api/vcards/create.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -490,3 +490,4 @@
 
 </body>
 </html>
+

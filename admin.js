@@ -260,7 +260,7 @@ document.addEventListener('keydown', (e) => {
 // ===== LOGOUT =====
 async function logout() {
     try {
-        await fetch('../backend/api/logout.php', {
+        await fetch('https://tapify-backend-production.up.railway.app/api/logout.php', {
             method: 'POST',
             credentials: 'include'
         });
@@ -306,3 +306,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('%c🚀 Tapify Admin Panel Loaded', 'color: #8338ec; font-size: 14px; font-weight: bold;');
 });
+

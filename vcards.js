@@ -2,7 +2,7 @@
    VCARDS PAGE - JavaScript (Real Backend)
    ========================================== */
 
-const API_BASE = '../backend/api/vcards/';
+const API_BASE = 'https://tapify-backend-production.up.railway.app/api/vcards/';
 
 let vcardsData = [];
 let filteredData = [];
@@ -501,3 +501,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log('%c📇 vCards Page (Real Backend)', 'color: #8338ec; font-size: 14px; font-weight: bold;');
+

@@ -1,6 +1,6 @@
 /* WhatsApp Store Edit Page - Real Backend (Phase 7B) */
 
-const API = '../backend/api/';
+const API = 'https://tapify-backend-production.up.railway.app/api/';
 let currentStoreId = null;
 let currentStore = null;
 let categoriesData = [];
@@ -511,3 +511,4 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
 }
+

@@ -1,6 +1,6 @@
 /* WhatsApp Stores List Page - Real Backend (Phase 7A) */
 
-const STORES_API = '../backend/api/stores/';
+const STORES_API = 'https://tapify-backend-production.up.railway.app/api/stores/';
 let storesData = [];
 let deleteTargetId = null;
 
@@ -185,3 +185,4 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
 }
+

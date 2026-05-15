@@ -90,7 +90,7 @@ function triggerFileInput(id) {
     document.getElementById(id).click();
 }
 
-const UPLOAD_API = '../backend/api/uploads/';
+const UPLOAD_API = 'https://tapify-backend-production.up.railway.app/api/uploads/';
 
 document.querySelectorAll('input[type="file"]').forEach(input => {
     input.addEventListener('change', async (e) => {
@@ -652,7 +652,7 @@ async function renderServicesTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/services/list.php?vcard_id=${currentVcardId}`, {
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/services/list.php?vcard_id=${currentVcardId}`, {
             credentials: 'include'
         });
         const result = await response.json();
@@ -756,7 +756,7 @@ async function saveService(id) {
     }
 
     try {
-        const response = await fetch('../backend/api/services/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/services/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -785,7 +785,7 @@ async function deleteService(id, name) {
     if (!confirm(`Delete service "${name}"?`)) return;
 
     try {
-        const response = await fetch('../backend/api/services/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/services/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -817,7 +817,7 @@ async function renderProductsTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/products/list.php?vcard_id=${currentVcardId}`, {
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/products/list.php?vcard_id=${currentVcardId}`, {
             credentials: 'include'
         });
         const result = await response.json();
@@ -940,7 +940,7 @@ async function saveProduct(id) {
     }
 
     try {
-        const response = await fetch('../backend/api/products/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/products/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -972,7 +972,7 @@ async function deleteProduct(id, name) {
     if (!confirm(`Delete product "${name}"?`)) return;
 
     try {
-        const response = await fetch('../backend/api/products/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/products/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1004,7 +1004,7 @@ async function renderBlogsTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/blogs/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/blogs/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
         const result = await response.json();
 
         if (result.success) {
@@ -1089,7 +1089,7 @@ async function saveBlog(id) {
     if (!title) { showToast('Title is required', 'error'); return; }
 
     try {
-        const response = await fetch('../backend/api/blogs/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/blogs/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1107,7 +1107,7 @@ async function saveBlog(id) {
 async function deleteBlog(id, title) {
     if (!confirm(`Delete blog "${title}"?`)) return;
     try {
-        const response = await fetch('../backend/api/blogs/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/blogs/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1132,7 +1132,7 @@ async function renderTestimonialsTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/testimonials/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/testimonials/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
         const result = await response.json();
 
         if (result.success) {
@@ -1240,7 +1240,7 @@ async function saveTestimonial(id) {
     if (!name || !message) { showToast('Name and message required', 'error'); return; }
 
     try {
-        const response = await fetch('../backend/api/testimonials/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/testimonials/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1258,7 +1258,7 @@ async function saveTestimonial(id) {
 async function deleteTestimonial(id, name) {
     if (!confirm(`Delete testimonial from "${name}"?`)) return;
     try {
-        const response = await fetch('../backend/api/testimonials/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/testimonials/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1283,7 +1283,7 @@ async function renderCustomLinksTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/custom-links/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/custom-links/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
         const result = await response.json();
 
         if (result.success) {
@@ -1371,7 +1371,7 @@ async function saveCustomLink(id) {
     if (!label || !url) { showToast('Label and URL required', 'error'); return; }
 
     try {
-        const response = await fetch('../backend/api/custom-links/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/custom-links/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1389,7 +1389,7 @@ async function saveCustomLink(id) {
 async function deleteCustomLink(id, label) {
     if (!confirm(`Delete "${label}"?`)) return;
     try {
-        const response = await fetch('../backend/api/custom-links/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/custom-links/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1421,7 +1421,7 @@ async function renderGalleriesTable() {
     }
 
     try {
-        const response = await fetch(`../backend/api/galleries/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/galleries/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
         const result = await response.json();
 
         if (result.success) {
@@ -1496,7 +1496,7 @@ async function saveGallery(id) {
     if (!name) { showToast('Name required', 'error'); return; }
 
     try {
-        const response = await fetch('../backend/api/galleries/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/galleries/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1514,7 +1514,7 @@ async function saveGallery(id) {
 async function deleteGallery(id, name) {
     if (!confirm(`Delete gallery "${name}"? All images inside will also be deleted.`)) return;
     try {
-        const response = await fetch('../backend/api/galleries/delete.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/galleries/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1561,7 +1561,7 @@ async function renderSocialLinks() {
     if (!currentVcardId) return;
 
     try {
-        const response = await fetch(`../backend/api/social/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/social/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
         const result = await response.json();
         if (result.success && result.data.links.length > 0) {
             result.data.links.forEach(link => {
@@ -1588,7 +1588,7 @@ async function saveSocialLinks() {
     });
 
     try {
-        const response = await fetch('../backend/api/social/save.php', {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/social/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -1890,7 +1890,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // REAL BACKEND INTEGRATION
 // ============================================================
 
-const VCARD_API = '../backend/api/vcards/';
+const VCARD_API = 'https://tapify-backend-production.up.railway.app/api/vcards/';
 let currentVcardId = null;
 let currentVcardData = null;
 
@@ -2256,3 +2256,4 @@ async function callUpdateAPI(data, sectionName) {
         return false;
     }
 }
+

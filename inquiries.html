@@ -155,7 +155,7 @@
 
 <script src="admin.js"></script>
 <script>
-const INQ_API = '../backend/api/inquiries/';
+const INQ_API = 'https://tapify-backend-production.up.railway.app/api/inquiries/';
 let allInquiries = [];
 let currentFilter = 'all';
 
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadVcards() {
     try {
-        const response = await fetch('../backend/api/vcards/list.php', { credentials: 'include' });
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/vcards/list.php', { credentials: 'include' });
         if (response.status === 401) { window.location.href = 'login.html'; return; }
         const result = await response.json();
         if (result.success) {
@@ -386,3 +386,4 @@ function showToast(message, type = 'success') {
 
 </body>
 </html>
+
