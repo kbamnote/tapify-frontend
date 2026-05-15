@@ -384,6 +384,28 @@
                             <textarea name="description" rows="3" placeholder="Brief description about you or your business..."></textarea>
                         </div>
 
+                        <!-- CUSTOMER ACCESS SECTION (Admin Only) -->
+                        <div id="adminCustomerSection" style="margin-top: 30px; padding: 25px; background: rgba(131, 56, 236, 0.03); border-radius: 12px; border: 1px dashed #8338ec;">
+                            <h3 style="font-size: 1rem; color: #8338ec; margin-bottom: 15px;"><i class="fas fa-user-shield"></i> Customer Access (Admin Feature)</h3>
+                            <p style="font-size: 0.82rem; color: #6b7280; margin-bottom: 20px;">Fill this to automatically create a customer account and assign this vCard to them.</p>
+                            
+                            <div class="form-group">
+                                <label>Customer Name</label>
+                                <input type="text" name="customer_name" placeholder="Customer's Full Name">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Customer Login Email</label>
+                                    <input type="email" name="customer_email" placeholder="customer@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Set Login Password</label>
+                                    <input type="text" name="customer_password" placeholder="Min 6 characters">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <a href="vcards.html" class="btn-cancel">
                                 <i class="fas fa-times"></i> Cancel
@@ -407,6 +429,14 @@
 <script src="admin.js"></script>
 <script>
     // Auto-generate URL from name
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = JSON.parse(localStorage.getItem('tapify_user') || '{}');
+        const adminSection = document.getElementById('adminCustomerSection');
+        if (adminSection && user.role !== 'admin') {
+            adminSection.remove();
+        }
+    });
+
     document.getElementById('vcardName').addEventListener('input', (e) => {
         const urlAlias = document.getElementById('urlAlias');
         if (!urlAlias.dataset.userEdited) {
