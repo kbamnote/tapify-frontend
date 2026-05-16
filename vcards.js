@@ -4,6 +4,10 @@
 
 const API_BASE = 'https://tapify-backend-production.up.railway.app/api/vcards/';
 
+function getLoginPath() {
+    return window.location.pathname.includes('/admin/') ? '../login.html' : 'login.html';
+}
+
 let vcardsData = [];
 let filteredData = [];
 let currentView = 'table';
@@ -26,7 +30,7 @@ async function loadVcards() {
         });
 
         if (response.status === 401) {
-            window.location.href = 'login.html';
+            window.location.href = getLoginPath();
             return;
         }
 

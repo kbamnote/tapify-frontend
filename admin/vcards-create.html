@@ -449,6 +449,10 @@
     document.getElementById('urlPrefix').textContent = window.location.host + '/';
 
     // Handle form submit
+    function getLoginPath() {
+        return '../login.html';
+    }
+
     async function handleCreate(event) {
         event.preventDefault();
 
@@ -456,6 +460,21 @@
         const btn = document.getElementById('submitBtn');
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
+        const customerEmail = (data.customer_email || '').trim();
+        const customerPassword = data.customer_password || '';
+        if (customerEmail && !customerPassword) {
+            showToast('Set a login password when creating a customer account', 'error');
+            return;
+        }
+        if (customerPassword && customerPassword.length < 6) {
+            showToast('Customer password must be at least 6 characters', 'error');
+            return;
+        }
+        if (customerPassword && !customerEmail) {
+            showToast('Customer login email is required when setting a password', 'error');
+            return;
+        }
 
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Creating...</span>';
@@ -469,8 +488,8 @@
             });
 
             if (response.status === 401) {
-                alert('Please login first');
-                window.location.href = 'login.html';
+                showToast('Please login first', 'error');
+                window.location.href = getLoginPath();
                 return;
             }
 

@@ -2,6 +2,26 @@
    VCARD EDIT PAGE - JavaScript
    ========================================== */
 
+function getLoginPath() {
+    return (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/'))
+        ? '../login.html'
+        : 'login.html';
+}
+
+/** Switch main sidebar section (e.g. vcard-templates, dynamic-vcard) */
+function goToSubNavTab(tabKey) {
+    const item = document.querySelector(`.sub-nav-item[data-tab="${tabKey}"]`);
+    if (item) item.click();
+}
+
+/** Auto-advance main tabs after key onboarding steps */
+const MAIN_TAB_ONBOARDING = {
+    'tab-vcard-templates': 'dynamic-vcard',
+    'tab-dynamic-vcard': 'business-hours',
+    'tab-business-hours': 'qr-code',
+    'tab-qr-code': 'manage-section',
+};
+
 // ===== TAB SWITCHING =====
 document.querySelectorAll('.sub-nav-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -158,7 +178,7 @@ document.querySelectorAll('input[type="file"]').forEach(input => {
             });
 
             if (response.status === 401) {
-                window.location.href = 'login.html';
+                window.location.href = getLoginPath();
                 return;
             }
 
@@ -2108,18 +2128,17 @@ function setVal(id, value) {
 // ============================================================
 
 function setupSaveButtons() {
-    // Override the universal save handler
     document.removeEventListener('click', dummyHandler);
 
     document.addEventListener('click', async (e) => {
-        if (!e.target.classList.contains('btn-save')) return;
-        if (e.target.dataset.saving === '1') return;
+        const btn = e.target.closest('.btn-save');
+        if (!btn || btn.id === 'saveSocialBtn') return;
+        if (btn.dataset.saving === '1') return;
 
         e.preventDefault();
-        e.target.dataset.saving = '1';
+        btn.dataset.saving = '1';
 
         try {
-            // Determine which tab is active
             const activeMainTab = document.querySelector('.tab-content.active');
             const activeInnerTab = document.querySelector('.inner-tab-content.active');
 
@@ -2143,22 +2162,35 @@ function setupSaveButtons() {
                 saveResult = await saveManageSections();
             } else {
                 showToast('This section save is coming in next phase', 'warning');
-                saveResult = true; // Allow next-tab navigation
+                saveResult = true;
             }
 
-            // If save successful, navigate to next inner tab (for inner tabs)
-            if (saveResult && activeInnerTab) {
+            if (!saveResult) return;
+
+            // Inner tabs: Basic → Personal → Other, then jump to Templates
+            if (activeInnerTab) {
                 const innerTabs = document.querySelectorAll('.inner-tab');
                 const activeIndex = Array.from(innerTabs).findIndex(t => t.classList.contains('active'));
                 if (activeIndex >= 0 && activeIndex < innerTabs.length - 1) {
                     setTimeout(() => innerTabs[activeIndex + 1].click(), 800);
+                } else if (activeInnerTab.id === 'inner-other') {
+                    setTimeout(() => goToSubNavTab('vcard-templates'), 800);
+                }
+                return;
+            }
+
+            // Main tabs: guided onboarding chain
+            if (activeMainTab) {
+                const nextTab = MAIN_TAB_ONBOARDING[activeMainTab.id];
+                if (nextTab) {
+                    setTimeout(() => goToSubNavTab(nextTab), 800);
                 }
             }
         } catch (err) {
             console.error('Save error:', err);
             showToast('Save failed: ' + err.message, 'error');
         } finally {
-            setTimeout(() => delete e.target.dataset.saving, 500);
+            setTimeout(() => delete btn.dataset.saving, 500);
         }
     });
 }
@@ -2381,6 +2413,9 @@ async function callUpdateAPI(data, sectionName) {
 
         if (result.success) {
             showToast(`✓ ${sectionName} saved successfully!`, 'success');
+            if (currentVcardId) {
+                loadVcardData(currentVcardId);
+            }
             return true;
         } else {
             showToast(result.message || `Failed to save ${sectionName}`, 'error');
