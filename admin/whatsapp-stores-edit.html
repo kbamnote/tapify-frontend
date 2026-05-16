@@ -119,6 +119,7 @@
                         <button class="tab-btn" onclick="showTab('settings')">⚙️ Settings</button>
                         <button class="tab-btn" onclick="showTab('categories')">📁 Categories</button>
                         <button class="tab-btn" onclick="showTab('products')">🛍️ Products</button>
+                        <button class="tab-btn" onclick="showTab('templates')">🖼️ Templates</button>
                     </div>
 
                     <!-- BASIC INFO TAB -->
@@ -287,6 +288,15 @@
                             <button class="btn-add-item" onclick="showProductModal()"><i class="fas fa-plus"></i> Add Product</button>
                         </div>
                         <div id="productsContainer"></div>
+                    </div>
+
+                    <!-- TEMPLATES TAB -->
+                    <div class="tab-content" id="tab-templates">
+                        <h3 style="margin-bottom:15px">Choose Store Template</h3>
+                        <div id="storeTemplatesGrid" class="templates-grid"></div>
+                        <div class="form-actions" style="margin-top:30px">
+                            <button class="btn-save-store" onclick="saveStoreTemplate()"><i class="fas fa-save"></i> Save Template</button>
+                        </div>
                     </div>
                 </div>
             </div>

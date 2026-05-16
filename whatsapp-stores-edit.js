@@ -6,6 +6,18 @@ let currentStore = null;
 let categoriesData = [];
 let productsData = [];
 
+// Store Templates
+const storeTemplates = [
+    { id: 'store_template_1', name: 'Beauty Product', category: 'Beauty', image: 'https://via.placeholder.com/400x600/fdf2f8/ec4899?text=Beauty+Product', demoUrl: '../webStore_templates/store-template-1-beauty-product.php' },
+    { id: 'store_template_2', name: 'E-commerce', category: 'Retail', image: 'https://via.placeholder.com/400x600/eff6ff/3b82f6?text=E-commerce', demoUrl: '../webStore_templates/store-template-2-e-commerce.php' },
+    { id: 'store_template_3', name: 'Restaurant', category: 'Food', image: 'https://via.placeholder.com/400x600/fffbeb/f59e0b?text=Restaurant', demoUrl: '../webStore_templates/store-template-3-restaurant.php' },
+    { id: 'store_template_4', name: 'Grocery', category: 'Retail', image: 'https://via.placeholder.com/400x600/f0fdf4/22c55e?text=Grocery', demoUrl: '../webStore_templates/store-template-4-grocery.php' },
+    { id: 'store_template_5', name: 'Clothing Store', category: 'Fashion', image: 'https://via.placeholder.com/400x600/f5f3ff/8b5cf6?text=Clothing', demoUrl: '../webStore_templates/store-template-5-cloth-store.php' },
+    { id: 'store_template_6', name: 'Home Decor', category: 'Retail', image: 'https://via.placeholder.com/400x600/fff1f2/f43f5e?text=Home+Decor', demoUrl: '../webStore_templates/store-template-6-home-decor.php' },
+    { id: 'store_template_7', name: 'Jewellery', category: 'Fashion', image: 'https://via.placeholder.com/400x600/fefce8/eab308?text=Jewellery', demoUrl: '../webStore_templates/store-template-7-jewellery.php' },
+    { id: 'store_template_8', name: 'Travel', category: 'Services', image: 'https://via.placeholder.com/400x600/ecfeff/06b6d4?text=Travel', demoUrl: '../webStore_templates/store-template-8-travel.php' }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -35,6 +47,7 @@ async function loadStore() {
         populateForm(currentStore);
         loadCategories();
         loadProducts();
+        renderStoreTemplates();
     } catch (err) {
         showToast('Connection error: ' + err.message, 'error');
     }
@@ -75,6 +88,13 @@ function populateForm(s) {
     if (s.logo_url) document.getElementById('logoPreview').innerHTML = `<img src="${s.logo_url}?t=${Date.now()}">`;
     if (s.cover_url) document.getElementById('coverPreview').innerHTML = `<img src="${s.cover_url}?t=${Date.now()}">`;
     if (s.favicon_url) document.getElementById('faviconPreview').innerHTML = `<img src="${s.favicon_url}?t=${Date.now()}">`;
+
+    if (s.template_id) {
+        selectStoreTemplate(s.template_id);
+    } else {
+        // default if none selected
+        selectStoreTemplate('store_template_1');
+    }
 }
 
 function setVal(id, val) {
@@ -490,6 +510,55 @@ async function uploadProductImage(productId, input) {
         } else showToast(result.message, 'error');
     } catch (err) { showToast('Upload failed', 'error'); }
     input.value = '';
+}
+
+// =================== TEMPLATES ===================
+function renderStoreTemplates() {
+    const grid = document.getElementById('storeTemplatesGrid');
+    if (!grid) return;
+
+    grid.innerHTML = storeTemplates.map(tpl => `
+        <div class="template-card" data-id="${tpl.id}" onclick="selectStoreTemplate('${tpl.id}')">
+            ${tpl.featured ? '<div class="template-badge">Featured</div>' : ''}
+            <div class="template-img">
+                <img src="${tpl.image}" alt="${tpl.name}">
+                <div class="template-actions">
+                    <a href="${tpl.demoUrl}" target="_blank" class="btn-demo" onclick="event.stopPropagation()">View Demo</a>
+                </div>
+            </div>
+            <div class="template-info">
+                <h3>${tpl.name}</h3>
+                <span class="template-category">${tpl.category}</span>
+            </div>
+            <div class="selected-overlay"><i class="fas fa-check-circle"></i></div>
+        </div>
+    `).join('');
+}
+
+function selectStoreTemplate(id) {
+    if (!id) id = 'store_template_1';
+    
+    // Update UI
+    document.querySelectorAll('#storeTemplatesGrid .template-card').forEach(card => {
+        card.classList.remove('selected');
+        if (card.dataset.id === id) {
+            card.classList.add('selected');
+        }
+    });
+
+    if (currentStore) currentStore.template_id = id;
+}
+
+async function saveStoreTemplate() {
+    if (!currentStore || !currentStore.template_id) {
+        showToast('Please select a template first', 'error');
+        return;
+    }
+    
+    await callUpdate({
+        id: currentStoreId,
+        template_id: currentStore.template_id
+    }, 'Store Template');
 }
 
 // =================== UTILS ===================
