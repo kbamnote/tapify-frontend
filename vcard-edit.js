@@ -2005,6 +2005,79 @@ function populateForm(vcard) {
         if (card) card.classList.add('selected');
     }
 
+    // === Dynamic vCard Colors ===
+    const dynamicTab = document.getElementById('tab-dynamic-vcard');
+    if (dynamicTab) {
+        const groups = dynamicTab.querySelectorAll('.form-group');
+        groups.forEach(group => {
+            const label = group.querySelector('label')?.textContent.trim();
+            const colorPicker = group.querySelector('input[type="color"]');
+            const colorText = group.querySelector('input[type="text"]');
+            
+            let val = '';
+            if (label.includes('Primary')) val = vcard.primary_color;
+            if (label.includes('Secondary')) val = vcard.secondary_color;
+            if (label.includes('Background Color')) val = vcard.bg_color;
+            if (label.includes('Button Text')) val = vcard.button_text_color;
+            if (label.includes('Label Text')) val = vcard.label_text_color;
+            if (label.includes('Description Text')) val = vcard.description_text_color;
+            if (label.includes('Cards Background')) val = vcard.cards_bg_color;
+            if (label.includes('Social Icon')) val = vcard.social_icon_color;
+
+            if (val && colorPicker) {
+                colorPicker.value = val;
+                if (colorText) colorText.value = val;
+            }
+        });
+
+        // Button Style
+        if (vcard.button_style) {
+            const styleBtns = dynamicTab.querySelectorAll('.style-btn');
+            styleBtns.forEach((btn, idx) => {
+                if (idx + 1 === parseInt(vcard.button_style)) {
+                    styleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Sticky Position
+        if (vcard.sticky_position) {
+            const posBtns = dynamicTab.querySelectorAll('#stickyPositionToggle .btn-toggle');
+            posBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.value === vcard.sticky_position) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    }
+
+    // === QR Code Configuration ===
+    const qrColor = document.getElementById('qrColor');
+    if (qrColor && vcard.qr_color) qrColor.value = vcard.qr_color;
+    
+    const qrBgColor = document.getElementById('qrBgColor');
+    if (qrBgColor && vcard.qr_bg_color) qrBgColor.value = vcard.qr_bg_color;
+
+    const qrStyle = document.getElementById('qrStyle');
+    if (qrStyle && vcard.qr_style) qrStyle.value = vcard.qr_style;
+
+    const qrEyeStyle = document.getElementById('qrEyeStyle');
+    if (qrEyeStyle && vcard.qr_eye_style) qrEyeStyle.value = vcard.qr_eye_style;
+
+    const qrUseConfig = document.getElementById('qrUseConfig');
+    if (qrUseConfig) qrUseConfig.checked = (vcard.qr_use_config == 1);
+
+    // === Manage Sections ===
+    const manageCheckboxes = document.querySelectorAll('#tab-manage-section input[type="checkbox"][data-section]');
+    manageCheckboxes.forEach(cb => {
+        const field = cb.dataset.section;
+        if (vcard[field] !== undefined) {
+            cb.checked = (vcard[field] == 1);
+        }
+    });
+
     // === Business Hours ===
     if (vcard.business_hours && vcard.business_hours.length > 0) {
         // Update internal hours object and re-render
@@ -2064,6 +2137,10 @@ function setupSaveButtons() {
                 saveResult = await saveBusinessHours();
             } else if (activeMainTab && activeMainTab.id === 'tab-dynamic-vcard') {
                 saveResult = await saveDynamicConfig();
+            } else if (activeMainTab && activeMainTab.id === 'tab-qr-code') {
+                saveResult = await saveQRCodeConfig();
+            } else if (activeMainTab && activeMainTab.id === 'tab-manage-section') {
+                saveResult = await saveManageSections();
             } else {
                 showToast('This section save is coming in next phase', 'warning');
                 saveResult = true; // Allow next-tab navigation
@@ -2237,7 +2314,51 @@ async function saveDynamicConfig() {
         if (label.includes('Social Icon')) data.social_icon_color = input.value;
     });
 
+    // Save Button Style (Index of active style-btn)
+    const activeStyleBtn = dynamicTab.querySelector('.style-btn.active');
+    if (activeStyleBtn) {
+        const styleBtns = Array.from(dynamicTab.querySelectorAll('.style-btn'));
+        data.button_style = styleBtns.indexOf(activeStyleBtn) + 1;
+    }
+
+    // Save Sticky Position
+    const activePositionBtn = dynamicTab.querySelector('#stickyPositionToggle .btn-toggle.active');
+    if (activePositionBtn) {
+        data.sticky_position = activePositionBtn.dataset.value || 'left';
+    }
+
     return await callUpdateAPI(data, 'Dynamic vCard');
+}
+
+// Save QR Code configuration
+async function saveQRCodeConfig() {
+    if (!currentVcardId) return false;
+
+    const data = {
+        id: currentVcardId,
+        qr_color: document.getElementById('qrColor')?.value || '#000000',
+        qr_bg_color: document.getElementById('qrBgColor')?.value || '#ffffff',
+        qr_style: document.getElementById('qrStyle')?.value || 'square',
+        qr_eye_style: document.getElementById('qrEyeStyle')?.value || 'square',
+        qr_use_config: document.getElementById('qrUseConfig')?.checked ? 1 : 0
+    };
+
+    return await callUpdateAPI(data, 'QR Code configuration');
+}
+
+// Save Manage Sections visibility
+async function saveManageSections() {
+    if (!currentVcardId) return false;
+
+    const data = { id: currentVcardId };
+    const checkboxes = document.querySelectorAll('#tab-manage-section input[type="checkbox"][data-section]');
+    
+    checkboxes.forEach(cb => {
+        const section = cb.dataset.section;
+        data[section] = cb.checked ? 1 : 0;
+    });
+
+    return await callUpdateAPI(data, 'Section visibility');
 }
 
 // Generic update API call
