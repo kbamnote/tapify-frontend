@@ -1,0 +1,51 @@
+<?php
+/**
+ * TAPIFY vCard Theme Registry
+ * One entry per template_id (vcard1–vcard42). Used by _render.php.
+ *
+ * @return array<string, array<string, mixed>>
+ */
+return [
+    'vcard1'  => ['name' => 'Simple Contact', 'layout' => 'legacy', 'legacy' => 'default'],
+    'vcard2'  => ['name' => 'Executive Profile', 'layout' => 'executive', 'primary' => '#1e3a5f', 'secondary' => '#3b82f6', 'bg' => '#f8fafc', 'surface' => '#ffffff', 'font' => 'montserrat'],
+    'vcard3'  => ['name' => 'Clean Canvas', 'layout' => 'minimal', 'primary' => '#64748b', 'secondary' => '#94a3b8', 'bg' => '#ffffff', 'surface' => '#f8fafc', 'font' => 'inter'],
+    'vcard4'  => ['name' => 'Professional', 'layout' => 'classic', 'primary' => '#2563eb', 'secondary' => '#1d4ed8', 'bg' => '#ffffff', 'surface' => '#f1f5f9', 'font' => 'poppins'],
+    'vcard5'  => ['name' => 'Corporate Connect', 'layout' => 'corporate', 'primary' => '#0f172a', 'secondary' => '#334155', 'bg' => '#f1f5f9', 'surface' => '#ffffff', 'font' => 'inter'],
+    'vcard6'  => ['name' => 'Modern Edge', 'layout' => 'bold', 'primary' => '#7c3aed', 'secondary' => '#a855f7', 'bg' => '#faf5ff', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard7'  => ['name' => 'Business Beacon', 'layout' => 'wave', 'primary' => '#ea580c', 'secondary' => '#f97316', 'bg' => '#fff7ed', 'surface' => '#ffffff', 'font' => 'raleway'],
+    'vcard8'  => ['name' => 'Corporate Classic', 'layout' => 'sidebar', 'primary' => '#1e293b', 'secondary' => '#475569', 'bg' => '#ffffff', 'surface' => '#f8fafc', 'font' => 'merriweather'],
+    'vcard9'  => ['name' => 'Corporate Identity', 'layout' => 'split', 'primary' => '#0369a1', 'secondary' => '#0284c7', 'bg' => '#f0f9ff', 'surface' => '#ffffff', 'font' => 'inter'],
+    'vcard10' => ['name' => 'Pro Network', 'layout' => 'floating', 'primary' => '#059669', 'secondary' => '#10b981', 'bg' => '#ecfdf5', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard11' => ['name' => 'Portfolio', 'layout' => 'portfolio', 'primary' => '#18181b', 'secondary' => '#71717a', 'bg' => '#fafafa', 'surface' => '#ffffff', 'font' => 'oswald'],
+    'vcard12' => ['name' => 'Gym', 'layout' => 'neon', 'primary' => '#dc2626', 'secondary' => '#f97316', 'bg' => '#0a0a0a', 'surface' => '#171717', 'font' => 'oswald', 'dark' => true],
+    'vcard13' => ['name' => 'Hospital', 'layout' => 'legacy', 'legacy' => 'doctor'],
+    'vcard14' => ['name' => 'Event Management', 'layout' => 'festive', 'primary' => '#be185d', 'secondary' => '#ec4899', 'bg' => '#fdf2f8', 'surface' => '#ffffff', 'font' => 'playfair'],
+    'vcard15' => ['name' => 'Salon', 'layout' => 'soft', 'primary' => '#db2777', 'secondary' => '#f472b6', 'bg' => '#fff1f2', 'surface' => '#ffffff', 'font' => 'lora'],
+    'vcard16' => ['name' => 'Lawyer', 'layout' => 'legacy', 'legacy' => 'lawyer'],
+    'vcard17' => ['name' => 'Programmer', 'layout' => 'tech', 'primary' => '#22c55e', 'secondary' => '#16a34a', 'bg' => '#0f172a', 'surface' => '#1e293b', 'font' => 'inter', 'dark' => true],
+    'vcard18' => ['name' => 'CEO/CXO', 'layout' => 'luxury', 'primary' => '#0f172a', 'secondary' => '#b8860b', 'bg' => '#ffffff', 'surface' => '#f8fafc', 'font' => 'cormorant'],
+    'vcard19' => ['name' => 'Fashion Beauty', 'layout' => 'elegant', 'primary' => '#9d174d', 'secondary' => '#f43f5e', 'bg' => '#fff1f2', 'surface' => '#ffffff', 'font' => 'playfair'],
+    'vcard20' => ['name' => 'Culinary Food Services', 'layout' => 'legacy', 'legacy' => 'restaurant'],
+    'vcard21' => ['name' => 'Social Media', 'layout' => 'social', 'primary' => '#e11d48', 'secondary' => '#f472b6', 'bg' => '#fff1f2', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard22' => ['name' => 'Dynamic vCard', 'layout' => 'dynamic', 'primary' => '#8338ec', 'secondary' => '#a855f7', 'bg' => '#ffffff', 'surface' => '#f5f3ff', 'font' => 'poppins'],
+    'vcard23' => ['name' => 'Consulting Services', 'layout' => 'consulting', 'primary' => '#1d4ed8', 'secondary' => '#3b82f6', 'bg' => '#eff6ff', 'surface' => '#ffffff', 'font' => 'montserrat'],
+    'vcard24' => ['name' => 'School Templates', 'layout' => 'education', 'primary' => '#ca8a04', 'secondary' => '#eab308', 'bg' => '#fefce8', 'surface' => '#ffffff', 'font' => 'nunito'],
+    'vcard25' => ['name' => 'Social Services', 'layout' => 'ngo', 'primary' => '#15803d', 'secondary' => '#22c55e', 'bg' => '#f0fdf4', 'surface' => '#ffffff', 'font' => 'open-sans'],
+    'vcard26' => ['name' => 'Retail E-commerce', 'layout' => 'retail', 'primary' => '#7c2d12', 'secondary' => '#ea580c', 'bg' => '#fff7ed', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard27' => ['name' => 'Pet Shop', 'layout' => 'playful', 'primary' => '#a16207', 'secondary' => '#f59e0b', 'bg' => '#fffbeb', 'surface' => '#ffffff', 'font' => 'nunito'],
+    'vcard28' => ['name' => 'Pet Clinic', 'layout' => 'clinic', 'primary' => '#0891b2', 'secondary' => '#06b6d4', 'bg' => '#ecfeff', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard29' => ['name' => 'Marriage', 'layout' => 'wedding', 'primary' => '#9f1239', 'secondary' => '#fda4af', 'bg' => '#fff1f2', 'surface' => '#ffffff', 'font' => 'cormorant'],
+    'vcard30' => ['name' => 'Taxi Service', 'layout' => 'transport', 'primary' => '#facc15', 'secondary' => '#1f2937', 'bg' => '#111827', 'surface' => '#1f2937', 'font' => 'montserrat', 'dark' => true],
+    'vcard31' => ['name' => 'Handyman Services', 'layout' => 'industrial', 'primary' => '#b45309', 'secondary' => '#78350f', 'bg' => '#fef3c7', 'surface' => '#ffffff', 'font' => 'roboto'],
+    'vcard32' => ['name' => 'Interior Designer', 'layout' => 'designer', 'primary' => '#57534e', 'secondary' => '#a8a29e', 'bg' => '#fafaf9', 'surface' => '#ffffff', 'font' => 'lora'],
+    'vcard33' => ['name' => 'Musician', 'layout' => 'creative', 'primary' => '#7e22ce', 'secondary' => '#c026d3', 'bg' => '#1e1b4b', 'surface' => '#312e81', 'font' => 'oswald', 'dark' => true],
+    'vcard34' => ['name' => 'Photographer', 'layout' => 'photo', 'primary' => '#000000', 'secondary' => '#525252', 'bg' => '#0a0a0a', 'surface' => '#171717', 'font' => 'inter', 'dark' => true],
+    'vcard35' => ['name' => 'Real Estate', 'layout' => 'legacy', 'legacy' => 'real-estate'],
+    'vcard36' => ['name' => 'Travel Agency', 'layout' => 'travel', 'primary' => '#0284c7', 'secondary' => '#38bdf8', 'bg' => '#f0f9ff', 'surface' => '#ffffff', 'font' => 'raleway'],
+    'vcard37' => ['name' => 'Flower Garden', 'layout' => 'nature', 'primary' => '#16a34a', 'secondary' => '#86efac', 'bg' => '#f0fdf4', 'surface' => '#ffffff', 'font' => 'lora'],
+    'vcard38' => ['name' => 'Architecture', 'layout' => 'architect', 'primary' => '#334155', 'secondary' => '#64748b', 'bg' => '#f8fafc', 'surface' => '#ffffff', 'font' => 'montserrat'],
+    'vcard39' => ['name' => 'Bio Black', 'layout' => 'bio-dark', 'primary' => '#fafafa', 'secondary' => '#a3a3a3', 'bg' => '#0a0a0a', 'surface' => '#171717', 'font' => 'inter', 'dark' => true],
+    'vcard40' => ['name' => 'Bio White', 'layout' => 'bio-light', 'primary' => '#171717', 'secondary' => '#737373', 'bg' => '#ffffff', 'surface' => '#fafafa', 'font' => 'inter'],
+    'vcard41' => ['name' => 'Social Vcard', 'layout' => 'social-grid', 'primary' => '#6366f1', 'secondary' => '#818cf8', 'bg' => '#eef2ff', 'surface' => '#ffffff', 'font' => 'poppins'],
+    'vcard42' => ['name' => 'Social Vcard 2', 'layout' => 'social-stack', 'primary' => '#0ea5e9', 'secondary' => '#38bdf8', 'bg' => '#f0f9ff', 'surface' => '#ffffff', 'font' => 'poppins'],
+];
