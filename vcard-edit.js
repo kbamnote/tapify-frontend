@@ -2290,7 +2290,17 @@ async function saveTemplate() {
 
     const ok = await callUpdateAPI({
         id: currentVcardId,
-        template_id: template.id
+        template_id: template.id,
+        // Reset custom colors when selecting a new template from gallery
+        // This ensures the template's default registry colors take over.
+        primary_color: null,
+        secondary_color: null,
+        bg_color: null,
+        button_text_color: null,
+        label_text_color: null,
+        description_text_color: null,
+        cards_bg_color: null,
+        social_icon_color: null
     }, `Template "${template.name}"`, { reload: false });
 
     if (ok) {
