@@ -229,7 +229,7 @@ function revertImagePreview(type, previewId) {
         if (type === 'cover') {
             preview.innerHTML = '<div class="cover-placeholder"><i class="fas fa-image"></i><p>Click to upload cover</p></div>';
         } else {
-            preview.innerHTML = '<img src="images/tapify-logo-gold.png" alt="Preview">';
+            preview.innerHTML = '<img src="images/tapify-logo-green.png" alt="Preview">';
         }
     }
 }
