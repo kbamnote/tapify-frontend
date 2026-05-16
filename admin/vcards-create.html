@@ -496,10 +496,10 @@
             const result = await response.json();
 
             if (result.success) {
-                showToast('✓ vCard created successfully! Redirecting to edit...', 'success');
+                showToast('✓ vCard created! Opening editor…', 'success');
                 setTimeout(() => {
-                    window.location.href = `vcards-edit.html?id=${result.data.vcard_id}`;
-                }, 1200);
+                    window.location.href = `vcards-edit.html?id=${result.data.vcard_id}&created=1`;
+                }, 800);
             } else {
                 showToast(result.message || 'Failed to create vCard', 'error');
                 btn.disabled = false;

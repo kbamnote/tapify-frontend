@@ -14,13 +14,16 @@ function goToSubNavTab(tabKey) {
     if (item) item.click();
 }
 
-/** Auto-advance main tabs after key onboarding steps */
-const MAIN_TAB_ONBOARDING = {
-    'tab-vcard-templates': 'dynamic-vcard',
-    'tab-dynamic-vcard': 'business-hours',
-    'tab-business-hours': 'qr-code',
-    'tab-qr-code': 'manage-section',
-};
+const PUBLIC_VCARD_BASE = 'https://tapify-backend-production.up.railway.app/';
+
+function selectTemplateCardById(templateId) {
+    const templateIdx = templates.findIndex(t => t.id === templateId);
+    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+    if (templateIdx >= 0) {
+        const card = document.querySelector(`.template-card[data-template="${templateIdx}"]`);
+        if (card) card.classList.add('selected');
+    }
+}
 
 // ===== TAB SWITCHING =====
 document.querySelectorAll('.sub-nav-item').forEach(item => {
@@ -388,7 +391,7 @@ function renderTemplates() {
     if (!grid) return;
 
     grid.innerHTML = templates.map((t, i) => `
-        <div class="template-card ${i === 0 ? 'selected' : ''}" data-template="${i}" onclick="selectTemplate(${i})">
+        <div class="template-card" data-template="${i}" onclick="selectTemplate(${i})">
             <div class="template-preview-img">
                 <img src="${t.image}" alt="${t.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'template-fallback\\'>${t.name}</div>'">
                 ${t.featured ? '<span class="template-badge">★ Featured</span>' : ''}
@@ -2018,11 +2021,8 @@ function populateForm(vcard) {
     }
 
     // === Templates ===
-    const templateIdx = templates.findIndex(t => t.id === vcard.template_id);
-    if (templateIdx >= 0) {
-        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-        const card = document.querySelector(`.template-card[data-template="${templateIdx}"]`);
-        if (card) card.classList.add('selected');
+    if (vcard.template_id) {
+        selectTemplateCardById(vcard.template_id);
     }
 
     // === Dynamic vCard Colors ===
@@ -2140,7 +2140,10 @@ function setupSaveButtons() {
 
         try {
             const activeMainTab = document.querySelector('.tab-content.active');
-            const activeInnerTab = document.querySelector('.inner-tab-content.active');
+            // Only use inner tabs when Basic Details main section is active (hidden inner tabs keep .active otherwise)
+            const activeInnerTab = (activeMainTab?.id === 'tab-basic-details')
+                ? document.querySelector('.inner-tab-content.active')
+                : null;
 
             let saveResult = false;
 
@@ -2167,23 +2170,12 @@ function setupSaveButtons() {
 
             if (!saveResult) return;
 
-            // Inner tabs: Basic → Personal → Other, then jump to Templates
+            // Inner tabs only: Basic → Personal → Other (stay on Basic Details section)
             if (activeInnerTab) {
                 const innerTabs = document.querySelectorAll('.inner-tab');
                 const activeIndex = Array.from(innerTabs).findIndex(t => t.classList.contains('active'));
                 if (activeIndex >= 0 && activeIndex < innerTabs.length - 1) {
-                    setTimeout(() => innerTabs[activeIndex + 1].click(), 800);
-                } else if (activeInnerTab.id === 'inner-other') {
-                    setTimeout(() => goToSubNavTab('vcard-templates'), 800);
-                }
-                return;
-            }
-
-            // Main tabs: guided onboarding chain
-            if (activeMainTab) {
-                const nextTab = MAIN_TAB_ONBOARDING[activeMainTab.id];
-                if (nextTab) {
-                    setTimeout(() => goToSubNavTab(nextTab), 800);
+                    setTimeout(() => innerTabs[activeIndex + 1].click(), 600);
                 }
             }
         } catch (err) {
@@ -2296,10 +2288,21 @@ async function saveTemplate() {
     const idx = parseInt(selected.dataset.template);
     const template = templates[idx];
 
-    return await callUpdateAPI({
+    const ok = await callUpdateAPI({
         id: currentVcardId,
         template_id: template.id
-    }, `Template "${template.name}"`);
+    }, `Template "${template.name}"`, { reload: false });
+
+    if (ok) {
+        if (currentVcardData) currentVcardData.template_id = template.id;
+        selectTemplateCardById(template.id);
+        const alias = currentVcardData?.url_alias || document.getElementById('urlAlias')?.value;
+        if (alias) {
+            const previewUrl = `${PUBLIC_VCARD_BASE}${alias.replace(/^\//, '')}`;
+            showToast(`Template saved. Open live card: ${previewUrl}`, 'success');
+        }
+    }
+    return ok;
 }
 
 // Save Business Hours
@@ -2394,7 +2397,8 @@ async function saveManageSections() {
 }
 
 // Generic update API call
-async function callUpdateAPI(data, sectionName) {
+async function callUpdateAPI(data, sectionName, options = {}) {
+    const reload = options.reload !== false;
     try {
         const response = await fetch(`${VCARD_API}update.php`, {
             method: 'POST',
@@ -2404,8 +2408,7 @@ async function callUpdateAPI(data, sectionName) {
         });
 
         if (response.status === 401) {
-            const prefix = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/')) ? '../' : '';
-            window.location.href = prefix + 'login.html';
+            window.location.href = getLoginPath();
             return false;
         }
 
@@ -2413,8 +2416,12 @@ async function callUpdateAPI(data, sectionName) {
 
         if (result.success) {
             showToast(`✓ ${sectionName} saved successfully!`, 'success');
-            if (currentVcardId) {
+            if (reload && currentVcardId) {
                 loadVcardData(currentVcardId);
+            } else if (currentVcardData && data) {
+                Object.keys(data).forEach(k => {
+                    if (k !== 'id' && data[k] !== undefined) currentVcardData[k] = data[k];
+                });
             }
             return true;
         } else {

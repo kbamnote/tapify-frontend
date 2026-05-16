@@ -37,6 +37,7 @@ async function loadVcards() {
         const result = await response.json();
 
         if (result.success) {
+            const isAdmin = !!result.data.is_admin;
             vcardsData = result.data.vcards.map(v => ({
                 id: v.id,
                 name: v.vcard_name,
@@ -47,8 +48,12 @@ async function loadVcards() {
                 viewCount: v.view_count,
                 status: v.status,
                 createdAt: v.created_at_formatted,
-                timestamp: new Date(v.created_at)
+                timestamp: new Date(v.created_at),
+                ownerLabel: v.owner_label || '',
+                templateId: v.template_id || '',
+                isAdminList: isAdmin
             }));
+            window._vcardsIsAdmin = isAdmin;
             filteredData = [...vcardsData];
             render();
         } else {
@@ -102,7 +107,7 @@ function renderTable() {
                     <div class="vcard-avatar">${card.avatar}</div>
                     <div class="vcard-info">
                         <h4>${escapeHtml(card.name)}</h4>
-                        <p>${escapeHtml(card.title)}</p>
+                        <p>${escapeHtml(card.title)}${card.isAdminList && card.ownerLabel ? ` · <span style="color:#8338ec">${escapeHtml(card.ownerLabel)}</span>` : ''}</p>
                     </div>
                 </div>
             </td>
@@ -502,6 +507,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     loadVcards();
+});
+
+// Refresh list when returning from create/edit (bfcache or tab focus)
+window.addEventListener('pageshow', () => loadVcards());
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') loadVcards();
 });
 
 console.log('%c📇 vCards Page (Real Backend)', 'color: #8338ec; font-size: 14px; font-weight: bold;');
