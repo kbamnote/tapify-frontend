@@ -2,15 +2,7 @@
     "cleanUrls": true,
     "rewrites": [
         {
-            "source": "/admin/(.*)",
-            "destination": "/admin/$1"
-        },
-        {
-            "source": "/dashboard/(.*)",
-            "destination": "/dashboard/$1"
-        },
-        {
-            "source": "/:slug",
+            "source": "/:slug((?!admin|dashboard|login|index|vcard-templates|webstore|vcard\\.html|images|templates|webStore_templates).*)",
             "destination": "/vcard.html"
         }
     ]
