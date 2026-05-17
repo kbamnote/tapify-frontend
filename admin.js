@@ -224,28 +224,28 @@ function setupSidebarSearch() {
 // ===== AUTHENTICATION CHECK =====
 function checkAuth() {
     const userStr = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
-    const isLoginPage = window.location.pathname.includes('login.html');
-    const isAdminPath = window.location.pathname.includes('/admin/');
-    const isUserPath = window.location.pathname.includes('/dashboard/');
+    const path = window.location.pathname;
+    const isLoginPage = path === '/login' || path === '/login.html' || path.endsWith('/login');
+    const isAdminPath = path.includes('/admin/');
+    const isUserPath = path.includes('/dashboard/');
 
     if (!userStr) {
         if (!isLoginPage && (isAdminPath || isUserPath)) {
-            // Not logged in, go to login
-            const prefix = (isAdminPath || isUserPath) ? '../' : '';
-            window.location.href = prefix + 'login.html';
+            // Not logged in, redirect to login
+            window.location.href = '/login';
         }
         return;
     }
-    
+
     try {
         const user = JSON.parse(userStr);
-        // Admin Page protection
+        // Admin Page protection: non-admins go to user dashboard
         if (isAdminPath && user.role !== 'admin') {
-            window.location.href = '../dashboard/dashboard.html';
+            window.location.href = '/dashboard/dashboard';
         }
-        // User Dashboard protection (optional, admins can see user dashboard if they want)
+        // User Dashboard protection
         if (isUserPath && !user.role) {
-            window.location.href = '../login.html';
+            window.location.href = '/login';
         }
     } catch (e) {
         console.error('Auth check error', e);
@@ -290,8 +290,7 @@ async function logout() {
     }
     localStorage.removeItem('tapify_user');
     sessionStorage.removeItem('tapify_user');
-    const prefix = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/dashboard/')) ? '../' : '';
-    window.location.href = prefix + 'login.html';
+    window.location.href = '/login';
 }
 
 function loadUserInfo() {

@@ -491,9 +491,9 @@
                     setTimeout(() => {
                         const user = result.data.user;
                         if (user.role === 'admin') {
-                            window.location.href = 'admin/dashboard.html';
+                            window.location.href = '/admin/dashboard';
                         } else {
-                            window.location.href = 'dashboard/dashboard.html';
+                            window.location.href = '/dashboard/dashboard';
                         }
                     }, 1500);
                 } else {
