@@ -36,7 +36,11 @@ async function loadStores() {
         const result = await response.json();
 
         if (result.success) {
-            storesData = result.data.stores;
+            const isAdmin = !!result.data.is_admin;
+            storesData = result.data.stores.map(s => ({
+                ...s,
+                isAdminList: isAdmin
+            }));
             renderStores();
         } else {
             showToast(result.message || 'Failed to load', 'error');
@@ -74,6 +78,7 @@ function renderStores() {
                     <div class="vcard-info">
                         <h4>${escapeHtml(s.store_name)}</h4>
                         <p><a href="${s.preview_url}" target="_blank" style="color: var(--primary); text-decoration: none;">${s.preview_url}</a>
+                        ${s.isAdminList && s.owner_label ? ` · <span style="color:#25D366;font-weight:600">${escapeHtml(s.owner_label)}</span>` : ''}
                         <button class="copy-btn" onclick="copyStoreUrl('${s.preview_url}')" style="margin-left: 5px;" title="Copy URL">
                             <i class="fas fa-copy"></i>
                         </button>
