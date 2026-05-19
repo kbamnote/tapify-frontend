@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading... | Tapify</title>
-    <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link rel="icon" type="image/png" href="/images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -40,7 +40,7 @@
             const path = window.location.pathname;
             const alias = path.split('/').pop();
 
-            if (!alias || alias === 'vcard.html' || alias === 'index.html') {
+            if (!alias || alias === 'vcard.html' || alias === 'index.html' || alias === 'vcard') {
                 window.location.href = '/';
                 return;
             }
@@ -66,7 +66,7 @@
             document.getElementById('vcard-container').style.display = 'block';
 
             const coverUrl = vcard.cover_image ? `${BACKEND_URL}/${vcard.cover_image}` : '';
-            const profileUrl = vcard.profile_image ? `${BACKEND_URL}/${vcard.profile_image}` : 'images/tapify-logo-green.png';
+            const profileUrl = vcard.profile_image ? `${BACKEND_URL}/${vcard.profile_image}` : '/images/tapify-logo-green.png';
 
             const container = document.getElementById('vcard-container');
             container.innerHTML = `

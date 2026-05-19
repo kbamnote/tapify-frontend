@@ -11,7 +11,7 @@
         },
         {
             "source": "/:slug",
-            "destination": "/vcard.html"
+            "destination": "/vcard"
         }
     ]
 }
