@@ -129,7 +129,7 @@
                         document.getElementById('vcardInitials').textContent = vcard.vcard_name.charAt(0);
                         document.getElementById('viewCount').textContent = vcard.view_count;
                         document.getElementById('editLink').href = 'vcards-edit.html?id=' + vcard.id;
-                        document.getElementById('viewLink').href = '/' + vcard.url_alias;
+                        document.getElementById('viewLink').href = 'https://tapify-backend-production.up.railway.app/' + vcard.url_alias;
                     } else {
                         document.getElementById('vcardSection').innerHTML = '<div class="stat-card"><p>No vCard assigned yet.</p></div>';
                     }

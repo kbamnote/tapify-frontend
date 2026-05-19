@@ -496,7 +496,7 @@ function renderTopVcards(vcards) {
     const maxViews = Math.max(...vcards.map(v => v.view_count), 1);
 
     container.innerHTML = vcards.map((v, i) => `
-        <a href="/${v.url_alias}" target="_blank" class="vcard-rank">
+        <a href="https://tapify-backend-production.up.railway.app/${v.url_alias}" target="_blank" class="vcard-rank">
             <div class="rank-number">${i + 1}</div>
             <div class="rank-info">
                 <div class="rank-name">${escapeHtml(v.vcard_name)}</div>
