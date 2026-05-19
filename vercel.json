@@ -1,5 +1,17 @@
 {
     "cleanUrls": true,
+    "redirects": [
+        {
+            "source": "/admin/login",
+            "destination": "/login",
+            "permanent": false
+        },
+        {
+            "source": "/admin",
+            "destination": "/login",
+            "permanent": false
+        }
+    ],
     "rewrites": [
         {
             "source": "/admin/(.*)",
@@ -10,8 +22,8 @@
             "destination": "/dashboard/$1"
         },
         {
-            "source": "/:slug",
-            "destination": "/vcard"
+            "source": "/:slug((?!admin|dashboard|login|index|vcard-templates|webstore|images|templates|webStore_templates).*)",
+            "destination": "/vcard.html"
         }
     ]
 }

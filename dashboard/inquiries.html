@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadVcards() {
     try {
         const response = await fetch('https://tapify-backend-production.up.railway.app/api/vcards/list.php', { credentials: 'include' });
-        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        if (response.status === 401) { window.location.href = '/login'; return; }
         const result = await response.json();
         if (result.success) {
             const select = document.getElementById('vcardFilter');
@@ -199,7 +199,7 @@ async function loadInquiries() {
     try {
         const url = `${INQ_API}list.php?filter=${currentFilter}&vcard_id=${vcardId}`;
         const response = await fetch(url, { credentials: 'include' });
-        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        if (response.status === 401) { window.location.href = '/login'; return; }
         const result = await response.json();
 
         if (!result.success) {

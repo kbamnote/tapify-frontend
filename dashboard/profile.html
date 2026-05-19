@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadProfile() {
     try {
         const response = await fetch(`${API}get.php`, { credentials: 'include' });
-        if (response.status === 401) { window.location.href = 'login.html'; return; }
+        if (response.status === 401) { window.location.href = '/login'; return; }
         const result = await response.json();
 
         if (!result.success) { showToast(result.message, 'error'); return; }
@@ -317,7 +317,7 @@ async function changePassword() {
             document.getElementById('confirmPassword').value = '';
             setTimeout(() => {
                 fetch('https://tapify-backend-production.up.railway.app/api/logout.php', { method: 'POST', credentials: 'include' });
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             }, 2000);
         } else {
             showToast(result.message, 'error');
