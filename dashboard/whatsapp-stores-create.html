@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create WhatsApp Store - Tapify Admin</title>
+    <title>Create WhatsApp Store - Tapify</title>
     <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -54,16 +54,30 @@
         </div>
         <div class="sidebar-search"><i class="fas fa-search"></i><input type="text" placeholder="Search..."></div>
         <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
-            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
-            <a href="whatsapp-stores.html" class="nav-item active"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
-            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Product Order</span></a>
-            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
-            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
-            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
-            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
-            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
-            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="appointments.html" class="nav-item">
+                <i class="fas fa-calendar-check nav-icon"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="inquiries.html" class="nav-item">
+                <i class="fas fa-info-circle nav-icon"></i>
+                <span>Inquiries</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user nav-icon"></i>
+                <span>My Profile</span>
+            </a>
+            <a href="whatsapp-stores.html" class="nav-item active">
+                <i class="fab fa-whatsapp nav-icon"></i>
+                <span>WhatsApp Stores</span>
+            </a>
+            <a href="whatsapp-orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag nav-icon"></i>
+                <span>WhatsApp Product Order</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
@@ -79,13 +93,13 @@
             <div class="header-right">
                 <div class="header-dropdown profile-dropdown">
                     <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
-                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span>Tapify World</span>
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span class="userNamePlaceholder">User</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="dropdown-menu profile-menu" id="profileDropdown">
                         <div class="profile-info">
                             <img src="../images/tapify-logo-green.png" alt="Profile">
-                            <div><strong>Tapify World</strong><small>admin@tapify.com</small></div>
+                            <div><strong class="userNamePlaceholder">User</strong><small class="userEmailPlaceholder">User Email</small></div>
                         </div><hr>
                         <a href="profile.html"><i class="fas fa-user"></i> Account Settings</a>
                         <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -104,14 +118,6 @@
                     </div>
 
                     <form id="createStoreForm" onsubmit="handleCreate(event)">
-                        <div class="form-group">
-                            <label>Assign to User</label>
-                            <select name="user_id" id="userIdSelect">
-                                <option value="">-- Assign to User (Leave blank to assign to yourself) --</option>
-                            </select>
-                            <p class="hint">Assign this store to a particular user.</p>
-                        </div>
-
                         <div class="form-group">
                             <label>Store Name <span class="required">*</span></label>
                             <input type="text" name="store_name" id="storeName" placeholder="e.g., My Online Shop" required minlength="2" maxlength="200">
@@ -176,33 +182,6 @@
 
 <script src="../admin.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        loadUsers();
-    });
-
-    async function loadUsers() {
-        try {
-            const response = await fetch('https://tapify-backend-production.up.railway.app/api/admin/users/list.php', { credentials: 'include' });
-            if (response.status === 401) { return; }
-            const result = await response.json();
-            if (result.success) {
-                const select = document.getElementById('userIdSelect');
-                result.data.users.forEach(u => {
-                    select.innerHTML += `<option value="${u.id}">${escapeHtml(u.name)} (${escapeHtml(u.email)})</option>`;
-                });
-            }
-        } catch (err) {
-            console.error('Failed to load users:', err);
-        }
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
     document.getElementById('storeName').addEventListener('input', (e) => {
         const urlAlias = document.getElementById('urlAlias');
         if (!urlAlias.dataset.userEdited) {
@@ -277,5 +256,3 @@
 
 </body>
 </html>
-
-

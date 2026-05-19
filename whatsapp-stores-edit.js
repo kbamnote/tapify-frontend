@@ -32,8 +32,29 @@ document.addEventListener('DOMContentLoaded', () => {
     loadStore();
 });
 
+async function loadUsers() {
+    try {
+        const response = await fetch(`${API}admin/users/list.php`, { credentials: 'include' });
+        if (response.status === 401) { return; }
+        const result = await response.json();
+        if (result.success) {
+            const select = document.getElementById('userIdSelect');
+            select.innerHTML = '<option value="">-- Assign to User (Leave blank to assign to yourself) --</option>';
+            result.data.users.forEach(u => {
+                select.innerHTML += `<option value="${u.id}">${escapeHtml(u.name)} (${escapeHtml(u.email)})</option>`;
+            });
+        }
+    } catch (err) {
+        console.error('Failed to load users:', err);
+    }
+}
+
 async function loadStore() {
     try {
+        if (document.getElementById('userIdSelect')) {
+            await loadUsers();
+        }
+
         const response = await fetch(`${API}stores/get.php?id=${currentStoreId}`, { credentials: 'include' });
         if (response.status === 401) { window.location.href = 'login.html'; return; }
 
@@ -62,6 +83,7 @@ function populateForm(s) {
 
     setVal('storeName', s.store_name);
     setVal('urlAlias', s.url_alias);
+    setVal('userIdSelect', s.user_id);
     setVal('ownerName', s.owner_name);
     setVal('whatsappNumber', s.whatsapp_number);
     setVal('email', s.email);
@@ -125,6 +147,11 @@ async function saveBasicInfo() {
         location: document.getElementById('location').value,
         location_url: document.getElementById('locationUrl').value,
     };
+
+    const userIdSelect = document.getElementById('userIdSelect');
+    if (userIdSelect) {
+        data.user_id = userIdSelect.value || null;
+    }
 
     if (!data.store_name) { showToast('Store name required', 'error'); return; }
     if (!data.whatsapp_number) { showToast('WhatsApp number required', 'error'); return; }
