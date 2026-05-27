@@ -3,56 +3,48 @@
 // Tapify WhatsApp Web Store Template 8: Travel
 // CSS File: travel.css
 // ========================================================
-// SETUP INSTRUCTIONS:
-// 1. PHP hosting server pe upload karein
-// 2. Neeche variables mein apni shop details bharein
-// 3. images/ folder mein logo.jpg aur banner.jpg upload karein
-// 4. $products array mein apne products add karein
-// 5. $categories array mein categories add karein
-// ========================================================
 
 // ---- SHOP INFORMATION ----
-$shop_name      = 'Aapki Shop Ka Naam';
-$shop_tagline   = 'Aapka Tagline Ya Slogan';
+$shop_name      = 'Aapki Travel Agency';
+$shop_tagline   = 'Your Dream Destination Awaits';
 $logo           = 'images/logo.jpg';
 $banner_image   = 'images/banner.jpg';
-$whatsapp_no    = '919999999999';  // Country code + number (no + or spaces)
+$whatsapp_no    = '919999999999';
 $phone          = '+91 99999 99999';
-$email          = 'shop@email.com';
+$email          = 'travel@email.com';
 $address        = 'Aapka Pata, Shehar, State, PIN';
-$currency       = '₹';  // Currency symbol
+$currency       = '₹';
 
 // ---- CATEGORIES ----
 $categories = [
-  ['id' => 1, 'name' => 'Category 1', 'image' => 'images/cat1.jpg'],
-  ['id' => 2, 'name' => 'Category 2', 'image' => 'images/cat2.jpg'],
-  ['id' => 3, 'name' => 'Category 3', 'image' => 'images/cat3.jpg'],
-  ['id' => 4, 'name' => 'Category 4', 'image' => 'images/cat4.jpg'],
+  ['id' => 1, 'name' => 'Domestic',      'image' => 'images/cat1.jpg'],
+  ['id' => 2, 'name' => 'International', 'image' => 'images/cat2.jpg'],
+  ['id' => 3, 'name' => 'Adventure',     'image' => 'images/cat3.jpg'],
+  ['id' => 4, 'name' => 'Honeymoon',     'image' => 'images/cat4.jpg'],
 ];
 
-// ---- PRODUCTS ----
+// ---- TOUR PACKAGES ----
 $products = [
   [
     'id'          => 1,
-    'name'        => 'Product 1 Ka Naam',
-    'description' => 'Product ki description yahan likhein.',
-    'price'       => 999,
-    'sale_price'  => 799,
+    'name'        => 'Package 1 Ka Naam',
+    'description' => 'Package ki description yahan likhein.',
+    'price'       => 25000,
+    'sale_price'  => 19999,
     'image'       => 'images/product1.jpg',
     'category_id' => 1,
     'in_stock'    => true,
   ],
   [
     'id'          => 2,
-    'name'        => 'Product 2 Ka Naam',
-    'description' => 'Product ki description.',
-    'price'       => 1499,
-    'sale_price'  => 1199,
+    'name'        => 'Package 2 Ka Naam',
+    'description' => 'Package ki description yahan likhein.',
+    'price'       => 65000,
+    'sale_price'  => 54999,
     'image'       => 'images/product2.jpg',
-    'category_id' => 1,
+    'category_id' => 2,
     'in_stock'    => true,
   ],
-  // Aur products add karein is tarah...
 ];
 
 // ---- TEMPLATE INFO ----
@@ -66,96 +58,187 @@ $base_url     = 'https://tapifyworld.com';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo htmlspecialchars($shop_name); ?></title>
-    <!-- Bootstrap -->
+    <title><?php echo htmlspecialchars($shop_name); ?> – Tour Packages</title>
     <link href="<?php echo $base_url; ?>/front/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Template 8: Travel CSS -->
     <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/whatsappp_store/<?php echo $css_file; ?>.css">
-    <!-- Additional CSS -->
-    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/whatsappp_store/custom.css">
-    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/third-party.css">
-    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider/css/slick.css">
-    <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/slider/css/slick-theme.min.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Poppins, sans-serif; }
-        .cart-icon { position:fixed; bottom:20px; right:20px; background:#25D366; color:#fff; width:55px; height:55px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; text-decoration:none; z-index:1000; box-shadow:0 4px 15px rgba(0,0,0,.3); }
-        .cart-badge { position:absolute; top:-5px; right:-5px; background:#ff4444; color:#fff; width:20px; height:20px; border-radius:50%; font-size:11px; display:flex; align-items:center; justify-content:center; font-weight:700; }
-        .product-card { border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.08); transition:all .3s; cursor:pointer; }
-        .product-card:hover { transform:translateY(-3px); box-shadow:0 5px 20px rgba(0,0,0,.15); }
-        .product-img { width:100%; aspect-ratio:1; object-fit:cover; }
-        .btn-whatsapp { background:#25D366; color:#fff !important; border:none; border-radius:50px; padding:10px 24px; font-weight:600; display:inline-flex; align-items:center; gap:8px; }
-        .price-original { text-decoration:line-through; color:#999; font-size:.85em; }
-        .price-sale { color:#e44; font-weight:700; }
-        .category-card { text-align:center; cursor:pointer; transition:all .2s; }
-        .category-card img { border-radius:50%; width:70px; height:70px; object-fit:cover; }
+        :root { --accent:#006064; --accent-light:#e0f2f1; }
+        *, *::before, *::after { box-sizing:border-box; }
+        body { font-family:'Poppins',sans-serif; background:#f5f5f5; margin:0; color:#333; }
+        a { text-decoration:none; }
+        .fw-600 { font-weight:600; }
+
+        .store-nav { background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.08); position:sticky; top:0; z-index:200; }
+        .nav-inner { max-width:1320px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .nav-brand { display:flex; align-items:center; gap:12px; }
+        .nav-logo { width:46px; height:46px; border-radius:50%; object-fit:cover; border:2.5px solid var(--accent); flex-shrink:0; }
+        .nav-title { font-weight:700; font-size:1.05rem; color:#222; line-height:1.2; }
+        .nav-tagline { font-size:.7rem; color:#999; display:none; }
+        .nav-links { display:none; gap:28px; }
+        .nav-links a { color:#555; font-weight:500; font-size:.88rem; transition:color .2s; }
+        .nav-links a:hover { color:var(--accent); }
+        .btn-wa { background:#25D366; color:#fff !important; border:none; border-radius:50px; padding:9px 20px; font-weight:600; font-size:.85rem; display:inline-flex; align-items:center; gap:7px; transition:background .2s; white-space:nowrap; }
+        .btn-wa:hover { background:#1da851; }
+        .btn-wa-full { display:none; }
+        @media(min-width:576px){ .btn-wa-full{display:inline;} .btn-wa-short{display:none;} }
+        @media(min-width:768px){ .nav-tagline{display:block;} }
+        @media(min-width:992px){ .nav-links{display:flex;} }
+
+        .banner-wrap { position:relative; overflow:hidden; background:#111; }
+        .banner-img { width:100%; height:210px; object-fit:cover; object-position:center; display:block; }
+        .banner-overlay { display:none; position:absolute; inset:0; background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,0) 65%); align-items:center; padding:40px 48px; }
+        .banner-overlay h1 { color:#fff; font-size:2rem; font-weight:700; line-height:1.25; margin-bottom:8px; text-shadow:0 2px 10px rgba(0,0,0,.4); }
+        .banner-overlay p { color:rgba(255,255,255,.85); font-size:1rem; margin-bottom:22px; }
+        @media(min-width:576px){ .banner-img{height:280px;} }
+        @media(min-width:768px){ .banner-img{height:370px;} .banner-overlay{display:flex;} .banner-overlay h1{font-size:2.4rem;} }
+        @media(min-width:992px){ .banner-img{height:500px;} .banner-overlay h1{font-size:3rem;} }
+
+        .store-wrap { max-width:1320px; margin:0 auto; }
+        .sec { padding:28px 20px; }
+        @media(min-width:768px){ .sec{padding:36px 28px;} }
+        @media(min-width:992px){ .sec{padding:44px 0;} }
+
+        .sec-title { font-weight:700; font-size:1.15rem; color:#1a1a1a; margin-bottom:16px; }
+        .sec-title span { color:var(--accent); }
+        @media(min-width:768px){ .sec-title{font-size:1.4rem; margin-bottom:22px;} }
+
+        .cat-strip { display:flex; gap:14px; overflow-x:auto; padding-bottom:6px; scrollbar-width:none; }
+        .cat-strip::-webkit-scrollbar { display:none; }
+        .cat-item { display:flex; flex-direction:column; align-items:center; cursor:pointer; flex-shrink:0; transition:transform .2s; }
+        .cat-item:hover { transform:translateY(-3px); }
+        .cat-img { width:64px; height:64px; border-radius:50%; object-fit:cover; border:2.5px solid #e0e0e0; transition:border-color .2s, box-shadow .2s; }
+        .cat-item.active .cat-img, .cat-item:hover .cat-img { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-light); }
+        .cat-all { width:64px; height:64px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; border:2.5px solid var(--accent); }
+        .cat-item span { font-size:.7rem; margin-top:5px; text-align:center; color:#555; font-weight:500; line-height:1.2; max-width:72px; }
+        @media(min-width:768px){ .cat-img,.cat-all{width:78px; height:78px;} .cat-item span{font-size:.75rem;} }
+
+        .product-card { border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.07); background:#fff; height:100%; display:flex; flex-direction:column; transition:transform .3s, box-shadow .3s; }
+        .product-card:hover { transform:translateY(-5px); box-shadow:0 10px 28px rgba(0,0,0,.13); }
+        .prod-img-box { position:relative; overflow:hidden; }
+        .prod-img { width:100%; aspect-ratio:3/2; object-fit:cover; display:block; transition:transform .35s; }
+        .product-card:hover .prod-img { transform:scale(1.06); }
+        .badge-oos { position:absolute; top:8px; left:8px; background:rgba(0,0,0,.62); color:#fff; font-size:.66rem; padding:3px 9px; border-radius:50px; }
+        .badge-hot { position:absolute; top:8px; right:8px; background:#e63946; color:#fff; font-size:.66rem; padding:3px 9px; border-radius:50px; font-weight:600; }
+        .badge-sale { position:absolute; top:8px; left:8px; background:var(--accent); color:#fff; font-size:.66rem; padding:3px 9px; border-radius:50px; font-weight:600; }
+        .prod-body { padding:11px 12px 14px; flex:1; display:flex; flex-direction:column; }
+        .pname { font-weight:600; font-size:.87rem; color:#222; line-height:1.35; margin-bottom:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .pdesc { font-size:.75rem; color:#777; line-height:1.4; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
+        .price-row { margin-bottom:10px; }
+        .price-label { font-size:.7rem; color:#999; display:block; }
+        .price-old { text-decoration:line-through; color:#bbb; font-size:.78rem; margin-right:4px; }
+        .price-new { color:#e63946; font-weight:700; font-size:.96rem; }
+        .price-reg { color:#1a1a1a; font-weight:700; font-size:.96rem; }
+        .btn-order { background:#25D366; color:#fff !important; border:none; border-radius:50px; padding:8px 14px; font-weight:600; font-size:.8rem; display:flex; align-items:center; justify-content:center; gap:6px; transition:background .2s; width:100%; cursor:pointer; }
+        .btn-order:hover { background:#1da851; }
+
+        .info-card { background:#fff; border-radius:14px; padding:22px; box-shadow:0 2px 10px rgba(0,0,0,.06); height:100%; }
+        .hours-list { list-style:none; padding:0; margin:0; }
+        .hours-list li { display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid #f2f2f2; font-size:.88rem; }
+        .hours-list li:last-child { border-bottom:none; }
+        .contact-list { list-style:none; padding:0; margin:0; }
+        .contact-list li { display:flex; align-items:flex-start; gap:10px; padding:8px 0; font-size:.88rem; color:#555; border-bottom:1px solid #f2f2f2; }
+        .contact-list li:last-child { border-bottom:none; }
+        .ci { color:var(--accent); width:18px; margin-top:2px; flex-shrink:0; text-align:center; }
+
+        .float-wa { position:fixed; bottom:24px; right:24px; background:#25D366; color:#fff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; z-index:999; box-shadow:0 4px 20px rgba(37,211,102,.55); animation:wapulse 2.5s infinite; }
+        @keyframes wapulse { 0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.55)} 50%{box-shadow:0 4px 32px rgba(37,211,102,.85)} }
+
+        .store-footer { background:#1a1a1a; color:#bbb; padding:44px 0 0; margin-top:48px; }
+        .footer-inner { max-width:1320px; margin:0 auto; padding:0 20px 32px; }
+        .store-footer h6 { color:#fff; font-weight:600; font-size:.95rem; margin-bottom:14px; }
+        .store-footer p, .store-footer li { font-size:.82rem; margin-bottom:7px; }
+        .store-footer ul { list-style:none; padding:0; margin:0; }
+        .store-footer a { color:#aaa; }
+        .store-footer a:hover { color:#25D366; }
+        .footer-divider { border-top:1px solid #2d2d2d; padding:14px 20px; text-align:center; font-size:.77rem; color:#555; max-width:1320px; margin:0 auto; }
     </style>
 </head>
 <body>
 
-<!-- ========== NAVBAR ========== -->
-<nav class="navbar navbar-expand-lg px-3 sticky-top bg-white shadow-sm">
-    <div class="container-fluid p-0">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-            <img src="<?php echo $logo; ?>" alt="<?php echo htmlspecialchars($shop_name); ?>" style="height:40px; width:40px; object-fit:cover; border-radius:50%;">
-            <span class="fw-bold"><?php echo htmlspecialchars($shop_name); ?></span>
-        </a>
-        <div class="d-flex align-items-center gap-2">
-            <a href="https://wa.me/<?php echo $whatsapp_no; ?>" target="_blank" class="btn btn-sm btn-success d-flex align-items-center gap-1">
-                <i class="fab fa-whatsapp"></i> Order
-            </a>
+<nav class="store-nav">
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <img src="<?php echo $logo; ?>" class="nav-logo" alt="<?php echo htmlspecialchars($shop_name); ?>">
+            <div>
+                <div class="nav-title"><?php echo htmlspecialchars($shop_name); ?></div>
+                <div class="nav-tagline"><?php echo htmlspecialchars($shop_tagline); ?></div>
+            </div>
         </div>
+        <div class="nav-links">
+            <a href="#packages">Packages</a>
+            <a href="#hours">Hours</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <a href="https://wa.me/<?php echo $whatsapp_no; ?>" target="_blank" class="btn-wa">
+            <i class="fab fa-whatsapp"></i>
+            <span class="btn-wa-full">Book on WhatsApp</span>
+            <span class="btn-wa-short">Book</span>
+        </a>
     </div>
 </nav>
 
-<div class="main-content mx-auto w-100 overflow-hidden">
-
-    <!-- ========== BANNER ========== -->
-    <section class="banner-section position-relative">
-        <div class="banner-img">
-            <img src="<?php echo $banner_image; ?>" class="w-100 object-fit-cover" style="max-height:300px;" alt="Banner" loading="lazy">
+<div class="banner-wrap">
+    <img src="<?php echo $banner_image; ?>" class="banner-img" alt="<?php echo htmlspecialchars($shop_name); ?>" loading="lazy">
+    <div class="banner-overlay">
+        <div>
+            <h1><?php echo htmlspecialchars($shop_name); ?></h1>
+            <p><?php echo htmlspecialchars($shop_tagline); ?></p>
+            <a href="https://wa.me/<?php echo $whatsapp_no; ?>" target="_blank" class="btn-wa">
+                <i class="fab fa-whatsapp"></i> Book Your Trip
+            </a>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- ========== CATEGORIES ========== -->
-    <section class="category-section position-relative mb-3 px-3 pt-3">
-        <h5 class="fw-bold mb-3">Choose your Category</h5>
-        <div class="row g-2">
+<div class="store-wrap">
+
+    <section class="sec" id="categories">
+        <h2 class="sec-title">Browse <span>Destinations</span></h2>
+        <div class="cat-strip">
+            <div class="cat-item active" onclick="filterCategory(0,this)">
+                <div class="cat-all"><i class="fas fa-plane text-white" style="font-size:1.2rem;"></i></div>
+                <span>All</span>
+            </div>
             <?php foreach($categories as $cat): ?>
-            <div class="col-3">
-                <div class="category-card" onclick="filterCategory(<?php echo $cat['id']; ?>)">
-                    <img src="<?php echo htmlspecialchars($cat['image']); ?>" alt="<?php echo htmlspecialchars($cat['name']); ?>">
-                    <p class="small mt-1 mb-0"><?php echo htmlspecialchars($cat['name']); ?></p>
-                </div>
+            <div class="cat-item" onclick="filterCategory(<?php echo $cat['id']; ?>,this)">
+                <img src="<?php echo htmlspecialchars($cat['image']); ?>" class="cat-img" alt="<?php echo htmlspecialchars($cat['name']); ?>">
+                <span><?php echo htmlspecialchars($cat['name']); ?></span>
             </div>
             <?php endforeach; ?>
         </div>
     </section>
 
-    <!-- ========== PRODUCTS ========== -->
-    <section class="product-section position-relative px-3 py-3">
-        <h5 class="fw-bold mb-3">Choose your Product</h5>
-        <div class="row g-3" id="productGrid">
+    <section class="sec" id="packages" style="padding-top:0;">
+        <h2 class="sec-title">Tour <span>Packages</span></h2>
+        <div class="row g-3 g-md-4" id="productGrid">
             <?php foreach($products as $product): ?>
-            <div class="col-6 product-item" data-category="<?php echo $product['category_id']; ?>">
+            <div class="col-6 col-md-4 col-lg-3 product-item" data-category="<?php echo $product['category_id']; ?>">
                 <div class="product-card">
-                    <img src="<?php echo htmlspecialchars($product['image']); ?>" class="product-img" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
-                    <div class="p-2">
-                        <p class="small fw-600 mb-1"><?php echo htmlspecialchars($product['name']); ?></p>
-                        <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="prod-img-box">
+                        <img src="<?php echo htmlspecialchars($product['image']); ?>" class="prod-img" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
+                        <?php if(!$product['in_stock']): ?><span class="badge-oos">Full</span><?php endif; ?>
+                        <?php if(!empty($product['sale_price'])): ?><span class="badge-hot">OFFER</span><?php endif; ?>
+                    </div>
+                    <div class="prod-body">
+                        <p class="pname"><?php echo htmlspecialchars($product['name']); ?></p>
+                        <?php if(!empty($product['description'])): ?>
+                        <p class="pdesc"><?php echo htmlspecialchars($product['description']); ?></p>
+                        <?php endif; ?>
+                        <div class="price-row">
+                            <span class="price-label">Starting from</span>
                             <?php if(!empty($product['sale_price'])): ?>
-                            <span class="price-original"><?php echo $currency . $product['price']; ?></span>
-                            <span class="price-sale"><?php echo $currency . $product['sale_price']; ?></span>
+                            <span class="price-old"><?php echo $currency.$product['price']; ?></span>
+                            <span class="price-new"><?php echo $currency.$product['sale_price']; ?></span>
                             <?php else: ?>
-                            <span class="fw-bold"><?php echo $currency . $product['price']; ?></span>
+                            <span class="price-reg"><?php echo $currency.$product['price']; ?></span>
                             <?php endif; ?>
                         </div>
-                        <a href="https://wa.me/<?php echo $whatsapp_no; ?>?text=<?php echo urlencode('Hi, I want to order: ' . $product['name'] . ' at ' . $currency . ($product['sale_price'] ?: $product['price'])); ?>" 
-                           class="btn btn-sm btn-whatsapp w-100" target="_blank">
-                            <i class="fab fa-whatsapp"></i> Add
+                        <a href="https://wa.me/<?php echo $whatsapp_no; ?>?text=<?php echo urlencode('Hi! I\'m interested in the package: '.$product['name'].' starting at '.$currency.($product['sale_price'] ?: $product['price'])); ?>"
+                           class="btn-order" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            <?php echo $product['in_stock'] ? 'Book Now' : 'Enquire'; ?>
                         </a>
                     </div>
                 </div>
@@ -164,69 +247,85 @@ $base_url     = 'https://tapifyworld.com';
         </div>
     </section>
 
-    <!-- ========== BUSINESS HOURS ========== -->
-    <section class="businesshour-section px-3 py-3">
-        <h5 class="fw-bold mb-3">Business Hours</h5>
-        <table class="table table-sm">
-            <tr><td>Monday - Friday</td><td>9:00 AM - 6:00 PM</td></tr>
-            <tr><td>Saturday</td><td>10:00 AM - 4:00 PM</td></tr>
-            <tr><td>Sunday</td><td>Closed</td></tr>
-        </table>
+    <section class="sec" id="hours">
+        <div class="row g-4">
+            <div class="col-12 col-md-6">
+                <div class="info-card">
+                    <h2 class="sec-title">Office <span>Hours</span></h2>
+                    <ul class="hours-list">
+                        <li><span>Monday – Friday</span><span class="fw-600" style="color:#2e7d32;">9:00 AM – 7:00 PM</span></li>
+                        <li><span>Saturday</span><span class="fw-600" style="color:#2e7d32;">10:00 AM – 5:00 PM</span></li>
+                        <li><span>Sunday</span><span class="fw-600" style="color:#f57c00;">WhatsApp Only</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-md-6" id="contact">
+                <div class="info-card">
+                    <h2 class="sec-title">Contact <span>Us</span></h2>
+                    <ul class="contact-list">
+                        <?php if(!empty($address)): ?>
+                        <li><i class="fas fa-map-marker-alt ci"></i><span><?php echo htmlspecialchars($address); ?></span></li>
+                        <?php endif; ?>
+                        <?php if(!empty($phone)): ?>
+                        <li><i class="fas fa-phone ci"></i><a href="tel:<?php echo preg_replace('/[^0-9+]/','',$phone); ?>" style="color:#333;"><?php echo htmlspecialchars($phone); ?></a></li>
+                        <?php endif; ?>
+                        <?php if(!empty($email)): ?>
+                        <li><i class="fas fa-envelope ci"></i><a href="mailto:<?php echo htmlspecialchars($email); ?>" style="color:#333;"><?php echo htmlspecialchars($email); ?></a></li>
+                        <?php endif; ?>
+                        <li><i class="fab fa-whatsapp ci"></i><a href="https://wa.me/<?php echo $whatsapp_no; ?>" target="_blank" style="color:#25D366;font-weight:600;">Book on WhatsApp</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="text-center pt-3 pb-4 mt-3" style="border-top:1px solid rgba(0,0,0,.1);">
-        <p class="text-muted small mb-1"><?php echo htmlspecialchars($shop_name); ?></p>
-        <?php if(!empty($address)): ?>
-        <p class="text-muted small mb-1"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($address); ?></p>
-        <?php endif; ?>
-        <?php if(!empty($phone)): ?>
-        <p class="text-muted small mb-1"><a href="tel:<?php echo preg_replace('/[^0-9+]/','',$phone); ?>"><i class="fas fa-phone"></i> <?php echo htmlspecialchars($phone); ?></a></p>
-        <?php endif; ?>
-        <?php if(!empty($email)): ?>
-        <p class="text-muted small mb-1"><a href="mailto:<?php echo htmlspecialchars($email); ?>"><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($email); ?></a></p>
-        <?php endif; ?>
-        <p class="text-muted" style="font-size:11px;">&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($shop_name); ?></p>
-    </footer>
+</div>
 
-</div><!-- end main-content -->
+<footer class="store-footer">
+    <div class="footer-inner">
+        <div class="row g-4">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <h6><?php echo htmlspecialchars($shop_name); ?></h6>
+                <p style="color:#aaa;"><?php echo htmlspecialchars($shop_tagline); ?></p>
+                <a href="https://wa.me/<?php echo $whatsapp_no; ?>" target="_blank" class="btn-wa" style="margin-top:6px; width:fit-content;">
+                    <i class="fab fa-whatsapp"></i> Book Now
+                </a>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <h6>Contact Info</h6>
+                <ul>
+                    <?php if(!empty($address)): ?><li><i class="fas fa-map-marker-alt me-2" style="color:var(--accent);"></i><?php echo htmlspecialchars($address); ?></li><?php endif; ?>
+                    <?php if(!empty($phone)): ?><li><i class="fas fa-phone me-2" style="color:var(--accent);"></i><a href="tel:<?php echo preg_replace('/[^0-9+]/','',$phone); ?>"><?php echo htmlspecialchars($phone); ?></a></li><?php endif; ?>
+                    <?php if(!empty($email)): ?><li><i class="fas fa-envelope me-2" style="color:var(--accent);"></i><a href="mailto:<?php echo htmlspecialchars($email); ?>"><?php echo htmlspecialchars($email); ?></a></li><?php endif; ?>
+                </ul>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <h6>Office Hours</h6>
+                <ul>
+                    <li>Mon – Fri: 9:00 AM – 7:00 PM</li>
+                    <li>Saturday: 10:00 AM – 5:00 PM</li>
+                    <li>Sunday: WhatsApp Only</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-divider">&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($shop_name); ?> &nbsp;|&nbsp; Powered by Tapify</div>
+</footer>
 
-<!-- Floating WhatsApp Button -->
-<a href="https://wa.me/<?php echo $whatsapp_no; ?>" class="cart-icon" target="_blank" title="WhatsApp Order">
+<a href="https://wa.me/<?php echo $whatsapp_no; ?>" class="float-wa" target="_blank" title="Book Your Trip">
     <i class="fab fa-whatsapp"></i>
 </a>
 
-<!-- JavaScript -->
 <script src="<?php echo $base_url; ?>/assets/js/vcard11/jquery.min.js"></script>
 <script src="<?php echo $base_url; ?>/front/js/bootstrap.bundle.min.js"></script>
-<script src="<?php echo $base_url; ?>/assets/js/slider/js/slick.min.js"></script>
-<script src="<?php echo $base_url; ?>/assets/js/front-third-party-vcard11.js"></script>
-<script src="<?php echo $base_url; ?>/assets/js/custom/helpers.js"></script>
-<script src="<?php echo $base_url; ?>/assets/js/whatsapp_store_template.js"></script>
-
 <script>
-// Category Filter
-function filterCategory(catId) {
-    const items = document.querySelectorAll('.product-item');
-    items.forEach(item => {
-        if(catId === 0 || item.dataset.category == catId) {
-            item.style.display = '';
-        } else {
-            item.style.display = 'none';
-        }
+function filterCategory(catId, el) {
+    document.querySelectorAll('.cat-item').forEach(function(c){ c.classList.remove('active'); });
+    if(el) el.classList.add('active');
+    document.querySelectorAll('.product-item').forEach(function(item){
+        item.style.display = (catId === 0 || item.dataset.category == catId) ? '' : 'none';
     });
 }
-
-// Category Slider
-$(document).ready(function(){
-    if($('.category-slider').length) {
-        $('.category-slider').slick({
-            dots: false, infinite: true, slidesToShow: 4, slidesToScroll: 1,
-            autoplay: true, arrows: false
-        });
-    }
-});
 </script>
-
 </body>
 </html>
