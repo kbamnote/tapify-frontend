@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Victoria Hayes | Attorney at Law</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Lato:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f4f6f9;--navy:#0b1c3d;--navy2:#142952;--navy3:#1e3a6e;
+  --silver:#8892a4;--silver2:#c0c8d8;--white:#ffffff;
+  --gold:#b8952a;--gold2:#d4af55;--text:#2c3e50;--sub:#6b7a8d;
+  --accent:#e8ecf3;
+}
+body{background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);overflow:hidden;box-shadow:0 0 60px rgba(11,28,61,.12);}
+
+/* Subtle grid paper texture */
+.texture{position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:linear-gradient(rgba(11,28,61,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(11,28,61,.04) 1px,transparent 1px);background-size:30px 30px;}
+
+/* Animated scales of justice */
+@keyframes scalesTilt{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg);}}
+
+/* BANNER */
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(.5) saturate(.4);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(11,28,61,.8) 0%,rgba(20,41,82,.7) 100%);}
+.banner-seal{position:absolute;top:16px;right:16px;width:60px;height:60px;border:2px solid rgba(212,175,55,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold2);font-size:22px;animation:scalesTilt 4s ease-in-out infinite;}
+.banner-content{position:absolute;bottom:0;left:0;right:0;padding:20px 24px 24px;}
+.firm-name{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:400;color:var(--silver2);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.banner-title-text{font-family:'Libre Baskerville',serif;font-size:26px;color:var(--white);letter-spacing:.5px;line-height:1.2;}
+.gold-rule-banner{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2),transparent);margin-top:14px;width:60%;}
+
+/* PROFILE */
+.profile-area{background:var(--white);padding:0 24px 20px;position:relative;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-50px;margin-bottom:16px;}
+.av-wrap{position:relative;}
+.av-wrap img{width:100px;height:100px;border-radius:4px;object-fit:cover;border:4px solid var(--white);box-shadow:0 4px 20px rgba(11,28,61,.2);}
+.av-wrap::before{content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,var(--gold),var(--navy));border-radius:5px;z-index:-1;}
+.consult-btn{display:flex;align-items:center;gap:8px;background:var(--navy);color:var(--silver2);font-size:11px;font-weight:700;padding:11px 18px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:all .3s;border-bottom:2px solid var(--gold);}
+.consult-btn:hover{background:var(--navy3);transform:translateY(-2px);}
+.lawyer-name{font-family:'Libre Baskerville',serif;font-size:26px;color:var(--navy);margin-bottom:6px;margin-top:12px;}
+.rule{display:flex;align-items:center;gap:10px;margin:8px 0;}
+.rule-line{flex:1;height:1px;background:var(--silver2);}
+.rule-icon{color:var(--gold);font-size:12px;}
+.lawyer-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin-bottom:4px;}
+.lawyer-firm{font-size:13px;color:var(--text);font-weight:500;}
+.bar-badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.bar-badge{font-size:10px;padding:4px 12px;border:1px solid var(--silver2);color:var(--sub);font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--accent);}
+.social-strip{display:flex;gap:10px;padding:12px 0 0;}
+.soc{width:36px;height:36px;border:1px solid var(--silver2);display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:14px;text-decoration:none;transition:all .3s;}
+.soc:hover{background:var(--navy);border-color:var(--navy);color:var(--silver2);}
+
+/* ABOUT */
+.about-block{background:var(--accent);padding:20px 24px;border-left:4px solid var(--navy);margin:0;}
+.about-block p{font-size:13px;line-height:1.9;color:var(--text);}
+
+/* SECTION */
+.section{padding:20px 24px 0;}
+.sec-h{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sec-title{font-family:'Libre Baskerville',serif;font-size:16px;color:var(--navy);letter-spacing:.5px;}
+.sec-h::after{content:'';flex:1;height:1px;background:var(--silver2);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--accent);border-left:3px solid transparent;text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{border-left-color:var(--navy);background:var(--white);box-shadow:0 2px 12px rgba(11,28,61,.08);transform:translateX(4px);}
+.ci-icon{width:36px;height:36px;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--silver2);font-size:14px;flex-shrink:0;}
+.ci-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:2px;}
+.ci-val{font-size:13px;font-weight:600;word-break:break-word;}
+
+/* PRACTICE AREAS / SERVICES */
+.practice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pa-card{background:var(--accent);border:1px solid var(--silver2);border-bottom:3px solid var(--navy);transition:all .3s;overflow:hidden;}
+.pa-card:hover{border-bottom-color:var(--gold);box-shadow:0 6px 20px rgba(11,28,61,.1);transform:translateY(-4px);}
+.pa-card img{width:100%;height:90px;object-fit:cover;filter:saturate(.4) brightness(.8);}
+.pa-body{padding:10px 12px;}
+.pa-title{font-family:'Libre Baskerville',serif;font-size:13px;color:var(--navy);margin-bottom:3px;}
+.pa-desc{font-size:11px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-block{margin:20px 24px;background:var(--navy);padding:24px;display:flex;align-items:center;gap:20px;}
+.qr-white{background:#fff;padding:10px;width:90px;height:90px;flex-shrink:0;}
+.qr-white svg{width:70px;height:70px;}
+.qr-info{color:var(--silver2);}
+.qr-info h4{font-family:'Libre Baskerville',serif;font-size:17px;color:var(--gold2);margin-bottom:6px;}
+.qr-info p{font-size:12px;line-height:1.6;opacity:.8;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 48px);margin:0 24px 20px;padding:15px;background:var(--navy);color:var(--silver2);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all .3s;border-bottom:2px solid var(--gold);}
+.save-btn:hover{background:var(--navy3);transform:translateY(-2px);}
+
+/* SHARE */
+.share-area{padding:0 24px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--silver2);color:var(--sub);font-size:12px;font-weight:600;text-decoration:none;transition:all .3s;}
+.sh:hover{background:var(--navy);border-color:var(--navy);color:var(--silver2);}
+.copy-row{display:flex;border:1px solid var(--silver2);}
+.copy-inp{flex:1;background:var(--accent);border:none;color:var(--sub);font-size:11px;padding:11px 14px;font-family:'Lato',sans-serif;outline:none;}
+.cp-btn{background:var(--navy);color:var(--silver2);border:none;padding:11px 18px;cursor:pointer;font-weight:700;font-size:12px;transition:background .3s;}
+.cp-btn:hover{background:var(--navy3);}
+
+.footer{text-align:center;padding:16px;background:var(--accent);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);}
+.footer span{color:var(--navy);}
+.fade-in-section{opacity:0;transform:translateY(20px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="texture"></div>
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&q=80" alt="">
+    <div class="banner-overlay"></div>
+    <div class="banner-seal"><i class="fas fa-balance-scale"></i></div>
+    <div class="banner-content">
+      <div class="firm-name">Hayes & Associates</div>
+      <div class="banner-title-text">Excellence in Law.<br>Justice in Practice.</div>
+      <div class="gold-rule-banner"></div>
+    </div>
+  </div>
+  <!-- PROFILE -->
+  <div class="profile-area">
+    <div class="profile-top">
+      <div class="av-wrap">
+        <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=200&q=80" alt="Victoria">
+      </div>
+      <a href="tel:+12125559000" class="consult-btn"><i class="fas fa-calendar-check"></i> Consultation</a>
+    </div>
+    <div class="lawyer-name">Victoria Hayes, Esq.</div>
+    <div class="rule"><div class="rule-line"></div><div class="rule-icon"><i class="fas fa-gavel"></i></div><div class="rule-line"></div></div>
+    <div class="lawyer-title">Senior Partner &amp; Trial Attorney</div>
+    <div class="lawyer-firm">Hayes &amp; Associates Law Group, LLP</div>
+    <div class="bar-badges">
+      <span class="bar-badge">NY Bar</span>
+      <span class="bar-badge">CA Bar</span>
+      <span class="bar-badge">SCOTUS Admitted</span>
+    </div>
+    <div class="social-strip">
+      <a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+      <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="soc"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>
+  <!-- ABOUT -->
+  <div class="about-block fade-in-section">
+    <p>20 years of courtroom excellence across corporate litigation, criminal defense, and civil rights law. Recognized in The National Law Journal's "Top 100 Trial Lawyers." I fight tenaciously for every client.</p>
+  </div>
+  <!-- CONTACT -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span class="sec-title">Contact</span></div>
+    <div class="contact-list">
+      <a href="mailto:victoria@hayeslaw.com" class="ci"><div class="ci-icon"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">victoria@hayeslaw.com</div></div></a>
+      <a href="tel:+12125559000" class="ci"><div class="ci-icon"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Office</div><div class="ci-val">+1 (212) 555-9000</div></div></a>
+      <a href="tel:+12125559001" class="ci"><div class="ci-icon"><i class="fas fa-mobile-alt"></i></div><div><div class="ci-lbl">Direct</div><div class="ci-val">+1 (212) 555-9001</div></div></a>
+      <a href="#" class="ci"><div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Office</div><div class="ci-val">30 Rockefeller Plaza, New York, NY</div></div></a>
+    </div>
+  </div>
+  <!-- PRACTICE AREAS -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span class="sec-title">Practice Areas</span></div>
+    <div class="practice-grid">
+      <div class="pa-card"><img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=300&q=80" alt=""><div class="pa-body"><div class="pa-title">Corporate Law</div><div class="pa-desc">M&A, contracts, compliance and governance.</div></div></div>
+      <div class="pa-card"><img src="https://images.unsplash.com/photo-1593115057322-e94b77572f20?w=300&q=80" alt=""><div class="pa-body"><div class="pa-title">Criminal Defense</div><div class="pa-desc">Federal and state criminal trial defense.</div></div></div>
+      <div class="pa-card"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80" alt=""><div class="pa-body"><div class="pa-title">Civil Litigation</div><div class="pa-desc">Disputes, settlements and trial advocacy.</div></div></div>
+      <div class="pa-card"><img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=300&q=80" alt=""><div class="pa-body"><div class="pa-title">Estate Planning</div><div class="pa-desc">Wills, trusts and wealth preservation.</div></div></div>
+    </div>
+  </div>
+  <!-- QR -->
+  <div class="qr-block fade-in-section">
+    <div class="qr-white"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-info"><h4>Request a Consultation</h4><p>Scan to book a confidential legal consultation directly online.</p></div>
+  </div>
+  <!-- SAVE -->
+  <a href="#" class="save-btn fade-in-section"><i class="fas fa-address-card"></i>&nbsp; Save Contact</a>
+  <!-- SHARE -->
+  <div class="share-area fade-in-section">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+      <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/victoria-hayes" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/victoria-hayes');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Legal Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

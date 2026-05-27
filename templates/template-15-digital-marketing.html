@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelPulse Agency | Digital Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#060614;--card:#0d0d28;--violet:#6c47ff;--pink:#ff47b8;--cyan:#47e8ff;--white:#f0f0ff;--text:#8888bb;--border:#1a1a3e;}
+body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--white);overflow-x:hidden;}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;}
+@media(min-width:600px){
+.desk{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.grd{position:absolute;width:100%;height:100%;background-image:linear-gradient(rgba(108,71,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,71,255,.03) 1px,transparent 1px);background-size:30px 30px;}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);animation:orbm ease-in-out infinite alternate;}
+.o1{width:350px;height:350px;background:rgba(108,71,255,.18);top:-100px;right:-100px;animation-duration:9s;}
+.o2{width:250px;height:250px;background:rgba(255,71,184,.14);bottom:100px;left:-80px;animation-duration:12s;animation-delay:4s;}
+.o3{width:150px;height:150px;background:rgba(71,232,255,.1);top:50%;left:40%;animation-duration:7s;animation-delay:2s;}
+@keyframes orbm{0%{transform:translate(0,0);}100%{transform:translate(20px,-25px);}}}
+.banner{height:230px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d0028,#0a001a);}
+.banner-anim{position:absolute;inset:0;}
+.banner-anim span{position:absolute;display:block;border-radius:50%;border:1px solid rgba(108,71,255,.2);animation:ripple 4s linear infinite;}
+.banner-anim span:nth-child(1){width:100px;height:100px;top:30%;left:20%;animation-delay:0s;}
+.banner-anim span:nth-child(2){width:150px;height:150px;top:20%;right:15%;animation-delay:1.5s;}
+.banner-anim span:nth-child(3){width:80px;height:80px;bottom:25%;left:55%;animation-delay:3s;}
+@keyframes ripple{0%{transform:scale(1);opacity:.6;}100%{transform:scale(2.5);opacity:0;}}
+.b-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+.b-agency{font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:6px;}
+.b-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text);}
+.b-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));}
+.prof{padding:0 22px 20px;position:relative;z-index:5;}
+.ptop{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-44px;margin-bottom:16px;}
+.av{width:88px;height:88px;position:relative;}
+.av img{width:100%;height:100%;border-radius:16px;object-fit:cover;border:3px solid var(--violet);}
+.hire{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;font-size:11px;font-weight:700;padding:11px 18px;border-radius:25px;text-decoration:none;letter-spacing:1px;transition:all .3s;}
+.hire:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(108,71,255,.4);}
+.name{font-size:22px;font-weight:800;margin-bottom:4px;}
+.title{font-size:11px;color:var(--violet);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;font-weight:600;}
+.co{font-size:13px;color:var(--text);margin-bottom:4px;}
+.tagline{font-size:13px;color:var(--text);font-style:italic;margin-bottom:12px;}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 8px;}
+.metric{text-align:center;}
+.m-n{font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;}
+.m-l{font-size:9px;color:var(--text);letter-spacing:.5px;}
+.soc-row{display:flex;gap:8px;margin-bottom:10px;}
+.soc{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:15px;text-decoration:none;transition:all .3s;}
+.soc:hover{border-color:var(--violet);color:var(--violet);transform:translateY(-3px);}
+.web{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--cyan);text-decoration:none;}
+.bio{margin:0 0 20px;padding:16px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;border-left:3px solid var(--violet);}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+.sec{margin-bottom:20px;}
+.sec-h{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--violet);margin-bottom:14px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.cl{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--white);transition:all .3s;}
+.ci:hover{border-color:var(--violet);background:rgba(108,71,255,.08);}
+.ci-ic{width:34px;height:34px;background:rgba(108,71,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--violet);font-size:14px;flex-shrink:0;}
+.ci-l{font-size:10px;color:var(--text);margin-bottom:1px;}
+.ci-v{font-size:12px;font-weight:600;word-break:break-word;}
+.car-wrap{position:relative;overflow:hidden;margin-bottom:20px;}
+.car-track{display:flex;gap:12px;padding:4px 0;transition:transform .5s cubic-bezier(.25,.46,.45,.94);}
+.c-card{min-width:155px;flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s;}
+.c-card:hover{border-color:var(--violet);transform:translateY(-4px);box-shadow:0 12px 30px rgba(108,71,255,.2);}
+.c-card img{width:100%;height:95px;object-fit:cover;display:block;filter:saturate(.7);}
+.c-card:hover img{filter:saturate(1);}
+.c-body{padding:10px 12px;}
+.c-title{font-size:12px;font-weight:700;margin-bottom:3px;}
+.c-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.c-dots{display:flex;justify-content:center;gap:6px;padding:8px 0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{background:var(--violet);width:18px;border-radius:3px;}
+.c-arrows{position:absolute;top:42%;width:100%;display:flex;justify-content:space-between;padding:0 4px;pointer-events:none;}
+.c-arr{width:28px;height:28px;background:rgba(13,13,40,.8);border:1px solid var(--border);color:var(--violet);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:all;font-size:11px;transition:all .3s;}
+.c-arr:hover{background:var(--violet);color:#fff;}
+.qr-blk{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;align-items:center;gap:20px;margin-bottom:20px;position:relative;overflow:hidden;}
+.qr-blk::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));}
+.qr-box{background:#fff;padding:10px;width:88px;height:88px;flex-shrink:0;border-radius:8px;}
+.qr-box svg{width:68px;height:68px;}
+.qr-info h4{font-size:15px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.qr-info p{font-size:12px;color:var(--text);line-height:1.6;}
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;font-size:12px;font-weight:800;border-radius:14px;text-decoration:none;transition:all .3s;margin-bottom:20px;letter-spacing:1px;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(108,71,255,.4);}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:12px;text-decoration:none;transition:all .3s;}
+.sh:hover{border-color:var(--violet);color:var(--violet);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:11px;padding:10px 12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;}
+.cp-btn{background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;border:none;padding:10px 16px;cursor:pointer;font-weight:700;font-size:11px;}
+.footer{text-align:center;padding:14px;font-size:10px;letter-spacing:2px;color:var(--text);}
+.footer span{color:var(--violet);}
+.inner{padding:0 22px;}
+.fade{opacity:0;transform:translateY(20px);transition:all .6s ease;}.fade.vis{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="desk"><div class="grd"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="wrap">
+  <div class="banner"><div class="banner-anim"><span></span><span></span><span></span></div><div class="b-content"><div class="b-agency">PixelPulse</div><div class="b-tag">Digital Marketing & Growth Agency</div></div><div class="b-bar"></div></div>
+  <div class="inner">
+    <div class="prof">
+      <div class="ptop"><div class="av"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Dev"></div><a href="mailto:hello@pixelpulse.io" class="hire"><i class="fas fa-rocket"></i> Let's Grow</a></div>
+      <div class="name">Dev Kapoor</div>
+      <div class="title">Founder & Growth Strategist</div>
+      <div class="co">PixelPulse Digital Agency · Delhi NCR</div>
+      <div class="tagline">"We don't just market. We multiply."</div>
+      <div class="metrics">
+        <div class="metric"><span class="m-n">500+</span><span class="m-l">Brands</span></div>
+        <div class="metric"><span class="m-n">₹50Cr+</span><span class="m-l">Ad Spend</span></div>
+        <div class="metric"><span class="m-n">8yr</span><span class="m-l">Expert</span></div>
+        <div class="metric"><span class="m-n">4.9★</span><span class="m-l">Rating</span></div>
+      </div>
+      <div class="soc-row"><a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a><a href="#" class="soc"><i class="fab fa-instagram"></i></a><a href="#" class="soc"><i class="fab fa-youtube"></i></a><a href="#" class="soc"><i class="fab fa-twitter"></i></a><a href="#" class="soc"><i class="fab fa-whatsapp"></i></a></div>
+      <a href="https://pixelpulse.io" class="web"><i class="fas fa-globe"></i> pixelpulse.io</a>
+    </div>
+    <div class="bio fade"><p>Full-funnel digital marketing agency specialising in Meta & Google Ads, SEO, content, and performance-driven brand growth strategies for D2C and B2B brands.</p></div>
+    <div class="sec fade"><div class="sec-h">Contact</div>
+      <div class="cl">
+        <a href="mailto:hello@pixelpulse.io" class="ci"><div class="ci-ic"><i class="fas fa-envelope"></i></div><div><div class="ci-l">Email</div><div class="ci-v">hello@pixelpulse.io</div></div></a>
+        <a href="tel:+911112345678" class="ci"><div class="ci-ic"><i class="fas fa-phone"></i></div><div><div class="ci-l">Office</div><div class="ci-v">+91 11 1234 5678</div></div></a>
+        <a href="tel:+919876543210" class="ci"><div class="ci-ic"><i class="fab fa-whatsapp"></i></div><div><div class="ci-l">WhatsApp</div><div class="ci-v">+91 98765 43210</div></div></a>
+        <a href="mailto:proposals@pixelpulse.io" class="ci"><div class="ci-ic"><i class="fas fa-file-contract"></i></div><div><div class="ci-l">Proposals</div><div class="ci-v">proposals@pixelpulse.io</div></div></a>
+        <a href="#" class="ci"><div class="ci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-l">Office</div><div class="ci-v">Cyber City, Gurugram 122002</div></div></a>
+        <a href="https://pixelpulse.io" class="ci" target="_blank"><div class="ci-ic"><i class="fas fa-globe"></i></div><div><div class="ci-l">Website</div><div class="ci-v">www.pixelpulse.io</div></div></a>
+      </div>
+    </div>
+    <div class="sec fade"><div class="sec-h">Services</div></div>
+    <div class="car-wrap fade" id="cm">
+      <div class="car-track" id="tm">
+        <div class="c-card"><img src="https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Social Media Ads</div><div class="c-desc">Meta, Google & YouTube performance ads.</div></div></div>
+        <div class="c-card"><img src="https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=300&q=80" alt=""><div class="c-body"><div class="c-title">SEO & Content</div><div class="c-desc">Organic growth through content strategy.</div></div></div>
+        <div class="c-card"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Brand Strategy</div><div class="c-desc">Positioning, identity & growth roadmaps.</div></div></div>
+        <div class="c-card"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Analytics & CRO</div><div class="c-desc">Data-driven optimisation & reporting.</div></div></div>
+      </div>
+      <div class="c-arrows"><div class="c-arr" onclick="slide('tm','l')"><i class="fas fa-chevron-left"></i></div><div class="c-arr" onclick="slide('tm','r')"><i class="fas fa-chevron-right"></i></div></div>
+      <div class="c-dots" id="dm"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+    <div class="qr-blk fade"><div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div><div class="qr-info"><h4>Free Audit</h4><p>Scan for a free digital marketing audit of your brand.</p></div></div>
+    <a href="#" class="save-btn fade"><i class="fas fa-address-card"></i>&nbsp; Save Contact</a>
+    <div class="sh-row fade"><a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a><a href="#" class="sh"><i class="fab fa-linkedin-in"></i> Share</a><a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a></div>
+    <div class="copy-row fade"><input class="copy-inp" value="https://yourvcard.com/dev-kapoor" readonly><button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button></div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Agency Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('vis');});},{threshold:0.1});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+const state={tm:{idx:0,cards:4}};
+function slide(id,dir){const s=state[id];s.idx=dir==='r'?(s.idx+1)%s.cards:(s.idx-1+s.cards)%s.cards;document.getElementById(id).style.transform=`translateX(calc(-${s.idx}*(155px + 12px)))`;const dots=document.getElementById('d'+id.slice(1));dots.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===s.idx));}
+setInterval(()=>slide('tm','r'),3600);
+</script>
+</body></html>

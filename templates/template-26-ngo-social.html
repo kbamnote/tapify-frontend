@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hope Foundation | NGO</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#f5f3ff;--white:#fff;--green:#7c3aed;--green2:#a78bfa;--dark:#1e1b4b;--text:#4c1d95;--sub:#6b7280;--border:#c4b5fd;--card:#faf5ff;--mint:#ede9fe;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:0 0 80px rgba(22,163,74,.12);overflow:hidden;position:relative;}
+@media(min-width:768px){.desktop-bg{display:block!important;}}
+.desktop-bg{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.med-cross{position:absolute;color:var(--green);opacity:.04;animation:crossFloat 10s infinite ease-in-out;}
+.med-cross:nth-child(1){font-size:30px;top:5%;left:4%;animation-delay:0s;}
+.med-cross:nth-child(2){font-size:20px;top:22%;right:5%;animation-delay:3s;}
+.med-cross:nth-child(3){font-size:40px;top:48%;left:3%;animation-delay:6s;}
+.med-cross:nth-child(4){font-size:24px;top:68%;right:6%;animation-delay:2s;}
+.med-cross:nth-child(5){font-size:28px;top:85%;left:5%;animation-delay:8s;}
+@keyframes crossFloat{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-20px) rotate(15deg);}}
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(22,163,74,.6),rgba(5,46,22,.85));}
+.banner-content{position:absolute;bottom:20px;left:20px;right:20px;color:#fff;}
+.banner-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:30px;margin-bottom:8px;}
+.banner-big{font-size:26px;font-weight:700;line-height:1.2;}
+.green-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green2),var(--green));background-size:200%;animation:gBar 3s linear infinite;}
+@keyframes gBar{0%{background-position:0%;}100%{background-position:200%;}}
+.profile-area{padding:0 22px 18px;position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-50px;margin-bottom:14px;}
+.av{position:relative;width:100px;height:100px;}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--white);box-shadow:0 4px 20px rgba(22,163,74,.3);}
+.av-ring{position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--green),var(--green2),#4ade80,var(--green));animation:avSpin 5s linear infinite;z-index:-1;}
+@keyframes avSpin{to{transform:rotate(360deg);}}
+.order-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;font-size:11px;font-weight:700;padding:11px 18px;border-radius:30px;text-decoration:none;letter-spacing:1px;transition:all .3s;}
+.order-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(22,163,74,.4);}
+.store-name{font-size:24px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.tagline{font-size:12px;color:var(--green);font-style:italic;font-weight:500;margin-bottom:4px;}
+.store-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:3px;}
+.store-company{font-size:13px;color:var(--text);}
+.social-row{display:flex;gap:10px;padding:10px 0;}
+.soc{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;background:var(--mint);color:var(--green);transition:all .3s;}
+.soc:hover{background:var(--green);color:#fff;transform:translateY(-3px);}
+.bio{margin:0 22px 18px;padding:18px 20px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:18px;border-left:4px solid var(--green);}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+.section{padding:0 22px 18px;}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-ico{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--dark));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;flex-shrink:0;}
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dark);}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{background:var(--mint);border-color:var(--green);transform:translateY(-2px);}
+.ci-ico{width:34px;height:34px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;}
+.ci-lbl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:600;word-break:break-word;}
+.website-btn{display:flex;align-items:center;gap:10px;margin:0 22px 18px;padding:14px 18px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;border-radius:14px;text-decoration:none;transition:all .3s;}
+.website-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.35);}
+.website-btn span{font-size:13px;font-weight:600;}
+.website-btn i:last-child{margin-left:auto;}
+.carousel-wrap{position:relative;overflow:hidden;margin-bottom:4px;}
+.carousel-track{display:flex;gap:12px;transition:transform .5s cubic-bezier(.4,0,.2,1);padding:4px 2px;}
+.srv-card{min-width:158px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;flex-shrink:0;transition:all .3s;}
+.srv-card:hover{border-color:var(--green);transform:translateY(-5px);box-shadow:0 12px 28px rgba(22,163,74,.15);}
+.srv-card img{width:100%;height:96px;object-fit:cover;}
+.srv-body{padding:10px 12px;}
+.srv-title{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.srv-desc{font-size:11px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.carousel-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{width:22px;border-radius:4px;background:var(--green);}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--white);border:1px solid var(--border);color:var(--green);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;}
+.carousel-btn.prev{left:4px;}
+.carousel-btn.next{right:4px;}
+.qr-block{margin:0 22px 18px;background:linear-gradient(135deg,var(--dark),var(--green));border-radius:20px;padding:22px;display:flex;align-items:center;gap:18px;}
+.qr-box{background:#fff;padding:10px;border-radius:12px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-txt{color:#fff;}
+.qr-txt h4{font-size:17px;font-weight:700;margin-bottom:5px;}
+.qr-txt p{font-size:12px;opacity:.85;line-height:1.6;}
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 18px;padding:15px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;font-size:13px;font-weight:700;border-radius:30px;text-decoration:none;transition:all .3s;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(22,163,74,.4);}
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:14px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--sub);background:var(--card);transition:all .3s;}
+.sh:hover{background:var(--mint);border-color:var(--green);color:var(--green);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--sub);font-size:11px;padding:12px 14px;outline:none;}
+.cp-btn{background:var(--green);color:#fff;border:none;padding:12px 18px;cursor:pointer;font-weight:700;font-size:12px;}
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);background:var(--mint);}
+.footer span{color:var(--green);font-weight:700;}
+.fade-in{opacity:0;transform:translateY(22px);transition:all .65s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="desktop-bg"><i class="fas fa-plus med-cross"></i><i class="fas fa-pills med-cross"></i><i class="fas fa-plus med-cross"></i><i class="fas fa-capsules med-cross"></i><i class="fas fa-plus med-cross"></i></div>
+<div class="card-wrap">
+  <div class="banner"><img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80" alt="Pharmacy"><div class="banner-overlay"></div><div class="banner-content"><div class="banner-tag"><i class="fas fa-hand-holding-heart"></i> NGO - Social Impact</div><div class="banner-big">Empowering<br>Communities</div></div><div class="green-bar"></div></div>
+  <div class="profile-area">
+    <div class="profile-top"><div class="av"><div class="av-ring"></div><img src="https://t4.ftcdn.net/jpg/03/58/83/19/360_F_358831951_I45od28wxQqjsOQCmYmKVDZrmavzCqtK.jpg" alt="Dr. Amit"></div><a href="tel:+919876543210" class="order-btn"><i class="fas fa-phone"></i> Get Involved</a></div>
+    <div class="store-name">Sneha Gupta</div>
+    <div class="tagline">"Every life deserves dignity and opportunity"</div>
+    <div class="store-title">Social Worker Licensed Pharmacist &amp; Healthcare Advisoramp; NGO Founder</div>
+    <div class="store-company">Hope Foundation Trust, Delhi</div>
+    <div class="social-row"><a href="#" class="soc"><i class="fab fa-whatsapp"></i></a><a href="#" class="soc"><i class="fab fa-instagram"></i></a><a href="#" class="soc"><i class="fab fa-facebook-f"></i></a><a href="#" class="soc"><i class="fas fa-globe"></i></a></div>
+  </div>
+  <div class="bio fade-in"><p>15 years of grassroots social work impacting 50,000+ lives. Working across education, healthcare, women empowerment, and disaster relief in 8 states.</p></div>
+  <div class="section fade-in"><div class="sec-h"><div class="sec-ico"><i class="fas fa-address-book"></i></div><span class="sec-title">Contact</span></div>
+    <div class="contact-grid">
+      <a href="mailto:sneha@hopefoundation.org" class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">sneha@hopefoundation.org</div></div></a>
+      <a href="tel:+912025551234" class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Office</div><div class="ci-val">+91 20 2555 1234</div></div></a>
+      <a href="tel:+919876543210" class="ci"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+91 98765 43210</div></div></a>
+      <a href="#" class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Office</div><div class="ci-val">Connaught Place, New Delhi</div></div></a>
+    </div>
+  </div>
+  <a href="https://hopefoundation.org" target="_blank" class="website-btn fade-in"><i class="fas fa-globe"></i><span>hopefoundation.org</span><i class="fas fa-arrow-right"></i></a>
+  <div class="section fade-in"><div class="sec-h"><div class="sec-ico"><i class="fas fa-hand-holding-heart"></i></div><span class="sec-title">Services</span></div>
+    <div class="carousel-wrap" id="carousel26"><button class="carousel-btn prev" onclick="moveCarousel('carousel26',-1)"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="track26">
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Child Education</div><div class="srv-desc">Free schooling for 500+ underprivileged kids.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Women Empowerment</div><div class="srv-desc">Skill training, microfinance Free delivery within 2 hours in Pune.amp; self-help groups.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Rural Healthcare</div><div class="srv-desc">Mobile clinics serving 20+ villages.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Disaster Relief</div><div class="srv-desc">Emergency aid Vitamins, supplements &amp; personal care.amp; rehabilitation support.</div></div></div>
+      </div>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel26',1)"><i class="fas fa-chevron-right"></i></button></div><div class="carousel-dots" id="dots26"></div>
+  </div>
+  <div class="qr-block fade-in"><div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div><div class="qr-txt"><h4>Get Involveds</h4><p>Scan to donate, volunteer, or learn about our programs.</p></div></div>
+  <a href="#" class="save-btn fade-in"><i class="fas fa-user-plus"></i> Save Contact</a>
+  <div class="share-area fade-in"><div class="sh-row"><a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a><a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a><a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a></div><div class="copy-row"><input class="copy-inp" value="https://yourvcard.com/hope-foundation" readonly><button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(function(){this.textContent='Copy';}.bind(this),2000)">Copy</button></div></div>
+  <div class="footer">Powered by <span>VCard Pro</span> &middot; NGO Edition</div>
+</div>
+<script>
+var obs=new IntersectionObserver(function(e){e.forEach(function(el){if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(function(el){obs.observe(el);});
+var carousels={};
+function initCarousel(id){var num=id.replace('carousel','');var track=document.getElementById('track'+num);var cards=track.querySelectorAll('.srv-card');var dotsEl=document.getElementById('dots'+num);var cur=0,max=Math.max(0,cards.length-2);carousels[id]={track:track,cards:cards,cur:cur,max:max,dotsEl:dotsEl};for(var i=0;i<=max;i++){var d=document.createElement('div');d.className='dot'+(i===0?' active':'');(function(idx){d.onclick=function(){goTo(id,idx);};})(i);dotsEl.appendChild(d);}renderCarousel(id);setInterval(function(){moveCarousel(id,1);},3200);}
+function renderCarousel(id){var c=carousels[id];var w=c.cards[0].offsetWidth+12;c.track.style.transform='translateX(-'+(c.cur*w)+'px)';c.dotsEl.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===c.cur);});}
+function moveCarousel(id,dir){var c=carousels[id];c.cur+=dir;if(c.cur>c.max)c.cur=0;if(c.cur<0)c.cur=c.max;renderCarousel(id);}
+function goTo(id,i){carousels[id].cur=i;renderCarousel(id);}
+initCarousel('carousel26');
+if(window.innerWidth>=768){var cv=document.createElement('canvas');cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';document.body.insertBefore(cv,document.body.firstChild);var cx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;var pts=[];for(var i=0;i<35;i++){pts.push({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1});}(function draw(){cx.clearRect(0,0,cv.width,cv.height);pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle='rgba(22,163,74,0.1)';cx.fill();});pts.forEach(function(a,i){pts.slice(i+1).forEach(function(b){var d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle='rgba(22,163,74,'+(0.06*(1-d/110))+')';cx.stroke();}});});requestAnimationFrame(draw);})();}
+</script>
+</body>
+</html>

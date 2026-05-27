@@ -340,50 +340,36 @@ document.querySelectorAll('.btn-group-toggle .btn-toggle').forEach(btn => {
     });
 });
 
-// ===== TEMPLATES (42 Real Templates from tapifyworld.com/vcard-templates) =====
+// ===== TEMPLATES (28 Premium Templates) =====
 const templates = [
-    { id: 'vcard42', name: 'Social Vcard 2', category: 'Social', image: 'https://tapifyworld.com/assets/img/templates/vcard42.png', demoUrl: '../templates/template-42-social-vcard-2.php' },
-    { id: 'vcard41', name: 'Social Vcard', category: 'Social', image: 'https://tapifyworld.com/assets/img/templates/vcard41.png', demoUrl: '../templates/template-41-social-vcard.php' },
-    { id: 'vcard40', name: 'Bio White', category: 'Biography', image: 'https://tapifyworld.com/assets/img/templates/vcard40.png', demoUrl: '../templates/template-40-bio-white.php' },
-    { id: 'vcard39', name: 'Bio Black', category: 'Biography', image: 'https://tapifyworld.com/assets/img/templates/vcard39.png', demoUrl: '../templates/template-39-bio-black.php' },
-    { id: 'vcard38', name: 'Architecture', category: 'Architect', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard38.png', demoUrl: '../templates/template-38-architecture.php' },
-    { id: 'vcard37', name: 'Flower Garden', category: 'Florist', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard37.png', demoUrl: '../templates/template-37-flower-garden.php' },
-    { id: 'vcard36', name: 'Travel Agency', category: 'Travel', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard36.png', demoUrl: '../templates/template-36-travel-agency.php' },
-    { id: 'vcard35', name: 'Real Estate', category: 'Property', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard35.png', demoUrl: '../templates/template-35-real-estate.php' },
-    { id: 'vcard34', name: 'Photographer', category: 'Photography', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard34.png', demoUrl: '../templates/template-34-photographer.php' },
-    { id: 'vcard33', name: 'Musician', category: 'Music', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard33.png', demoUrl: '../templates/template-33-musician.php' },
-    { id: 'vcard32', name: 'Interior Designer', category: 'Design', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard32.png', demoUrl: '../templates/template-32-interior-designer.php' },
-    { id: 'vcard31', name: 'Handyman Services', category: 'Services', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard31.png', demoUrl: '../templates/template-31-handyman-services.php' },
-    { id: 'vcard30', name: 'Taxi Service', category: 'Transport', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard30.png', demoUrl: '../templates/template-30-taxi-service.php' },
-    { id: 'vcard29', name: 'Marriage', category: 'Wedding', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard29.png', demoUrl: '../templates/template-29-marriage.php' },
-    { id: 'vcard28', name: 'Pet Clinic', category: 'Veterinary', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard28.png', demoUrl: '../templates/template-28-pet-clinic.php' },
-    { id: 'vcard27', name: 'Pet Shop', category: 'Pet Store', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard27.png', demoUrl: '../templates/template-27-pet-shop.php' },
-    { id: 'vcard26', name: 'Retail E-commerce', category: 'Retail', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard26.png', demoUrl: '../templates/template-26-retail-e-commerce.php' },
-    { id: 'vcard25', name: 'Social Services', category: 'NGO', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard25.png', demoUrl: '../templates/template-25-social-services.php' },
-    { id: 'vcard24', name: 'School Templates', category: 'Education', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard24.png', demoUrl: '../templates/template-24-school-templates.php' },
-    { id: 'vcard23', name: 'Consulting Services', category: 'Consulting', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard23.png', demoUrl: '../templates/template-23-consulting-services.php' },
-    { id: 'vcard22', name: 'Dynamic vCard', category: 'Customizable', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard22.png', demoUrl: '../templates/template-22-dynamic-vcard.php', featured: true },
-    { id: 'vcard21', name: 'Social Media', category: 'Influencer', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard21.png', demoUrl: '../templates/template-21-social-media.php' },
-    { id: 'vcard20', name: 'Culinary Food Services', category: 'Food', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard20.png', demoUrl: '../templates/template-20-culinary-food-services.php' },
-    { id: 'vcard19', name: 'Fashion Beauty', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard19.png', demoUrl: '../templates/template-19-fashion-beauty.php' },
-    { id: 'vcard18', name: 'CEO/CXO', category: 'Executive', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard18.png', demoUrl: '../templates/template-18-ceo-cxo.php' },
-    { id: 'vcard17', name: 'Programmer', category: 'Tech', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard17.png', demoUrl: '../templates/template-17-programmer.php' },
-    { id: 'vcard16', name: 'Lawyer', category: 'Legal', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard16.png', demoUrl: '../templates/template-16-lawyer.php' },
-    { id: 'vcard15', name: 'Salon', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard15.png', demoUrl: '../templates/template-15-salon.php' },
-    { id: 'vcard14', name: 'Event Management', category: 'Events', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard14.png', demoUrl: '../templates/template-14-event-management.php' },
-    { id: 'vcard13', name: 'Hospital', category: 'Medical', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard13.png', demoUrl: '../templates/template-13-hospital.php' },
-    { id: 'vcard12', name: 'Gym', category: 'Fitness', image: 'https://tapifyworld.com/assets/img/new_vcard_templates/vcard12.png', demoUrl: '../templates/template-12-gym.php' },
-    { id: 'vcard11', name: 'Portfolio', category: 'Personal', image: 'https://tapifyworld.com/assets/img/templates/vcard11.png', demoUrl: '../templates/template-11-portfolio.php' },
-    { id: 'vcard10', name: 'Pro Network', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard10.png', demoUrl: '../templates/template-10-pro-network.php' },
-    { id: 'vcard9', name: 'Corporate Identity', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard9.png', demoUrl: '../templates/template-9-corporate-identity.php' },
-    { id: 'vcard8', name: 'Corporate Classic', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard8.png', demoUrl: '../templates/template-8-corporate-classic.php' },
-    { id: 'vcard7', name: 'Business Beacon', category: 'Marketing', image: 'https://tapifyworld.com/assets/img/templates/vcard7.png', demoUrl: '../templates/template-7-business-beacon.php' },
-    { id: 'vcard6', name: 'Modern Edge', category: 'Modern', image: 'https://tapifyworld.com/assets/img/templates/vcard6.png', demoUrl: '../templates/template-6-modern-edge.php' },
-    { id: 'vcard5', name: 'Corporate Connect', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard5.png', demoUrl: '../templates/template-5-corporate-connect.php' },
-    { id: 'vcard4', name: 'Professional', category: 'Professional', image: 'https://tapifyworld.com/assets/img/templates/vcard4.png', demoUrl: '../templates/template-4-professional.php' },
-    { id: 'vcard3', name: 'Clean Canvas', category: 'Minimal', image: 'https://tapifyworld.com/assets/img/templates/vcard3.png', demoUrl: '../templates/template-3-clean-canvas.php' },
-    { id: 'vcard2', name: 'Executive Profile', category: 'Executive', image: 'https://tapifyworld.com/assets/img/templates/vcard2.png', demoUrl: '../templates/template-2-executive-profile.php' },
-    { id: 'vcard1', name: 'Simple Contact', category: 'Basic', image: 'https://tapifyworld.com/assets/img/templates/vcard1.png', demoUrl: '../templates/template-1-simple-contact.php' }
+    { id: 'vcard01', name: 'Corporate Executive', category: 'Corporate', image: 'https://tapifyworld.com/assets/img/templates/vcard-01.png', demoUrl: '../templates/template-01-corporate-executive.html' },
+    { id: 'vcard02', name: 'Medical Doctor', category: 'Medical', image: 'https://tapifyworld.com/assets/img/templates/vcard-02.png', demoUrl: '../templates/template-02-medical-doctor.html' },
+    { id: 'vcard03', name: 'Creative Designer', category: 'Design', image: 'https://tapifyworld.com/assets/img/templates/vcard-03.png', demoUrl: '../templates/template-03-creative-designer.html' },
+    { id: 'vcard04', name: 'Real Estate', category: 'Property', image: 'https://tapifyworld.com/assets/img/templates/vcard-04.png', demoUrl: '../templates/template-04-real-estate.html' },
+    { id: 'vcard05', name: 'Restaurant Chef', category: 'Food', image: 'https://tapifyworld.com/assets/img/templates/vcard-05.png', demoUrl: '../templates/template-05-restaurant-chef.html' },
+    { id: 'vcard06', name: 'Fitness Trainer', category: 'Fitness', image: 'https://tapifyworld.com/assets/img/templates/vcard-06.png', demoUrl: '../templates/template-06-fitness-trainer.html' },
+    { id: 'vcard07', name: 'Tech Developer', category: 'Tech', image: 'https://tapifyworld.com/assets/img/templates/vcard-07.png', demoUrl: '../templates/template-07-tech-developer.html' },
+    { id: 'vcard08', name: 'Lawyer & Legal', category: 'Legal', image: 'https://tapifyworld.com/assets/img/templates/vcard-08.png', demoUrl: '../templates/template-08-lawyer-legal.html' },
+    { id: 'vcard09', name: 'Beauty Salon', category: 'Beauty', image: 'https://tapifyworld.com/assets/img/templates/vcard-09.png', demoUrl: '../templates/template-09-beauty-salon.html' },
+    { id: 'vcard10', name: 'Musician & Artist', category: 'Music', image: 'https://tapifyworld.com/assets/img/templates/vcard-10.png', demoUrl: '../templates/template-10-musician-artist.html' },
+    { id: 'vcard11', name: 'Photographer', category: 'Photography', image: 'https://tapifyworld.com/assets/img/templates/vcard-11.png', demoUrl: '../templates/template-11-photographer.html' },
+    { id: 'vcard12', name: 'Financial Advisor', category: 'Finance', image: 'https://tapifyworld.com/assets/img/templates/vcard-12.png', demoUrl: '../templates/template-12-financial-advisor.html' },
+    { id: 'vcard13', name: 'Architect', category: 'Architecture', image: 'https://tapifyworld.com/assets/img/templates/vcard-13.png', demoUrl: '../templates/template-13-architect.html' },
+    { id: 'vcard14', name: 'Yoga & Wellness', category: 'Wellness', image: 'https://tapifyworld.com/assets/img/templates/vcard-14.png', demoUrl: '../templates/template-14-yoga-wellness.html' },
+    { id: 'vcard15', name: 'Digital Marketing', category: 'Marketing', image: 'https://tapifyworld.com/assets/img/templates/vcard-15.png', demoUrl: '../templates/template-15-digital-marketing.html' },
+    { id: 'vcard16', name: 'Interior Designer', category: 'Design', image: 'https://tapifyworld.com/assets/img/templates/vcard-16.png', demoUrl: '../templates/template-16-interior-designer.html' },
+    { id: 'vcard17', name: 'Wedding Planner', category: 'Wedding', image: 'https://tapifyworld.com/assets/img/templates/vcard-17.png', demoUrl: '../templates/template-17-wedding-planner.html' },
+    { id: 'vcard18', name: 'Dentist', category: 'Medical', image: 'https://tapifyworld.com/assets/img/templates/vcard-18.png', demoUrl: '../templates/template-18-dentist.html' },
+    { id: 'vcard19', name: 'CA & Accountant', category: 'Finance', image: 'https://tapifyworld.com/assets/img/templates/vcard-19.png', demoUrl: '../templates/template-19-ca-accountant.html' },
+    { id: 'vcard20', name: 'School Teacher', category: 'Education', image: 'https://tapifyworld.com/assets/img/templates/vcard-20.png', demoUrl: '../templates/template-20-school-teacher.html' },
+    { id: 'vcard21', name: 'Fashion Designer', category: 'Fashion', image: 'https://tapifyworld.com/assets/img/templates/vcard-21.png', demoUrl: '../templates/template-21-fashion-designer.html' },
+    { id: 'vcard22', name: 'Travel Agent', category: 'Travel', image: 'https://tapifyworld.com/assets/img/templates/vcard-22.png', demoUrl: '../templates/template-22-travel-agent.html' },
+    { id: 'vcard23', name: 'Automobile Dealer', category: 'Automobile', image: 'https://tapifyworld.com/assets/img/templates/vcard-23.png', demoUrl: '../templates/template-23-automobile-dealer.html' },
+    { id: 'vcard24', name: 'Event Planner', category: 'Events', image: 'https://tapifyworld.com/assets/img/templates/vcard-24.png', demoUrl: '../templates/template-24-event-planner.html' },
+    { id: 'vcard25', name: 'Pharma & Medical', category: 'Medical', image: 'https://tapifyworld.com/assets/img/templates/vcard-25.png', demoUrl: '../templates/template-25-pharma-medical.html' },
+    { id: 'vcard26', name: 'NGO & Social', category: 'NGO', image: 'https://tapifyworld.com/assets/img/templates/vcard-26.png', demoUrl: '../templates/template-26-ngo-social.html' },
+    { id: 'vcard27', name: 'Coaching Institute', category: 'Education', image: 'https://tapifyworld.com/assets/img/templates/vcard-27.png', demoUrl: '../templates/template-27-coaching-institute.html' },
+    { id: 'vcard28', name: 'Electrician & Contractor', category: 'Services', image: 'https://tapifyworld.com/assets/img/templates/vcard-28.png', demoUrl: '../templates/template-28-electrician-contractor.html' }
 ];
 
 function renderTemplates() {
@@ -1424,11 +1410,157 @@ async function deleteCustomLink(id, label) {
     } catch (err) { showToast('Delete failed', 'error'); }
 }
 
-// ===== INSTAEMBED (Demo only - Phase 4) =====
-function renderInstaembedTable() {
+// ===== IFRAMES (Real Backend) =====
+let iframesData = [];
+
+async function renderIframesTable() {
+    const tbody = document.getElementById('iframesTableBody');
+    if (!tbody) return;
+
+    if (!currentVcardId) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:30px;color:var(--text-gray)">Save vCard first</td></tr>';
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/iframes/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const result = await response.json();
+
+        if (result.success) {
+            iframesData = result.data.iframes;
+            if (iframesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fas fa-window-restore" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:10px;"></i>No iframes yet. Click "+ Add Iframe"</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = iframesData.map(ifr => `
+                <tr data-id="${ifr.id}">
+                    <td><a href="${escapeHtml(ifr.url)}" target="_blank" style="color:var(--primary);text-decoration:none;">${escapeHtml(ifr.url.substring(0,60))}...</a></td>
+                    <td class="td-center">
+                        <button class="action-btn-sm action-delete" onclick="deleteIframe(${ifr.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="2" style="color:#ef4444;text-align:center;padding:20px">Failed to load iframes</td></tr>';
+    }
+}
+
+function showAddIframe() {
+    if (!currentVcardId) { showToast('Save vCard basics first', 'error'); return; }
+    openAddModal('iframe');
+}
+
+async function saveIframeLogic(url) {
+    if (!url) { showToast('URL is required', 'error'); return; }
+
+    try {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/iframes/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ vcard_id: currentVcardId, url })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast('Iframe added!', 'success');
+            closeAddModal();
+            renderIframesTable();
+        } else showToast(result.message, 'error');
+    } catch (err) { showToast('Save failed', 'error'); }
+}
+
+async function deleteIframe(id) {
+    if (!confirm(`Delete iframe?`)) return;
+    try {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/iframes/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id, vcard_id: currentVcardId })
+        });
+        const result = await response.json();
+        if (result.success) { showToast('Deleted', 'success'); renderIframesTable(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Delete failed', 'error'); }
+}
+
+// ===== INSTAEMBED (Real Backend) =====
+let instaData = [];
+
+async function renderInstaembedTable() {
     const tbody = document.getElementById('instaembedTableBody');
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fas fa-info-circle"></i> Instagram embed coming in Phase 4</td></tr>';
+
+    if (!currentVcardId) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-gray)">Save vCard first</td></tr>';
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://tapify-backend-production.up.railway.app/api/instagram/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const result = await response.json();
+
+        if (result.success) {
+            instaData = result.data.feeds;
+            if (instaData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fab fa-instagram" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:10px;"></i>No Instagram embeds yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = instaData.map(ins => `
+                <tr data-id="${ins.id}">
+                    <td><div class="item-icon"><i class="fab fa-instagram"></i></div></td>
+                    <td><strong>${escapeHtml(ins.type)}</strong><br><small style="color:var(--text-gray)">Embed attached</small></td>
+                    <td class="td-center">
+                        <button class="action-btn-sm action-delete" onclick="deleteInstaembed(${ins.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="3" style="color:#ef4444;text-align:center;padding:20px">Failed to load</td></tr>';
+    }
+}
+
+function showAddInstaembed() {
+    if (!currentVcardId) { showToast('Save vCard basics first', 'error'); return; }
+    openAddModal('instaembed');
+}
+
+async function saveInstaembedLogic(type, tag) {
+    if (!type || !tag) { showToast('Type and Embed Tag required', 'error'); return; }
+
+    try {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/instagram/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ vcard_id: currentVcardId, type, tag })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast('Instagram embed added!', 'success');
+            closeAddModal();
+            renderInstaembedTable();
+        } else showToast(result.message, 'error');
+    } catch (err) { showToast('Save failed', 'error'); }
+}
+
+async function deleteInstaembed(id) {
+    if (!confirm(`Delete this Instagram embed?`)) return;
+    try {
+        const response = await fetch('https://tapify-backend-production.up.railway.app/api/instagram/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id, vcard_id: currentVcardId })
+        });
+        const result = await response.json();
+        if (result.success) { showToast('Deleted', 'success'); renderInstaembedTable(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Delete failed', 'error'); }
 }
 
 // ===== GALLERIES (Real Backend - basic) =====
@@ -1814,6 +1946,19 @@ function closeAddModal() {
 }
 
 function saveModalItem() {
+    // Intercept saves for our new dynamic endpoints
+    if (currentModalType === 'iframe') {
+        const url = document.querySelector('#addModal input[type="url"]').value.trim();
+        saveIframeLogic(url);
+        return;
+    }
+    if (currentModalType === 'instaembed') {
+        const type = document.querySelector('#addModal select').value;
+        const tag = document.querySelector('#addModal textarea').value.trim();
+        saveInstaembedLogic(type, tag);
+        return;
+    }
+    
     showToast(`${currentModalType} added successfully!`, 'success');
     closeAddModal();
 }

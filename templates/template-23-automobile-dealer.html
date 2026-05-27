@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoElite | Car Dealer</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0a0a0a;--card:#141414;--red:#dc2626;--red2:#ef4444;--silver:#c0c8d4;--white:#f0f4f8;--text:#8892a4;--border:#1e2530;--dark:#0a0a0a;}
+body{background:var(--bg);font-family:'Roboto',sans-serif;color:var(--white);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);overflow:hidden;position:relative;}
+@media(min-width:768px){.desktop-bg{display:block!important;}}
+.desktop-bg{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.speed-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(220,38,38,.2),transparent);animation:speedLine linear infinite;}
+.speed-line:nth-child(1){width:300px;top:10%;left:-300px;animation-duration:4s;}
+.speed-line:nth-child(2){width:200px;top:30%;left:-300px;animation-duration:5s;animation-delay:2s;}
+.speed-line:nth-child(3){width:400px;top:55%;left:-400px;animation-duration:3.5s;animation-delay:1s;}
+.speed-line:nth-child(4){width:250px;top:75%;left:-300px;animation-duration:6s;animation-delay:3s;}
+.speed-line:nth-child(5){width:350px;top:88%;left:-350px;animation-duration:4.5s;animation-delay:1.5s;}
+@keyframes speedLine{from{transform:translateX(0);}to{transform:translateX(calc(100vw + 500px));}}
+.banner{position:relative;height:240px;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;filter:brightness(.5) saturate(1.2);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.2),rgba(10,10,10,.9)),linear-gradient(135deg,rgba(220,38,38,.2),transparent);}
+.banner-content{position:absolute;bottom:20px;left:20px;right:20px;}
+.brand-tag{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--red2);margin-bottom:8px;}
+.banner-big{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:2px;line-height:1.1;color:var(--white);}
+.red-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--red2),var(--red));background-size:200%;animation:redBar 2s linear infinite;}
+@keyframes redBar{0%{background-position:0%;}100%{background-position:200%;}}
+.profile-area{padding:0 20px 18px;position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-46px;margin-bottom:14px;}
+.av img{width:92px;height:92px;border-radius:8px;object-fit:cover;border:3px solid var(--red);box-shadow:0 0 20px rgba(220,38,38,.3);}
+.call-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--red),#991b1b);color:#fff;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;padding:11px 20px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;border-radius:4px;transition:all .3s;}
+.call-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(220,38,38,.4);}
+.dealer-name{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;letter-spacing:1px;color:var(--white);margin-bottom:4px;}
+.tagline{font-size:12px;color:var(--red2);font-style:italic;margin-bottom:4px;}
+.dealer-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text);margin-bottom:3px;}
+.dealer-company{font-size:13px;color:var(--silver);}
+.brand-logos{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;}
+.brand{font-size:10px;padding:4px 12px;border:1px solid rgba(220,38,38,.3);color:var(--red2);background:rgba(220,38,38,.07);font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;}
+.social-row{display:flex;gap:8px;padding:10px 0;}
+.soc{width:38px;height:38px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:15px;text-decoration:none;transition:all .3s;border-radius:4px;}
+.soc:hover{background:var(--red);border-color:var(--red);color:#fff;}
+.bio{margin:0 20px 18px;padding:16px 18px;background:var(--card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;}
+.bio p{font-size:13px;line-height:1.8;color:var(--text);}
+.section{padding:0 20px 18px;}
+.sec-h{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red2);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--white);transition:all .3s;}
+.ci:hover{border-color:var(--red);background:rgba(220,38,38,.07);}
+.ci-ico{width:34px;height:34px;background:rgba(220,38,38,.15);display:flex;align-items:center;justify-content:center;color:var(--red2);font-size:13px;flex-shrink:0;border-radius:6px;}
+.ci-lbl{font-size:9px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:500;word-break:break-word;}
+.website-btn{display:flex;align-items:center;gap:10px;margin:0 20px 18px;padding:14px 18px;background:var(--card);border:1px solid rgba(220,38,38,.3);color:var(--red2);border-radius:8px;text-decoration:none;transition:all .3s;}
+.website-btn:hover{background:rgba(220,38,38,.08);border-color:var(--red);}
+.website-btn span{font-size:13px;font-weight:600;}
+.website-btn i:last-child{margin-left:auto;}
+.carousel-wrap{position:relative;overflow:hidden;margin-bottom:4px;}
+.carousel-track{display:flex;gap:10px;transition:transform .5s cubic-bezier(.4,0,.2,1);padding:4px 2px;}
+.srv-card{min-width:158px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0;transition:all .3s;}
+.srv-card:hover{border-color:var(--red);transform:translateY(-4px);box-shadow:0 10px 25px rgba(220,38,38,.15);}
+.srv-card img{width:100%;height:96px;object-fit:cover;filter:brightness(.8);}
+.srv-body{padding:10px 12px;}
+.srv-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;}
+.srv-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.carousel-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{width:22px;border-radius:3px;background:var(--red);}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;background:var(--card);border:1px solid var(--border);color:var(--red2);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .3s;border-radius:4px;}
+.carousel-btn:hover{background:var(--red);color:#fff;}
+.carousel-btn.prev{left:4px;}
+.carousel-btn.next{right:4px;}
+.qr-block{margin:0 20px 18px;background:linear-gradient(135deg,var(--red),#7f1d1d);border-radius:12px;padding:22px;display:flex;align-items:center;gap:18px;}
+.qr-box{background:#fff;padding:10px;border-radius:8px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-txt{color:#fff;}
+.qr-txt h4{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:5px;}
+.qr-txt p{font-size:12px;opacity:.85;line-height:1.6;}
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 40px);margin:0 20px 18px;padding:15px;background:linear-gradient(135deg,var(--red),#991b1b);color:#fff;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;border-radius:4px;transition:all .3s;}
+.save-btn:hover{box-shadow:0 8px 24px rgba(220,38,38,.4);}
+.share-area{padding:0 20px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:600;text-decoration:none;background:var(--card);transition:all .3s;border-radius:4px;}
+.sh:hover{border-color:var(--red);color:var(--red2);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:11px;padding:12px 14px;outline:none;}
+.cp-btn{background:var(--red);color:#fff;border:none;padding:12px 18px;cursor:pointer;font-weight:700;font-size:12px;}
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text);border-top:1px solid var(--border);}
+.footer span{color:var(--red2);}
+.fade-in{opacity:0;transform:translateY(22px);transition:all .65s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="desktop-bg">
+  <div class="speed-line"></div><div class="speed-line"></div><div class="speed-line"></div><div class="speed-line"></div><div class="speed-line"></div>
+</div>
+<div class="card-wrap">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=500&q=80" alt="Cars">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="brand-tag">Premium Auto Dealer</div>
+      <div class="banner-big">DRIVE YOUR<br>DREAM</div>
+    </div>
+    <div class="red-bar"></div>
+  </div>
+  <div class="profile-area">
+    <div class="profile-top">
+      <div class="av"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Vikram"></div>
+      <a href="tel:+919876543210" class="call-btn"><i class="fas fa-phone"></i> Call Now</a>
+    </div>
+    <div class="dealer-name">Vikram AutoElite</div>
+    <div class="tagline">"Every drive should be extraordinary"</div>
+    <div class="dealer-title">Authorised Multi-Brand Car Dealer</div>
+    <div class="dealer-company">AutoElite Motors Pvt. Ltd., Pune</div>
+    <div class="brand-logos"><span class="brand">BMW</span><span class="brand">Mercedes</span><span class="brand">Audi</span><span class="brand">Toyota</span><span class="brand">Hyundai</span></div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+    </div>
+  </div>
+  <div class="bio fade-in"><p>18 years of premium automotive excellence. Authorised dealer for 5+ brands with 2000+ happy customers. Offering new cars, pre-owned luxury vehicles, finance solutions, and after-sales service.</p></div>
+  <div class="section fade-in">
+    <div class="sec-h">Contact</div>
+    <div class="contact-grid">
+      <a href="mailto:vikram@autoelite.in" class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">vikram@autoelite.in</div></div></a>
+      <a href="tel:+912025557890" class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Showroom</div><div class="ci-val">+91 20 2555 7890</div></div></a>
+      <a href="tel:+919876543210" class="ci"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+91 98765 43210</div></div></a>
+      <a href="#" class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Showroom</div><div class="ci-val">Nagar Road, Viman Nagar, Pune</div></div></a>
+    </div>
+  </div>
+  <a href="https://autoelite.in" target="_blank" class="website-btn fade-in"><i class="fas fa-globe"></i><span>autoelite.in — Browse Inventory</span><i class="fas fa-arrow-right"></i></a>
+  <div class="section fade-in">
+    <div class="sec-h">Our Services</div>
+    <div class="carousel-wrap" id="carousel23">
+      <button class="carousel-btn prev" onclick="moveCarousel('carousel23',-1)"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="track23">
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">New Car Sales</div><div class="srv-desc">Latest models from 5+ premium brands.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Pre-Owned Luxury</div><div class="srv-desc">Certified pre-owned luxury vehicles.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Car Finance</div><div class="srv-desc">Easy EMI & zero-down-payment options.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Service Center</div><div class="srv-desc">Authorised workshop & AMC packages.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Car Insurance</div><div class="srv-desc">Comprehensive insurance at best rates.</div></div></div>
+      </div>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel23',1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="carousel-dots" id="dots23"></div>
+  </div>
+  <div class="qr-block fade-in">
+    <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-txt"><h4>Test Drive Today</h4><p>Scan to book a test drive or browse our latest inventory.</p></div>
+  </div>
+  <a href="#" class="save-btn fade-in"><i class="fas fa-address-card"></i>&nbsp; Save Contact</a>
+  <div class="share-area fade-in">
+    <div class="sh-row"><a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a><a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a><a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a></div>
+    <div class="copy-row"><input class="copy-inp" value="https://yourvcard.com/autoelite-vikram" readonly><button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button></div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Auto Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+const carousels={};
+function initCarousel(id){const num=id.replace('carousel','');const track=document.getElementById('track'+num);const cards=track.querySelectorAll('.srv-card');const dotsEl=document.getElementById('dots'+num);let cur=0,max=Math.max(0,cards.length-2);carousels[id]={track,cards,cur,max,dotsEl};for(let i=0;i<=max;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>goTo(id,i);dotsEl.appendChild(d);}renderCarousel(id);setInterval(()=>moveCarousel(id,1),3200);}
+function renderCarousel(id){const c=carousels[id];const w=c.cards[0].offsetWidth+10;c.track.style.transform=`translateX(-${c.cur*w}px)`;c.dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===c.cur));}
+function moveCarousel(id,dir){const c=carousels[id];c.cur+=dir;if(c.cur>c.max)c.cur=0;if(c.cur<0)c.cur=c.max;renderCarousel(id);}
+function goTo(id,i){carousels[id].cur=i;renderCarousel(id);}
+initCarousel('carousel23');
+if(window.innerWidth>=768){const cv=document.createElement('canvas');cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';document.body.insertBefore(cv,document.body.firstChild);const cx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;const pts=Array.from({length:35},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));(function draw(){cx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle='rgba(220,38,38,0.1)';cx.fill();});pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle=`rgba(220,38,38,${.06*(1-d/110)})`;cx.stroke();}}));requestAnimationFrame(draw);})();}
+</script>
+</body>
+</html>

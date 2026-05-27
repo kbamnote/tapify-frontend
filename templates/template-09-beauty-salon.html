@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sophia Belle | Beauty Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#fff8f8;--white:#ffffff;--blush:#f9d6d6;--rose:#e8a0a0;
+  --rosegold:#c9796a;--deep:#8b3a3a;--gold:#c9956c;--gold2:#e8b898;
+  --text:#5a3535;--sub:#a07878;--card:#fff2f2;--border:#f0c8c8;
+}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);overflow:hidden;box-shadow:0 0 60px rgba(201,121,106,.1);}
+
+/* Floating petals */
+.petals{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0;}
+.petal{position:absolute;width:10px;height:14px;border-radius:50% 50% 50% 0;opacity:0;animation:petalFall linear infinite;}
+.petal:nth-child(1){background:rgba(232,160,160,.4);left:8%;animation-duration:9s;animation-delay:0s;top:-20px;}
+.petal:nth-child(2){background:rgba(201,121,106,.3);left:22%;animation-duration:12s;animation-delay:3s;top:-20px;transform:rotate(45deg);}
+.petal:nth-child(3){background:rgba(249,214,214,.6);left:50%;animation-duration:8s;animation-delay:1s;top:-20px;}
+.petal:nth-child(4){background:rgba(232,184,152,.4);left:70%;animation-duration:11s;animation-delay:4s;top:-20px;transform:rotate(-30deg);}
+.petal:nth-child(5){background:rgba(201,121,106,.25);left:88%;animation-duration:10s;animation-delay:2s;top:-20px;}
+@keyframes petalFall{0%{opacity:0;transform:translateY(0) rotate(0deg);}10%{opacity:1;}90%{opacity:.5;}100%{opacity:0;transform:translateY(100vh) rotate(360deg);}}
+
+/* BANNER */
+.banner{position:relative;height:240px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(.75) saturate(1.1);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(139,58,58,.15) 0%,rgba(139,58,58,.65) 100%);}
+.banner-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px;text-align:center;}
+.studio-name{font-family:'Gilda Display',serif;font-size:34px;color:#fff;letter-spacing:3px;margin-bottom:4px;text-shadow:0 2px 20px rgba(139,58,58,.5);}
+.studio-sub{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2);margin-bottom:14px;}
+.rosegold-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--rosegold),var(--gold),var(--rosegold),transparent);}
+
+/* PROFILE */
+.profile-area{background:var(--white);padding:0 22px 20px;text-align:center;position:relative;}
+.avatar-wrap{margin:-55px auto 14px;width:110px;height:110px;position:relative;}
+.avatar-wrap img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:5px solid var(--white);box-shadow:0 4px 20px rgba(201,121,106,.3);}
+.avatar-ring{position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(var(--rosegold),var(--gold2),var(--rose),var(--rosegold));animation:ringRotate 5s linear infinite;z-index:-1;}
+@keyframes ringRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.book-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--rosegold),var(--gold));color:#fff;font-size:11px;font-weight:700;padding:10px 22px;border-radius:30px;text-decoration:none;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;transition:all .3s;}
+.book-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,121,106,.4);}
+.artist-name{font-family:'Gilda Display',serif;font-size:28px;color:var(--deep);margin-bottom:6px;}
+.floral-divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0;}
+.fl-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--rose));}
+.fl-icon{color:var(--rosegold);font-size:14px;}
+.artist-title{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin-bottom:4px;}
+.artist-company{font-size:13px;color:var(--text);}
+
+/* SPECIALTIES */
+.spec-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0;}
+.spec-tag{font-size:11px;padding:5px 14px;border-radius:25px;background:var(--blush);color:var(--deep);font-weight:600;border:1px solid var(--border);transition:all .3s;}
+.spec-tag:hover{background:var(--rosegold);color:#fff;border-color:var(--rosegold);}
+
+/* SOCIAL */
+.social-strip{display:flex;justify-content:center;gap:10px;padding:12px 0;}
+.soc{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all .3s;}
+.soc.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.soc.fb{background:#1877f2;color:#fff;}
+.soc.pin{background:#e60023;color:#fff;}
+.soc.yt{background:#ff0000;color:#fff;}
+.soc.wa{background:#25d366;color:#fff;}
+.soc:hover{transform:scale(1.15) translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.15);}
+
+/* BIO */
+.bio-card{margin:0 22px 20px;padding:18px 22px;background:linear-gradient(135deg,var(--blush),#fff8f8);border-radius:20px;border:1px solid var(--border);text-align:center;}
+.bio-card p{font-size:13px;line-height:1.9;color:var(--text);}
+
+/* SECTION */
+.section{padding:0 22px 20px;}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-title{font-family:'Gilda Display',serif;font-size:18px;color:var(--deep);}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:10px;}
+.ci{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border-radius:14px;border:1px solid var(--border);text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{background:var(--blush);border-color:var(--rose);transform:translateX(4px);}
+.ci-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ci-icon.em{background:linear-gradient(135deg,#fce4ec,#f8bbd0);color:var(--rosegold);}
+.ci-icon.ph{background:linear-gradient(135deg,#f3e5f5,#e1bee7);color:#9c27b0;}
+.ci-icon.al{background:linear-gradient(135deg,#fff8e1,#ffecb3);color:#f9a825;}
+.ci-icon.lo{background:linear-gradient(135deg,#fce4ec,#f8bbd0);color:var(--deep);}
+.ci-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--sub);margin-bottom:2px;}
+.ci-val{font-size:13px;font-weight:600;word-break:break-word;}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.srv{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:all .3s;}
+.srv:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(201,121,106,.2);border-color:var(--rose);}
+.srv img{width:100%;height:100px;object-fit:cover;display:block;}
+.srv-body{padding:10px 12px;}
+.srv-title{font-family:'Gilda Display',serif;font-size:14px;color:var(--deep);margin-bottom:3px;}
+.srv-desc{font-size:11px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.srv-price{font-size:12px;font-weight:700;color:var(--rosegold);margin-top:5px;}
+
+/* QR */
+.qr-block{margin:0 22px 20px;background:linear-gradient(135deg,var(--deep),var(--rosegold));border-radius:24px;padding:24px;display:flex;align-items:center;gap:20px;}
+.qr-white{background:#fff;padding:10px;width:90px;height:90px;flex-shrink:0;border-radius:12px;}
+.qr-white svg{width:70px;height:70px;}
+.qr-info{color:#fff;}
+.qr-info h4{font-family:'Gilda Display',serif;font-size:18px;margin-bottom:6px;}
+.qr-info p{font-size:12px;opacity:.9;line-height:1.6;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 20px;padding:15px;background:linear-gradient(135deg,var(--rosegold),var(--gold));color:#fff;font-size:13px;font-weight:700;border-radius:30px;text-decoration:none;transition:all .3s;letter-spacing:1px;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,121,106,.4);}
+
+/* SHARE */
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;border:1px solid var(--border);color:var(--sub);font-size:12px;font-weight:600;text-decoration:none;transition:all .3s;background:var(--card);}
+.sh:hover{background:var(--blush);border-color:var(--rose);color:var(--deep);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--sub);font-size:11px;padding:11px 14px;font-family:'Nunito',sans-serif;outline:none;}
+.cp-btn{background:linear-gradient(135deg,var(--rosegold),var(--gold));color:#fff;border:none;padding:11px 18px;cursor:pointer;font-weight:700;font-size:12px;transition:all .3s;}
+.cp-btn:hover{opacity:.9;}
+
+.footer{text-align:center;padding:16px;font-size:11px;color:var(--sub);letter-spacing:1px;}
+.footer span{color:var(--rosegold);font-weight:700;}
+.fade-in-section{opacity:0;transform:translateY(20px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="petals">
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div><div class="petal"></div>
+</div>
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80" alt="beauty salon">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="studio-name">Belle Studio</div>
+      <div class="studio-sub">Luxury Beauty &amp; Artistry</div>
+    </div>
+    <div class="rosegold-bar"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile-area">
+    <div class="avatar-wrap">
+      <div class="avatar-ring"></div>
+      <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=200&q=80" alt="Sophia Belle">
+    </div>
+    <a href="tel:+14085554321" class="book-btn"><i class="fas fa-calendar-heart"></i> Book Now</a>
+    <div class="artist-name">Sophia Belle</div>
+    <div class="floral-divider">
+      <div class="fl-line"></div>
+      <div class="fl-icon"><i class="fas fa-spa"></i></div>
+      <div class="fl-line" style="background:linear-gradient(90deg,var(--rose),transparent);"></div>
+    </div>
+    <div class="artist-title">Master Makeup Artist &amp; Stylist</div>
+    <div class="artist-company">Belle Studio, San Jose, CA</div>
+    <div class="spec-row">
+      <span class="spec-tag">Bridal</span>
+      <span class="spec-tag">Editorial</span>
+      <span class="spec-tag">Skincare</span>
+      <span class="spec-tag">Lashes</span>
+      <span class="spec-tag">Hair</span>
+    </div>
+    <div class="social-strip">
+      <a href="#" class="soc ig"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc pin"><i class="fab fa-pinterest-p"></i></a>
+      <a href="#" class="soc yt"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc wa"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc fb"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="bio-card fade-in-section">
+    <p>Award-winning makeup artist with 10+ years of experience creating flawless bridal looks, editorial glam, and everyday beauty. I believe every face is a canvas — let me bring your vision to life ✨</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span class="sec-title">Contact</span></div>
+    <div class="contact-list">
+      <a href="mailto:sophia@bellestudio.com" class="ci">
+        <div class="ci-icon em"><i class="fas fa-envelope"></i></div>
+        <div><div class="ci-lbl">Email</div><div class="ci-val">sophia@bellestudio.com</div></div>
+      </a>
+      <a href="tel:+14085554321" class="ci">
+        <div class="ci-icon ph"><i class="fas fa-phone"></i></div>
+        <div><div class="ci-lbl">Phone</div><div class="ci-val">+1 (408) 555-4321</div></div>
+      </a>
+      <a href="tel:+14085554322" class="ci">
+        <div class="ci-icon al"><i class="fab fa-whatsapp"></i></div>
+        <div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+1 (408) 555-4322</div></div>
+      </a>
+      <a href="#" class="ci">
+        <div class="ci-icon lo"><i class="fas fa-map-marker-alt"></i></div>
+        <div><div class="ci-lbl">Studio</div><div class="ci-val">288 Rose Ave, San Jose, CA 95110</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span class="sec-title">Services</span></div>
+    <div class="services-grid">
+      <div class="srv">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=300&q=80" alt="">
+        <div class="srv-body">
+          <div class="srv-title">Bridal Makeup</div>
+          <div class="srv-desc">Full-day bridal glam with trials.</div>
+          <div class="srv-price">From $350</div>
+        </div>
+      </div>
+      <div class="srv">
+        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&q=80" alt="">
+        <div class="srv-body">
+          <div class="srv-title">Hair Styling</div>
+          <div class="srv-desc">Updos, blowouts &amp; curls.</div>
+          <div class="srv-price">From $120</div>
+        </div>
+      </div>
+      <div class="srv">
+        <img src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=300&q=80" alt="">
+        <div class="srv-body">
+          <div class="srv-title">Facial &amp; Skincare</div>
+          <div class="srv-desc">Rejuvenating treatments &amp; glow.</div>
+          <div class="srv-price">From $90</div>
+        </div>
+      </div>
+      <div class="srv">
+        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300&q=80" alt="">
+        <div class="srv-body">
+          <div class="srv-title">Lash Extensions</div>
+          <div class="srv-desc">Classic, hybrid &amp; volume sets.</div>
+          <div class="srv-price">From $80</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR CODE -->
+  <div class="qr-block fade-in-section">
+    <div class="qr-white">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" fill="white"/>
+        <rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="16" width="18" height="18" fill="#000"/>
+        <rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="66" y="16" width="18" height="18" fill="#000"/>
+        <rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="66" width="18" height="18" fill="#000"/>
+        <rect x="60" y="60" width="8" height="8" fill="#000"/>
+        <rect x="72" y="60" width="8" height="8" fill="#000"/>
+        <rect x="60" y="72" width="8" height="8" fill="#000"/>
+        <rect x="72" y="72" width="18" height="18" fill="#000"/>
+        <rect x="45" y="10" width="8" height="8" fill="#000"/>
+        <rect x="45" y="22" width="8" height="8" fill="#000"/>
+      </svg>
+    </div>
+    <div class="qr-info">
+      <h4>Book Your Session</h4>
+      <p>Scan to view my portfolio &amp; book a beauty appointment online.</p>
+    </div>
+  </div>
+
+  <!-- SAVE -->
+  <a href="#" class="save-btn fade-in-section">
+    <i class="fas fa-heart"></i> Save Contact
+  </a>
+
+  <!-- SHARE -->
+  <div class="share-area fade-in-section">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-instagram"></i> Story</a>
+      <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/sophia-belle" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/sophia-belle');this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+
+  <div class="footer">Powered by <span>VCard Pro</span> · Beauty Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Notifications - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .dash-container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+        .form-card { background: white; border-radius: 14px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .form-card h2 { margin-top: 0; display: flex; align-items: center; gap: 10px; color: #1a2035; }
+        .form-card h2 i { color: #8338ec; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #4b5563; font-size: 0.95rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px 15px; border: 1px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.95rem; background: #f9fafb; transition: all 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: #8338ec; background: white; box-shadow: 0 0 0 3px rgba(131,56,236,0.1);
+        }
+        
+        .btn-primary { background: linear-gradient(135deg, #8338ec, #a855f7); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-family: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(131,56,236,0.2); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .alert { padding: 15px; border-radius: 10px; margin-bottom: 20px; display: none; font-weight: 500; font-size: 0.95rem; }
+        .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
+        .alert.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item active"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Broadcast Push Notifications</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="dash-container">
+                <div class="form-card">
+                    <h2><i class="fas fa-paper-plane"></i> Send Notification</h2>
+                    <p style="color:#6b7280; margin-bottom: 25px;">Send a push notification to all users who have the app installed, or target a specific user.</p>
+
+                    <div id="alertBox" class="alert"></div>
+
+                    <form id="notificationForm">
+                        <div class="form-group">
+                            <label>Target Audience</label>
+                            <select id="targetUser">
+                                <option value="all">All Users (Broadcast)</option>
+                                <!-- We can populate users here later if needed via JS -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Notification Title</label>
+                            <input type="text" id="notiTitle" placeholder="e.g. System Update" required maxlength="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notification Message</label>
+                            <textarea id="notiMessage" rows="4" placeholder="Enter your message here..." required maxlength="300"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Redirect URL / Screen Name (Optional)</label>
+                            <input type="text" id="notiRedirect" placeholder="e.g. /dashboard or https://example.com">
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i> Send Push Notification
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="../admin.js"></script>
+<script>
+    document.getElementById('notificationForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('sendBtn');
+        const alertBox = document.getElementById('alertBox');
+        
+        const title = document.getElementById('notiTitle').value;
+        const message = document.getElementById('notiMessage').value;
+        const target = document.getElementById('targetUser').value;
+        const redirect = document.getElementById('notiRedirect').value;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        alertBox.className = 'alert';
+        alertBox.style.display = 'none';
+
+        try {
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('message', message);
+            formData.append('target_user', target);
+            if(redirect) formData.append('redirect_url', redirect);
+
+            const res = await fetch('https://tapify-backend-production.up.railway.app/api/admin/notifications-send.php', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+
+            const data = await res.json();
+            if(data.success) {
+                alertBox.textContent = data.message;
+                alertBox.className = 'alert success';
+                document.getElementById('notificationForm').reset();
+            } else {
+                alertBox.textContent = data.message;
+                alertBox.className = 'alert error';
+            }
+        } catch (err) {
+            alertBox.textContent = 'Network error. Failed to send.';
+            alertBox.className = 'alert error';
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Push Notification';
+    });
+</script>
+</body>
+</html>

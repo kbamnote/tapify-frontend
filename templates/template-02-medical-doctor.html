@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Sarah Chen | Medical Professional</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --teal:#0d9488;--teal2:#14b8a6;--teal3:#5eead4;
+  --blue:#1e40af;--light:#f0fdfa;--white:#ffffff;
+  --dark:#0f4c47;--text:#374151;--subtext:#6b7280;
+  --bg:#f8fafc;
+}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(13,148,136,.12);}
+
+/* Animated wave background */
+.wave-bg{position:absolute;top:0;left:0;width:100%;height:300px;overflow:hidden;z-index:0;}
+.wave-bg svg{position:absolute;bottom:0;width:200%;animation:waveMove 8s linear infinite;}
+.wave-bg svg:nth-child(2){animation-delay:-4s;opacity:.5;}
+@keyframes waveMove{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* Floating + signs (medical) */
+.med-crosses{position:absolute;width:100%;height:100%;pointer-events:none;overflow:hidden;}
+.cross{position:absolute;opacity:.05;color:var(--teal);font-size:20px;animation:floatCross 10s infinite ease-in-out;}
+.cross:nth-child(1){top:5%;left:5%;animation-delay:0s;}
+.cross:nth-child(2){top:15%;right:10%;animation-delay:2s;font-size:14px;}
+.cross:nth-child(3){top:40%;left:85%;animation-delay:4s;font-size:18px;}
+.cross:nth-child(4){top:70%;left:8%;animation-delay:1s;font-size:12px;}
+.cross:nth-child(5){top:85%;right:15%;animation-delay:3s;font-size:16px;}
+@keyframes floatCross{0%,100%{transform:translateY(0) rotate(0deg);opacity:.04;}50%{transform:translateY(-20px) rotate(45deg);opacity:.1;}}
+
+/* BANNER */
+.banner{position:relative;height:200px;overflow:hidden;z-index:1;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:saturate(1.1);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,148,136,.7) 0%,rgba(30,64,175,.6) 100%);}
+.banner-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 24px;}
+.banner-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);color:#fff;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;margin-bottom:8px;width:fit-content;}
+.banner-tag i{font-size:12px;}
+.teal-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--teal),var(--teal3),var(--blue));}
+
+/* PROFILE */
+.profile-area{background:var(--white);padding:0 24px 20px;position:relative;z-index:5;}
+.profile-avatar-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-44px;margin-bottom:16px;}
+.avatar-container{position:relative;width:88px;height:88px;}
+.avatar-container img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--white);box-shadow:0 4px 20px rgba(13,148,136,.3);}
+.online-dot{position:absolute;bottom:4px;right:4px;width:14px;height:14px;background:#22c55e;border-radius:50%;border:2px solid var(--white);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 6px rgba(34,197,94,0);}}
+.consult-btn{background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:25px;border:none;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;transition:all .3s;}
+.consult-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(13,148,136,.4);}
+.doctor-name{font-family:'DM Serif Display',serif;font-size:26px;color:var(--dark);margin-bottom:4px;}
+.specialty-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#e0f2fe,#ccfbf1);color:var(--teal);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:6px;}
+.doctor-hospital{font-size:13px;color:var(--subtext);margin-bottom:4px;}
+.stats-row{display:flex;gap:20px;padding:16px 0;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;margin:12px 0;}
+.stat{text-align:center;flex:1;}
+.stat-num{font-family:'DM Serif Display',serif;font-size:22px;color:var(--teal);display:block;}
+.stat-label{font-size:10px;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;}
+
+/* SOCIAL */
+.social-strip{display:flex;justify-content:center;gap:12px;padding:12px 0;}
+.soc{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all .3s;}
+.soc.linkedin{background:#e0f2fe;color:#0ea5e9;}
+.soc.instagram{background:#fce7f3;color:#ec4899;}
+.soc.whatsapp{background:#dcfce7;color:#16a34a;}
+.soc.globe{background:#f0fdfa;color:var(--teal);}
+.soc:hover{transform:translateY(-4px) scale(1.1);box-shadow:0 8px 20px rgba(0,0,0,.1);}
+
+/* ABOUT */
+.about-card{margin:0 20px 16px;background:linear-gradient(135deg,#f0fdfa,#e0f2fe);border-radius:16px;padding:18px 20px;border-left:4px solid var(--teal);}
+.about-card p{font-size:13px;color:var(--text);line-height:1.8;}
+
+/* SECTION */
+.section{padding:0 20px 20px;}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;}
+.sec-title{font-size:14px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:1px;}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:10px;}
+.contact-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#f8fafc;border-radius:12px;text-decoration:none;color:var(--text);transition:all .3s;border:1px solid transparent;}
+.contact-item:hover{background:linear-gradient(135deg,#f0fdfa,#e0f2fe);border-color:rgba(13,148,136,.2);transform:translateX(4px);}
+.item-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.item-icon.email{background:#e0f2fe;color:#0ea5e9;}
+.item-icon.phone{background:#dcfce7;color:#16a34a;}
+.item-icon.alt{background:#fef9c3;color:#ca8a04;}
+.item-icon.loc{background:#fce7f3;color:#ec4899;}
+.item-label{font-size:11px;color:var(--subtext);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.item-val{font-size:13px;font-weight:500;}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.srv-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;transition:all .3s;}
+.srv-card:hover{box-shadow:0 8px 25px rgba(13,148,136,.15);transform:translateY(-4px);border-color:var(--teal3);}
+.srv-card img{width:100%;height:90px;object-fit:cover;}
+.srv-body{padding:10px 12px;}
+.srv-title{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.srv-desc{font-size:11px;color:var(--subtext);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-block{margin:0 20px 20px;background:linear-gradient(135deg,var(--dark),var(--teal));border-radius:20px;padding:24px;display:flex;align-items:center;gap:20px;color:#fff;}
+.qr-white{background:#fff;padding:10px;border-radius:10px;width:90px;height:90px;flex-shrink:0;}
+.qr-white svg{width:70px;height:70px;}
+.qr-txt h4{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:6px;}
+.qr-txt p{font-size:12px;opacity:.85;line-height:1.6;}
+
+/* SAVE */
+.save-area{padding:0 20px 20px;text-align:center;}
+.save-link{display:inline-flex;align-items:center;gap:10px;width:100%;justify-content:center;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;font-size:14px;font-weight:600;padding:16px;border-radius:14px;text-decoration:none;transition:all .3s;}
+.save-link:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(13,148,136,.35);}
+
+/* SHARE */
+.share-area{padding:0 20px 30px;}
+.share-row{display:flex;gap:10px;justify-content:center;margin-bottom:12px;}
+.sh-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:12px;font-size:12px;font-weight:500;text-decoration:none;transition:all .3s;}
+.sh-btn.wa{background:#dcfce7;color:#16a34a;}
+.sh-btn.fb{background:#dbeafe;color:#1d4ed8;}
+.sh-btn.tw{background:#e0f2fe;color:#0284c7;}
+.sh-btn:hover{transform:translateY(-2px);}
+.copy-wrap{display:flex;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;}
+.copy-inp{flex:1;border:none;padding:11px 14px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:var(--subtext);background:#f8fafc;}
+.copy-b{background:var(--teal);color:#fff;border:none;padding:11px 18px;cursor:pointer;font-weight:600;font-size:12px;transition:background .3s;}
+.copy-b:hover{background:var(--dark);}
+
+.footer{text-align:center;padding:16px;background:#f8fafc;font-size:11px;color:var(--subtext);}
+.footer span{color:var(--teal);font-weight:600;}
+
+.fade-in-section{opacity:0;transform:translateY(24px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="card-wrap">
+  <div class="med-crosses">
+    <div class="cross"><i class="fas fa-plus"></i></div>
+    <div class="cross"><i class="fas fa-plus"></i></div>
+    <div class="cross"><i class="fas fa-plus"></i></div>
+    <div class="cross"><i class="fas fa-plus"></i></div>
+    <div class="cross"><i class="fas fa-plus"></i></div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=80" alt="banner">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="banner-tag"><i class="fas fa-stethoscope"></i> Healthcare Professional</div>
+    </div>
+    <div class="teal-bar"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile-area">
+    <div class="profile-avatar-row">
+      <div class="avatar-container">
+        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&q=80" alt="Dr. Sarah Chen">
+        <div class="online-dot"></div>
+      </div>
+      <a href="tel:+14155559876" class="consult-btn"><i class="fas fa-phone-alt"></i> Consult Now</a>
+    </div>
+    <div class="doctor-name">Dr. Sarah Chen</div>
+    <div class="specialty-badge"><i class="fas fa-heart-pulse"></i> Cardiologist &amp; Internist</div>
+    <div class="doctor-hospital">City Medical Center, San Francisco</div>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-num">12+</span><span class="stat-label">Years Exp.</span></div>
+      <div class="stat"><span class="stat-num">5K+</span><span class="stat-label">Patients</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+    </div>
+    <div class="social-strip">
+      <a href="#" class="soc linkedin"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc globe"><i class="fas fa-globe"></i></a>
+      <a href="#" class="soc instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc whatsapp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-card fade-in-section">
+    <p>Board-certified cardiologist with expertise in preventive cardiology and cardiac rehabilitation. Committed to delivering compassionate, evidence-based care with a patient-first approach.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section fade-in-section">
+    <div class="sec-head"><div class="sec-icon"><i class="fas fa-address-book"></i></div><span class="sec-title">Contact</span></div>
+    <div class="contact-list">
+      <a href="mailto:dr.chen@citymed.com" class="contact-item">
+        <div class="item-icon email"><i class="fas fa-envelope"></i></div>
+        <div><div class="item-label">Email</div><div class="item-val">dr.chen@citymed.com</div></div>
+      </a>
+      <a href="tel:+14155559876" class="contact-item">
+        <div class="item-icon phone"><i class="fas fa-phone"></i></div>
+        <div><div class="item-label">Phone</div><div class="item-val">+1 (415) 555-9876</div></div>
+      </a>
+      <a href="tel:+14155559877" class="contact-item">
+        <div class="item-icon alt"><i class="fas fa-mobile-alt"></i></div>
+        <div><div class="item-label">Emergency Line</div><div class="item-val">+1 (415) 555-9877</div></div>
+      </a>
+      <a href="#" class="contact-item">
+        <div class="item-icon loc"><i class="fas fa-hospital"></i></div>
+        <div><div class="item-label">Clinic Address</div><div class="item-val">450 Sutter St, San Francisco, CA</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="section fade-in-section">
+    <div class="sec-head"><div class="sec-icon"><i class="fas fa-briefcase-medical"></i></div><span class="sec-title">Services</span></div>
+    <div class="services-grid">
+      <div class="srv-card">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&q=80" alt="">
+        <div class="srv-body"><div class="srv-title">Cardiac Consultation</div><div class="srv-desc">Comprehensive heart health assessment and diagnosis.</div></div>
+      </div>
+      <div class="srv-card">
+        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300&q=80" alt="">
+        <div class="srv-body"><div class="srv-title">Preventive Cardiology</div><div class="srv-desc">Personalized heart disease prevention programs.</div></div>
+      </div>
+      <div class="srv-card">
+        <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=300&q=80" alt="">
+        <div class="srv-body"><div class="srv-title">ECG & Echo</div><div class="srv-desc">Advanced cardiac imaging and diagnostic testing.</div></div>
+      </div>
+      <div class="srv-card">
+        <img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=300&q=80" alt="">
+        <div class="srv-body"><div class="srv-title">Telehealth</div><div class="srv-desc">Convenient online consultations from home.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR -->
+  <div class="qr-block fade-in-section">
+    <div class="qr-white">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" fill="white"/>
+        <rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="16" width="18" height="18" fill="#000"/>
+        <rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="66" y="16" width="18" height="18" fill="#000"/>
+        <rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="66" width="18" height="18" fill="#000"/>
+        <rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/>
+        <rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/>
+        <rect x="45" y="10" width="8" height="8" fill="#000"/><rect x="45" y="22" width="8" height="8" fill="#000"/>
+      </svg>
+    </div>
+    <div class="qr-txt"><h4>Scan to Connect</h4><p>Scan with your phone camera to save Dr. Chen's contact &amp; book an appointment.</p></div>
+  </div>
+
+  <!-- SAVE -->
+  <div class="save-area fade-in-section">
+    <a href="#" class="save-link"><i class="fas fa-user-plus"></i> Save to Contacts</a>
+  </div>
+
+  <!-- SHARE -->
+  <div class="share-area fade-in-section">
+    <div class="share-row">
+      <a href="#" class="sh-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="#" class="sh-btn fb"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="#" class="sh-btn tw"><i class="fab fa-twitter"></i> Twitter</a>
+    </div>
+    <div class="copy-wrap">
+      <input class="copy-inp" value="https://yourvcard.com/dr-sarah-chen" readonly>
+      <button class="copy-b" onclick="navigator.clipboard.writeText('https://yourvcard.com/dr-sarah-chen');this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+
+  <div class="footer">Powered by <span>VCard Pro</span> · Healthcare Edition</div>
+</div>
+<script>
+const obs = new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajesh Mehta | CA & Financial Consultant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0e1a2b;--card:#132035;--navy:#1a2f4a;--gold:#d4a017;--gold2:#f0c040;
+  --silver:#c0ccd8;--white:#eef4fb;--text:#94a8be;--border:#1e3352;--green:#22c55e;
+}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--white);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 100px rgba(212,160,23,.08);}
+
+/* DESKTOP PARTICLES */
+@media(min-width:768px){.desktop-particles{display:block!important;}}
+.desktop-particles{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;}
+.hex{position:absolute;width:60px;height:60px;opacity:.04;animation:hexFloat 12s infinite ease-in-out;}
+.hex svg{width:100%;height:100%;}
+.hex:nth-child(1){top:5%;left:2%;animation-delay:0s;}
+.hex:nth-child(2){top:25%;right:3%;animation-delay:3s;width:40px;height:40px;}
+.hex:nth-child(3){top:50%;left:5%;animation-delay:6s;width:80px;height:80px;}
+.hex:nth-child(4){top:70%;right:5%;animation-delay:2s;width:50px;height:50px;}
+.hex:nth-child(5){top:88%;left:8%;animation-delay:9s;width:45px;height:45px;}
+.coin{position:absolute;width:30px;height:30px;border-radius:50%;border:2px solid var(--gold);opacity:.06;animation:coinSpin 8s infinite linear;}
+.coin:nth-child(6){top:15%;left:88%;animation-delay:0s;}
+.coin:nth-child(7){top:40%;left:85%;animation-delay:4s;}
+.coin:nth-child(8){top:65%;left:90%;animation-delay:2s;}
+@keyframes hexFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-25px) rotate(30deg);}}
+@keyframes coinSpin{from{transform:rotateY(0);}to{transform:rotateY(360deg);}}
+
+/* BANNER */
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;filter:brightness(.35) saturate(.6);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(14,26,43,.6),rgba(212,160,23,.15) 50%,rgba(14,26,43,.95));}
+.banner-content{position:absolute;bottom:20px;left:20px;right:20px;}
+.firm-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.firm-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
+.banner-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);line-height:1.2;}
+.gold-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),transparent);}
+
+/* PROFILE */
+.profile-area{padding:0 22px 18px;position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-48px;margin-bottom:14px;}
+.av{position:relative;width:96px;height:96px;}
+.av img{width:100%;height:100%;border-radius:8px;object-fit:cover;border:3px solid var(--gold);}
+.av-glow{position:absolute;inset:-3px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));z-index:-1;opacity:.6;}
+.consult-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),#b8860b);color:#0e1a2b;font-size:11px;font-weight:800;padding:11px 18px;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:all .3s;border-radius:6px;}
+.consult-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(212,160,23,.4);}
+.ca-name{font-family:'Playfair Display',serif;font-size:25px;color:var(--white);margin-bottom:4px;}
+.tagline{font-size:12px;color:var(--gold);font-style:italic;margin-bottom:4px;}
+.ca-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text);margin-bottom:3px;}
+.ca-firm{font-size:13px;color:var(--silver);}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.badge{font-size:10px;padding:4px 12px;border:1px solid rgba(212,160,23,.4);color:var(--gold);background:rgba(212,160,23,.08);border-radius:4px;font-weight:600;letter-spacing:.5px;}
+.social-row{display:flex;gap:8px;padding:10px 0;}
+.soc{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;background:var(--card);border:1px solid var(--border);color:var(--text);transition:all .3s;}
+.soc:hover{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+
+/* BIO */
+.bio{margin:0 22px 18px;padding:18px 20px;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:12px;}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+
+/* SECTION */
+.section{padding:0 22px 18px;}
+.sec-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--white);transition:all .3s;}
+.ci:hover{border-color:var(--gold);background:rgba(212,160,23,.07);transform:translateY(-2px);}
+.ci-ico{width:34px;height:34px;border-radius:8px;background:rgba(212,160,23,.15);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px;flex-shrink:0;}
+.ci-lbl{font-size:9px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:600;word-break:break-word;}
+
+/* WEBSITE */
+.website-btn{display:flex;align-items:center;gap:10px;margin:0 22px 18px;padding:14px 18px;background:var(--card);border:1px solid rgba(212,160,23,.3);color:var(--gold);border-radius:12px;text-decoration:none;transition:all .3s;}
+.website-btn:hover{background:rgba(212,160,23,.1);border-color:var(--gold);transform:translateY(-2px);}
+.website-btn span{font-size:13px;font-weight:600;}
+.website-btn i:last-child{margin-left:auto;}
+
+/* CAROUSEL */
+.carousel-wrap{position:relative;overflow:hidden;margin-bottom:4px;}
+.carousel-track{display:flex;gap:12px;transition:transform .5s cubic-bezier(.4,0,.2,1);padding:4px 2px;}
+.srv-card{min-width:158px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0;transition:all .3s;}
+.srv-card:hover{border-color:var(--gold);transform:translateY(-5px);box-shadow:0 12px 28px rgba(212,160,23,.15);}
+.srv-card img{width:100%;height:96px;object-fit:cover;filter:brightness(.7) saturate(.6);}
+.srv-body{padding:10px 12px;}
+.srv-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.srv-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.carousel-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{width:22px;border-radius:4px;background:var(--gold);}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--gold);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .3s;}
+.carousel-btn:hover{background:var(--gold);color:var(--bg);}
+.carousel-btn.prev{left:4px;}
+.carousel-btn.next{right:4px;}
+
+/* QR */
+.qr-block{margin:0 22px 18px;background:var(--card);border:1px solid rgba(212,160,23,.25);border-radius:18px;padding:22px;display:flex;align-items:center;gap:18px;}
+.qr-box{background:#fff;padding:10px;border-radius:10px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-txt h4{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);margin-bottom:5px;}
+.qr-txt p{font-size:12px;color:var(--text);line-height:1.6;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 18px;padding:15px;background:linear-gradient(135deg,var(--gold),#b8860b);color:#0e1a2b;font-size:13px;font-weight:800;border-radius:10px;text-decoration:none;transition:all .3s;letter-spacing:1px;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(212,160,23,.4);}
+
+/* SHARE */
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:10px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card);transition:all .3s;}
+.sh:hover{border-color:var(--gold);color:var(--gold);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:11px;padding:12px 14px;font-family:'Inter',sans-serif;outline:none;}
+.cp-btn{background:var(--gold);color:#0e1a2b;border:none;padding:12px 18px;cursor:pointer;font-weight:800;font-size:12px;transition:all .3s;}
+.cp-btn:hover{background:var(--gold2);}
+
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text);border-top:1px solid var(--border);}
+.footer span{color:var(--gold);font-weight:700;}
+.fade-in{opacity:0;transform:translateY(22px);transition:all .65s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="desktop-particles">
+  <div class="hex"><svg viewBox="0 0 100 100"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#d4a017" stroke-width="3"/></svg></div>
+  <div class="hex"><svg viewBox="0 0 100 100"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#d4a017" stroke-width="3"/></svg></div>
+  <div class="hex"><svg viewBox="0 0 100 100"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#d4a017" stroke-width="3"/></svg></div>
+  <div class="hex"><svg viewBox="0 0 100 100"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#d4a017" stroke-width="3"/></svg></div>
+  <div class="hex"><svg viewBox="0 0 100 100"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#d4a017" stroke-width="3"/></svg></div>
+  <div class="coin"></div><div class="coin"></div><div class="coin"></div>
+</div>
+
+<div class="card-wrap">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=500&q=80" alt="Finance">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="firm-tag">Chartered Accountant</div>
+      <div class="banner-title">Trusted Finance.<br>Proven Results.</div>
+    </div>
+    <div class="gold-bar"></div>
+  </div>
+
+  <div class="profile-area">
+    <div class="profile-top">
+      <div class="av">
+        <div class="av-glow"></div>
+        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&q=80" alt="Rajesh">
+      </div>
+      <a href="tel:+919876543210" class="consult-btn"><i class="fas fa-calendar"></i> Consult</a>
+    </div>
+    <div class="ca-name">CA Rajesh Mehta</div>
+    <div class="tagline">"Numbers tell the truth — we tell the story"</div>
+    <div class="ca-title">FCA · DISA · GST Expert · MCA</div>
+    <div class="ca-firm">Mehta & Associates, Chartered Accountants</div>
+    <div class="badge-row">
+      <span class="badge">ICAI Member</span>
+      <span class="badge">GST Certified</span>
+      <span class="badge">RERA Expert</span>
+    </div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+    </div>
+  </div>
+
+  <div class="bio fade-in">
+    <p>20+ years of expertise in taxation, auditing, and financial consulting. Trusted by 500+ businesses across India. Specialising in corporate tax planning, GST compliance, startup advisory, and wealth management.</p>
+  </div>
+
+  <div class="section fade-in">
+    <div class="sec-h">Contact</div>
+    <div class="contact-grid">
+      <a href="mailto:ca.rajesh@mehtaassociates.in" class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">ca.rajesh@mehtaassociates.in</div></div></a>
+      <a href="tel:+912025551234" class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Phone</div><div class="ci-val">+91 20 2555 1234</div></div></a>
+      <a href="tel:+919876543210" class="ci"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+91 98765 43210</div></div></a>
+      <a href="#" class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Office</div><div class="ci-val">MG Road, Camp, Pune 411001</div></div></a>
+    </div>
+  </div>
+
+  <a href="https://mehtaassociates.in" target="_blank" class="website-btn fade-in">
+    <i class="fas fa-globe"></i><span>mehtaassociates.in</span><i class="fas fa-external-link-alt"></i>
+  </a>
+
+  <div class="section fade-in">
+    <div class="sec-h">Services</div>
+    <div class="carousel-wrap" id="carousel19">
+      <button class="carousel-btn prev" onclick="moveCarousel('carousel19',-1)"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="track19">
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Income Tax Filing</div><div class="srv-desc">ITR preparation for individuals, firms & corporates.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">GST Compliance</div><div class="srv-desc">Registration, filing & GST audit services.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Statutory Audit</div><div class="srv-desc">Company & LLP statutory and internal audits.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Startup Advisory</div><div class="srv-desc">Company formation, funding & legal compliance.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Investment Planning</div><div class="srv-desc">Wealth management & tax-saving investments.</div></div></div>
+      </div>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel19',1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="carousel-dots" id="dots19"></div>
+  </div>
+
+  <div class="qr-block fade-in">
+    <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-txt"><h4>Scan & Connect</h4><p>Scan to save contact or book a free 30-min financial consultation.</p></div>
+  </div>
+
+  <a href="#" class="save-btn fade-in"><i class="fas fa-address-card"></i> Save Contact</a>
+
+  <div class="share-area fade-in">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+      <a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/ca-rajesh-mehta" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Finance Edition</div>
+</div>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+const carousels={};
+function initCarousel(id){
+  const num=id.replace('carousel','');
+  const track=document.getElementById('track'+num);
+  const cards=track.querySelectorAll('.srv-card');
+  const dotsEl=document.getElementById('dots'+num);
+  let cur=0,max=Math.max(0,cards.length-2);
+  carousels[id]={track,cards,cur,max,dotsEl};
+  for(let i=0;i<=max;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>goTo(id,i);dotsEl.appendChild(d);}
+  renderCarousel(id);
+  setInterval(()=>moveCarousel(id,1),3200);
+}
+function renderCarousel(id){
+  const c=carousels[id];
+  const w=c.cards[0].offsetWidth+12;
+  c.track.style.transform=`translateX(-${c.cur*w}px)`;
+  c.dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===c.cur));
+}
+function moveCarousel(id,dir){
+  const c=carousels[id];
+  c.cur+=dir;
+  if(c.cur>c.max)c.cur=0;
+  if(c.cur<0)c.cur=c.max;
+  renderCarousel(id);
+}
+function goTo(id,i){carousels[id].cur=i;renderCarousel(id);}
+initCarousel('carousel19');
+if(window.innerWidth>=768){
+  const cv=document.createElement('canvas');
+  cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+  document.body.insertBefore(cv,document.body.firstChild);
+  const cx=cv.getContext('2d');
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const pts=Array.from({length:35},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*2+1}));
+  (function draw(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle='rgba(212,160,23,0.12)';cx.fill();});
+    pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle=`rgba(212,160,23,${.07*(1-d/110)})`;cx.stroke();}}));
+    requestAnimationFrame(draw);
+  })();
+}
+</script>
+</body>
+</html>

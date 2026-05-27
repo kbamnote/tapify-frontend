@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Priya Nair | Architect</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#f7f5f0;--white:#fff;--charcoal:#1c1c1c;--warm:#e8e0d0;--accent:#c45c26;--text:#333;--sub:#888;--border:#ddd;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.08);}
+@media(min-width:600px){
+.bg-arch{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bp{position:absolute;border:1px solid rgba(28,28,28,.06);animation:bpanim ease-in-out infinite alternate;}
+.bp1{width:350px;height:350px;top:-100px;right:-100px;animation-duration:12s;}
+.bp2{width:200px;height:200px;bottom:100px;left:-60px;animation-duration:9s;animation-delay:4s;}
+.bp3{width:500px;height:1px;background:rgba(28,28,28,.04);top:40%;left:0;animation:none;}
+@keyframes bpanim{0%{transform:rotate(0deg);}100%{transform:rotate(15deg);}}}
+.banner{height:240px;position:relative;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);}
+.b-over{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(28,28,28,.9));}
+.b-content{position:absolute;bottom:0;left:0;right:0;padding:22px;display:flex;align-items:flex-end;justify-content:space-between;}
+.b-firm{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:300;color:#fff;letter-spacing:2px;}
+.b-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);}
+.b-bar{position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--accent);}
+.prof{padding:0 22px 20px;background:var(--white);position:relative;z-index:5;}
+.ptop{display:flex;gap:16px;align-items:flex-end;margin-top:-40px;margin-bottom:16px;}
+.av{width:80px;height:80px;position:relative;flex-shrink:0;}
+.av img{width:100%;height:100%;object-fit:cover;border:4px solid var(--white);}
+.av::before{content:'';position:absolute;inset:-3px;background:var(--accent);z-index:-1;}
+.pname{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:600;color:var(--charcoal);margin-bottom:4px;}
+.ptitle{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:3px;}
+.pco{font-size:12px;color:var(--sub);}
+.tagline{font-size:13px;color:var(--sub);font-style:italic;margin:8px 0 12px;}
+.awards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.aw{font-size:10px;padding:3px 10px;border:1px solid var(--border);color:var(--sub);font-weight:600;letter-spacing:.5px;}
+.soc-row{display:flex;gap:8px;margin-bottom:10px;}
+.soc{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:14px;text-decoration:none;transition:all .3s;}
+.soc:hover{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.web{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);text-decoration:none;}
+.bio{background:var(--warm);padding:18px;margin:0 22px 20px;border-left:3px solid var(--accent);}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+.sec{padding:0 22px;margin-bottom:20px;}
+.sec-h{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:var(--charcoal);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-h::after{content:'';flex:1;height:1px;background:var(--border);}
+.cl{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border-left:3px solid transparent;text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{border-left-color:var(--accent);background:var(--white);transform:translateX(4px);}
+.ci-ic{width:34px;height:34px;background:var(--charcoal);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;}
+.ci-l{font-size:10px;color:var(--sub);margin-bottom:1px;}
+.ci-v{font-size:12px;font-weight:500;word-break:break-word;}
+.car-wrap{position:relative;overflow:hidden;margin-bottom:20px;}
+.car-track{display:flex;gap:12px;padding:4px 22px;transition:transform .5s cubic-bezier(.25,.46,.45,.94);}
+.c-card{min-width:160px;flex-shrink:0;transition:all .3s;}
+.c-card img{width:100%;height:110px;object-fit:cover;display:block;filter:grayscale(.2);}
+.c-card:hover img{filter:grayscale(0);}
+.c-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+.c-body{padding:10px 12px;background:var(--charcoal);color:#fff;}
+.c-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:400;letter-spacing:1px;margin-bottom:3px;}
+.c-desc{font-size:10px;color:rgba(255,255,255,.6);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.c-dots{display:flex;justify-content:center;gap:6px;padding:8px 0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{background:var(--accent);width:18px;border-radius:3px;}
+.c-arrows{position:absolute;top:40%;width:100%;display:flex;justify-content:space-between;padding:0 6px;pointer-events:none;}
+.c-arr{width:28px;height:28px;background:rgba(255,255,255,.9);border:1px solid var(--border);color:var(--charcoal);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:all;font-size:11px;transition:all .3s;}
+.c-arr:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.qr-blk{margin:0 22px 20px;background:var(--charcoal);padding:22px;display:flex;align-items:center;gap:20px;}
+.qr-box{background:#fff;padding:10px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-info h4{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:400;color:var(--accent);margin-bottom:4px;}
+.qr-info p{font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;}
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 20px;padding:14px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all .3s;}
+.save-btn:hover{opacity:.9;transform:translateY(-2px);}
+.share{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border);color:var(--sub);font-size:12px;text-decoration:none;transition:all .3s;}
+.sh:hover{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.copy-row{display:flex;border:1px solid var(--border);}
+.copy-inp{flex:1;background:var(--bg);border:none;color:var(--sub);font-size:11px;padding:10px 12px;font-family:'DM Sans',sans-serif;outline:none;}
+.cp-btn{background:var(--accent);color:#fff;border:none;padding:10px 16px;cursor:pointer;font-weight:600;font-size:11px;}
+.footer{text-align:center;padding:14px;font-size:10px;letter-spacing:2px;color:var(--sub);background:var(--bg);}
+.footer span{color:var(--accent);}
+.fade{opacity:0;transform:translateY(20px);transition:all .6s ease;}.fade.vis{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+<div class="bg-arch"><div class="bp bp1"></div><div class="bp bp2"></div><div class="bp bp3"></div></div>
+<div class="wrap">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=500&q=80" alt="">
+    <div class="b-over"></div>
+    <div class="b-bar"></div>
+    <div class="b-content"><div><div class="b-label">Architecture Studio</div><div class="b-firm">Nair & Spaces</div></div></div>
+  </div>
+  <div class="prof">
+    <div class="ptop">
+      <div class="av"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=200&q=80" alt="Priya"></div>
+      <div>
+        <div class="pname">Priya Nair</div>
+        <div class="ptitle">Principal Architect</div>
+        <div class="pco">Nair & Spaces Studio · Bangalore</div>
+      </div>
+    </div>
+    <div class="tagline">"Architecture is frozen music." — Schopenhauer</div>
+    <div class="awards"><span class="aw">COA Registered</span><span class="aw">LEED AP</span><span class="aw">IIA Member</span><span class="aw">AIA Affiliate</span></div>
+    <div class="soc-row">
+      <a href="#" class="soc"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc"><i class="fab fa-pinterest-p"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <a href="https://nairspaces.in" class="web"><i class="fas fa-globe"></i> nairspaces.in</a>
+  </div>
+  <div class="bio fade"><p>Award-winning architect blending sustainable design with timeless aesthetics. 14 years of crafting residential, commercial and hospitality spaces across South India and the UAE.</p></div>
+  <div class="sec fade">
+    <div class="sec-h">Contact</div>
+    <div class="cl">
+      <a href="mailto:priya@nairspaces.in" class="ci"><div class="ci-ic"><i class="fas fa-envelope"></i></div><div><div class="ci-l">Email</div><div class="ci-v">priya@nairspaces.in</div></div></a>
+      <a href="tel:+918023456789" class="ci"><div class="ci-ic"><i class="fas fa-phone"></i></div><div><div class="ci-l">Studio</div><div class="ci-v">+91 80 2345 6789</div></div></a>
+      <a href="tel:+919876543210" class="ci"><div class="ci-ic"><i class="fas fa-mobile-alt"></i></div><div><div class="ci-l">Mobile / WhatsApp</div><div class="ci-v">+91 98765 43210</div></div></a>
+      <a href="mailto:projects@nairspaces.in" class="ci"><div class="ci-ic"><i class="fas fa-drafting-compass"></i></div><div><div class="ci-l">Project Inquiries</div><div class="ci-v">projects@nairspaces.in</div></div></a>
+      <a href="#" class="ci"><div class="ci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-l">Studio</div><div class="ci-v">Indiranagar, Bangalore 560038</div></div></a>
+      <a href="https://nairspaces.in" class="ci" target="_blank"><div class="ci-ic"><i class="fas fa-globe"></i></div><div><div class="ci-l">Website</div><div class="ci-v">www.nairspaces.in</div></div></a>
+    </div>
+  </div>
+  <div class="sec fade"><div class="sec-h">Projects</div></div>
+  <div class="car-wrap fade" id="ca">
+    <div class="car-track" id="ta">
+      <div class="c-card"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Villa Design</div><div class="c-desc">Luxury residential architecture & interiors.</div></div></div>
+      <div class="c-card"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Corporate Spaces</div><div class="c-desc">Modern offices and co-working environments.</div></div></div>
+      <div class="c-card"><img src="https://images.unsplash.com/photo-1571055107559-3e67626fa8be?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Hospitality</div><div class="c-desc">Hotels, resorts and restaurant interiors.</div></div></div>
+      <div class="c-card"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300&q=80" alt=""><div class="c-body"><div class="c-title">Interior Design</div><div class="c-desc">Turnkey residential interior solutions.</div></div></div>
+    </div>
+    <div class="c-arrows"><div class="c-arr" onclick="slide('ta','l')"><i class="fas fa-chevron-left"></i></div><div class="c-arr" onclick="slide('ta','r')"><i class="fas fa-chevron-right"></i></div></div>
+    <div class="c-dots" id="da"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+  <div class="qr-blk fade">
+    <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-info"><h4>View Portfolio</h4><p>Scan to explore our full project portfolio and services.</p></div>
+  </div>
+  <a href="#" class="save-btn fade"><i class="fas fa-address-card"></i>&nbsp; Save Contact</a>
+  <div class="share fade">
+    <div class="sh-row"><a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a><a href="#" class="sh"><i class="fab fa-linkedin-in"></i> Share</a><a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a></div>
+    <div class="copy-row"><input class="copy-inp" value="https://yourvcard.com/priya-nair" readonly><button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button></div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Architecture Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('vis');});},{threshold:0.1});
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+const state={ta:{idx:0,cards:4}};
+function slide(id,dir){const s=state[id];s.idx=dir==='r'?(s.idx+1)%s.cards:(s.idx-1+s.cards)%s.cards;document.getElementById(id).style.transform=`translateX(calc(-${s.idx}*(160px + 12px)))`;const dots=document.getElementById('d'+id.slice(1));dots.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===s.idx));}
+setInterval(()=>slide('ta','r'),4000);
+</script>
+</body>
+</html>

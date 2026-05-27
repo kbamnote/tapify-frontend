@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kai Stone | Fitness Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d0d0d;--card:#181818;--orange:#f97316;--orange2:#fb923c;--yellow:#fbbf24;
+  --white:#f5f5f5;--text:#a3a3a3;--dark:#111;--border:#2a2a2a;
+}
+body{background:var(--bg);font-family:'Barlow',sans-serif;color:var(--white);}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);overflow:hidden;}
+
+/* Animated energy bars */
+.energy-bars{position:fixed;left:0;top:0;bottom:0;width:3px;display:flex;flex-direction:column;gap:20px;padding:30px 0;pointer-events:none;}
+.e-bar{flex:1;background:linear-gradient(to bottom,transparent,var(--orange),transparent);animation:barPulse 2s infinite ease-in-out;border-radius:2px;}
+.e-bar:nth-child(2){animation-delay:.5s;opacity:.5;}
+.e-bar:nth-child(3){animation-delay:1s;opacity:.3;}
+@keyframes barPulse{0%,100%{opacity:.2;transform:scaleY(.8);}50%{opacity:.8;transform:scaleY(1);}}
+
+/* BANNER */
+.banner{position:relative;height:260px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:brightness(.6) contrast(1.1);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,13,13,.2) 0%,rgba(13,13,13,.9) 100%),linear-gradient(135deg,rgba(249,115,22,.25),transparent);}
+.banner-content{position:absolute;bottom:24px;left:20px;right:20px;}
+.banner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:3px;line-height:1;color:var(--white);text-shadow:0 0 30px rgba(249,115,22,.5);}
+.title-accent{color:var(--orange);-webkit-text-stroke:1px var(--orange2);text-shadow:0 0 20px var(--orange);}
+.orange-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--yellow),var(--orange));}
+
+/* PROFILE */
+.profile-section{background:var(--card);padding:0 20px 20px;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-44px;margin-bottom:16px;}
+.av{position:relative;width:88px;height:88px;}
+.av img{width:100%;height:100%;object-fit:cover;border:3px solid var(--orange);clip-path:polygon(15% 0%,85% 0%,100% 15%,100% 85%,85% 100%,15% 100%,0% 85%,0% 15%);}
+.book-btn{background:linear-gradient(135deg,var(--orange),var(--yellow));color:var(--dark);font-size:12px;font-weight:700;padding:11px 22px;text-decoration:none;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px;transition:all .3s;clip-path:polygon(0 0,100% 0,100% 75%,95% 100%,0 100%);}
+.book-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(249,115,22,.4);}
+.trainer-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--white);margin-bottom:4px;}
+.trainer-role{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:4px;}
+.trainer-company{font-size:13px;color:var(--text);}
+
+/* STATS */
+.stats-bar{display:flex;background:var(--bg);margin:14px -20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stat{flex:1;text-align:center;padding:14px 6px;position:relative;}
+.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:var(--border);}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--orange);display:block;line-height:1;}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text);margin-top:3px;}
+
+/* SOCIAL */
+.social-row{display:flex;gap:8px;padding:14px 0 0;}
+.soc{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;transition:all .3s;border:1px solid var(--border);color:var(--text);clip-path:polygon(10% 0%,90% 0%,100% 10%,100% 90%,90% 100%,10% 100%,0% 90%,0% 10%);}
+.soc:hover{background:var(--orange);border-color:var(--orange);color:var(--dark);}
+
+/* BIO */
+.bio{margin:16px 20px;padding:18px 20px;border-left:3px solid var(--orange);background:rgba(249,115,22,.05);}
+.bio p{font-size:13px;line-height:1.8;color:var(--text);}
+
+/* SECTION */
+.section{padding:16px 20px 0;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--card);border:1px solid var(--border);text-decoration:none;color:var(--white);transition:all .3s;}
+.ci:hover{border-color:var(--orange);background:rgba(249,115,22,.08);transform:translateX(6px);}
+.ci-icon{width:36px;height:36px;background:rgba(249,115,22,.15);display:flex;align-items:center;justify-content:center;color:var(--orange);font-size:14px;flex-shrink:0;}
+.ci-lbl{font-size:10px;color:var(--text);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:13px;font-weight:600;}
+
+/* PROGRAMS / SERVICES */
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.prog{background:var(--card);border:1px solid var(--border);transition:all .3s;overflow:hidden;}
+.prog:hover{border-color:var(--orange);transform:translateY(-4px);box-shadow:0 10px 30px rgba(249,115,22,.2);}
+.prog img{width:100%;height:90px;object-fit:cover;filter:brightness(.8);}
+.prog-body{padding:10px 12px;}
+.prog-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:3px;}
+.prog-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-block{margin:16px 20px;background:linear-gradient(135deg,var(--orange),var(--yellow));padding:22px;display:flex;align-items:center;gap:20px;}
+.qr-white{background:#fff;padding:10px;width:88px;height:88px;flex-shrink:0;}
+.qr-white svg{width:68px;height:68px;}
+.qr-info{color:var(--dark);}
+.qr-info h4{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:4px;}
+.qr-info p{font-size:12px;line-height:1.5;opacity:.8;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 40px);margin:0 20px 16px;padding:15px;background:linear-gradient(135deg,var(--orange),var(--yellow));color:var(--dark);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all .3s;clip-path:polygon(0 0,100% 0,100% 75%,97% 100%,0 100%);}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(249,115,22,.4);}
+
+/* SHARE */
+.share-area{padding:0 20px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:600;text-decoration:none;transition:all .3s;}
+.sh:hover{border-color:var(--orange);color:var(--orange);}
+.copy-row{display:flex;border:1px solid var(--border);}
+.copy-inp{flex:1;background:var(--card);border:none;color:var(--text);font-size:11px;padding:11px 14px;font-family:'Barlow',sans-serif;outline:none;}
+.cp-btn{background:var(--orange);color:var(--dark);border:none;padding:11px 18px;cursor:pointer;font-weight:700;font-size:12px;transition:background .3s;}
+.cp-btn:hover{background:var(--yellow);}
+
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text);}
+.footer span{color:var(--orange);}
+.fade-in-section{opacity:0;transform:translateY(20px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="energy-bars"><div class="e-bar"></div><div class="e-bar"></div><div class="e-bar"></div></div>
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80" alt="">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="banner-title">TRAIN<br><span class="title-accent">HARDER</span></div>
+    </div>
+    <div class="orange-bar"></div>
+  </div>
+  <!-- PROFILE -->
+  <div class="profile-section">
+    <div class="profile-top">
+      <div class="av"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80" alt="Kai"></div>
+      <a href="tel:+17025557890" class="book-btn"><i class="fas fa-dumbbell"></i> Book Now</a>
+    </div>
+    <div class="trainer-name">Kai Stone</div>
+    <div class="trainer-role">Elite Fitness Coach &amp; Nutritionist</div>
+    <div class="trainer-company">Stone Fitness | Online &amp; In-Person Training</div>
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">800+</span><span class="stat-lbl">Clients</span></div>
+      <div class="stat"><span class="stat-num">8yr</span><span class="stat-lbl">Expert</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-lbl">Rating</span></div>
+      <div class="stat"><span class="stat-num">12+</span><span class="stat-lbl">Programs</span></div>
+    </div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fab fa-tiktok"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+    </div>
+  </div>
+  <!-- BIO -->
+  <div class="bio fade-in-section"><p>Certified personal trainer &amp; sports nutritionist. I've helped 800+ people transform their bodies and build unstoppable confidence through science-based training and sustainable lifestyle habits.</p></div>
+  <!-- CONTACT -->
+  <div class="section fade-in-section">
+    <div class="sec-h">Contact</div>
+    <div class="contact-list">
+      <a href="mailto:kai@stonefitness.com" class="ci"><div class="ci-icon"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">kai@stonefitness.com</div></div></a>
+      <a href="tel:+17025557890" class="ci"><div class="ci-icon"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Phone</div><div class="ci-val">+1 (702) 555-7890</div></div></a>
+      <a href="tel:+17025557891" class="ci"><div class="ci-icon"><i class="fas fa-mobile-alt"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+1 (702) 555-7891</div></div></a>
+      <a href="#" class="ci"><div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Gym</div><div class="ci-val">Downtown Las Vegas, NV</div></div></a>
+    </div>
+  </div>
+  <!-- PROGRAMS -->
+  <div class="section fade-in-section">
+    <div class="sec-h">Programs</div>
+    <div class="prog-grid">
+      <div class="prog"><img src="https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=300&q=80" alt=""><div class="prog-body"><div class="prog-title">Strength Build</div><div class="prog-desc">12-week progressive overload system.</div></div></div>
+      <div class="prog"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&q=80" alt=""><div class="prog-body"><div class="prog-title">Fat Loss Blitz</div><div class="prog-desc">HIIT & metabolic conditioning plan.</div></div></div>
+      <div class="prog"><img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=300&q=80" alt=""><div class="prog-body"><div class="prog-title">Nutrition Plan</div><div class="prog-desc">Custom macro-based meal planning.</div></div></div>
+      <div class="prog"><img src="https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=300&q=80" alt=""><div class="prog-body"><div class="prog-title">Online Coaching</div><div class="prog-desc">1-on-1 virtual coaching via app.</div></div></div>
+    </div>
+  </div>
+  <!-- QR -->
+  <div class="qr-block fade-in-section">
+    <div class="qr-white"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-info"><h4>Start Training</h4><p>Scan to book a free consultation and start your transformation.</p></div>
+  </div>
+  <!-- SAVE -->
+  <a href="#" class="save-btn fade-in-section"><i class="fas fa-user-plus"></i> Save Contact</a>
+  <!-- SHARE -->
+  <div class="share-area fade-in-section">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/kai-stone" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/kai-stone');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Fitness Edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

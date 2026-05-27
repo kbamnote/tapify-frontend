@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPro Academy | Coaching</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#eff6ff;--white:#fff;--green:#2563eb;--green2:#3b82f6;--dark:#1e3a5f;--text:#1e40af;--sub:#6b7280;--border:#93c5fd;--card:#f0f9ff;--mint:#dbeafe;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:0 0 80px rgba(22,163,74,.12);overflow:hidden;position:relative;}
+@media(min-width:768px){.desktop-bg{display:block!important;}}
+.desktop-bg{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.med-cross{position:absolute;color:var(--green);opacity:.04;animation:crossFloat 10s infinite ease-in-out;}
+.med-cross:nth-child(1){font-size:30px;top:5%;left:4%;animation-delay:0s;}
+.med-cross:nth-child(2){font-size:20px;top:22%;right:5%;animation-delay:3s;}
+.med-cross:nth-child(3){font-size:40px;top:48%;left:3%;animation-delay:6s;}
+.med-cross:nth-child(4){font-size:24px;top:68%;right:6%;animation-delay:2s;}
+.med-cross:nth-child(5){font-size:28px;top:85%;left:5%;animation-delay:8s;}
+@keyframes crossFloat{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-20px) rotate(15deg);}}
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(22,163,74,.6),rgba(5,46,22,.85));}
+.banner-content{position:absolute;bottom:20px;left:20px;right:20px;color:#fff;}
+.banner-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:30px;margin-bottom:8px;}
+.banner-big{font-size:26px;font-weight:700;line-height:1.2;}
+.green-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green2),var(--green));background-size:200%;animation:gBar 3s linear infinite;}
+@keyframes gBar{0%{background-position:0%;}100%{background-position:200%;}}
+.profile-area{padding:0 22px 18px;position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-50px;margin-bottom:14px;}
+.av{position:relative;width:100px;height:100px;}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--white);box-shadow:0 4px 20px rgba(22,163,74,.3);}
+.av-ring{position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--green),var(--green2),#4ade80,var(--green));animation:avSpin 5s linear infinite;z-index:-1;}
+@keyframes avSpin{to{transform:rotate(360deg);}}
+.order-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;font-size:11px;font-weight:700;padding:11px 18px;border-radius:30px;text-decoration:none;letter-spacing:1px;transition:all .3s;}
+.order-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(22,163,74,.4);}
+.store-name{font-size:24px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.tagline{font-size:12px;color:var(--green);font-style:italic;font-weight:500;margin-bottom:4px;}
+.store-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:3px;}
+.store-company{font-size:13px;color:var(--text);}
+.social-row{display:flex;gap:10px;padding:10px 0;}
+.soc{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;background:var(--mint);color:var(--green);transition:all .3s;}
+.soc:hover{background:var(--green);color:#fff;transform:translateY(-3px);}
+.bio{margin:0 22px 18px;padding:18px 20px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:18px;border-left:4px solid var(--green);}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+.section{padding:0 22px 18px;}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-ico{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--dark));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;flex-shrink:0;}
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dark);}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{background:var(--mint);border-color:var(--green);transform:translateY(-2px);}
+.ci-ico{width:34px;height:34px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;}
+.ci-lbl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:600;word-break:break-word;}
+.website-btn{display:flex;align-items:center;gap:10px;margin:0 22px 18px;padding:14px 18px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;border-radius:14px;text-decoration:none;transition:all .3s;}
+.website-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.35);}
+.website-btn span{font-size:13px;font-weight:600;}
+.website-btn i:last-child{margin-left:auto;}
+.carousel-wrap{position:relative;overflow:hidden;margin-bottom:4px;}
+.carousel-track{display:flex;gap:12px;transition:transform .5s cubic-bezier(.4,0,.2,1);padding:4px 2px;}
+.srv-card{min-width:158px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;flex-shrink:0;transition:all .3s;}
+.srv-card:hover{border-color:var(--green);transform:translateY(-5px);box-shadow:0 12px 28px rgba(22,163,74,.15);}
+.srv-card img{width:100%;height:96px;object-fit:cover;}
+.srv-body{padding:10px 12px;}
+.srv-title{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.srv-desc{font-size:11px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.carousel-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{width:22px;border-radius:4px;background:var(--green);}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--white);border:1px solid var(--border);color:var(--green);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;}
+.carousel-btn.prev{left:4px;}
+.carousel-btn.next{right:4px;}
+.qr-block{margin:0 22px 18px;background:linear-gradient(135deg,var(--dark),var(--green));border-radius:20px;padding:22px;display:flex;align-items:center;gap:18px;}
+.qr-box{background:#fff;padding:10px;border-radius:12px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-txt{color:#fff;}
+.qr-txt h4{font-size:17px;font-weight:700;margin-bottom:5px;}
+.qr-txt p{font-size:12px;opacity:.85;line-height:1.6;}
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 18px;padding:15px;background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;font-size:13px;font-weight:700;border-radius:30px;text-decoration:none;transition:all .3s;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(22,163,74,.4);}
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:14px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--sub);background:var(--card);transition:all .3s;}
+.sh:hover{background:var(--mint);border-color:var(--green);color:var(--green);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--sub);font-size:11px;padding:12px 14px;outline:none;}
+.cp-btn{background:var(--green);color:#fff;border:none;padding:12px 18px;cursor:pointer;font-weight:700;font-size:12px;}
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);background:var(--mint);}
+.footer span{color:var(--green);font-weight:700;}
+.fade-in{opacity:0;transform:translateY(22px);transition:all .65s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="desktop-bg"><i class="fas fa-plus med-cross"></i><i class="fas fa-pills med-cross"></i><i class="fas fa-plus med-cross"></i><i class="fas fa-capsules med-cross"></i><i class="fas fa-plus med-cross"></i></div>
+<div class="card-wrap">
+  <div class="banner"><img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&q=80" alt="Pharmacy"><div class="banner-overlay"></div><div class="banner-content"><div class="banner-tag"><i class="fas fa-graduation-cap"></i> Coaching Institute</div><div class="banner-big">Crack IIT-JEE<br>&amp; NEET 2026</div></div><div class="green-bar"></div></div>
+  <div class="profile-area">
+    <div class="profile-top"><div class="av"><div class="av-ring"></div><img src="data:image/jpeg;base64,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" alt="Dr. Amit"></div><a href="tel:+919876543210" class="order-btn"><i class="fas fa-phone"></i> Enrol Now</a></div>
+    <div class="store-name">Prof. Sanjay Verma</div>
+    <div class="tagline">"Where aspirations meet preparation"</div>
+    <div class="store-title">IIT-JEE Licensed Pharmacist &amp; Healthcare Advisoramp; NEET Expert Coach</div>
+    <div class="store-company">EduPro Academy, Kota MedPlus Pharmacy &amp; Wellness, Puneamp; Online</div>
+    <div class="social-row"><a href="#" class="soc"><i class="fab fa-whatsapp"></i></a><a href="#" class="soc"><i class="fab fa-instagram"></i></a><a href="#" class="soc"><i class="fab fa-facebook-f"></i></a><a href="#" class="soc"><i class="fas fa-globe"></i></a></div>
+  </div>
+  <div class="bio fade-in"><p>20 years of coaching excellence with 2000+ IIT 12+ years as a licensed pharmacist. Offering genuine medicines, health consultations, home delivery, and wellness products. FSSAI &amp; Drug License certified with 15,000+ satisfied customers across Pune.amp; AIIMS selections. Expert faculty, proven methodology, and personalised attention for every student.</p></div>
+  <div class="section fade-in"><div class="sec-h"><div class="sec-ico"><i class="fas fa-address-book"></i></div><span class="sec-title">Contact</span></div>
+    <div class="contact-grid">
+      <a href="mailto:sanjay@edupro.academy" class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">sanjay@edupro.academy</div></div></a>
+      <a href="tel:+912025551234" class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Centre</div><div class="ci-val">+91 20 2555 1234</div></div></a>
+      <a href="tel:+919876543210" class="ci"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+91 98765 43210</div></div></a>
+      <a href="#" class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Centre</div><div class="ci-val">Station Road, Kota, Rajasthan</div></div></a>
+    </div>
+  </div>
+  <a href="https://edupro.academy" target="_blank" class="website-btn fade-in"><i class="fas fa-globe"></i><span>edupro.academy</span><i class="fas fa-arrow-right"></i></a>
+  <div class="section fade-in"><div class="sec-h"><div class="sec-ico"><i class="fas fa-chalkboard-teacher"></i></div><span class="sec-title">Services</span></div>
+    <div class="carousel-wrap" id="carousel27"><button class="carousel-btn prev" onclick="moveCarousel('carousel27',-1)"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="track27">
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">JEE Main+Adv</div><div class="srv-desc">2-year integrated program with 95% success.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1576602976047-174e57a47881?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">NEET Coaching</div><div class="srv-desc">Biology, Physics, Chemistry — AIIMS focus.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Crash Courses</div><div class="srv-desc">45-day intensive revision for boards BP, sugar &amp; basic health screening.amp; entrance.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Online Batches</div><div class="srv-desc">Live interactive classes with recorded access.</div></div></div>
+      </div>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel27',1)"><i class="fas fa-chevron-right"></i></button></div><div class="carousel-dots" id="dots27"></div>
+  </div>
+  <div class="qr-block fade-in"><div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div><div class="qr-txt"><h4>Enrol Nows</h4><p>Scan to see batch timings, fees Scan to order medicines via WhatsApp or our website.amp; enrol online.</p></div></div>
+  <a href="#" class="save-btn fade-in"><i class="fas fa-user-plus"></i> Save Contact</a>
+  <div class="share-area fade-in"><div class="sh-row"><a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a><a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a><a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a></div><div class="copy-row"><input class="copy-inp" value="https://yourvcard.com/edupro-sanjay" readonly><button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(function(){this.textContent='Copy';}.bind(this),2000)">Copy</button></div></div>
+  <div class="footer">Powered by <span>VCard Pro</span> &middot; Education Edition</div>
+</div>
+<script>
+var obs=new IntersectionObserver(function(e){e.forEach(function(el){if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(function(el){obs.observe(el);});
+var carousels={};
+function initCarousel(id){var num=id.replace('carousel','');var track=document.getElementById('track'+num);var cards=track.querySelectorAll('.srv-card');var dotsEl=document.getElementById('dots'+num);var cur=0,max=Math.max(0,cards.length-2);carousels[id]={track:track,cards:cards,cur:cur,max:max,dotsEl:dotsEl};for(var i=0;i<=max;i++){var d=document.createElement('div');d.className='dot'+(i===0?' active':'');(function(idx){d.onclick=function(){goTo(id,idx);};})(i);dotsEl.appendChild(d);}renderCarousel(id);setInterval(function(){moveCarousel(id,1);},3200);}
+function renderCarousel(id){var c=carousels[id];var w=c.cards[0].offsetWidth+12;c.track.style.transform='translateX(-'+(c.cur*w)+'px)';c.dotsEl.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===c.cur);});}
+function moveCarousel(id,dir){var c=carousels[id];c.cur+=dir;if(c.cur>c.max)c.cur=0;if(c.cur<0)c.cur=c.max;renderCarousel(id);}
+function goTo(id,i){carousels[id].cur=i;renderCarousel(id);}
+initCarousel('carousel27');
+if(window.innerWidth>=768){var cv=document.createElement('canvas');cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';document.body.insertBefore(cv,document.body.firstChild);var cx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;var pts=[];for(var i=0;i<35;i++){pts.push({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1});}(function draw(){cx.clearRect(0,0,cv.width,cv.height);pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle='rgba(22,163,74,0.1)';cx.fill();});pts.forEach(function(a,i){pts.slice(i+1).forEach(function(b){var d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle='rgba(22,163,74,'+(0.06*(1-d/110))+')';cx.stroke();}});});requestAnimationFrame(draw);})();}
+</script>
+</body>
+</html>

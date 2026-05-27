@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arjun Dev | Full Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#050d12;--card:#0a1a22;--cyan:#00e5ff;--cyan2:#00bcd4;--green:#00ff88;
+  --blue:#1565c0;--white:#e0f7fa;--text:#607d8b;--border:#0d2d3a;--glow:#00e5ff33;
+}
+body{background:var(--bg);font-family:'Space Grotesk',sans-serif;color:var(--white);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;}
+
+/* Matrix rain effect */
+.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.matrix-col{position:absolute;top:-100%;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);opacity:.07;animation:matrixFall linear infinite;writing-mode:vertical-rl;}
+.matrix-col:nth-child(1){left:5%;animation-duration:8s;animation-delay:0s;}
+.matrix-col:nth-child(2){left:15%;animation-duration:12s;animation-delay:2s;}
+.matrix-col:nth-child(3){left:25%;animation-duration:9s;animation-delay:4s;}
+.matrix-col:nth-child(4){left:55%;animation-duration:11s;animation-delay:1s;}
+.matrix-col:nth-child(5){left:75%;animation-duration:7s;animation-delay:3s;}
+.matrix-col:nth-child(6){left:90%;animation-duration:10s;animation-delay:5s;}
+@keyframes matrixFall{from{top:-100%;}to{top:100%;}}
+
+/* Grid lines */
+.grid-lines{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+
+/* BANNER */
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(.4) saturate(.5) hue-rotate(180deg);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,13,18,.2),rgba(5,13,18,.95)),linear-gradient(135deg,rgba(0,229,255,.15),transparent);}
+.banner-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;}
+.terminal-line{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--green);animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.banner-name{font-size:28px;font-weight:700;color:var(--white);letter-spacing:-1px;}
+.banner-role{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);letter-spacing:1px;}
+.cyan-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);animation:barScan 3s linear infinite;}
+@keyframes barScan{0%{background-position:0%;}100%{background-position:200%;}}
+
+/* PROFILE */
+.profile-area{padding:0 20px 20px;position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-44px;margin-bottom:16px;}
+.av-hex{position:relative;width:88px;height:88px;}
+.av-hex img{width:100%;height:100%;object-fit:cover;border:2px solid var(--cyan);clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);filter:saturate(.8);}
+.av-hex::before{content:'';position:absolute;inset:-3px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:linear-gradient(135deg,var(--cyan),var(--green));z-index:-1;animation:hexGlow 3s infinite;}
+@keyframes hexGlow{0%,100%{opacity:.6;}50%{opacity:1;box-shadow:0 0 20px var(--cyan);}}
+.hire-btn{display:flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 18px;text-decoration:none;transition:all .3s;letter-spacing:1px;position:relative;overflow:hidden;}
+.hire-btn::before{content:'';position:absolute;inset:0;background:var(--cyan);transform:translateX(-100%);transition:transform .3s;}
+.hire-btn:hover::before{transform:translateX(0);}
+.hire-btn:hover{color:var(--bg);}
+.hire-btn span{position:relative;z-index:1;}
+
+/* TECH STACK */
+.stack-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.stack-tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border:1px solid;border-radius:4px;transition:all .3s;}
+.stack-tag.js{color:#f7df1e;border-color:rgba(247,223,30,.3);background:rgba(247,223,30,.07);}
+.stack-tag.react{color:#61dafb;border-color:rgba(97,218,251,.3);background:rgba(97,218,251,.07);}
+.stack-tag.node{color:#68a063;border-color:rgba(104,160,99,.3);background:rgba(104,160,99,.07);}
+.stack-tag.py{color:#3572a5;border-color:rgba(53,114,165,.3);background:rgba(53,114,165,.15);}
+.stack-tag.docker{color:#2496ed;border-color:rgba(36,150,237,.3);background:rgba(36,150,237,.07);}
+.stack-tag:hover{transform:translateY(-2px);}
+
+/* SOCIAL */
+.social-row{display:flex;gap:8px;padding:10px 0;}
+.soc{width:38px;height:38px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--text);font-size:16px;text-decoration:none;transition:all .3s;border-radius:6px;}
+.soc:hover{border-color:var(--cyan);color:var(--cyan);background:var(--glow);box-shadow:0 0 15px var(--glow);}
+
+/* BIO */
+.bio{margin:0 0 16px;padding:16px 18px;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--cyan);position:relative;}
+.bio-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;}
+.bio p{font-size:13px;line-height:1.8;color:var(--text);}
+
+/* SECTION */
+.section{margin-bottom:16px;}
+.sec-h{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-h::before{content:'//';color:var(--green);}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--border);text-decoration:none;color:var(--white);transition:all .3s;border-radius:8px;}
+.ci:hover{border-color:var(--cyan);background:rgba(0,229,255,.05);box-shadow:0 0 20px rgba(0,229,255,.1);}
+.ci-icon{width:34px;height:34px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;flex-shrink:0;border-radius:8px;}
+.ci-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:13px;font-weight:500;word-break:break-all;}
+
+/* SERVICES/PROJECTS */
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.proj{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .3s;}
+.proj:hover{border-color:var(--cyan);box-shadow:0 0 25px rgba(0,229,255,.15);transform:translateY(-4px);}
+.proj img{width:100%;height:90px;object-fit:cover;filter:saturate(.6) brightness(.8);}
+.proj:hover img{filter:saturate(1) brightness(1);}
+.proj-body{padding:10px 12px;}
+.proj-title{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--white);}
+.proj-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-block{background:var(--card);border:1px solid var(--border);padding:22px;display:flex;align-items:center;gap:20px;border-radius:12px;margin-bottom:16px;position:relative;overflow:hidden;}
+.qr-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--green),var(--cyan));animation:scanLine 2s linear infinite;}
+@keyframes scanLine{0%{background-position:0%;}100%{background-position:200%;}}
+.qr-white{background:#fff;padding:10px;width:90px;height:90px;flex-shrink:0;border-radius:8px;}
+.qr-white svg{width:70px;height:70px;}
+.qr-info h4{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--cyan);margin-bottom:6px;}
+.qr-info p{font-size:12px;color:var(--text);line-height:1.6;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(0,255,136,.1));border:1px solid var(--cyan);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:2px;text-decoration:none;transition:all .3s;border-radius:8px;margin-bottom:16px;}
+.save-btn:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 30px var(--glow);}
+
+/* SHARE */
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:500;text-decoration:none;transition:all .3s;border-radius:8px;}
+.sh:hover{border-color:var(--cyan);color:var(--cyan);background:var(--glow);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:11px;padding:11px 14px;font-family:'JetBrains Mono',monospace;outline:none;}
+.cp-btn{background:var(--cyan);color:var(--bg);border:none;padding:11px 16px;cursor:pointer;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;transition:background .3s;}
+.cp-btn:hover{background:var(--green);}
+
+.footer{text-align:center;padding:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);letter-spacing:2px;}
+.footer span{color:var(--cyan);}
+.fade-in-section{opacity:0;transform:translateY(20px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="matrix-bg">
+  <div class="matrix-col">01001010110</div>
+  <div class="matrix-col">10110100110</div>
+  <div class="matrix-col">01101001010</div>
+  <div class="matrix-col">11010010011</div>
+  <div class="matrix-col">00110101101</div>
+  <div class="matrix-col">10011010010</div>
+</div>
+<div class="grid-lines"></div>
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt="">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="terminal-line">$ whoami<div class="cursor"></div></div>
+      <div class="banner-name">Arjun Sharma</div>
+      <div class="banner-role">// Full Stack Developer &amp; Cloud Architect</div>
+    </div>
+    <div class="cyan-bar"></div>
+  </div>
+  <!-- PROFILE -->
+  <div class="profile-area">
+    <div class="profile-top">
+      <div class="av-hex"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="Arjun"></div>
+      <a href="mailto:arjun@devhub.io" class="hire-btn"><span><i class="fas fa-code"></i> Hire Me</span></a>
+    </div>
+    <div class="stack-row">
+      <span class="stack-tag js">JavaScript</span>
+      <span class="stack-tag react">React</span>
+      <span class="stack-tag node">Node.js</span>
+      <span class="stack-tag py">Python</span>
+      <span class="stack-tag docker">Docker</span>
+    </div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-github"></i></a>
+      <a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <!-- BIO -->
+    <div class="bio fade-in-section">
+      <div class="bio-label">// about.md</div>
+      <p>8+ years building scalable web applications and cloud-native solutions. I turn complex problems into elegant, performant code. Open source contributor &amp; tech speaker.</p>
+    </div>
+    <!-- CONTACT -->
+    <div class="section fade-in-section">
+      <div class="sec-h">Contact</div>
+      <div class="contact-list">
+        <a href="mailto:arjun@devhub.io" class="ci"><div class="ci-icon"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">email</div><div class="ci-val">arjun@devhub.io</div></div></a>
+        <a href="tel:+919876543210" class="ci"><div class="ci-icon"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">phone</div><div class="ci-val">+91 98765 43210</div></div></a>
+        <a href="tel:+919876543211" class="ci"><div class="ci-icon"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">whatsapp</div><div class="ci-val">+91 98765 43211</div></div></a>
+        <a href="#" class="ci"><div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">location</div><div class="ci-val">Bangalore, Karnataka, India</div></div></a>
+      </div>
+    </div>
+    <!-- PROJECTS/SERVICES -->
+    <div class="section fade-in-section">
+      <div class="sec-h">Services</div>
+      <div class="projects-grid">
+        <div class="proj"><img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&q=80" alt=""><div class="proj-body"><div class="proj-title">Web Development</div><div class="proj-desc">Full stack React & Node.js apps.</div></div></div>
+        <div class="proj"><img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&q=80" alt=""><div class="proj-body"><div class="proj-title">Cloud Solutions</div><div class="proj-desc">AWS, GCP, Azure architecture design.</div></div></div>
+        <div class="proj"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=300&q=80" alt=""><div class="proj-body"><div class="proj-title">API Development</div><div class="proj-desc">RESTful & GraphQL API engineering.</div></div></div>
+        <div class="proj"><img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=300&q=80" alt=""><div class="proj-body"><div class="proj-title">DevOps & CI/CD</div><div class="proj-desc">Docker, Kubernetes & pipelines.</div></div></div>
+      </div>
+    </div>
+    <!-- QR -->
+    <div class="qr-block fade-in-section">
+      <div class="qr-white"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+      <div class="qr-info"><h4>$ connect --now</h4><p>Scan to view my GitHub portfolio and get in touch for projects.</p></div>
+    </div>
+    <!-- SAVE -->
+    <a href="#" class="save-btn fade-in-section"><i class="fas fa-address-card"></i> &nbsp;SAVE_CONTACT.vcf</a>
+    <!-- SHARE -->
+    <div class="fade-in-section">
+      <div class="sh-row">
+        <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+        <a href="#" class="sh"><i class="fab fa-linkedin-in"></i> Share</a>
+        <a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a>
+      </div>
+      <div class="copy-row">
+        <input class="copy-inp" value="https://yourvcard.com/arjun-sharma" readonly>
+        <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/arjun-sharma');this.textContent='COPIED!';setTimeout(()=>this.textContent='COPY',2000)">COPY</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer">// powered by <span>VCard Pro</span> · tech edition</div>
+</div>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -122,7 +122,12 @@
             <a href="whatsapp-orders.html" class="nav-item">
                 <i class="fas fa-shopping-bag nav-icon"></i>
                 <span>WhatsApp Product Order</span>
-            </a></nav>
+            </a>
+            <a href="reviews.html" class="nav-item">
+                <i class="fas fa-star nav-icon"></i>
+                <span>Reviews Funnel</span>
+            </a>
+        </nav>
         <div class="sidebar-footer">
             <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
         </div>
@@ -178,6 +183,7 @@
                         <option value="0">All vCards</option>
                     </select>
                     <button class="btn-add" onclick="showAddModal()"><i class="fas fa-plus"></i> Add Manual</button>
+                    <button class="btn-add" style="background: #3b82f6; box-shadow: 0 8px 20px rgba(59,130,246,0.3);" onclick="showAvailabilityModal()"><i class="fas fa-clock"></i> Manage Availability</button>
                 </div>
 
                 <div id="appointmentsContainer">
@@ -447,6 +453,168 @@ function showAddModal() {
 }
 
 function closeAddModal() { document.getElementById('addModal')?.remove(); }
+
+// --- Availability Management (Weekly Schedule) ---
+let weeklyData = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 0: [] };
+const dayNames = {1: 'MONDAY', 2: 'TUESDAY', 3: 'WEDNESDAY', 4: 'THURSDAY', 5: 'FRIDAY', 6: 'SATURDAY', 0: 'SUNDAY'};
+
+function showAvailabilityModal() {
+    if (vcardsList.length === 0) { showToast('No vCards yet.', 'error'); return; }
+    const vcardOpts = vcardsList.map(v => `<option value="${v.id}">${escapeHtml(v.vcard_name)}</option>`).join('');
+    
+    document.body.insertAdjacentHTML('beforeend', `
+        <div class="modal-overlay show" id="availabilityModal" onclick="if(event.target===this)closeAvailabilityModal()">
+            <div class="modal-box" style="max-width:700px; width:95%; max-height: 90vh; display: flex; flex-direction: column;">
+                <div class="modal-header" style="flex-shrink: 0;">
+                    <h3>⏰ Manage Weekly Schedule</h3>
+                    <button class="modal-close" onclick="closeAvailabilityModal()">×</button>
+                </div>
+                <div class="modal-body" style="overflow-y: auto; flex-grow: 1; padding: 20px;">
+                    <div class="form-group">
+                        <label>Select vCard</label>
+                        <select id="avVcard" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:10px" onchange="loadAvailability()">${vcardOpts}</select>
+                    </div>
+                    
+                    <div id="weeklyScheduleContainer">
+                        <div style="text-align:center;padding:40px;color:#9ca3af"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="flex-shrink: 0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="btn-modal-cancel" onclick="closeAvailabilityModal()">Cancel</button>
+                    <button class="btn-modal-confirm" onclick="saveWeeklySchedule()"><i class="fas fa-save"></i> Save Schedule</button>
+                </div>
+            </div>
+        </div>`);
+    loadAvailability();
+}
+
+function closeAvailabilityModal() { document.getElementById('availabilityModal')?.remove(); }
+
+async function loadAvailability() {
+    const vcardId = document.getElementById('avVcard').value;
+    const container = document.getElementById('weeklyScheduleContainer');
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    
+    // Reset data
+    weeklyData = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 0: [] };
+    
+    try {
+        const response = await fetch(\`\${APT_API}slots_manage.php?vcard_id=\${vcardId}\`, { credentials: 'include' });
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            result.data.forEach(row => {
+                weeklyData[row.day_of_week].push({ start: row.start_time.substring(0, 5), end: row.end_time.substring(0, 5) });
+            });
+        }
+    } catch(err) {
+        showToast('Failed to load schedule', 'error');
+    }
+    renderWeeklySchedule();
+}
+
+function renderWeeklySchedule() {
+    const container = document.getElementById('weeklyScheduleContainer');
+    let html = '';
+    
+    // Render in order: Mon to Sun
+    const order = [1, 2, 3, 4, 5, 6, 0];
+    
+    order.forEach(day => {
+        const slots = weeklyData[day];
+        const isChecked = slots.length > 0;
+        
+        let slotsHtml = slots.map((s, index) => \`
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <input type="time" value="\${s.start}" onchange="updateSlot(\${day}, \${index}, 'start', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                <span style="color:#6b7280; font-size: 0.9rem;">To</span>
+                <input type="time" value="\${s.end}" onchange="updateSlot(\${day}, \${index}, 'end', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                <button title="Delete slot" onclick="deleteSlot(\${day}, \${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:5px;"><i class="fas fa-trash"></i></button>
+            </div>
+        \`).join('');
+        
+        if (slots.length === 0) {
+            slotsHtml = \`<div style="color:#9ca3af; font-size: 0.9rem; margin-bottom: 8px; font-style: italic;">Unavailable</div>\`;
+        }
+
+        html += \`
+            <div style="display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid #f3f4f6;">
+                <div style="width: 130px; display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                    <input type="checkbox" \${isChecked ? 'checked' : ''} onchange="toggleDay(\${day}, this.checked)" style="width:18px; height:18px; accent-color: #8338ec; cursor: pointer;">
+                    <strong style="font-size: 0.85rem; color: #4b5563;">\${dayNames[day]}</strong>
+                </div>
+                <div style="flex-grow: 1;">
+                    \${slotsHtml}
+                </div>
+                <div style="width: 40px; text-align: right; margin-top: 5px;">
+                    <button title="Add slot" onclick="addSlot(\${day})" style="background:none; border:none; color:#8338ec; cursor:pointer; padding:5px; font-size: 1.1rem;"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+        \`;
+    });
+    
+    container.innerHTML = html;
+}
+
+function toggleDay(day, checked) {
+    if (checked && weeklyData[day].length === 0) {
+        weeklyData[day].push({ start: '09:00', end: '17:00' });
+    } else if (!checked) {
+        weeklyData[day] = [];
+    }
+    renderWeeklySchedule();
+}
+
+function addSlot(day) {
+    weeklyData[day].push({ start: '09:00', end: '17:00' });
+    renderWeeklySchedule();
+}
+
+function updateSlot(day, index, field, value) {
+    weeklyData[day][index][field] = value;
+}
+
+function deleteSlot(day, index) {
+    weeklyData[day].splice(index, 1);
+    renderWeeklySchedule();
+}
+
+async function saveWeeklySchedule() {
+    const vcardId = document.getElementById('avVcard').value;
+    
+    // Flatten data for API
+    let flatSchedule = [];
+    Object.keys(weeklyData).forEach(day => {
+        weeklyData[day].forEach(slot => {
+            if (slot.start && slot.end) {
+                flatSchedule.push({ day: parseInt(day), start: slot.start, end: slot.end });
+            }
+        });
+    });
+    
+    const btn = document.querySelector('.btn-modal-confirm');
+    const ogHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch(\`\${APT_API}slots_manage.php\`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ action: 'save_week', vcard_id: vcardId, schedule: flatSchedule })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showToast('Schedule saved successfully!', 'success');
+            closeAvailabilityModal();
+        } else {
+            showToast(result.message || 'Error saving schedule', 'error');
+        }
+    } catch (err) {
+        showToast('Failed to save schedule', 'error');
+    } finally {
+        if(btn) { btn.innerHTML = ogHtml; btn.disabled = false; }
+    }
+}
 
 async function saveManual() {
     const data = {

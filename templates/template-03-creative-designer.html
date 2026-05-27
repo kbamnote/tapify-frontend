@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maya Studio | Creative Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0c0512;--purple:#7c3aed;--purple2:#a855f7;--neon:#e879f9;
+  --green:#4ade80;--yellow:#fbbf24;--white:#f8f4ff;--text:#c4b5fd;
+  --card:#1a1025;--border:#2d1f4a;
+}
+body{background:var(--bg);font-family:'Syne',sans-serif;color:var(--white);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;position:relative;background:var(--bg);}
+
+/* Animated gradient orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;animation:orbMove 10s infinite ease-in-out;}
+.orb1{width:300px;height:300px;background:rgba(124,58,237,.25);top:-100px;left:-100px;animation-delay:0s;}
+.orb2{width:250px;height:250px;background:rgba(168,85,247,.2);bottom:100px;right:-80px;animation-delay:5s;}
+.orb3{width:200px;height:200px;background:rgba(232,121,249,.15);top:50%;left:50%;animation-delay:2.5s;}
+@keyframes orbMove{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-30px) scale(1.1);}}
+
+/* Noise overlay */
+.noise{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
+
+/* Scanlines effect */
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(124,58,237,.015) 2px,rgba(124,58,237,.015) 4px);}
+
+/* BANNER */
+.banner{position:relative;height:230px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:saturate(.6) brightness(.7);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,5,18,.3) 0%,rgba(12,5,18,.95) 100%),linear-gradient(90deg,rgba(124,58,237,.3),rgba(232,121,249,.2));}
+.banner-text{position:absolute;bottom:20px;left:20px;}
+.banner-tag{font-family:'Syne Mono',monospace;font-size:11px;color:var(--neon);letter-spacing:2px;display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.tag-dot{width:8px;height:8px;background:var(--neon);border-radius:50%;animation:tagBlink 1.5s infinite;}
+@keyframes tagBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.banner-big{font-size:32px;font-weight:800;line-height:1.1;color:var(--white);text-shadow:0 0 30px rgba(232,121,249,.5);}
+.neon-word{color:var(--neon);text-shadow:0 0 20px var(--neon);}
+
+/* PROFILE */
+.profile-zone{padding:20px;position:relative;z-index:5;}
+.profile-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+.av-wrap{position:relative;flex-shrink:0;}
+.av-wrap img{width:80px;height:80px;border-radius:16px;object-fit:cover;border:2px solid var(--border);}
+.av-glow{position:absolute;inset:-3px;border-radius:18px;background:linear-gradient(135deg,var(--purple),var(--neon));z-index:-1;animation:glowPulse 3s infinite;}
+@keyframes glowPulse{0%,100%{opacity:.6;}50%{opacity:1;box-shadow:0 0 20px var(--purple);}}
+.profile-info{flex:1;}
+.profile-name{font-size:22px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:6px;}
+.profile-role{font-family:'Syne Mono',monospace;font-size:11px;color:var(--neon);letter-spacing:1px;margin-bottom:10px;}
+.skills-row{display:flex;gap:6px;flex-wrap:wrap;}
+.skill-tag{font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid;font-weight:600;letter-spacing:.5px;}
+.skill-tag.ui{color:var(--neon);border-color:rgba(232,121,249,.4);background:rgba(232,121,249,.08);}
+.skill-tag.brand{color:var(--green);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08);}
+.skill-tag.motion{color:var(--yellow);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08);}
+
+/* SOCIAL */
+.social-bar{display:flex;gap:10px;margin-bottom:20px;}
+.soc-g{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;border:1px solid var(--border);background:var(--card);color:var(--text);transition:all .3s;}
+.soc-g:hover{border-color:var(--purple);color:var(--neon);background:rgba(124,58,237,.2);transform:translateY(-4px);box-shadow:0 8px 20px rgba(124,58,237,.3);}
+
+/* BIO */
+.bio-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:20px;position:relative;overflow:hidden;}
+.bio-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--neon),var(--purple));animation:shimmer 3s linear infinite;}
+@keyframes shimmer{from{background-position:0% 0%;}to{background-position:200% 0%};background-size:200%;}
+.bio-box p{font-size:13px;line-height:1.8;color:var(--text);}
+
+/* SECTION HEAD */
+.sec{margin-bottom:20px;}
+.sec-h{font-family:'Syne Mono',monospace;font-size:11px;color:var(--purple2);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--white);transition:all .3s;}
+.ci:hover{border-color:var(--purple);background:rgba(124,58,237,.12);transform:translateX(6px);}
+.ci-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ci-icon.em{background:rgba(232,121,249,.15);color:var(--neon);}
+.ci-icon.ph{background:rgba(74,222,128,.15);color:var(--green);}
+.ci-icon.al{background:rgba(251,191,36,.15);color:var(--yellow);}
+.ci-icon.lo{background:rgba(124,58,237,.2);color:var(--purple2);}
+.ci-lbl{font-family:'Syne Mono',monospace;font-size:10px;color:var(--text);letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:600;word-break:break-word;}
+
+/* SERVICES / PORTFOLIO */
+.portfolio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.p-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer;}
+.p-card:hover{border-color:var(--purple);transform:translateY(-4px);box-shadow:0 12px 30px rgba(124,58,237,.25);}
+.p-card img{width:100%;height:100px;object-fit:cover;filter:saturate(.8);}
+.p-card:hover img{filter:saturate(1.2);}
+.p-body{padding:10px 12px;}
+.p-title{font-size:12px;font-weight:700;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.p-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-area{background:linear-gradient(135deg,var(--purple),rgba(232,121,249,.6));border-radius:20px;padding:24px;display:flex;align-items:center;gap:20px;margin-bottom:20px;position:relative;overflow:hidden;}
+.qr-area::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);}
+.qr-box{background:#fff;padding:10px;border-radius:12px;width:90px;height:90px;flex-shrink:0;}
+.qr-box svg{width:70px;height:70px;}
+.qr-info{color:#fff;}
+.qr-info h4{font-size:17px;font-weight:800;margin-bottom:6px;}
+.qr-info p{font-size:12px;opacity:.9;line-height:1.5;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--neon));color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;text-decoration:none;transition:all .3s;margin-bottom:20px;position:relative;overflow:hidden;}
+.save-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .5s;}
+.save-btn:hover::after{transform:translateX(100%);}
+.save-btn:hover{box-shadow:0 10px 30px rgba(124,58,237,.5);}
+
+/* SHARE */
+.share-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;font-size:12px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--card);transition:all .3s;}
+.sh:hover{border-color:var(--purple);color:var(--neon);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:11px;padding:11px 14px;font-family:'Syne',sans-serif;outline:none;}
+.cp-btn{background:var(--purple);color:#fff;border:none;padding:11px 16px;cursor:pointer;font-weight:700;font-size:11px;font-family:'Syne',sans-serif;transition:background .3s;}
+.cp-btn:hover{background:var(--neon);color:var(--bg);}
+
+.footer{text-align:center;padding:20px;font-family:'Syne Mono',monospace;font-size:10px;color:var(--text);letter-spacing:2px;}
+.footer span{color:var(--neon);}
+
+.fade-in-section{opacity:0;transform:translateY(24px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+<div class="noise"></div><div class="scanlines"></div>
+
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=500&q=80" alt="banner">
+    <div class="banner-overlay"></div>
+    <div class="banner-text">
+      <div class="banner-tag"><div class="tag-dot"></div>Available for Projects</div>
+      <div class="banner-big">Creative<br><span class="neon-word">Designer</span></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile-zone">
+    <div class="profile-row">
+      <div class="av-wrap">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80" alt="Maya">
+        <div class="av-glow"></div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">Maya Rodriguez</div>
+        <div class="profile-role">// UI/UX &amp; Brand Designer</div>
+        <div class="skills-row">
+          <span class="skill-tag ui">UI/UX</span>
+          <span class="skill-tag brand">Branding</span>
+          <span class="skill-tag motion">Motion</span>
+        </div>
+      </div>
+    </div>
+    <div class="social-bar">
+      <a href="#" class="soc-g"><i class="fab fa-behance"></i></a>
+      <a href="#" class="soc-g"><i class="fab fa-dribbble"></i></a>
+      <a href="#" class="soc-g"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc-g"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc-g"><i class="fas fa-globe"></i></a>
+      <a href="#" class="soc-g"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <!-- BIO -->
+    <div class="bio-box fade-in-section">
+      <p>Crafting digital experiences that blend aesthetic beauty with functional design. 7 years of creating brands, interfaces, and motion work for startups and Fortune 500 companies alike.</p>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="sec fade-in-section">
+      <div class="sec-h">Contact</div>
+      <div class="contact-list">
+        <a href="mailto:maya@mayastudio.io" class="ci">
+          <div class="ci-icon em"><i class="fas fa-envelope"></i></div>
+          <div><div class="ci-lbl">Email</div><div class="ci-val">maya@mayastudio.io</div></div>
+        </a>
+        <a href="tel:+12125558492" class="ci">
+          <div class="ci-icon ph"><i class="fas fa-phone"></i></div>
+          <div><div class="ci-lbl">Phone</div><div class="ci-val">+1 (212) 555-8492</div></div>
+        </a>
+        <a href="tel:+12125558493" class="ci">
+          <div class="ci-icon al"><i class="fas fa-mobile-alt"></i></div>
+          <div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+1 (212) 555-8493</div></div>
+        </a>
+        <a href="#" class="ci">
+          <div class="ci-icon lo"><i class="fas fa-map-marker-alt"></i></div>
+          <div><div class="ci-lbl">Studio</div><div class="ci-val">SoHo District, New York City</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO/SERVICES -->
+    <div class="sec fade-in-section">
+      <div class="sec-h">Services</div>
+      <div class="portfolio-grid">
+        <div class="p-card">
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&q=80" alt="">
+          <div class="p-body"><div class="p-title">Brand Identity</div><div class="p-desc">Logo, color system & brand guidelines.</div></div>
+        </div>
+        <div class="p-card">
+          <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=300&q=80" alt="">
+          <div class="p-body"><div class="p-title">UI/UX Design</div><div class="p-desc">Web & mobile interfaces with Figma.</div></div>
+        </div>
+        <div class="p-card">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&q=80" alt="">
+          <div class="p-body"><div class="p-title">Motion Design</div><div class="p-desc">Animated graphics & video production.</div></div>
+        </div>
+        <div class="p-card">
+          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=300&q=80" alt="">
+          <div class="p-body"><div class="p-title">Print & Packaging</div><div class="p-desc">Packaging design and print materials.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR -->
+    <div class="qr-area fade-in-section">
+      <div class="qr-box">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="white"/>
+          <rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+          <rect x="16" y="16" width="18" height="18" fill="#000"/>
+          <rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+          <rect x="66" y="16" width="18" height="18" fill="#000"/>
+          <rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+          <rect x="16" y="66" width="18" height="18" fill="#000"/>
+          <rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/>
+          <rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/>
+        </svg>
+      </div>
+      <div class="qr-info"><h4>Let's Collaborate</h4><p>Scan to view my full portfolio and get in touch.</p></div>
+    </div>
+
+    <!-- SAVE -->
+    <a href="#" class="save-btn fade-in-section"><i class="fas fa-address-card"></i> Save Contact</a>
+
+    <!-- SHARE -->
+    <div class="fade-in-section">
+      <div class="share-row">
+        <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+        <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a>
+        <a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a>
+      </div>
+      <div class="copy-row">
+        <input class="copy-inp" value="https://yourvcard.com/maya-rodriguez" readonly>
+        <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/maya-rodriguez');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Powered by <span>VCard Pro</span> &nbsp;·&nbsp; Creative Edition</div>
+</div>
+
+<script>
+const obs = new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

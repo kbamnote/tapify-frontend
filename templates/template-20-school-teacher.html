@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mrs. Anjali Desai | Educator</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#fffbf0;--white:#ffffff;--amber:#f59e0b;--amber2:#fbbf24;
+  --brown:#92400e;--dark:#451a03;--text:#78350f;--sub:#a16207;
+  --mint:#d1fae5;--blue:#dbeafe;--pink:#fce7f3;--card:#fffdf5;--border:#fde68a;
+}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);overflow-x:hidden;}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:0 0 80px rgba(245,158,11,.12);overflow:hidden;position:relative;}
+
+/* DESKTOP PARTICLES */
+@media(min-width:768px){.desktop-bg{display:block!important;}}
+.desktop-bg{display:none;position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.book-icon{position:absolute;font-size:28px;opacity:.05;animation:bookFloat 10s infinite ease-in-out;}
+.book-icon:nth-child(1){top:5%;left:4%;color:var(--amber);animation-delay:0s;}
+.book-icon:nth-child(2){top:20%;right:5%;color:var(--brown);animation-delay:3s;font-size:20px;}
+.book-icon:nth-child(3){top:42%;left:3%;color:var(--amber2);animation-delay:6s;font-size:24px;}
+.book-icon:nth-child(4){top:62%;right:4%;color:var(--dark);animation-delay:2s;font-size:32px;}
+.book-icon:nth-child(5){top:80%;left:6%;color:var(--amber);animation-delay:8s;font-size:18px;}
+.star-p{position:absolute;font-size:16px;opacity:.06;animation:starSpin 6s infinite linear;}
+.star-p:nth-child(6){top:10%;right:10%;color:#f59e0b;}
+.star-p:nth-child(7){top:35%;left:90%;color:#f59e0b;animation-delay:2s;}
+.star-p:nth-child(8){top:65%;right:8%;color:#f59e0b;animation-delay:4s;}
+@keyframes bookFloat{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-20px) rotate(5deg);}}
+@keyframes starSpin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+
+/* BANNER */
+.banner{position:relative;height:220px;overflow:hidden;}
+.banner img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease;}
+.banner:hover img{transform:scale(1.06);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(245,158,11,.6),rgba(69,26,3,.75));}
+.banner-tag{position:absolute;top:18px;left:18px;background:rgba(255,255,255,.2);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:10px;font-weight:800;letter-spacing:2px;padding:7px 16px;border-radius:30px;}
+.banner-content{position:absolute;bottom:24px;left:20px;right:20px;color:#fff;}
+.school-name{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.85;margin-bottom:6px;}
+.banner-big{font-family:'Merriweather',serif;font-size:24px;line-height:1.3;}
+.amber-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--amber),var(--amber2),var(--amber));background-size:200%;animation:barSlide 3s linear infinite;}
+@keyframes barSlide{0%{background-position:0%;}100%{background-position:200%;}}
+
+/* PROFILE */
+.profile-area{padding:0 22px 18px;background:var(--white);position:relative;z-index:5;}
+.profile-top{display:flex;align-items:flex-end;justify-content:space-between;margin-top:-50px;margin-bottom:14px;}
+.av{position:relative;width:100px;height:100px;}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--white);box-shadow:0 4px 20px rgba(245,158,11,.3);}
+.av-halo{position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(var(--amber),var(--amber2),#fcd34d,var(--amber));animation:haloSpin 5s linear infinite;z-index:-1;}
+@keyframes haloSpin{to{transform:rotate(360deg);}}
+.connect-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--amber),var(--brown));color:#fff;font-size:11px;font-weight:800;padding:11px 18px;border-radius:30px;text-decoration:none;letter-spacing:1px;transition:all .3s;}
+.connect-btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(245,158,11,.4);}
+.teacher-name{font-family:'Merriweather',serif;font-size:24px;color:var(--dark);margin-bottom:4px;}
+.tagline{font-size:12px;color:var(--sub);font-style:italic;font-weight:600;margin-bottom:4px;}
+.teacher-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:3px;}
+.teacher-school{font-size:13px;color:var(--text);}
+.subject-tags{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.stag{font-size:11px;padding:5px 14px;border-radius:25px;font-weight:700;border:none;}
+.stag.math{background:var(--blue);color:#1e40af;}
+.stag.sci{background:var(--mint);color:#065f46;}
+.stag.eng{background:var(--pink);color:#9d174d;}
+.stag.hist{background:var(--border);color:var(--dark);}
+.social-row{display:flex;gap:10px;padding:10px 0;}
+.soc{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;background:var(--border);color:var(--amber);transition:all .3s;}
+.soc:hover{background:var(--amber);color:#fff;transform:translateY(-3px);}
+
+/* BIO */
+.bio{margin:0 22px 18px;padding:18px 20px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border-radius:18px;border-left:4px solid var(--amber);}
+.bio p{font-size:13px;line-height:1.9;color:var(--text);}
+
+/* SECTION */
+.section{padding:0 22px 18px;}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-ico{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--amber),var(--brown));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;flex-shrink:0;}
+.sec-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--dark);}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text);transition:all .3s;}
+.ci:hover{background:#fffbeb;border-color:var(--amber);transform:translateY(-2px);}
+.ci-ico{width:34px;height:34px;border-radius:10px;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;}
+.ci-lbl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:12px;font-weight:600;word-break:break-word;}
+
+/* WEBSITE */
+.website-btn{display:flex;align-items:center;gap:10px;margin:0 22px 18px;padding:14px 18px;background:linear-gradient(135deg,var(--amber),var(--brown));color:#fff;border-radius:14px;text-decoration:none;transition:all .3s;}
+.website-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(245,158,11,.35);}
+.website-btn span{font-size:13px;font-weight:700;}
+.website-btn i:last-child{margin-left:auto;}
+
+/* CAROUSEL */
+.carousel-wrap{position:relative;overflow:hidden;margin-bottom:4px;}
+.carousel-track{display:flex;gap:12px;transition:transform .5s cubic-bezier(.4,0,.2,1);padding:4px 2px;}
+.srv-card{min-width:158px;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;flex-shrink:0;transition:all .3s;box-shadow:0 2px 10px rgba(245,158,11,.08);}
+.srv-card:hover{border-color:var(--amber);transform:translateY(-5px);box-shadow:0 12px 28px rgba(245,158,11,.18);}
+.srv-card img{width:100%;height:96px;object-fit:cover;}
+.srv-body{padding:10px 12px;}
+.srv-title{font-size:12px;font-weight:800;color:var(--dark);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.srv-desc{font-size:11px;color:var(--sub);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.carousel-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer;}
+.dot.active{width:22px;border-radius:4px;background:var(--amber);}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--white);border:1px solid var(--border);color:var(--amber);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:all .3s;}
+.carousel-btn:hover{background:var(--amber);color:#fff;}
+.carousel-btn.prev{left:4px;}
+.carousel-btn.next{right:4px;}
+
+/* QR */
+.qr-block{margin:0 22px 18px;background:linear-gradient(135deg,var(--dark),var(--brown));border-radius:20px;padding:22px;display:flex;align-items:center;gap:18px;}
+.qr-box{background:#fff;padding:10px;border-radius:12px;width:88px;height:88px;flex-shrink:0;}
+.qr-box svg{width:68px;height:68px;}
+.qr-txt{color:#fff;}
+.qr-txt h4{font-family:'Merriweather',serif;font-size:17px;margin-bottom:5px;}
+.qr-txt p{font-size:12px;opacity:.85;line-height:1.6;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 18px;padding:15px;background:linear-gradient(135deg,var(--amber),var(--brown));color:#fff;font-size:13px;font-weight:800;border-radius:30px;text-decoration:none;transition:all .3s;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,158,11,.4);}
+
+/* SHARE */
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:14px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid var(--border);color:var(--sub);background:var(--card);transition:all .3s;}
+.sh:hover{background:#fffbeb;border-color:var(--amber);color:var(--amber);}
+.copy-row{display:flex;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.copy-inp{flex:1;background:transparent;border:none;color:var(--sub);font-size:11px;padding:12px 14px;font-family:'Nunito',sans-serif;outline:none;}
+.cp-btn{background:var(--amber);color:#fff;border:none;padding:12px 18px;cursor:pointer;font-weight:800;font-size:12px;}
+.cp-btn:hover{background:var(--brown);}
+
+.footer{text-align:center;padding:16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);background:#fffbeb;}
+.footer span{color:var(--amber);font-weight:800;}
+.fade-in{opacity:0;transform:translateY(22px);transition:all .65s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="desktop-bg">
+  <i class="fas fa-book-open book-icon"></i><i class="fas fa-pencil-alt book-icon"></i>
+  <i class="fas fa-graduation-cap book-icon"></i><i class="fas fa-apple-alt book-icon"></i>
+  <i class="fas fa-book book-icon"></i>
+  <i class="fas fa-star star-p"></i><i class="fas fa-star star-p"></i><i class="fas fa-star star-p"></i>
+</div>
+
+<div class="card-wrap">
+  <div class="banner">
+    <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=500&q=80" alt="School">
+    <div class="banner-overlay"></div>
+    <div class="banner-tag"><i class="fas fa-chalkboard-teacher"></i> &nbsp;Educator</div>
+    <div class="banner-content">
+      <div class="school-name">Bright Future International School</div>
+      <div class="banner-big">Inspiring Minds,<br>Shaping Futures</div>
+    </div>
+    <div class="amber-bar"></div>
+  </div>
+
+  <div class="profile-area">
+    <div class="profile-top">
+      <div class="av">
+        <div class="av-halo"></div>
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80" alt="Anjali">
+      </div>
+      <a href="tel:+912025554567" class="connect-btn"><i class="fas fa-phone"></i> Connect</a>
+    </div>
+    <div class="teacher-name">Mrs. Anjali Desai</div>
+    <div class="tagline">"Every child is a star waiting to shine ⭐"</div>
+    <div class="teacher-title">Senior Teacher · M.Ed · B.Ed</div>
+    <div class="teacher-school">Bright Future International School, Pune</div>
+    <div class="subject-tags">
+      <span class="stag math"><i class="fas fa-calculator"></i> Mathematics</span>
+      <span class="stag sci"><i class="fas fa-flask"></i> Science</span>
+      <span class="stag eng"><i class="fas fa-book"></i> English</span>
+    </div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+    </div>
+  </div>
+
+  <div class="bio fade-in">
+    <p>Passionate educator with 18 years of experience transforming classrooms into inspiring learning spaces. CBSE certified teacher specialising in project-based learning, critical thinking, and holistic child development.</p>
+  </div>
+
+  <div class="section fade-in">
+    <div class="sec-h"><div class="sec-ico"><i class="fas fa-address-book"></i></div><span class="sec-title">Contact</span></div>
+    <div class="contact-grid">
+      <a href="mailto:anjali.desai@brightfuture.edu.in" class="ci"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">anjali@brightfuture.edu.in</div></div></a>
+      <a href="tel:+912025554567" class="ci"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-lbl">Phone</div><div class="ci-val">+91 20 2555 4567</div></div></a>
+      <a href="tel:+919876501234" class="ci"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val">+91 98765 01234</div></div></a>
+      <a href="#" class="ci"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">School</div><div class="ci-val">Kothrud, Pune 411038</div></div></a>
+    </div>
+  </div>
+
+  <a href="https://brightfuture.edu.in" target="_blank" class="website-btn fade-in">
+    <i class="fas fa-globe"></i><span>brightfuture.edu.in</span><i class="fas fa-arrow-right"></i>
+  </a>
+
+  <div class="section fade-in">
+    <div class="sec-h"><div class="sec-ico"><i class="fas fa-chalkboard"></i></div><span class="sec-title">Services & Programs</span></div>
+    <div class="carousel-wrap" id="carousel20">
+      <button class="carousel-btn prev" onclick="moveCarousel('carousel20',-1)"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="track20">
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Home Tuitions</div><div class="srv-desc">Grades 6–10 Math & Science tuition at home.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Online Classes</div><div class="srv-desc">Live & recorded sessions on Zoom & YouTube.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Exam Coaching</div><div class="srv-desc">Board exam intensive preparation program.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Doubt Sessions</div><div class="srv-desc">Daily 1-on-1 doubt clearing sessions.</div></div></div>
+        <div class="srv-card"><img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&q=80" alt=""><div class="srv-body"><div class="srv-title">Science Projects</div><div class="srv-desc">Hands-on STEM project guidance & mentoring.</div></div></div>
+      </div>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel20',1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="carousel-dots" id="dots20"></div>
+  </div>
+
+  <div class="qr-block fade-in">
+    <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="16" width="18" height="18" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="66" y="16" width="18" height="18" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/><rect x="16" y="66" width="18" height="18" fill="#000"/><rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/><rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/></svg></div>
+    <div class="qr-txt"><h4>Scan & Enrol</h4><p>Scan to enrol in classes or save my contact instantly.</p></div>
+  </div>
+
+  <a href="#" class="save-btn fade-in"><i class="fas fa-user-plus"></i> Save Contact</a>
+
+  <div class="share-area fade-in">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="#" class="sh"><i class="fab fa-twitter"></i> Tweet</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/anjali-desai" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+  <div class="footer">Powered by <span>VCard Pro</span> · Education Edition</div>
+</div>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+const carousels={};
+function initCarousel(id){
+  const num=id.replace('carousel','');
+  const track=document.getElementById('track'+num);
+  const cards=track.querySelectorAll('.srv-card');
+  const dotsEl=document.getElementById('dots'+num);
+  let cur=0,max=Math.max(0,cards.length-2);
+  carousels[id]={track,cards,cur,max,dotsEl};
+  for(let i=0;i<=max;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>goTo(id,i);dotsEl.appendChild(d);}
+  renderCarousel(id);setInterval(()=>moveCarousel(id,1),3000);
+}
+function renderCarousel(id){const c=carousels[id];const w=c.cards[0].offsetWidth+12;c.track.style.transform=`translateX(-${c.cur*w}px)`;c.dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===c.cur));}
+function moveCarousel(id,dir){const c=carousels[id];c.cur+=dir;if(c.cur>c.max)c.cur=0;if(c.cur<0)c.cur=c.max;renderCarousel(id);}
+function goTo(id,i){carousels[id].cur=i;renderCarousel(id);}
+initCarousel('carousel20');
+if(window.innerWidth>=768){const cv=document.createElement('canvas');cv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';document.body.insertBefore(cv,document.body.firstChild);const cx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;const pts=Array.from({length:35},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1}));(function draw(){cx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>cv.width)p.vx*=-1;if(p.y<0||p.y>cv.height)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle='rgba(245,158,11,0.12)';cx.fill();});pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle=`rgba(245,158,11,${.07*(1-d/110)})`;cx.stroke();}}));requestAnimationFrame(draw);})();}
+</script>
+</body>
+</html>

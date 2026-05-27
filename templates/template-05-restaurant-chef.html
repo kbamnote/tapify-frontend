@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chef Marco | La Cucina Fine Dining</title>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#1a0a0a;--card:#221010;--red:#c0392b;--red2:#e74c3c;--rose:#ff6b6b;
+  --gold:#d4af37;--gold2:#f5d376;--cream:#fdf6e3;--text:#d4b896;--sub:#8b7355;
+  --light:#f5e6d3;
+}
+body{background:var(--bg);font-family:'Raleway',sans-serif;color:var(--cream);}
+.card-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;}
+
+/* Flame particles */
+.flames{position:fixed;bottom:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0;}
+.flame{position:absolute;width:4px;border-radius:50% 50% 30% 30%;opacity:0;animation:flameRise 4s infinite ease-out;}
+.flame:nth-child(1){left:10%;background:linear-gradient(to top,var(--red),var(--rose),transparent);animation-delay:0s;height:40px;}
+.flame:nth-child(2){left:25%;background:linear-gradient(to top,var(--gold),var(--gold2),transparent);animation-delay:1.5s;height:30px;}
+.flame:nth-child(3){left:70%;background:linear-gradient(to top,var(--red),var(--rose),transparent);animation-delay:0.8s;height:35px;}
+.flame:nth-child(4){left:85%;background:linear-gradient(to top,var(--gold),var(--gold2),transparent);animation-delay:2s;height:45px;}
+.flame:nth-child(5){left:45%;background:linear-gradient(to top,var(--red),transparent);animation-delay:3s;height:25px;}
+@keyframes flameRise{0%{opacity:0;transform:translateY(0) scaleX(1);}20%{opacity:.6;}80%{opacity:.2;}100%{opacity:0;transform:translateY(-100px) scaleX(.5);}}
+
+/* BANNER */
+.banner{position:relative;height:250px;overflow:hidden;}
+.banner-img{width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.3);}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,10,10,.3),rgba(26,10,10,.9));}
+.banner-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px;text-align:center;}
+.rest-name{font-family:'Italiana',serif;font-size:36px;color:var(--cream);letter-spacing:3px;text-shadow:0 0 40px rgba(192,57,43,.6);margin-bottom:4px;}
+.rest-tagline{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);opacity:.9;}
+.gold-bottom{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+/* PROFILE */
+.profile-area{padding:0 22px 20px;text-align:center;position:relative;z-index:5;}
+.chef-avatar{width:100px;height:100px;margin:-50px auto 16px;position:relative;}
+.chef-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--gold);}
+.chef-avatar::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(212,175,55,.3);animation:auraGlow 3s infinite;}
+@keyframes auraGlow{0%,100%{box-shadow:0 0 10px rgba(212,175,55,.2);}50%{box-shadow:0 0 25px rgba(212,175,55,.5);}}
+.chef-name{font-family:'Italiana',serif;font-size:28px;color:var(--cream);letter-spacing:1px;margin-bottom:6px;}
+.divider-ornament{display:flex;align-items:center;gap:12px;justify-content:center;margin:10px 0;}
+.div-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.div-icon{color:var(--gold);font-size:12px;}
+.chef-role{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.chef-company{font-size:13px;color:var(--text);}
+
+/* SOCIAL */
+.social-strip{display:flex;justify-content:center;gap:10px;padding:14px 0;}
+.soc{width:38px;height:38px;border:1px solid rgba(212,175,55,.3);border-radius:2px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:15px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;}
+.soc::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scale(0);transition:transform .3s;}
+.soc:hover::before{transform:scale(1);}
+.soc:hover{color:var(--bg);}
+.soc i{position:relative;z-index:1;}
+
+/* BIO */
+.bio-area{margin:0 22px 20px;padding:20px 22px;background:var(--card);border:1px solid rgba(212,175,55,.15);position:relative;}
+.bio-area::before{content:'"';font-family:'Italiana',serif;font-size:60px;color:rgba(212,175,55,.15);position:absolute;top:-10px;left:10px;line-height:1;}
+.bio-area p{font-size:13px;line-height:1.9;color:var(--text);position:relative;z-index:1;}
+
+/* SECTION */
+.section{padding:20px 22px 0;}
+.sec-h{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sec-h span{font-family:'Italiana',serif;font-size:19px;color:var(--gold);letter-spacing:1px;}
+.sec-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,175,55,.5),transparent);}
+
+/* CONTACT */
+.contact-list{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--card);border:1px solid rgba(212,175,55,.1);text-decoration:none;color:var(--cream);transition:all .3s;}
+.ci:hover{border-color:rgba(212,175,55,.4);background:rgba(212,175,55,.05);padding-left:22px;}
+.ci-icon{width:36px;height:36px;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.3);display:flex;align-items:center;justify-content:center;color:var(--rose);font-size:14px;flex-shrink:0;}
+.ci-lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:13px;font-weight:500;}
+
+/* MENU/SERVICES */
+.menu-scroll{display:flex;gap:12px;overflow-x:auto;padding:4px 22px 16px;scrollbar-width:none;}
+.menu-scroll::-webkit-scrollbar{display:none;}
+.dish-card{min-width:150px;background:var(--card);border:1px solid rgba(212,175,55,.15);flex-shrink:0;transition:all .3s;}
+.dish-card:hover{border-color:rgba(212,175,55,.5);transform:translateY(-4px);box-shadow:0 12px 30px rgba(192,57,43,.2);}
+.dish-img{width:100%;height:100px;object-fit:cover;display:block;filter:saturate(1.2);}
+.dish-body{padding:10px 12px;}
+.dish-price{font-family:'Italiana',serif;font-size:15px;color:var(--gold);margin-bottom:2px;}
+.dish-title{font-size:12px;font-weight:600;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.dish-desc{font-size:11px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* QR */
+.qr-block{margin:20px 22px;background:var(--card);border:1px solid rgba(212,175,55,.2);padding:24px;display:flex;align-items:center;gap:20px;}
+.qr-white{background:#fff;padding:10px;width:90px;height:90px;flex-shrink:0;}
+.qr-white svg{width:70px;height:70px;}
+.qr-txt h4{font-family:'Italiana',serif;font-size:19px;color:var(--gold);margin-bottom:6px;}
+.qr-txt p{font-size:12px;color:var(--text);line-height:1.6;}
+
+/* SAVE */
+.save-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 44px);margin:0 22px 20px;padding:15px;background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all .3s;}
+.save-btn:hover{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);transform:translateY(-2px);}
+
+/* SHARE */
+.share-area{padding:0 22px 30px;}
+.sh-row{display:flex;gap:8px;margin-bottom:10px;}
+.sh{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid rgba(212,175,55,.2);color:var(--text);font-size:12px;text-decoration:none;transition:all .3s;}
+.sh:hover{background:rgba(212,175,55,.1);border-color:var(--gold);color:var(--gold);}
+.copy-row{display:flex;border:1px solid rgba(212,175,55,.2);}
+.copy-inp{flex:1;background:var(--card);border:none;color:var(--sub);font-size:11px;padding:11px 14px;font-family:'Raleway',sans-serif;outline:none;}
+.cp-btn{background:var(--red);color:#fff;border:none;padding:11px 18px;cursor:pointer;font-weight:600;font-size:12px;transition:background .3s;}
+.cp-btn:hover{background:var(--gold);color:var(--bg);}
+
+.footer{text-align:center;padding:16px;border-top:1px solid rgba(212,175,55,.1);font-size:10px;letter-spacing:2px;color:var(--sub);}
+.footer span{color:var(--gold);}
+
+.fade-in-section{opacity:0;transform:translateY(20px);transition:all .6s ease;}
+.fade-in-section.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="flames">
+  <div class="flame"></div><div class="flame"></div><div class="flame"></div>
+  <div class="flame"></div><div class="flame"></div>
+</div>
+
+<div class="card-wrap">
+  <!-- BANNER -->
+  <div class="banner">
+    <img class="banner-img" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="restaurant">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="rest-name">La Cucina</div>
+      <div class="rest-tagline">Fine Italian Dining · Est. 2005</div>
+    </div>
+    <div class="gold-bottom"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile-area">
+    <div class="chef-avatar">
+      <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=200&q=80" alt="Chef Marco">
+    </div>
+    <div class="chef-name">Chef Marco Bellini</div>
+    <div class="divider-ornament"><div class="div-line"></div><div class="div-icon"><i class="fas fa-utensils"></i></div><div class="div-line" style="background:linear-gradient(90deg,var(--gold),transparent);"></div></div>
+    <div class="chef-role">Executive Head Chef</div>
+    <div class="chef-company">La Cucina Fine Dining, Rome &amp; Milan</div>
+    <div class="social-strip">
+      <a href="#" class="soc"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="soc"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" class="soc"><i class="fas fa-globe"></i></a>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="bio-area fade-in-section">
+    <p>A Michelin-starred chef with 20 years of culinary artistry. Trained in the finest kitchens of Florence and Paris, I bring the soul of Italian cuisine to every plate — celebrating tradition with a modern touch.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span>Reservations & Contact</span></div>
+    <div class="contact-list">
+      <a href="mailto:marco@lacucina.it" class="ci">
+        <div class="ci-icon"><i class="fas fa-envelope"></i></div>
+        <div><div class="ci-lbl">Email</div><div class="ci-val">marco@lacucina.it</div></div>
+      </a>
+      <a href="tel:+390612345678" class="ci">
+        <div class="ci-icon"><i class="fas fa-phone"></i></div>
+        <div><div class="ci-lbl">Restaurant</div><div class="ci-val">+39 (06) 1234-5678</div></div>
+      </a>
+      <a href="tel:+393491234567" class="ci">
+        <div class="ci-icon"><i class="fas fa-mobile-alt"></i></div>
+        <div><div class="ci-lbl">Direct</div><div class="ci-val">+39 349 123-4567</div></div>
+      </a>
+      <a href="#" class="ci">
+        <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div><div class="ci-lbl">Location</div><div class="ci-val">Via Veneto 12, Rome, Italy</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MENU/SERVICES -->
+  <div class="section fade-in-section">
+    <div class="sec-h"><span>Signature Menu</span></div>
+  </div>
+  <div class="menu-scroll">
+    <div class="dish-card">
+      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&q=80" alt="">
+      <div class="dish-body"><div class="dish-price">€85</div><div class="dish-title">Truffle Risotto</div><div class="dish-desc">Black truffle, aged parmesan, arborio.</div></div>
+    </div>
+    <div class="dish-card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&q=80" alt="">
+      <div class="dish-body"><div class="dish-price">€120</div><div class="dish-title">Branzino al Sale</div><div class="dish-desc">Sea bass, Mediterranean herbs, lemon.</div></div>
+    </div>
+    <div class="dish-card">
+      <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=300&q=80" alt="">
+      <div class="dish-body"><div class="dish-price">€45</div><div class="dish-title">Tiramisu Classico</div><div class="dish-desc">House-made, espresso, mascarpone.</div></div>
+    </div>
+  </div>
+
+  <!-- QR -->
+  <div class="qr-block fade-in-section">
+    <div class="qr-white">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" fill="white"/>
+        <rect x="10" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="16" width="18" height="18" fill="#000"/>
+        <rect x="60" y="10" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="66" y="16" width="18" height="18" fill="#000"/>
+        <rect x="10" y="60" width="30" height="30" fill="none" stroke="#000" stroke-width="4"/>
+        <rect x="16" y="66" width="18" height="18" fill="#000"/>
+        <rect x="60" y="60" width="8" height="8" fill="#000"/><rect x="72" y="60" width="8" height="8" fill="#000"/>
+        <rect x="60" y="72" width="8" height="8" fill="#000"/><rect x="72" y="72" width="18" height="18" fill="#000"/>
+      </svg>
+    </div>
+    <div class="qr-txt"><h4>Book a Table</h4><p>Scan to view the full menu and make a reservation online.</p></div>
+  </div>
+
+  <!-- SAVE -->
+  <a href="#" class="save-btn fade-in-section"><i class="fas fa-address-card"></i> Save Contact</a>
+
+  <!-- SHARE -->
+  <div class="share-area fade-in-section">
+    <div class="sh-row">
+      <a href="#" class="sh"><i class="fab fa-whatsapp"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-facebook-f"></i> Share</a>
+      <a href="#" class="sh"><i class="fab fa-instagram"></i> Story</a>
+    </div>
+    <div class="copy-row">
+      <input class="copy-inp" value="https://yourvcard.com/chef-marco-bellini" readonly>
+      <button class="cp-btn" onclick="navigator.clipboard.writeText('https://yourvcard.com/chef-marco-bellini');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </div>
+
+  <div class="footer">Powered by <span>VCard Pro</span> · Hospitality Edition</div>
+</div>
+<script>
+const obs = new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in-section').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
