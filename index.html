@@ -13,7 +13,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +44,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li>
                     <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
                 </ul>
                 <a href="login.html" class="btn btn-signin">
                     <i class="fas fa-user me-2"></i>Sign In
@@ -153,31 +153,55 @@
         </div>
     </section>
 
+    <!-- =============== BENEFITS TICKER BANNER =============== -->
+    <div class="benefits-banner">
+        <div class="benefits-ticker">
+            <div class="benefit-item"><i class="fas fa-check-circle"></i> 100% Waterproof Card</div>
+            <div class="benefit-item"><i class="fas fa-bolt"></i> Instant Contact Share</div>
+            <div class="benefit-item"><i class="fas fa-qrcode"></i> QR Code Included</div>
+            <div class="benefit-item"><i class="fas fa-leaf"></i> Eco-Friendly Solution</div>
+            <div class="benefit-item"><i class="fas fa-shield-alt"></i> Secure & Private</div>
+            <div class="benefit-item"><i class="fas fa-rupee-sign"></i> One-Time Investment</div>
+            <div class="benefit-item"><i class="fas fa-mobile-alt"></i> Works on All Phones</div>
+            <div class="benefit-item"><i class="fas fa-sync-alt"></i> Lifetime Updates</div>
+            <!-- Duplicate for infinite scroll -->
+            <div class="benefit-item"><i class="fas fa-check-circle"></i> 100% Waterproof Card</div>
+            <div class="benefit-item"><i class="fas fa-bolt"></i> Instant Contact Share</div>
+            <div class="benefit-item"><i class="fas fa-qrcode"></i> QR Code Included</div>
+            <div class="benefit-item"><i class="fas fa-leaf"></i> Eco-Friendly Solution</div>
+            <div class="benefit-item"><i class="fas fa-shield-alt"></i> Secure & Private</div>
+            <div class="benefit-item"><i class="fas fa-rupee-sign"></i> One-Time Investment</div>
+            <div class="benefit-item"><i class="fas fa-mobile-alt"></i> Works on All Phones</div>
+            <div class="benefit-item"><i class="fas fa-sync-alt"></i> Lifetime Updates</div>
+        </div>
+    </div>
+
     <!-- =============== TRUSTED CUSTOMERS =============== -->
     <section class="trusted-section">
         <div class="container">
+            <p class="section-tag">TRUSTED BY</p>
             <h2 class="section-heading text-center">Our Trusted Customers</h2>
             <p class="section-subheading text-center">Brands that trust Tapify for their networking needs</p>
         </div>
         <div class="logo-slider">
             <div class="logo-track">
-                <div class="logo-item"><span style="background:#FF6B6B">TATA</span></div>
-                <div class="logo-item"><span style="background:#4ECDC4">RELIANCE</span></div>
-                <div class="logo-item"><span style="background:#45B7D1">INFOSYS</span></div>
-                <div class="logo-item"><span style="background:#FFA07A">WIPRO</span></div>
-                <div class="logo-item"><span style="background:#98D8C8">HDFC</span></div>
-                <div class="logo-item"><span style="background:#F7DC6F">ICICI</span></div>
-                <div class="logo-item"><span style="background:#BB8FCE">SBM BANK</span></div>
-                <div class="logo-item"><span style="background:#85C1E2">AXIS</span></div>
+                <div class="logo-item"><span>TATA</span></div>
+                <div class="logo-item"><span>RELIANCE</span></div>
+                <div class="logo-item"><span>INFOSYS</span></div>
+                <div class="logo-item"><span>WIPRO</span></div>
+                <div class="logo-item"><span>HDFC</span></div>
+                <div class="logo-item"><span>ICICI</span></div>
+                <div class="logo-item"><span>SBM BANK</span></div>
+                <div class="logo-item"><span>AXIS</span></div>
                 <!-- Duplicated for infinite scroll -->
-                <div class="logo-item"><span style="background:#FF6B6B">TATA</span></div>
-                <div class="logo-item"><span style="background:#4ECDC4">RELIANCE</span></div>
-                <div class="logo-item"><span style="background:#45B7D1">INFOSYS</span></div>
-                <div class="logo-item"><span style="background:#FFA07A">WIPRO</span></div>
-                <div class="logo-item"><span style="background:#98D8C8">HDFC</span></div>
-                <div class="logo-item"><span style="background:#F7DC6F">ICICI</span></div>
-                <div class="logo-item"><span style="background:#BB8FCE">SBM BANK</span></div>
-                <div class="logo-item"><span style="background:#85C1E2">AXIS</span></div>
+                <div class="logo-item"><span>TATA</span></div>
+                <div class="logo-item"><span>RELIANCE</span></div>
+                <div class="logo-item"><span>INFOSYS</span></div>
+                <div class="logo-item"><span>WIPRO</span></div>
+                <div class="logo-item"><span>HDFC</span></div>
+                <div class="logo-item"><span>ICICI</span></div>
+                <div class="logo-item"><span>SBM BANK</span></div>
+                <div class="logo-item"><span>AXIS</span></div>
             </div>
         </div>
     </section>
@@ -252,6 +276,36 @@
                 <button class="slider-arrow arrow-right" onclick="slideTestimonials(1)">
                     <i class="fas fa-chevron-right"></i>
                 </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== NUMBERS SECTION =============== -->
+    <section class="numbers-section">
+        <div class="container">
+            <p class="section-tag-light">BY THE NUMBERS</p>
+            <h2 class="section-heading-light text-center">Tapify at a Glance</h2>
+            <div class="numbers-grid mt-5">
+                <div class="number-card">
+                    <div class="num-icon"><i class="fas fa-users"></i></div>
+                    <div class="num-value">10K+</div>
+                    <div class="num-label">Active Users</div>
+                </div>
+                <div class="number-card">
+                    <div class="num-icon"><i class="fas fa-credit-card"></i></div>
+                    <div class="num-value">50K+</div>
+                    <div class="num-label">Cards Delivered</div>
+                </div>
+                <div class="number-card">
+                    <div class="num-icon"><i class="fas fa-star"></i></div>
+                    <div class="num-value">4.9★</div>
+                    <div class="num-label">Customer Rating</div>
+                </div>
+                <div class="number-card">
+                    <div class="num-icon"><i class="fas fa-city"></i></div>
+                    <div class="num-value">20+</div>
+                    <div class="num-label">Cities Covered</div>
+                </div>
             </div>
         </div>
     </section>
@@ -394,6 +448,59 @@
                         <li><i class="fas fa-check"></i> Eco-friendly Solution</li>
                         <li><i class="fas fa-check"></i> Pocket Friendly Card</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============== SOCIAL PROOF GALLERY =============== -->
+    <section class="social-proof-section">
+        <div class="container">
+            <p class="section-tag">REAL RESULTS</p>
+            <h2 class="section-heading text-center">See Tapify in Action</h2>
+            <p class="section-subheading text-center">Real businesses, real impact — powered by Tapify NFC cards</p>
+            <div class="proof-grid">
+                <div class="proof-card">
+                    <img src="images/gurmule dental clinic.jpeg" alt="Gurmule Dental Clinic" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>Gurmule Dental Clinic</h5>
+                        <p>Modernized their networking with Tapify NFC cards</p>
+                    </div>
+                </div>
+                <div class="proof-card">
+                    <img src="images/dental delight speciality.jpeg" alt="Dental Delight Speciality" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>Dental Delight Speciality</h5>
+                        <p>Enhanced patient connections with smart digital cards</p>
+                    </div>
+                </div>
+                <div class="proof-card">
+                    <img src="images/perfect for every business.jpeg" alt="Perfect for Every Business" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>Perfect for Every Business</h5>
+                        <p>From clinics to corporations — Tapify scales with you</p>
+                    </div>
+                </div>
+                <div class="proof-card">
+                    <img src="images/Ai technology for google review.jpeg" alt="AI Technology for Google Review" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>AI-Powered Google Reviews</h5>
+                        <p>Boost your online reputation with smart review cards</p>
+                    </div>
+                </div>
+                <div class="proof-card">
+                    <img src="images/comparison between old card and tapify new card.jpeg" alt="Card Comparison" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>Old vs New — Clear Winner</h5>
+                        <p>See the difference Tapify makes at first glance</p>
+                    </div>
+                </div>
+                <div class="proof-card">
+                    <img src="images/switch to tapify today.jpeg" alt="Switch to Tapify Today" loading="lazy">
+                    <div class="proof-card-body">
+                        <h5>Make the Switch Today</h5>
+                        <p>Join thousands of professionals already using Tapify</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -587,7 +694,7 @@
                         <li><a href="#features">Features</a></li>
                         <li><a href="#faq">FAQs</a></li>
                         <li><a href="#">How NFC Works?</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6">
