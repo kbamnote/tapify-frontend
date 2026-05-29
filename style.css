@@ -298,18 +298,16 @@ img {
 
 /* ── Video hero override ── */
 .hero-video-section {
-    padding: 0;
-    background: #000;
-    height: 100vh;
-    min-height: 100vh;
-    display: flex;
-    align-items: stretch;
+    padding: 100px 0 0 0;
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 45%, var(--teal-mid) 100%);
+    height: auto;
+    min-height: auto;
+    display: block;
 }
 .hero-video-section::after { display: none; } /* Remove mesh overlay */
 .hero-video {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     display: block;
 }
 
@@ -2071,7 +2069,7 @@ img {
 
 @media (max-width: 576px) {
     .hero-section { padding-top: 90px; }
-    .hero-video-section { padding: 0; height: 100svh; }
+    .hero-video-section { padding: 80px 0 0 0; height: auto; min-height: auto; }
     .hero-title { font-size: 1.85rem; letter-spacing: -0.5px; }
     .hero-subtitle { font-size: 0.95rem; }
 
