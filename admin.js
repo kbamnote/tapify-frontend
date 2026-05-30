@@ -293,22 +293,75 @@ async function logout() {
     window.location.href = '/login';
 }
 
-function loadUserInfo() {
-    const userStr = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
-    if (!userStr) return;
+// Titanium badge HTML helper
+function titaniumBadgeHtml() {
+    return `<span class="titanium-badge" title="Titanium Member">
+                <i class="fas fa-crown"></i> Titanium
+            </span>`;
+}
 
+// Apply user + titanium info to all slots on the current page
+function applyUserInfo(user) {
+    const isTitanium = user.titanium && user.titanium.is_active;
+    const badgeHtml  = isTitanium ? titaniumBadgeHtml() : '';
+    const name       = user.name || 'User';
+
+    // Header profile button name
+    const userNameEl = document.getElementById('userName');
+    if (userNameEl) userNameEl.innerHTML = name + (isTitanium ? ' ' + titaniumBadgeHtml() : '');
+
+    // Welcome banner greeting
+    const greetEl = document.getElementById('greetUser');
+    if (greetEl)   greetEl.innerHTML = name + (isTitanium ? ' ' + titaniumBadgeHtml() : '');
+
+    // Legacy IDs used on other pages
+    const headerUserNameEl    = document.getElementById('headerUserName');
+    const headerProfileNameEl = document.getElementById('headerProfileName');
+    const headerUserEmailEl   = document.getElementById('headerUserEmail');
+    const headerProfileImgEl  = document.getElementById('headerProfileImg');
+
+    if (headerUserNameEl)    headerUserNameEl.innerHTML  = name + (isTitanium ? ' ' + titaniumBadgeHtml() : '');
+    if (headerProfileNameEl) headerProfileNameEl.innerHTML = name + (isTitanium ? ' ' + titaniumBadgeHtml() : '');
+    if (headerUserEmailEl)   headerUserEmailEl.textContent = user.email || '';
+    if (headerProfileImgEl && user.avatar) headerProfileImgEl.src = user.avatar;
+
+    // Profile avatar image in the profile-btn (dashboard header)
+    if (user.avatar) {
+        const profileAvatar = document.querySelector('.profile-avatar');
+        if (profileAvatar) profileAvatar.src = user.avatar;
+    }
+
+    // Show/hide titanium sidebar badge
+    const sidebarTiBadge = document.getElementById('sidebarTitaniumBadge');
+    if (sidebarTiBadge) sidebarTiBadge.style.display = isTitanium ? 'flex' : 'none';
+}
+
+async function loadUserInfo() {
+    // 1. Apply whatever we have in localStorage immediately (instant render)
+    const cached = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
+    if (cached) {
+        try { applyUserInfo(JSON.parse(cached)); } catch(e) {}
+    }
+
+    // 2. Fetch fresh data from me.php so titanium status is always current
     try {
-        const user = JSON.parse(userStr);
-        if (document.getElementById('headerUserName')) document.getElementById('headerUserName').textContent = user.name;
-        if (document.getElementById('headerUserEmail')) document.getElementById('headerUserEmail').textContent = user.email;
-        if (document.getElementById('headerProfileName')) document.getElementById('headerProfileName').textContent = user.name;
-        
-        // Update avatar if exists
-        if (user.avatar && document.getElementById('headerProfileImg')) {
-            document.getElementById('headerProfileImg').src = user.avatar;
-        }
+        const res  = await fetch('https://tapify-backend-production.up.railway.app/api/me.php', {
+            credentials: 'include'
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+
+        const user = json.data.user;
+
+        // Persist freshly fetched data back to storage
+        const storage = localStorage.getItem('tapify_user') ? localStorage : sessionStorage;
+        storage.setItem('tapify_user', JSON.stringify(user));
+
+        // Re-apply with fresh titanium status
+        applyUserInfo(user);
     } catch (e) {
-        console.error('Failed to load user info', e);
+        console.warn('Could not refresh user info from server:', e.message);
     }
 }
 

@@ -105,10 +105,499 @@ function declineCookies() {
     }
 }
 
+// ===== LEAD CAPTURE MODAL =====
+const LEAD_API = 'https://tapify-backend-production.up.railway.app/api/public/lead.php';
+
+function openLeadModal(source) {
+    const backdrop = document.getElementById('leadModalBackdrop');
+    if (!backdrop) return;
+    document.getElementById('leadSource').value = source || 'website';
+    // Reset to form state
+    document.getElementById('leadFormState').style.display  = '';
+    document.getElementById('leadSuccessState').style.display = 'none';
+    clearLeadAlert();
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('leadName')?.focus(), 300);
+}
+
+function closeLeadModal() {
+    const backdrop = document.getElementById('leadModalBackdrop');
+    if (backdrop) backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function showLeadAlert(msg, type) {
+    const el = document.getElementById('leadAlert');
+    if (!el) return;
+    el.textContent = msg;
+    el.className   = 'alert-lead show ' + type;
+}
+function clearLeadAlert() {
+    const el = document.getElementById('leadAlert');
+    if (el) { el.className = 'alert-lead'; el.textContent = ''; }
+}
+
+function initLeadModal() {
+    const backdrop = document.getElementById('leadModalBackdrop');
+    const closeBtn = document.getElementById('leadModalClose');
+    const form     = document.getElementById('leadForm');
+    if (!backdrop) return;
+
+    // Close triggers
+    closeBtn?.addEventListener('click', closeLeadModal);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeLeadModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLeadModal(); });
+
+    // Form submit
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearLeadAlert();
+
+        const name   = document.getElementById('leadName').value.trim();
+        const phone  = document.getElementById('leadPhone').value.trim();
+        const email  = document.getElementById('leadEmail').value.trim();
+        const city   = document.getElementById('leadCity').value.trim();
+        const source = document.getElementById('leadSource').value;
+
+        // Client-side validation
+        if (!name)  { showLeadAlert('Please enter your name.', 'error'); document.getElementById('leadName').focus();  return; }
+        if (!phone) { showLeadAlert('Please enter your phone number.', 'error'); document.getElementById('leadPhone').focus(); return; }
+        if (phone.replace(/\D/g, '').length < 7) { showLeadAlert('Please enter a valid phone number.', 'error'); return; }
+
+        const btn = document.getElementById('leadSubmitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Sending…</span>';
+
+        try {
+            const res  = await fetch(LEAD_API, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ name, phone, email, city, source })
+            });
+            const json = await res.json();
+
+            if (json.success) {
+                // Show success state
+                document.getElementById('leadFormState').style.display   = 'none';
+                document.getElementById('leadSuccessState').style.display = '';
+            } else {
+                showLeadAlert(json.message || 'Something went wrong. Please try again.', 'error');
+            }
+        } catch (err) {
+            showLeadAlert('Network error. Please check your connection and try again.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Send My Request</span>';
+        }
+    });
+}
+
+// ===== ANIMATED NUMBER COUNTERS =====
+function animateCounter(el) {
+    const target   = parseFloat(el.dataset.count);
+    const suffix   = el.dataset.suffix || '';
+    const decimals = parseInt(el.dataset.decimals || 0);
+    const duration = 1800;
+    const step     = 16;
+    const steps    = duration / step;
+    let   current  = 0;
+    const increment = target / steps;
+
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+            el.classList.add('counted');
+        }
+        // Format: >1000 → show as K
+        let display = current;
+        if (target >= 1000 && suffix === 'K+') {
+            display = (current / 1000).toFixed(1).replace('.0', '');
+        } else {
+            display = decimals ? current.toFixed(decimals) : Math.floor(current);
+        }
+        el.textContent = display + suffix;
+    }, step);
+}
+
+function initCounters() {
+    const counterEls = document.querySelectorAll('.num-value[data-count]');
+    if (!counterEls.length) return;
+
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.dataset.animated) {
+                entry.target.dataset.animated = '1';
+                animateCounter(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    counterEls.forEach(el => obs.observe(el));
+}
+
+// ===== STICKY CTA BUTTON =====
+function initStickyCta() {
+    const cta = document.getElementById('stickyCta');
+    if (!cta) return;
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) {
+            cta.classList.add('visible');
+        } else {
+            cta.classList.remove('visible');
+        }
+    }, { passive: true });
+}
+
+// ===== LIVE ACTIVITY TOASTS =====
+const liveActivities = [
+    { name: 'Priya S.',    msg: 'just created a card in Mumbai 🚀',   color: '#e91e63' },
+    { name: 'Rahul K.',    msg: 'shared their profile in Delhi 📲',     color: '#2196f3' },
+    { name: 'Ananya M.',   msg: 'viewed 47 profiles today 👀',          color: '#9c27b0' },
+    { name: 'Vikram N.',   msg: 'joined Tapify from Bangalore ⚡',       color: '#ff5722' },
+    { name: 'Sneha J.',    msg: 'got 120 profile views this week 🎉',    color: '#4caf50' },
+    { name: 'Rohan D.',    msg: 'created a Web Store in Pune 🛍️',       color: '#ff9800' },
+    { name: 'Kavita R.',   msg: 'activated their NFC card in Chennai 💳', color: '#00bcd4' },
+    { name: 'Amit S.',     msg: 'just joined from Hyderabad 🙌',         color: '#8bc34a' },
+    { name: 'Neha K.',     msg: 'reached 500 card scans this month 🔥',  color: '#f44336' },
+    { name: 'Sanjay G.',   msg: 'upgraded to premium plan ⭐',           color: '#ffc107' },
+];
+
+function showLiveToast() {
+    const toast    = document.getElementById('liveToast');
+    const avatar   = document.getElementById('liveToastAvatar');
+    const nameEl   = document.getElementById('liveToastName');
+    const msgEl    = document.getElementById('liveToastMsg');
+    if (!toast) return;
+
+    const activity = liveActivities[Math.floor(Math.random() * liveActivities.length)];
+    avatar.textContent       = activity.name.slice(0, 2).toUpperCase();
+    avatar.style.background  = activity.color;
+    nameEl.textContent       = activity.name;
+    msgEl.textContent        = activity.msg;
+
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4500);
+}
+
+function initLiveToasts() {
+    if (!document.getElementById('liveToast')) return;
+    // First one after 5 s, then every 12 s
+    setTimeout(() => {
+        showLiveToast();
+        setInterval(showLiveToast, 12000);
+    }, 5000);
+}
+
+// ===== THREE.JS NFC CARD =====
+function initThreeJsCard() {
+    const canvas = document.getElementById('nfcCanvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    const W = 260, H = 170;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+    camera.position.set(0, 0, 3.2);
+
+    // Card geometry (credit-card ratio 85.6mm x 53.98mm ≈ 1.58:1)
+    const cardGeo = new THREE.BoxGeometry(2.4, 1.52, 0.06, 1, 1, 1);
+
+    // Front face texture via canvas
+    function makeCardTexture(front) {
+        const tc = document.createElement('canvas');
+        tc.width = 512; tc.height = 320;
+        const ctx = tc.getContext('2d');
+
+        if (front) {
+            // Background gradient
+            const grad = ctx.createLinearGradient(0, 0, 512, 320);
+            grad.addColorStop(0,   '#0d2829');
+            grad.addColorStop(0.5, '#153e3f');
+            grad.addColorStop(1,   '#1e5557');
+            ctx.fillStyle = grad;
+            ctx.roundRect(0, 0, 512, 320, 24);
+            ctx.fill();
+
+            // Gold accent line
+            ctx.fillStyle = '#c9933a';
+            ctx.fillRect(0, 260, 512, 4);
+
+            // NFC icon
+            ctx.strokeStyle = 'rgba(201,147,58,0.7)';
+            ctx.lineWidth = 6;
+            for (let r = 30; r <= 80; r += 22) {
+                ctx.beginPath();
+                ctx.arc(430, 80, r, -Math.PI * 0.7, Math.PI * 0.7);
+                ctx.stroke();
+            }
+
+            // TAPIFY wordmark
+            ctx.fillStyle = '#f6eee6';
+            ctx.font = 'bold 48px Outfit, sans-serif';
+            ctx.fillText('TAPIFY', 36, 80);
+
+            // Subtitle
+            ctx.fillStyle = 'rgba(246,238,230,0.55)';
+            ctx.font = '22px Outfit, sans-serif';
+            ctx.fillText('NFC Smart Business Card', 36, 118);
+
+            // Chip
+            ctx.fillStyle = '#c9933a';
+            ctx.beginPath();
+            ctx.roundRect(36, 160, 64, 48, 6);
+            ctx.fill();
+            ctx.strokeStyle = '#dba84f';
+            ctx.lineWidth = 1.5;
+            ['V','H'].forEach((dir, i) => {
+                ctx.beginPath();
+                if (dir === 'V') { ctx.moveTo(68, 164); ctx.lineTo(68, 204); }
+                else             { ctx.moveTo(40, 184); ctx.lineTo(96, 184); }
+                ctx.stroke();
+            });
+
+            // Name placeholder
+            ctx.fillStyle = 'rgba(246,238,230,0.8)';
+            ctx.font = 'bold 28px Outfit, sans-serif';
+            ctx.fillText('Your Name Here', 36, 244);
+
+        } else {
+            // Back side
+            const grad = ctx.createLinearGradient(0, 0, 0, 320);
+            grad.addColorStop(0, '#0a1e1e');
+            grad.addColorStop(1, '#0d2829');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 512, 320);
+
+            // Magnetic strip
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 40, 512, 60);
+
+            // Logo
+            ctx.fillStyle = '#c9933a';
+            ctx.font = 'bold 36px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('TAPIFY', 256, 200);
+            ctx.fillStyle = 'rgba(246,238,230,0.3)';
+            ctx.font = '18px Outfit, sans-serif';
+            ctx.fillText('tapify.in', 256, 230);
+            ctx.textAlign = 'left';
+        }
+
+        return new THREE.CanvasTexture(tc);
+    }
+
+    const frontTex = makeCardTexture(true);
+    const backTex  = makeCardTexture(false);
+    const sideTex  = (() => {
+        const tc = document.createElement('canvas');
+        tc.width = 64; tc.height = 64;
+        const ctx = tc.getContext('2d');
+        ctx.fillStyle = '#1e5557';
+        ctx.fillRect(0, 0, 64, 64);
+        return new THREE.CanvasTexture(tc);
+    })();
+
+    const materials = [
+        new THREE.MeshStandardMaterial({ map: sideTex }),   // right
+        new THREE.MeshStandardMaterial({ map: sideTex }),   // left
+        new THREE.MeshStandardMaterial({ map: sideTex }),   // top
+        new THREE.MeshStandardMaterial({ map: sideTex }),   // bottom
+        new THREE.MeshStandardMaterial({ map: frontTex }),  // front
+        new THREE.MeshStandardMaterial({ map: backTex }),   // back
+    ];
+
+    const card = new THREE.Mesh(cardGeo, materials);
+    scene.add(card);
+
+    // Lights
+    scene.add(Object.assign(new THREE.AmbientLight(0xffffff, 0.6)));
+    const dir1 = new THREE.DirectionalLight(0xffeedd, 1.2);
+    dir1.position.set(3, 3, 5);
+    scene.add(dir1);
+    const dir2 = new THREE.DirectionalLight(0xc9933a, 0.5);
+    dir2.position.set(-3, -2, 3);
+    scene.add(dir2);
+
+    // Gold particle dust
+    const partGeo = new THREE.BufferGeometry();
+    const partCount = 60;
+    const positions = new Float32Array(partCount * 3);
+    for (let i = 0; i < partCount * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 5;
+    }
+    partGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const partMat = new THREE.PointsMaterial({ color: 0xc9933a, size: 0.04, transparent: true, opacity: 0.6 });
+    scene.add(new THREE.Points(partGeo, partMat));
+
+    let t = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        t += 0.01;
+        card.rotation.y = Math.sin(t * 0.5) * 0.4 + t * 0.3;
+        card.rotation.x = Math.sin(t * 0.3) * 0.1;
+        card.position.y = Math.sin(t * 0.7) * 0.08;
+        renderer.render(scene, camera);
+    }
+    animate();
+}
+
+// ===== NFC TAP ANIMATION SEQUENCE =====
+function initNfcTapDemo() {
+    const rings    = document.getElementById('nfcRings');
+    const profile  = document.getElementById('phoneProfile');
+    const idleText = document.querySelector('.phone-idle-text');
+    const label    = document.getElementById('nfcDemoLabel');
+    if (!rings) return;
+
+    const steps = [
+        // Step 1: idle
+        () => {
+            rings.classList.remove('active');
+            if (profile)  { profile.classList.remove('show'); }
+            if (idleText) { idleText.style.opacity = '1'; }
+            if (label)    { label.textContent = '📲 Tap card with phone'; }
+        },
+        // Step 2: NFC rings fire
+        () => {
+            rings.classList.add('active');
+            if (label) label.textContent = '⚡ NFC signal detected…';
+        },
+        // Step 3: profile slides in
+        () => {
+            rings.classList.remove('active');
+            if (idleText) idleText.style.opacity = '0';
+            if (profile)  profile.classList.add('show');
+            if (label)    label.textContent = '✅ Profile shared instantly!';
+        },
+    ];
+
+    let step = 0;
+    steps[0]();
+
+    setInterval(() => {
+        step = (step + 1) % steps.length;
+        steps[step]();
+    }, 2500);
+}
+
+// ===== DEMO CARD GENERATOR =====
+let qrInstance = null;
+
+function initDemoGenerator() {
+    const fields = ['demoName','demoTitle','demoCompany','demoPhone','demoEmail'];
+    if (!document.getElementById('demoName')) return;
+
+    // Init QR
+    if (typeof QRCode !== 'undefined') {
+        const qrEl = document.getElementById('demoQR');
+        if (qrEl) {
+            qrInstance = new QRCode(qrEl, {
+                text: 'https://tapify.in/demo',
+                width: 110, height: 110,
+                colorDark: '#153e3f',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+    }
+
+    function updateCard() {
+        const name    = document.getElementById('demoName').value.trim()    || 'Your Name';
+        const title   = document.getElementById('demoTitle').value.trim()   || 'Your Title';
+        const company = document.getElementById('demoCompany').value.trim() || 'Company';
+        const phone   = document.getElementById('demoPhone').value.trim()   || '+91 00000 00000';
+        const email   = document.getElementById('demoEmail').value.trim()   || 'your@email.com';
+
+        // Initials
+        const words    = name.split(' ').filter(Boolean);
+        const initials = words.length >= 2
+            ? (words[0][0] + words[words.length - 1][0]).toUpperCase()
+            : name.slice(0, 2).toUpperCase() || 'TP';
+
+        document.getElementById('dcpAvatar').textContent = initials;
+        document.getElementById('dcpName').textContent   = name;
+        document.getElementById('dcpTitle').textContent  = title + (company ? ' · ' + company : '');
+        document.getElementById('dcpPhone').innerHTML    = `<i class="fas fa-phone"></i> ${phone}`;
+        document.getElementById('dcpEmail').innerHTML    = `<i class="fas fa-envelope"></i> ${email}`;
+
+        // Update QR
+        const slug    = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'demo';
+        const qrUrl   = 'https://tapify.in/' + slug;
+        if (qrInstance) {
+            try { qrInstance.clear(); qrInstance.makeCode(qrUrl); } catch(e) {}
+        }
+    }
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateCard);
+    });
+
+    updateCard();
+}
+
+// ===== COST CALCULATOR =====
+function initCalculator() {
+    const cardsSlider = document.getElementById('calcCards');
+    const priceSlider = document.getElementById('calcPrice');
+    const yearsSlider = document.getElementById('calcYears');
+    if (!cardsSlider) return;
+
+    const TAPIFY_COST = 999;
+
+    function update() {
+        const cards  = parseInt(cardsSlider.value);
+        const price  = parseInt(priceSlider.value);
+        const years  = parseInt(yearsSlider.value);
+
+        document.getElementById('calcCardsVal').textContent = cards.toLocaleString();
+        document.getElementById('calcPriceVal').textContent = '₹' + price;
+        document.getElementById('calcYearsVal').textContent = years + ' yr' + (years > 1 ? 's' : '');
+
+        const paperTotal = cards * price * years;
+        const savings    = Math.max(0, paperTotal - TAPIFY_COST);
+
+        const paperEl = document.getElementById('paperCost');
+        const savEl   = document.getElementById('calcSavings');
+        const subEl   = document.querySelector('.calc-col.paper .calc-col-sub');
+
+        if (paperEl) paperEl.textContent = '₹' + paperTotal.toLocaleString();
+        if (subEl)   subEl.textContent   = 'over ' + years + ' year' + (years > 1 ? 's' : '');
+        if (savEl) {
+            savEl.textContent = '₹' + savings.toLocaleString();
+            // Trigger re-animation
+            savEl.style.animation = 'none';
+            savEl.offsetHeight;
+            savEl.style.animation = 'savingsPop 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+        }
+    }
+
+    [cardsSlider, priceSlider, yearsSlider].forEach(s => s.addEventListener('input', update));
+    update();
+}
+
 // ===== INITIALIZE ON DOM READY =====
 document.addEventListener('DOMContentLoaded', function() {
     // Show cookie banner
     showCookieBanner();
+
+    // Lead modal
+    initLeadModal();
+
+    // New interactive features
+    initCounters();
+    initStickyCta();
+    initLiveToasts();
+    initThreeJsCard();
+    initNfcTapDemo();
+    initDemoGenerator();
+    initCalculator();
 
     // Add fade-in animation to elements on scroll
     const observerOptions = {
