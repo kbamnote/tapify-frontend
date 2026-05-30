@@ -1006,7 +1006,7 @@ function initDemoGenerator() {
 
         // Update QR
         const slug    = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'demo';
-        const qrUrl   = 'https://tapify.in/' + slug;
+        const qrUrl   = 'https://tapify.co.in/' + slug;
         if (qrInstance) {
             try { qrInstance.clear(); qrInstance.makeCode(qrUrl); } catch(e) {}
         }
