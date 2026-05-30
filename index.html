@@ -79,146 +79,138 @@
                 <p class="section-subheading-light text-center">Hold your Tapify card to any phone — your entire digital identity transfers in milliseconds.</p>
             </div>
 
-            <!-- Main 3-panel stage -->
-            <div class="nfc-demo-v2">
+            <!-- ── INTERACTIVE 3-D NFC STAGE ── -->
+            <div class="nfc-i3d-stage" id="nfcI3dStage">
 
-                <!-- PANEL 1: NFC Card -->
-                <div class="ndv2-panel ndv2-card-panel">
-                    <div class="ndv2-panel-label"><i class="fas fa-credit-card"></i> NFC Card</div>
-                    <div class="ndv2-card-wrap" id="ndvCard">
-                        <canvas id="nfcCanvas"></canvas>
-                        <div class="ndv2-card-glow"></div>
+                <!-- Particle beam canvas (full-stage, pointer-events none) -->
+                <canvas class="nfc-beam-cvs" id="nfcBeamCvs"></canvas>
+
+                <!-- 3-panel world -->
+                <div class="nfc-i3d-world">
+
+                    <!-- COL 1: Hoverable / tiltable 3D card -->
+                    <div class="nfc-i3d-col">
+                        <div class="nfc-i3d-label"><i class="fas fa-credit-card"></i> NFC Card</div>
+                        <div class="nfc-i3d-card-scene" id="nfcCardScene">
+                            <div class="nfc-i3d-card" id="nfcI3dCard">
+                                <div class="nfc-shine" id="nfcShine"></div>
+                                <div class="nfc-i3d-card-top">
+                                    <span class="nfc-i3d-brand">TAPIFY</span>
+                                    <span class="nfc-i3d-nfc-arcs"><i class="fas fa-wifi"></i></span>
+                                </div>
+                                <div class="nfc-i3d-chip"><span></span><span></span><span></span></div>
+                                <div class="nfc-i3d-card-name">Your Name Here</div>
+                                <div class="nfc-i3d-card-sub">NFC Smart Business Card</div>
+                                <div class="nfc-i3d-gold-stripe"></div>
+                            </div>
+                            <div class="nfc-i3d-card-shadow" id="nfcCardShadow"></div>
+                        </div>
+                        <div class="nfc-i3d-status" id="nfcCardStatus">
+                            <span class="ndv2-dot green"></span> Ready to transmit
+                        </div>
+                        <p class="nfc-i3d-hint-text">Hover card &amp; click to interact</p>
                     </div>
-                    <div class="ndv2-status ndv2-status-ready" id="ndvCardStatus">
-                        <span class="ndv2-dot green"></span> Ready to transmit
+
+                    <!-- COL 2: Centre signal hub -->
+                    <div class="nfc-i3d-col nfc-i3d-center">
+                        <div class="nfc-i3d-signal-hub" id="nfcSignalHub">
+                            <div class="nfc-i3d-ring ni-r1"></div>
+                            <div class="nfc-i3d-ring ni-r2"></div>
+                            <div class="nfc-i3d-ring ni-r3"></div>
+                            <div class="nfc-i3d-ring ni-r4"></div>
+                            <div class="nfc-i3d-core-icon"><i class="fas fa-wifi"></i></div>
+                        </div>
+                        <div class="nfc-i3d-metrics">
+                            <div class="nfc-i3d-metric">
+                                <span class="nfc-i3d-mval" id="nfcMsVal">—</span>
+                                <span class="nfc-i3d-munit">ms</span>
+                                <span class="nfc-i3d-mlabel">Transfer</span>
+                            </div>
+                            <div class="nfc-i3d-mdiv"></div>
+                            <div class="nfc-i3d-metric">
+                                <span class="nfc-i3d-mval">13.56</span>
+                                <span class="nfc-i3d-munit">MHz</span>
+                                <span class="nfc-i3d-mlabel">Frequency</span>
+                            </div>
+                            <div class="nfc-i3d-mdiv"></div>
+                            <div class="nfc-i3d-metric">
+                                <span class="nfc-i3d-mval">AES</span>
+                                <span class="nfc-i3d-munit">256</span>
+                                <span class="nfc-i3d-mlabel">Encrypt</span>
+                            </div>
+                        </div>
+                        <div class="nfc-i3d-steps">
+                            <div class="nfc-i3d-step active" data-ni="0"><div class="nfc-i3d-sdot"></div><span>Idle</span></div>
+                            <div class="nfc-i3d-step" data-ni="1"><div class="nfc-i3d-sdot"></div><span>Detected</span></div>
+                            <div class="nfc-i3d-step" data-ni="2"><div class="nfc-i3d-sdot"></div><span>Sending</span></div>
+                            <div class="nfc-i3d-step" data-ni="3"><div class="nfc-i3d-sdot"></div><span>Done</span></div>
+                        </div>
                     </div>
+
+                    <!-- COL 3: 3D Phone -->
+                    <div class="nfc-i3d-col">
+                        <div class="nfc-i3d-label"><i class="fas fa-mobile-alt"></i> Receiver's Phone</div>
+                        <div class="nfc-i3d-phone-scene">
+                            <div class="nfc-i3d-phone" id="nfcI3dPhone">
+                                <div class="nfc-i3d-di"><div class="nfc-i3d-di-pill"></div></div>
+                                <div class="nfc-i3d-screen" id="nfcI3dScreen">
+
+                                    <!-- IDLE -->
+                                    <div class="nfc-is nfc-is-idle active" id="nfcIsIdle">
+                                        <i class="fas fa-wifi" style="opacity:0.15;font-size:1.8rem;color:#aaa;margin-bottom:6px"></i>
+                                        <p>Waiting for<br>NFC signal…</p>
+                                    </div>
+
+                                    <!-- SCAN -->
+                                    <div class="nfc-is nfc-is-scan" id="nfcIsScan">
+                                        <div class="nfc-is-scan-ring"></div>
+                                        <div class="nfc-is-scan-ring r2"></div>
+                                        <div class="nfc-is-scan-text">NFC Detected</div>
+                                        <div class="nfc-is-bar"><div class="nfc-is-fill" id="nfcIsFill"></div></div>
+                                        <div class="nfc-is-scan-sub">Decrypting data…</div>
+                                    </div>
+
+                                    <!-- PROFILE -->
+                                    <div class="nfc-is nfc-is-profile" id="nfcIsProfile">
+                                        <div class="nfc-is-cover"></div>
+                                        <div class="nfc-is-avatar">RS</div>
+                                        <div class="nfc-is-name">Rajiv Sharma</div>
+                                        <div class="nfc-is-title">CEO · TechVentures India</div>
+                                        <div class="nfc-is-divider"></div>
+                                        <div class="nfc-is-links">
+                                            <div class="nfc-is-link l0"><i class="fas fa-phone"></i></div>
+                                            <div class="nfc-is-link l1"><i class="fab fa-whatsapp"></i></div>
+                                            <div class="nfc-is-link l2"><i class="fab fa-linkedin-in"></i></div>
+                                            <div class="nfc-is-link l3"><i class="fab fa-instagram"></i></div>
+                                        </div>
+                                        <div class="nfc-is-save"><i class="fas fa-user-plus"></i> Save Contact</div>
+                                        <div class="nfc-is-tag">Powered by <strong>Tapify</strong></div>
+                                    </div>
+
+                                </div>
+                                <div class="nfc-i3d-home-btn"></div>
+                            </div>
+                            <div class="nfc-i3d-phone-shadow"></div>
+                        </div>
+                        <div class="nfc-i3d-status" id="nfcPhoneStatus">
+                            <span class="ndv2-dot grey"></span> Standing by
+                        </div>
+                    </div>
+
+                </div><!-- /nfc-i3d-world -->
+
+                <!-- TAP BUTTON -->
+                <div class="nfc-i3d-cta">
+                    <button class="nfc-i3d-tap-btn" id="nfcTapBtn">
+                        <span class="nfc-tapring r1"></span>
+                        <span class="nfc-tapring r2"></span>
+                        <i class="fas fa-wifi"></i>
+                        <span>Tap NFC Card</span>
+                    </button>
+                    <span class="nfc-i3d-cta-note">Click the card or button above to simulate a tap</span>
                 </div>
 
-                <!-- PANEL 2: Transfer visualiser (centre) -->
-                <div class="ndv2-panel ndv2-transfer-panel">
-                    <div class="ndv2-transfer-wrap" id="ndvTransfer">
-                        <!-- NFC signal arc rings -->
-                        <div class="ndv2-arc-rings" id="ndvRings">
-                            <div class="ndv2-arc a1"></div>
-                            <div class="ndv2-arc a2"></div>
-                            <div class="ndv2-arc a3"></div>
-                            <div class="ndv2-arc a4"></div>
-                        </div>
-
-                        <!-- Data packets travelling along beams -->
-                        <div class="ndv2-beams" id="ndvBeams">
-                            <div class="ndv2-beam b1"><div class="ndv2-packet p1"></div></div>
-                            <div class="ndv2-beam b2"><div class="ndv2-packet p2"></div></div>
-                            <div class="ndv2-beam b3"><div class="ndv2-packet p3"></div></div>
-                        </div>
-
-                        <!-- Centre NFC symbol -->
-                        <div class="ndv2-nfc-symbol" id="ndvSymbol">
-                            <div class="ndv2-nfc-core">
-                                <i class="fas fa-wifi"></i>
-                            </div>
-                            <div class="ndv2-nfc-orbit o1"></div>
-                            <div class="ndv2-nfc-orbit o2"></div>
-                        </div>
-
-                        <!-- Transfer metrics -->
-                        <div class="ndv2-metrics" id="ndvMetrics">
-                            <div class="ndv2-metric">
-                                <span class="ndv2-metric-val" id="ndvSpeed">0</span>
-                                <span class="ndv2-metric-unit">ms</span>
-                                <span class="ndv2-metric-label">Transfer Time</span>
-                            </div>
-                            <div class="ndv2-metric-divider"></div>
-                            <div class="ndv2-metric">
-                                <span class="ndv2-metric-val" id="ndvFreq">13.56</span>
-                                <span class="ndv2-metric-unit">MHz</span>
-                                <span class="ndv2-metric-label">Frequency</span>
-                            </div>
-                            <div class="ndv2-metric-divider"></div>
-                            <div class="ndv2-metric">
-                                <span class="ndv2-metric-val" id="ndvEncrypt">AES</span>
-                                <span class="ndv2-metric-unit">-256</span>
-                                <span class="ndv2-metric-label">Encryption</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step indicator -->
-                    <div class="ndv2-steps" id="ndvSteps">
-                        <div class="ndv2-step active" data-step="0">
-                            <div class="ndv2-step-dot"></div>
-                            <span>Idle</span>
-                        </div>
-                        <div class="ndv2-step" data-step="1">
-                            <div class="ndv2-step-dot"></div>
-                            <span>Detected</span>
-                        </div>
-                        <div class="ndv2-step" data-step="2">
-                            <div class="ndv2-step-dot"></div>
-                            <span>Transmitting</span>
-                        </div>
-                        <div class="ndv2-step" data-step="3">
-                            <div class="ndv2-step-dot"></div>
-                            <span>Complete</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANEL 3: Phone display -->
-                <div class="ndv2-panel ndv2-phone-panel">
-                    <div class="ndv2-panel-label"><i class="fas fa-mobile-alt"></i> Receiver's Phone</div>
-                    <div class="ndv2-phone-wrap">
-                        <div class="ndv2-phone">
-                            <div class="ndv2-phone-bar">
-                                <span class="ndv2-phone-cam"></span>
-                            </div>
-                            <div class="ndv2-phone-screen" id="ndvScreen">
-
-                                <!-- STATE 0: Idle -->
-                                <div class="ndvs ndvs-idle active" id="ndvsIdle">
-                                    <div class="ndvs-idle-icon">
-                                        <i class="fas fa-wifi" style="opacity:0.2;font-size:2rem;color:#aaa"></i>
-                                    </div>
-                                    <p style="font-size:0.65rem;color:#888;text-align:center;padding:0 10px">Waiting for<br>NFC signal…</p>
-                                </div>
-
-                                <!-- STATE 1: Detected / scanning -->
-                                <div class="ndvs ndvs-scan" id="ndvsScan">
-                                    <div class="ndvs-scan-ring"></div>
-                                    <div class="ndvs-scan-ring r2"></div>
-                                    <div class="ndvs-scan-text">NFC Detected</div>
-                                    <div class="ndvs-loading-bar"><div class="ndvs-loading-fill" id="ndvsLoadFill"></div></div>
-                                    <div class="ndvs-scan-sub">Decrypting data…</div>
-                                </div>
-
-                                <!-- STATE 2: Profile loaded -->
-                                <div class="ndvs ndvs-profile" id="ndvsProfile">
-                                    <div class="ndvs-cover"></div>
-                                    <div class="ndvs-avatar">RS</div>
-                                    <div class="ndvs-name">Rajiv Sharma</div>
-                                    <div class="ndvs-title">CEO · TechVentures India</div>
-                                    <div class="ndvs-divider"></div>
-                                    <div class="ndvs-links" id="ndvsLinks">
-                                        <div class="ndvs-link ndvsl-0"><i class="fas fa-phone"></i> Call</div>
-                                        <div class="ndvs-link ndvsl-1"><i class="fab fa-whatsapp"></i> Chat</div>
-                                        <div class="ndvs-link ndvsl-2"><i class="fab fa-linkedin-in"></i> LinkedIn</div>
-                                        <div class="ndvs-link ndvsl-3"><i class="fab fa-instagram"></i> Instagram</div>
-                                    </div>
-                                    <div class="ndvs-save-btn">
-                                        <i class="fas fa-user-plus"></i> Save Contact
-                                    </div>
-                                    <div class="ndvs-tag">Powered by <strong>Tapify</strong></div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ndv2-status" id="ndvPhoneStatus">
-                        <span class="ndv2-dot grey"></span> Standing by
-                    </div>
-                </div>
-
-            </div><!-- /nfc-demo-v2 -->
+            </div><!-- /nfc-i3d-stage -->
 
             <!-- Bottom feature pills -->
             <div class="nfc-feature-pills">
@@ -589,73 +581,76 @@
         </div>
     </section>
 
-    <!-- =============== COST CALCULATOR =============== -->
-    <section class="calc-section" id="calculator">
+    <!-- =============== KIT SHOWCASE =============== -->
+    <section class="kit-section" id="kit-showcase">
         <div class="container">
-            <p class="section-tag-light">SAVE MORE</p>
-            <h2 class="section-heading-light text-center">How Much Are Paper Cards Costing You?</h2>
-            <p class="section-subheading-light text-center">See your real yearly spend vs a one-time Tapify investment</p>
+            <div class="kit-layout">
 
-            <div class="calc-wrap">
-                <div class="calc-inputs">
-                    <div class="calc-field">
-                        <div class="calc-field-header">
-                            <label>Cards printed per year</label>
-                            <span class="calc-val" id="calcCardsVal">500</span>
+                <!-- LEFT: Product Image -->
+                <div class="kit-img-col">
+                    <div class="kit-img-wrap">
+                        <img src="images/TAPIFY KIT.jpeg" alt="Tapify NFC Kit" class="kit-img">
+                        <div class="kit-img-glow"></div>
+                        <div class="kit-float top-l">
+                            <i class="fas fa-wifi"></i> NFC Ready
                         </div>
-                        <input type="range" id="calcCards" min="100" max="5000" step="100" value="500" class="calc-slider">
-                        <div class="calc-range-labels"><span>100</span><span>5,000</span></div>
-                    </div>
-                    <div class="calc-field">
-                        <div class="calc-field-header">
-                            <label>Cost per card (₹)</label>
-                            <span class="calc-val" id="calcPriceVal">₹3</span>
+                        <div class="kit-float bot-r">
+                            <i class="fas fa-infinity"></i> Works Forever
                         </div>
-                        <input type="range" id="calcPrice" min="1" max="20" step="1" value="3" class="calc-slider">
-                        <div class="calc-range-labels"><span>₹1</span><span>₹20</span></div>
-                    </div>
-                    <div class="calc-field">
-                        <div class="calc-field-header">
-                            <label>Years in business</label>
-                            <span class="calc-val" id="calcYearsVal">5 yrs</span>
-                        </div>
-                        <input type="range" id="calcYears" min="1" max="20" step="1" value="5" class="calc-slider">
-                        <div class="calc-range-labels"><span>1 yr</span><span>20 yrs</span></div>
                     </div>
                 </div>
 
-                <div class="calc-result" id="calcResult">
-                    <div class="calc-vs">
-                        <div class="calc-col paper">
-                            <div class="calc-col-icon">📄</div>
-                            <div class="calc-col-label">Paper Cards Cost</div>
-                            <div class="calc-col-amount" id="paperCost">₹7,500</div>
-                            <div class="calc-col-sub">over 5 years</div>
-                            <ul class="calc-col-cons">
-                                <li>❌ Run out — reprint every time</li>
-                                <li>❌ Can't update details</li>
-                                <li>❌ No analytics</li>
-                                <li>❌ Wasteful & eco-unfriendly</li>
-                            </ul>
+                <!-- RIGHT: Content -->
+                <div class="kit-content-col">
+                    <p class="section-tag-light">THE COMPLETE KIT</p>
+                    <h2 class="section-heading-light">Everything You Need.<br><span class="kit-gold">One Powerful Kit.</span></h2>
+                    <p class="kit-desc">Stop reprinting. Stop paying again and again. The Tapify NFC Kit gives you everything to go fully digital — share your entire profile with a single tap, forever.</p>
+
+                    <div class="kit-items">
+                        <div class="kit-item">
+                            <div class="kit-icon"><i class="fas fa-credit-card"></i></div>
+                            <div>
+                                <div class="kit-item-name">Tapify NFC Smart Card</div>
+                                <div class="kit-item-sub">Custom-branded · tap to share instantly</div>
+                            </div>
                         </div>
-                        <div class="calc-vs-badge">VS</div>
-                        <div class="calc-col tapify">
-                            <div class="calc-col-icon">⚡</div>
-                            <div class="calc-col-label">Tapify NFC Card</div>
-                            <div class="calc-col-amount">₹999</div>
-                            <div class="calc-col-sub">one-time forever</div>
-                            <ul class="calc-col-cons">
-                                <li>✅ Update anytime instantly</li>
-                                <li>✅ Real-time analytics</li>
-                                <li>✅ Works for life</li>
-                                <li>✅ 100% eco-friendly</li>
-                            </ul>
+                        <div class="kit-item">
+                            <div class="kit-icon"><i class="fas fa-qrcode"></i></div>
+                            <div>
+                                <div class="kit-item-name">QR Code Stand</div>
+                                <div class="kit-item-sub">Works on every phone — NFC or not</div>
+                            </div>
+                        </div>
+                        <div class="kit-item">
+                            <div class="kit-icon"><i class="fab fa-google"></i></div>
+                            <div>
+                                <div class="kit-item-name">Google Review Stand</div>
+                                <div class="kit-item-sub">Collect 5-star reviews with one tap</div>
+                            </div>
+                        </div>
+                        <div class="kit-item">
+                            <div class="kit-icon"><i class="fas fa-box-open"></i></div>
+                            <div>
+                                <div class="kit-item-name">Premium Carry Case</div>
+                                <div class="kit-item-sub">Elegant packaging &amp; protection</div>
+                            </div>
+                        </div>
+                        <div class="kit-item">
+                            <div class="kit-icon"><i class="fas fa-headset"></i></div>
+                            <div>
+                                <div class="kit-item-name">Full Digital Setup</div>
+                                <div class="kit-item-sub">We build your profile for you</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="calc-savings">
-                        You save <span id="calcSavings" class="savings-amount">₹6,501</span> with Tapify!
+
+                    <div class="kit-cta-row">
+                        <button class="kit-order-btn" onclick="openLeadModal('kit_showcase')">
+                            <i class="fas fa-bolt"></i> Order Your Kit
+                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -809,48 +804,10 @@
             <p class="section-tag">REAL RESULTS</p>
             <h2 class="section-heading text-center">See Tapify in Action</h2>
             <p class="section-subheading text-center">Real businesses, real impact — powered by Tapify NFC cards</p>
-            <div class="proof-grid">
-                <div class="proof-card">
-                    <img src="images/gurmule dental clinic.jpeg" alt="Gurmule Dental Clinic" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>Gurmule Dental Clinic</h5>
-                        <p>Modernized their networking with Tapify NFC cards</p>
-                    </div>
-                </div>
-                <div class="proof-card">
-                    <img src="images/dental delight speciality.jpeg" alt="Dental Delight Speciality" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>Dental Delight Speciality</h5>
-                        <p>Enhanced patient connections with smart digital cards</p>
-                    </div>
-                </div>
-                <div class="proof-card">
-                    <img src="images/perfect for every business.jpeg" alt="Perfect for Every Business" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>Perfect for Every Business</h5>
-                        <p>From clinics to corporations — Tapify scales with you</p>
-                    </div>
-                </div>
-                <div class="proof-card">
-                    <img src="images/Ai technology for google review.jpeg" alt="AI Technology for Google Review" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>AI-Powered Google Reviews</h5>
-                        <p>Boost your online reputation with smart review cards</p>
-                    </div>
-                </div>
-                <div class="proof-card">
-                    <img src="images/comparison between old card and tapify new card.jpeg" alt="Card Comparison" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>Old vs New — Clear Winner</h5>
-                        <p>See the difference Tapify makes at first glance</p>
-                    </div>
-                </div>
-                <div class="proof-card">
-                    <img src="images/switch to tapify today.jpeg" alt="Switch to Tapify Today" loading="lazy">
-                    <div class="proof-card-body">
-                        <h5>Make the Switch Today</h5>
-                        <p>Join thousands of professionals already using Tapify</p>
-                    </div>
+            <!-- Testimonial Auto-Scroll Carousel -->
+            <div class="tpf-marquee-wrap" id="tpfMarqueeWrap">
+                <div class="tpf-marquee-track" id="tpfMarqueeTrack">
+                    <!-- JS fills both the original + duplicate set -->
                 </div>
             </div>
         </div>

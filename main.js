@@ -400,7 +400,227 @@ function initSocialBurst() {
     }, 3000);
 }
 
-// ===== THREE.JS NFC CARD =====
+// ===== INTERACTIVE 3-D NFC SECTION =====
+function initNfcInteractive() {
+    initNfcBgCanvas();
+
+    const card        = document.getElementById('nfcI3dCard');
+    const cardScene   = document.getElementById('nfcCardScene');
+    const shine       = document.getElementById('nfcShine');
+    const cardShadow  = document.getElementById('nfcCardShadow');
+    const tapBtn      = document.getElementById('nfcTapBtn');
+    const signalHub   = document.getElementById('nfcSignalHub');
+    const phone       = document.getElementById('nfcI3dPhone');
+    const phoneShadow = document.querySelector('.nfc-i3d-phone-shadow');
+    const beamCvs     = document.getElementById('nfcBeamCvs');
+    const msVal       = document.getElementById('nfcMsVal');
+    const cardStatus  = document.getElementById('nfcCardStatus');
+    const phoneStatus = document.getElementById('nfcPhoneStatus');
+    const isFill      = document.getElementById('nfcIsFill');
+    const steps       = document.querySelectorAll('.nfc-i3d-step');
+    if (!card) return;
+
+    /* ── Card mouse-tilt interaction ── */
+    cardScene.addEventListener('mouseenter', () => {
+        card.classList.add('tilting');
+        card.style.transition = 'transform 0.08s ease-out, box-shadow 0.3s ease';
+    });
+
+    cardScene.addEventListener('mousemove', (e) => {
+        const r  = card.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2); // -1..1
+        const dy = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2); // -1..1
+        card.style.transform = `rotateX(${-dy * 22}deg) rotateY(${dx * 22}deg) translateZ(12px)`;
+        // Holographic shimmer follows cursor
+        const sx = ((dx + 1) / 2) * 100;
+        const sy = ((dy + 1) / 2) * 100;
+        shine.style.background = `radial-gradient(circle at ${sx}% ${sy}%, rgba(255,255,255,0.22) 0%, rgba(201,147,58,0.07) 42%, transparent 62%)`;
+        // Shadow parallax
+        cardShadow.style.transform = `translateX(${dx * 12}px)`;
+        // Subtle glow intensifies
+        card.style.boxShadow = `0 30px 60px rgba(0,0,0,0.65), 0 0 ${40 + Math.abs(dx)*20}px rgba(0,229,255,${0.18 + Math.abs(dx)*0.12}), inset 0 1px 0 rgba(255,255,255,0.07)`;
+    });
+
+    cardScene.addEventListener('mouseleave', () => {
+        card.classList.remove('tilting');
+        card.style.transition = 'transform 0.55s ease, box-shadow 0.55s ease';
+        card.style.transform  = '';
+        card.style.boxShadow  = '';
+        shine.style.background = 'radial-gradient(circle at 35% 25%, rgba(255,255,255,0.18) 0%, rgba(201,147,58,0.06) 45%, transparent 65%)';
+        cardShadow.style.transform = '';
+        setTimeout(() => {
+            if (!card.classList.contains('tilting'))
+                card.style.transition = '';
+        }, 560);
+    });
+
+    cardScene.addEventListener('click', () => triggerTap());
+    if (tapBtn) tapBtn.addEventListener('click', () => triggerTap());
+
+    /* ── Particle beam canvas ── */
+    let bCtx, bW, bH, particles = [], beamActive = false, rafId;
+
+    if (beamCvs) {
+        bCtx = beamCvs.getContext('2d');
+        const resize = () => {
+            const s = document.getElementById('nfcI3dStage');
+            if (!s) return;
+            const r = s.getBoundingClientRect();
+            beamCvs.width = bW = r.width;
+            beamCvs.height = bH = r.height;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+    }
+
+    function spawnParticles() {
+        if (!beamCvs) return;
+        const stage  = document.getElementById('nfcI3dStage').getBoundingClientRect();
+        const cR     = card.getBoundingClientRect();
+        const pR     = phone.getBoundingClientRect();
+        const sx = cR.left + cR.width  / 2 - stage.left;
+        const sy = cR.top  + cR.height / 2 - stage.top;
+        const ex = pR.left + pR.width  / 2 - stage.left;
+        const ey = pR.top  + pR.height / 2 - stage.top;
+
+        for (let wave = 0; wave < 4; wave++) {
+            setTimeout(() => {
+                for (let i = 0; i < 28; i++) {
+                    setTimeout(() => {
+                        const gold = Math.random() < 0.28;
+                        particles.push({
+                            sx, sy, ex, ey,
+                            t: Math.random() * 0.15,
+                            speed: 0.007 + Math.random() * 0.007,
+                            size: Math.random() * 3.5 + 1.5,
+                            color: gold ? '#dba84f' : '#00e5ff',
+                            cpx: (sx + ex) / 2 + (Math.random() - 0.5) * 90,
+                            cpy: Math.min(sy, ey) - 55 - Math.random() * 65,
+                        });
+                    }, i * 35);
+                }
+            }, wave * 380);
+        }
+    }
+
+    function drawBeam() {
+        if (!bCtx) return;
+        bCtx.clearRect(0, 0, bW, bH);
+        const dead = [];
+        particles.forEach((p, i) => {
+            p.t += p.speed;
+            if (p.t >= 1) { dead.push(i); return; }
+            const mt = 1 - p.t;
+            const x  = mt*mt*p.sx + 2*mt*p.t*p.cpx + p.t*p.t*p.ex;
+            const y  = mt*mt*p.sy + 2*mt*p.t*p.cpy + p.t*p.t*p.ey;
+            const a  = p.t < 0.15 ? p.t / 0.15 : p.t > 0.8 ? (1 - p.t) / 0.2 : 1;
+            bCtx.globalAlpha = a * 0.92;
+            bCtx.fillStyle   = p.color;
+            bCtx.shadowBlur  = 14;
+            bCtx.shadowColor = p.color;
+            bCtx.beginPath();
+            bCtx.arc(x, y, p.size, 0, Math.PI * 2);
+            bCtx.fill();
+        });
+        bCtx.shadowBlur = 0; bCtx.globalAlpha = 1;
+        for (let i = dead.length - 1; i >= 0; i--) particles.splice(dead[i], 1);
+        if (particles.length > 0 || beamActive) rafId = requestAnimationFrame(drawBeam);
+        else bCtx.clearRect(0, 0, bW, bH);
+    }
+
+    /* ── Sequence state machine ── */
+    let running = false, autoTimer;
+
+    function setStep(n) {
+        steps.forEach((s, i) => {
+            s.classList.remove('active','done');
+            if (i < n) s.classList.add('done');
+            if (i === n) s.classList.add('active');
+        });
+    }
+
+    function showScreen(id) {
+        ['nfcIsIdle','nfcIsScan','nfcIsProfile'].forEach(x => document.getElementById(x)?.classList.remove('active'));
+        document.getElementById(id)?.classList.add('active');
+    }
+
+    function resetState() {
+        running = false; beamActive = false; particles = [];
+        if (bCtx) bCtx.clearRect(0, 0, bW, bH);
+        setStep(0);
+        showScreen('nfcIsIdle');
+        if (msVal)       msVal.textContent = '—';
+        if (isFill)      isFill.style.width = '0';
+        if (cardStatus)  cardStatus.innerHTML = '<span class="ndv2-dot green"></span> Ready to transmit';
+        if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot grey"></span> Standing by';
+        signalHub?.classList.remove('active');
+        phone?.classList.remove('receiving');
+        if (phoneShadow) phoneShadow.style.background = 'radial-gradient(ellipse, rgba(0,229,255,0.22) 0%, transparent 70%)';
+        document.querySelectorAll('.nfc-is-link, .nfc-is-save').forEach(el => el.classList.remove('show'));
+    }
+
+    function triggerTap() {
+        if (running) return;
+        running = true;
+        clearTimeout(autoTimer);
+
+        // Step 1 – Detected
+        setStep(1);
+        signalHub?.classList.add('active');
+        if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot cyan"></span> NFC signal detected';
+        showScreen('nfcIsScan');
+        if (isFill) setTimeout(() => { isFill.style.width = '100%'; }, 60);
+
+        // Count ms
+        let ms = 0;
+        const tick = setInterval(() => {
+            ms += 10;
+            if (msVal) msVal.textContent = ms;
+            if (ms >= 287) clearInterval(tick);
+        }, 17);
+
+        // Particles
+        beamActive = true;
+        spawnParticles();
+        drawBeam();
+
+        // Phone glow
+        setTimeout(() => {
+            phone?.classList.add('receiving');
+            if (phoneShadow) phoneShadow.style.background = 'radial-gradient(ellipse, rgba(0,229,255,0.55) 0%, transparent 70%)';
+        }, 600);
+
+        // Step 2 – Sending
+        setTimeout(() => {
+            setStep(2);
+            if (cardStatus) cardStatus.innerHTML = '<span class="ndv2-dot cyan"></span> Transmitting…';
+        }, 1400);
+
+        // Step 3 – Complete
+        setTimeout(() => {
+            setStep(3);
+            beamActive = false;
+            showScreen('nfcIsProfile');
+            if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot green"></span> Profile received!';
+            if (cardStatus)  cardStatus.innerHTML  = '<span class="ndv2-dot green"></span> Transfer complete';
+            document.querySelectorAll('.nfc-is-link').forEach((el, i) => {
+                setTimeout(() => el.classList.add('show'), i * 130);
+            });
+            setTimeout(() => document.querySelector('.nfc-is-save')?.classList.add('show'), 620);
+        }, 2900);
+
+        // Auto-reset & replay
+        autoTimer = setTimeout(() => {
+            resetState();
+            autoTimer = setTimeout(triggerTap, 2800);
+        }, 8000);
+    }
+
+    // Kick off after 1.2s
+    autoTimer = setTimeout(triggerTap, 1200);
+}
+
+// ===== LEGACY (kept for reference, no longer called) =====
 function initThreeJsCard() {
     const canvas = document.getElementById('nfcCanvas');
     if (!canvas || typeof THREE === 'undefined') return;
@@ -700,6 +920,50 @@ function initNfcBgCanvas() {
     draw();
 }
 
+// ===== TESTIMONIAL CONTINUOUS MARQUEE =====
+function initTestimonialCarousel() {
+    const track = document.getElementById('tpfMarqueeTrack');
+    if (!track) return;
+
+    const items = [
+        { img: 'AK PROPERTIES testimonial.jpeg',                                name: 'AK Properties' },
+        { img: 'DEEPAK ELECTRIC JHOOMAR PALACE testimonial.jpeg',               name: 'Deepak Electric Jhoomar Palace' },
+        { img: 'DENTAL DELIGHT SUPERSPECIALITY DENTAL CLINIC testimonial.jpeg', name: 'Dental Delight Superspeciality Dental Clinic' },
+        { img: "DR. ADITI' DENTISTA testimonial.jpeg",                          name: "Dr. Aditi's Dentista" },
+        { img: 'DR. EV (PRASHANT UKEY) testimonial.jpeg',                       name: 'Dr. EV (Prashant Ukey)' },
+        { img: 'ELECTRO POWER testimonial.jpeg',                                name: 'Electro Power' },
+        { img: 'GIRMULE DENTAL CLINIC testimonial.jpeg',                        name: 'Girmule Dental Clinic' },
+        { img: 'MAULI DENTAL CLINIC & IMPLANT CENTRE testimonial.jpeg',         name: 'Mauli Dental Clinic & Implant Centre' },
+        { img: 'PANACHE-MAHAL testimonial.jpeg',                                name: 'Panache-Mahal' },
+        { img: 'PRAKASH OPTICALS testimonial.jpeg',                             name: 'Prakash Opticals' },
+        { img: 'SAMRAT INFRASTRUCTURE testimonial.jpeg',                        name: 'Samrat Infrastructure' },
+        { img: 'SP CONSTRUCTIONS & INTERIORS testimonial.jpeg',                 name: 'SP Constructions & Interiors' },
+        { img: 'TRUE SMILE DENTAL CLINIC testimonial.jpeg',                     name: 'True Smile Dental Clinic' },
+    ];
+
+    function makeSlide(item) {
+        const slide = document.createElement('div');
+        slide.className = 'tpf-slide';
+        const img = document.createElement('img');
+        img.src     = 'images/' + item.img;
+        img.alt     = item.name;
+        img.loading = 'lazy';
+        const nameEl = document.createElement('div');
+        nameEl.className = 'tpf-card-name';
+        nameEl.innerHTML = '<i class="fas fa-star"></i>';
+        nameEl.appendChild(document.createTextNode(item.name));
+        const card = document.createElement('div');
+        card.className = 'tpf-card';
+        card.appendChild(img);
+        card.appendChild(nameEl);
+        slide.appendChild(card);
+        return slide;
+    }
+
+    // Build original set + duplicate set for seamless loop (translateX -50%)
+    [...items, ...items].forEach(item => track.appendChild(makeSlide(item)));
+}
+
 // ===== DEMO CARD GENERATOR =====
 let qrInstance = null;
 
@@ -809,10 +1073,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initStickyCta();
     initLiveToasts();
     initSocialBurst();
-    initThreeJsCard();
-    initNfcTapDemo();
+    initNfcInteractive();
     initDemoGenerator();
     initCalculator();
+    initTestimonialCarousel();
 
     // Add fade-in animation to elements on scroll
     const observerOptions = {
