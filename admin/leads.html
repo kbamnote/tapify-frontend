@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Leads - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .leads-wrap { max-width: 1200px; margin: 24px auto; padding: 0 20px; }
+
+        /* Stats row */
+        .leads-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .lead-stat-card { background: #fff; border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #8338ec; }
+        .lead-stat-card.green { border-left-color: #10b981; }
+        .lead-stat-card.gold  { border-left-color: #f59e0b; }
+        .lead-stat-label { font-size: 0.74rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 6px; }
+        .lead-stat-value { font-size: 1.9rem; font-weight: 800; color: #1a2035; line-height: 1; }
+
+        /* Controls */
+        .leads-controls {
+            background: #fff; border-radius: 16px;
+            padding: 18px 22px; margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex; align-items: center;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .leads-search { position: relative; flex: 1; min-width: 220px; }
+        .leads-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+        .leads-search input {
+            width: 100%; height: 42px; padding: 0 16px 0 40px;
+            border: 1.5px solid #e5e7eb; border-radius: 10px;
+            font-family: inherit; font-size: 0.9rem; color: #1a2035;
+        }
+        .leads-search input:focus { outline: none; border-color: #8338ec; box-shadow: 0 0 0 3px rgba(131,56,236,0.1); }
+        .leads-filter {
+            height: 42px; padding: 0 14px;
+            border: 1.5px solid #e5e7eb; border-radius: 10px;
+            font-family: inherit; font-size: 0.88rem; color: #374151;
+            background: #fff; cursor: pointer;
+        }
+        .leads-filter:focus { outline: none; border-color: #8338ec; }
+        .btn-export {
+            height: 42px; padding: 0 18px;
+            background: #10b981; color: #fff; border: none;
+            border-radius: 10px; font-family: inherit;
+            font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 7px;
+            transition: all 0.2s;
+        }
+        .btn-export:hover { background: #059669; transform: translateY(-1px); }
+
+        /* Table */
+        .leads-table-wrap { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+        .leads-table { width: 100%; border-collapse: collapse; }
+        .leads-table th {
+            padding: 13px 16px; text-align: left;
+            font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: #6b7280; background: #f9fafb;
+            border-bottom: 1.5px solid #f3f4f6;
+        }
+        .leads-table td { padding: 13px 16px; border-bottom: 1px solid #f3f4f6; font-size: 0.88rem; color: #374151; vertical-align: middle; }
+        .leads-table tr:last-child td { border-bottom: none; }
+        .leads-table tr:hover td { background: #fafafa; }
+        .leads-table tr.unread td { background: #fef9ff; }
+        .leads-table tr.unread td:first-child { border-left: 3px solid #8338ec; }
+
+        .lead-name { font-weight: 700; color: #1a2035; }
+        .lead-time { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+
+        .source-badge {
+            padding: 3px 10px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .source-badge.hero_cta       { background: rgba(131,56,236,0.1); color: #8338ec; }
+        .source-badge.sticky_cta     { background: rgba(245,158,11,0.1); color: #d97706; }
+        .source-badge.demo_generator { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .source-badge.website        { background: rgba(107,114,128,0.1); color: #6b7280; }
+
+        .unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #8338ec; display: inline-block; margin-right: 6px; }
+
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px; border-radius: 8px;
+            background: rgba(37,211,102,0.1); color: #16a34a;
+            font-size: 0.78rem; font-weight: 700;
+            text-decoration: none; border: 1px solid rgba(37,211,102,0.3);
+            transition: all 0.2s;
+        }
+        .btn-whatsapp:hover { background: #25d366; color: #fff; border-color: #25d366; }
+
+        /* Empty / Loading */
+        .leads-empty { text-align: center; padding: 60px 20px; color: #9ca3af; }
+        .leads-empty i { font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 12px; }
+
+        /* Pagination */
+        .leads-pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid #f3f4f6; background: #fafafa; font-size: 0.82rem; color: #6b7280; flex-wrap: wrap; gap: 10px; }
+        .page-btns { display: flex; gap: 6px; }
+        .page-btn { height: 34px; min-width: 34px; padding: 0 10px; border-radius: 8px; border: 1.5px solid #e5e7eb; background: #fff; color: #374151; font-family: inherit; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .page-btn:hover { border-color: #8338ec; color: #8338ec; }
+        .page-btn.active { background: #8338ec; color: #fff; border-color: #8338ec; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item active"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+        </nav>
+        <div id="sidebarTitaniumBadge">
+            <i class="fas fa-crown"></i><span>Titanium Member</span>
+        </div>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content">
+        <header class="main-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title"><i class="fas fa-users" style="color:#2ecc71;margin-right:8px"></i>Website Leads</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar">
+                        <span id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="leads-wrap">
+
+            <!-- Stats -->
+            <div class="leads-stats">
+                <div class="lead-stat-card">
+                    <div class="lead-stat-label">Total Leads</div>
+                    <div class="lead-stat-value" id="statTotal">—</div>
+                </div>
+                <div class="lead-stat-card green">
+                    <div class="lead-stat-label">New (Unread)</div>
+                    <div class="lead-stat-value" id="statUnread">—</div>
+                </div>
+                <div class="lead-stat-card gold">
+                    <div class="lead-stat-label">Today</div>
+                    <div class="lead-stat-value" id="statToday">—</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="leads-controls">
+                <div class="leads-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search name, phone, email, city…">
+                </div>
+                <select class="leads-filter" id="filterSource">
+                    <option value="">All Sources</option>
+                </select>
+                <select class="leads-filter" id="filterRead">
+                    <option value="all">All Leads</option>
+                    <option value="unread">Unread Only</option>
+                    <option value="read">Read Only</option>
+                </select>
+                <select class="leads-filter" id="filterSort">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name">Name A–Z</option>
+                </select>
+                <button class="btn-export" onclick="exportCSV()">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+            </div>
+
+            <!-- Table -->
+            <div class="leads-table-wrap">
+                <table class="leads-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>City</th>
+                            <th>Source</th>
+                            <th>Received</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTableBody">
+                        <tr><td colspan="7" class="leads-empty"><i class="fas fa-spinner fa-spin"></i> Loading leads…</td></tr>
+                    </tbody>
+                </table>
+                <div class="leads-pagination" id="leadsPagination" style="display:none">
+                    <span id="paginationInfo"></span>
+                    <div class="page-btns" id="pageButtons"></div>
+                </div>
+            </div>
+
+        </div><!-- /leads-wrap -->
+    </div><!-- /main-content -->
+
+<script src="../admin.js"></script>
+<script>
+const API = 'https://tapify-backend-production.up.railway.app/api/admin/leads/list.php';
+let currentPage = 1;
+let allLeads    = [];
+let searchTimer = null;
+
+// ---- Load ----
+async function loadLeads(page = 1) {
+    currentPage = page;
+    const search = document.getElementById('searchInput').value.trim();
+    const source = document.getElementById('filterSource').value;
+    const read   = document.getElementById('filterRead').value;
+    const sort   = document.getElementById('filterSort').value;
+
+    const params = new URLSearchParams({ page, sort, read });
+    if (search) params.set('search', search);
+    if (source) params.set('source', source);
+
+    try {
+        const res  = await fetch(`${API}?${params}`, { credentials: 'include' });
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        if (res.status === 403) {
+            document.getElementById('leadsTableBody').innerHTML =
+                '<tr><td colspan="7" class="leads-empty"><i class="fas fa-lock"></i><br>Admin access required.</td></tr>';
+            return;
+        }
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+
+        const d = json.data;
+        allLeads = d.leads;
+
+        // Stats
+        document.getElementById('statTotal').textContent  = d.total.toLocaleString();
+        document.getElementById('statUnread').textContent = d.unread.toLocaleString();
+
+        // Today count (client-side from first page result)
+        const today = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        const todayCount = d.leads.filter(l => l.created_at_formatted.startsWith(today.replace(/ /g,''))).length;
+        document.getElementById('statToday').textContent = todayCount;
+
+        // Populate source filter (once)
+        const sourceEl = document.getElementById('filterSource');
+        if (sourceEl.options.length === 1 && d.sources?.length) {
+            d.sources.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s; opt.textContent = s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                sourceEl.appendChild(opt);
+            });
+        }
+
+        renderTable(d.leads);
+        renderPagination(d.total, d.limit, page);
+    } catch (err) {
+        document.getElementById('leadsTableBody').innerHTML =
+            `<tr><td colspan="7" class="leads-empty"><i class="fas fa-exclamation-circle"></i><br>${err.message}</td></tr>`;
+    }
+}
+
+// ---- Render table ----
+function renderTable(leads) {
+    const tbody = document.getElementById('leadsTableBody');
+    if (!leads.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="leads-empty"><i class="fas fa-inbox"></i><br>No leads found.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = leads.map(l => {
+        const sourceClass = (l.source || 'website').replace(/[^a-z0-9_]/gi, '_');
+        const sourceLabel = (l.source || 'website').replace(/_/g, ' ');
+        const waPhone     = l.phone.replace(/\D/g, '');
+        const waMsg       = encodeURIComponent(`Hi ${l.name}, thanks for your interest in Tapify NFC cards! How can we help you?`);
+        return `
+        <tr class="${!l.is_read ? 'unread' : ''}">
+            <td>
+                ${!l.is_read ? '<span class="unread-dot"></span>' : ''}
+                <div class="lead-name">${esc(l.name)}</div>
+                <div class="lead-time">${l.created_at_formatted}</div>
+            </td>
+            <td>${esc(l.phone)}</td>
+            <td>${l.email ? esc(l.email) : '<span style="color:#d1d5db">—</span>'}</td>
+            <td>${l.city  ? esc(l.city)  : '<span style="color:#d1d5db">—</span>'}</td>
+            <td><span class="source-badge ${sourceClass}">${sourceLabel}</span></td>
+            <td>${l.created_at_formatted}</td>
+            <td>
+                <a class="btn-whatsapp" href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> Chat
+                </a>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// ---- Pagination ----
+function renderPagination(total, limit, page) {
+    const totalPages = Math.ceil(total / limit);
+    const wrap = document.getElementById('leadsPagination');
+    const info = document.getElementById('paginationInfo');
+    const btns = document.getElementById('pageButtons');
+
+    if (totalPages <= 1) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'flex';
+
+    const from = (page - 1) * limit + 1;
+    const to   = Math.min(page * limit, total);
+    info.textContent = `Showing ${from}–${to} of ${total} leads`;
+
+    let html = `<button class="page-btn" onclick="loadLeads(${page-1})" ${page===1?'disabled':''}><i class="fas fa-chevron-left"></i></button>`;
+    for (let i = Math.max(1,page-2); i <= Math.min(totalPages,page+2); i++) {
+        html += `<button class="page-btn ${i===page?'active':''}" onclick="loadLeads(${i})">${i}</button>`;
+    }
+    html += `<button class="page-btn" onclick="loadLeads(${page+1})" ${page===totalPages?'disabled':''}><i class="fas fa-chevron-right"></i></button>`;
+    btns.innerHTML = html;
+}
+
+// ---- Export CSV ----
+function exportCSV() {
+    if (!allLeads.length) { alert('No leads to export.'); return; }
+    const headers = ['Name','Phone','Email','City','Source','Received'];
+    const rows    = allLeads.map(l => [
+        `"${(l.name||'').replace(/"/g,'""')}"`,
+        `"${(l.phone||'').replace(/"/g,'""')}"`,
+        `"${(l.email||'').replace(/"/g,'""')}"`,
+        `"${(l.city||'').replace(/"/g,'""')}"`,
+        `"${(l.source||'').replace(/"/g,'""')}"`,
+        `"${(l.created_at_formatted||'').replace(/"/g,'""')}"`,
+    ].join(','));
+    const csv  = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = `tapify-leads-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+}
+
+function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ---- Event listeners ----
+document.getElementById('searchInput').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => loadLeads(1), 350);
+});
+['filterSource','filterRead','filterSort'].forEach(id =>
+    document.getElementById(id).addEventListener('change', () => loadLeads(1))
+);
+
+document.addEventListener('DOMContentLoaded', () => loadLeads(1));
+</script>
+</body>
+</html>
