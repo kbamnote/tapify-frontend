@@ -556,43 +556,148 @@ function initThreeJsCard() {
     animate();
 }
 
-// ===== NFC TAP ANIMATION SEQUENCE =====
+// ===== NFC DEMO V2 — FUTURISTIC SEQUENCE =====
 function initNfcTapDemo() {
-    const rings    = document.getElementById('nfcRings');
-    const profile  = document.getElementById('phoneProfile');
-    const idleText = document.querySelector('.phone-idle-text');
-    const label    = document.getElementById('nfcDemoLabel');
-    if (!rings) return;
+    // Animated grid background canvas
+    initNfcBgCanvas();
 
-    const steps = [
-        // Step 1: idle
-        () => {
-            rings.classList.remove('active');
-            if (profile)  { profile.classList.remove('show'); }
-            if (idleText) { idleText.style.opacity = '1'; }
-            if (label)    { label.textContent = '📲 Tap card with phone'; }
-        },
-        // Step 2: NFC rings fire
-        () => {
-            rings.classList.add('active');
-            if (label) label.textContent = '⚡ NFC signal detected…';
-        },
-        // Step 3: profile slides in
-        () => {
-            rings.classList.remove('active');
-            if (idleText) idleText.style.opacity = '0';
-            if (profile)  profile.classList.add('show');
-            if (label)    label.textContent = '✅ Profile shared instantly!';
-        },
-    ];
+    const steps    = document.querySelectorAll('.ndv2-step');
+    const stateIdle    = document.getElementById('ndvsIdle');
+    const stateScan    = document.getElementById('ndvsScan');
+    const stateProfile = document.getElementById('ndvsProfile');
+    const loadFill     = document.getElementById('ndvsLoadFill');
+    const speedEl      = document.getElementById('ndvSpeed');
+    const cardStatus   = document.getElementById('ndvCardStatus');
+    const phoneStatus  = document.getElementById('ndvPhoneStatus');
+    if (!stateIdle) return;
 
-    let step = 0;
-    steps[0]();
+    function setStep(n) {
+        steps.forEach((s, i) => {
+            s.classList.remove('active','done');
+            if (i < n)  s.classList.add('done');
+            if (i === n) s.classList.add('active');
+        });
+    }
 
-    setInterval(() => {
-        step = (step + 1) % steps.length;
-        steps[step]();
-    }, 2500);
+    function showScreen(name) {
+        [stateIdle, stateScan, stateProfile].forEach(s => s.classList.remove('active'));
+        if (name === 'idle')    stateIdle.classList.add('active');
+        if (name === 'scan')    stateScan.classList.add('active');
+        if (name === 'profile') stateProfile.classList.add('active');
+    }
+
+    function runSequence() {
+        // STEP 0: Idle reset
+        setStep(0);
+        showScreen('idle');
+        if (loadFill)  loadFill.style.width = '0';
+        if (speedEl)   speedEl.textContent  = '0';
+        if (cardStatus) cardStatus.innerHTML = '<span class="ndv2-dot green"></span> Ready to transmit';
+        if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot grey"></span> Standing by';
+        document.querySelectorAll('.ndvs-link, .ndvs-save-btn').forEach(el => el.classList.remove('show'));
+
+        setTimeout(() => {
+            // STEP 1: Detected
+            setStep(1);
+            if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot cyan"></span> NFC signal detected';
+            showScreen('scan');
+            if (loadFill) { setTimeout(() => { loadFill.style.width = '100%'; }, 50); }
+
+            // Animate speed counter
+            let ms = 0;
+            const spd = setInterval(() => {
+                ms += 12;
+                if (speedEl) speedEl.textContent = ms;
+                if (ms >= 287) clearInterval(spd);
+            }, 20);
+        }, 1500);
+
+        setTimeout(() => {
+            // STEP 2: Transmitting
+            setStep(2);
+            if (cardStatus) cardStatus.innerHTML = '<span class="ndv2-dot cyan"></span> Transmitting…';
+        }, 2800);
+
+        setTimeout(() => {
+            // STEP 3: Complete — show profile
+            setStep(3);
+            showScreen('profile');
+            if (phoneStatus) phoneStatus.innerHTML = '<span class="ndv2-dot green"></span> Profile received!';
+            if (cardStatus)  cardStatus.innerHTML  = '<span class="ndv2-dot green"></span> Transfer complete';
+
+            // Stagger link cards appearing
+            document.querySelectorAll('.ndvs-link').forEach((el, i) => {
+                setTimeout(() => el.classList.add('show'), i * 100);
+            });
+            setTimeout(() => {
+                document.querySelector('.ndvs-save-btn')?.classList.add('show');
+            }, 500);
+        }, 3800);
+
+        // Restart loop
+        setTimeout(runSequence, 7000);
+    }
+
+    // Start after 1s
+    setTimeout(runSequence, 1000);
+}
+
+// Animated dot-grid canvas background for NFC section
+function initNfcBgCanvas() {
+    const canvas = document.getElementById('nfcBgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const dots = [];
+    const COUNT = 80;
+    for (let i = 0; i < COUNT; i++) {
+        dots.push({
+            x: Math.random(), y: Math.random(),
+            vx: (Math.random() - 0.5) * 0.0003,
+            vy: (Math.random() - 0.5) * 0.0003,
+            r: Math.random() * 1.5 + 0.5,
+        });
+    }
+
+    function draw() {
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        dots.forEach(d => {
+            d.x += d.vx; d.y += d.vy;
+            if (d.x < 0) d.x = 1; if (d.x > 1) d.x = 0;
+            if (d.y < 0) d.y = 1; if (d.y > 1) d.y = 0;
+
+            // Connect nearby dots
+            dots.forEach(d2 => {
+                const dx = (d.x - d2.x) * W, dy = (d.y - d2.y) * H;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 100) {
+                    ctx.strokeStyle = `rgba(0,229,255,${0.15 * (1 - dist/100)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(d.x*W, d.y*H);
+                    ctx.lineTo(d2.x*W, d2.y*H);
+                    ctx.stroke();
+                }
+            });
+
+            ctx.fillStyle = 'rgba(0,229,255,0.5)';
+            ctx.beginPath();
+            ctx.arc(d.x*W, d.y*H, d.r, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+    }
+    draw();
 }
 
 // ===== DEMO CARD GENERATOR =====

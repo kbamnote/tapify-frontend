@@ -68,45 +68,167 @@
 
     <!-- =============== NFC TAP DEMO =============== -->
     <section class="nfc-demo-section" id="nfc-demo">
-        <div class="container">
-            <p class="section-tag-light">LIVE DEMO</p>
-            <h2 class="section-heading-light text-center">See How NFC Magic Works</h2>
-            <p class="section-subheading-light text-center">Tap once — share everything. Watch the animation below.</p>
 
-            <div class="nfc-demo-stage">
-                <!-- Three.js 3D Card -->
-                <div class="nfc-3d-wrap">
-                    <canvas id="nfcCanvas"></canvas>
-                    <div class="nfc-chip-label">NFC Enabled</div>
+        <!-- Animated background grid -->
+        <canvas class="nfc-bg-canvas" id="nfcBgCanvas"></canvas>
+
+        <div class="container" style="position:relative;z-index:2">
+            <div class="nfc-demo-header">
+                <div class="nfc-live-badge"><span class="nfc-live-dot"></span> LIVE SIMULATION</div>
+                <h2 class="section-heading-light text-center">See How <span class="nfc-cyan">NFC Magic</span> Works</h2>
+                <p class="section-subheading-light text-center">Hold your Tapify card to any phone — your entire digital identity transfers in milliseconds.</p>
+            </div>
+
+            <!-- Main 3-panel stage -->
+            <div class="nfc-demo-v2">
+
+                <!-- PANEL 1: NFC Card -->
+                <div class="ndv2-panel ndv2-card-panel">
+                    <div class="ndv2-panel-label"><i class="fas fa-credit-card"></i> NFC Card</div>
+                    <div class="ndv2-card-wrap" id="ndvCard">
+                        <canvas id="nfcCanvas"></canvas>
+                        <div class="ndv2-card-glow"></div>
+                    </div>
+                    <div class="ndv2-status ndv2-status-ready" id="ndvCardStatus">
+                        <span class="ndv2-dot green"></span> Ready to transmit
+                    </div>
                 </div>
 
-                <!-- Animated Phone -->
-                <div class="nfc-phone-wrap" id="nfcPhoneWrap">
-                    <div class="nfc-rings-wrap" id="nfcRings">
-                        <div class="nfc-ring r1"></div>
-                        <div class="nfc-ring r2"></div>
-                        <div class="nfc-ring r3"></div>
-                    </div>
-                    <div class="nfc-phone">
-                        <div class="nfc-phone-notch"></div>
-                        <div class="nfc-phone-screen" id="phoneScreen">
-                            <div class="phone-idle-text">📲 Tap to connect</div>
-                            <div class="phone-profile-preview" id="phoneProfile">
-                                <div class="pp-avatar">RS</div>
-                                <div class="pp-name">Rajiv Sharma</div>
-                                <div class="pp-title">CEO · TechVentures</div>
-                                <div class="pp-actions">
-                                    <span>📞 Call</span>
-                                    <span>💬 WhatsApp</span>
-                                </div>
+                <!-- PANEL 2: Transfer visualiser (centre) -->
+                <div class="ndv2-panel ndv2-transfer-panel">
+                    <div class="ndv2-transfer-wrap" id="ndvTransfer">
+                        <!-- NFC signal arc rings -->
+                        <div class="ndv2-arc-rings" id="ndvRings">
+                            <div class="ndv2-arc a1"></div>
+                            <div class="ndv2-arc a2"></div>
+                            <div class="ndv2-arc a3"></div>
+                            <div class="ndv2-arc a4"></div>
+                        </div>
+
+                        <!-- Data packets travelling along beams -->
+                        <div class="ndv2-beams" id="ndvBeams">
+                            <div class="ndv2-beam b1"><div class="ndv2-packet p1"></div></div>
+                            <div class="ndv2-beam b2"><div class="ndv2-packet p2"></div></div>
+                            <div class="ndv2-beam b3"><div class="ndv2-packet p3"></div></div>
+                        </div>
+
+                        <!-- Centre NFC symbol -->
+                        <div class="ndv2-nfc-symbol" id="ndvSymbol">
+                            <div class="ndv2-nfc-core">
+                                <i class="fas fa-wifi"></i>
                             </div>
+                            <div class="ndv2-nfc-orbit o1"></div>
+                            <div class="ndv2-nfc-orbit o2"></div>
+                        </div>
+
+                        <!-- Transfer metrics -->
+                        <div class="ndv2-metrics" id="ndvMetrics">
+                            <div class="ndv2-metric">
+                                <span class="ndv2-metric-val" id="ndvSpeed">0</span>
+                                <span class="ndv2-metric-unit">ms</span>
+                                <span class="ndv2-metric-label">Transfer Time</span>
+                            </div>
+                            <div class="ndv2-metric-divider"></div>
+                            <div class="ndv2-metric">
+                                <span class="ndv2-metric-val" id="ndvFreq">13.56</span>
+                                <span class="ndv2-metric-unit">MHz</span>
+                                <span class="ndv2-metric-label">Frequency</span>
+                            </div>
+                            <div class="ndv2-metric-divider"></div>
+                            <div class="ndv2-metric">
+                                <span class="ndv2-metric-val" id="ndvEncrypt">AES</span>
+                                <span class="ndv2-metric-unit">-256</span>
+                                <span class="ndv2-metric-label">Encryption</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step indicator -->
+                    <div class="ndv2-steps" id="ndvSteps">
+                        <div class="ndv2-step active" data-step="0">
+                            <div class="ndv2-step-dot"></div>
+                            <span>Idle</span>
+                        </div>
+                        <div class="ndv2-step" data-step="1">
+                            <div class="ndv2-step-dot"></div>
+                            <span>Detected</span>
+                        </div>
+                        <div class="ndv2-step" data-step="2">
+                            <div class="ndv2-step-dot"></div>
+                            <span>Transmitting</span>
+                        </div>
+                        <div class="ndv2-step" data-step="3">
+                            <div class="ndv2-step-dot"></div>
+                            <span>Complete</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Floating label -->
-                <div class="nfc-demo-label" id="nfcDemoLabel">Tap card with phone</div>
+                <!-- PANEL 3: Phone display -->
+                <div class="ndv2-panel ndv2-phone-panel">
+                    <div class="ndv2-panel-label"><i class="fas fa-mobile-alt"></i> Receiver's Phone</div>
+                    <div class="ndv2-phone-wrap">
+                        <div class="ndv2-phone">
+                            <div class="ndv2-phone-bar">
+                                <span class="ndv2-phone-cam"></span>
+                            </div>
+                            <div class="ndv2-phone-screen" id="ndvScreen">
+
+                                <!-- STATE 0: Idle -->
+                                <div class="ndvs ndvs-idle active" id="ndvsIdle">
+                                    <div class="ndvs-idle-icon">
+                                        <i class="fas fa-wifi" style="opacity:0.2;font-size:2rem;color:#aaa"></i>
+                                    </div>
+                                    <p style="font-size:0.65rem;color:#888;text-align:center;padding:0 10px">Waiting for<br>NFC signal…</p>
+                                </div>
+
+                                <!-- STATE 1: Detected / scanning -->
+                                <div class="ndvs ndvs-scan" id="ndvsScan">
+                                    <div class="ndvs-scan-ring"></div>
+                                    <div class="ndvs-scan-ring r2"></div>
+                                    <div class="ndvs-scan-text">NFC Detected</div>
+                                    <div class="ndvs-loading-bar"><div class="ndvs-loading-fill" id="ndvsLoadFill"></div></div>
+                                    <div class="ndvs-scan-sub">Decrypting data…</div>
+                                </div>
+
+                                <!-- STATE 2: Profile loaded -->
+                                <div class="ndvs ndvs-profile" id="ndvsProfile">
+                                    <div class="ndvs-cover"></div>
+                                    <div class="ndvs-avatar">RS</div>
+                                    <div class="ndvs-name">Rajiv Sharma</div>
+                                    <div class="ndvs-title">CEO · TechVentures India</div>
+                                    <div class="ndvs-divider"></div>
+                                    <div class="ndvs-links" id="ndvsLinks">
+                                        <div class="ndvs-link ndvsl-0"><i class="fas fa-phone"></i> Call</div>
+                                        <div class="ndvs-link ndvsl-1"><i class="fab fa-whatsapp"></i> Chat</div>
+                                        <div class="ndvs-link ndvsl-2"><i class="fab fa-linkedin-in"></i> LinkedIn</div>
+                                        <div class="ndvs-link ndvsl-3"><i class="fab fa-instagram"></i> Instagram</div>
+                                    </div>
+                                    <div class="ndvs-save-btn">
+                                        <i class="fas fa-user-plus"></i> Save Contact
+                                    </div>
+                                    <div class="ndvs-tag">Powered by <strong>Tapify</strong></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ndv2-status" id="ndvPhoneStatus">
+                        <span class="ndv2-dot grey"></span> Standing by
+                    </div>
+                </div>
+
+            </div><!-- /nfc-demo-v2 -->
+
+            <!-- Bottom feature pills -->
+            <div class="nfc-feature-pills">
+                <div class="nfc-pill"><i class="fas fa-bolt"></i> Instant — under 300ms</div>
+                <div class="nfc-pill"><i class="fas fa-shield-alt"></i> AES-256 Encrypted</div>
+                <div class="nfc-pill"><i class="fas fa-mobile-alt"></i> Works on all phones</div>
+                <div class="nfc-pill"><i class="fas fa-wifi"></i> 13.56 MHz NFC</div>
+                <div class="nfc-pill"><i class="fas fa-ban"></i> No app needed</div>
             </div>
+
         </div>
     </section>
 
@@ -294,6 +416,7 @@
     </section>
 
     <!-- =============== TESTIMONIALS / WATCH CUSTOMERS =============== -->
+    <!-- COMMENTED OUT TEMPORARILY
     <section class="testimonials-section">
         <div class="container">
             <p class="section-tag">TESTIMONIALS</p>
@@ -366,6 +489,7 @@
             </div>
         </div>
     </section>
+    END COMMENT -->
 
     <!-- =============== NUMBERS SECTION =============== -->
     <section class="numbers-section">
