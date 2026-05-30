@@ -110,6 +110,136 @@
         </div>
     </section>
 
+    <!-- =============== 3D SOCIAL BURST =============== -->
+    <section class="social-burst-section" id="social-burst">
+        <div class="container">
+            <div class="sb-layout">
+
+                <!-- Left: copy -->
+                <div class="sb-copy">
+                    <p class="section-tag-light">ONE TAP SHARING</p>
+                    <h2 class="section-heading-light">All Your Socials.<br><span class="sb-gold">One Tap.</span></h2>
+                    <p class="section-subheading-light">
+                        Tap your Tapify NFC card on any phone and every social profile, contact detail, and link instantly pops up — no app needed.
+                    </p>
+                    <div class="sb-steps">
+                        <div class="sb-step"><span class="sb-step-num">01</span><span>Hold card near phone</span></div>
+                        <div class="sb-step"><span class="sb-step-num">02</span><span>NFC signal fires instantly</span></div>
+                        <div class="sb-step"><span class="sb-step-num">03</span><span>All your links appear in seconds</span></div>
+                    </div>
+                    <button class="btn-get-real" onclick="openLeadModal('social_burst')" style="margin-top:32px">
+                        <i class="fas fa-bolt"></i> Get Your Card
+                    </button>
+                </div>
+
+                <!-- Right: 3D interactive demo -->
+                <div class="sb-stage" id="sbStage">
+
+                    <!-- Glow backdrop -->
+                    <div class="sb-glow"></div>
+
+                    <!-- NFC Card -->
+                    <div class="sb-card" id="sbCard" onclick="triggerBurst()">
+                        <div class="sb-card-inner">
+                            <!-- Front -->
+                            <div class="sb-card-face sb-card-front">
+                                <div class="sb-card-top">
+                                    <span class="sb-card-brand">TAPIFY</span>
+                                    <span class="sb-nfc-arc">
+                                        <i class="fas fa-wifi"></i>
+                                    </span>
+                                </div>
+                                <div class="sb-chip">
+                                    <div class="sb-chip-lines">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                                <div class="sb-card-bottom">
+                                    <span class="sb-card-name">Your Name Here</span>
+                                    <span class="sb-card-hint" id="sbHint">Tap to share ›</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="sb-card-face sb-card-back">
+                                <div class="sb-back-strip"></div>
+                                <div class="sb-back-logo">TAPIFY</div>
+                                <div class="sb-back-url">tapify.in/yourname</div>
+                            </div>
+                        </div>
+
+                        <!-- NFC pulse rings on click -->
+                        <div class="sb-rings" id="sbRings">
+                            <div class="sb-ring sr1"></div>
+                            <div class="sb-ring sr2"></div>
+                            <div class="sb-ring sr3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Social icon bubbles -->
+                    <div class="sb-icons" id="sbIcons">
+                        <div class="sbi sbi-0" data-label="WhatsApp">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#128c7e,#25d366)">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <span class="sbi-label">WhatsApp</span>
+                        </div>
+                        <div class="sbi sbi-1" data-label="Instagram">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <span class="sbi-label">Instagram</span>
+                        </div>
+                        <div class="sbi sbi-2" data-label="LinkedIn">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#0062ae,#0077b5)">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <span class="sbi-label">LinkedIn</span>
+                        </div>
+                        <div class="sbi sbi-3" data-label="Facebook">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#1877f2,#0851c7)">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <span class="sbi-label">Facebook</span>
+                        </div>
+                        <div class="sbi sbi-4" data-label="YouTube">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#cc0000,#ff0000)">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                            <span class="sbi-label">YouTube</span>
+                        </div>
+                        <div class="sbi sbi-5" data-label="Twitter / X">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#14171a,#333)">
+                                <i class="fab fa-x-twitter"></i>
+                            </div>
+                            <span class="sbi-label">Twitter / X</span>
+                        </div>
+                        <div class="sbi sbi-6" data-label="Phone">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#0d2829,#1e5557)">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <span class="sbi-label">Call</span>
+                        </div>
+                        <div class="sbi sbi-7" data-label="Email">
+                            <div class="sbi-inner" style="background:linear-gradient(135deg,#c9933a,#dba84f)">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span class="sbi-label">Email</span>
+                        </div>
+                    </div>
+
+                    <!-- Spark particles container -->
+                    <div class="sb-sparks" id="sbSparks"></div>
+
+                    <!-- Tap instruction -->
+                    <div class="sb-tap-hint" id="sbTapHint">
+                        <i class="fas fa-hand-pointer"></i> Tap the card
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- =============== BENEFITS TICKER BANNER =============== -->
     <div class="benefits-banner">
         <div class="benefits-ticker">

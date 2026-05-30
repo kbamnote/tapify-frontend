@@ -291,6 +291,115 @@ function initLiveToasts() {
     }, 5000);
 }
 
+// ===== 3D SOCIAL BURST =====
+let sbBurstOpen = false;
+let sbAutoTimer  = null;
+
+function triggerBurst() {
+    const card  = document.getElementById('sbCard');
+    const icons = document.querySelectorAll('.sbi');
+    const rings = document.getElementById('sbRings');
+    const hint  = document.getElementById('sbTapHint');
+    const cardHint = document.getElementById('sbHint');
+    const sparks = document.getElementById('sbSparks');
+    if (!card) return;
+
+    if (sbBurstOpen) {
+        // ── RETRACT ──
+        sbBurstOpen = false;
+        icons.forEach((el, i) => {
+            el.classList.remove('burst', 'floating');
+            el.style.setProperty('--d', (i * 0.04) + 's');
+            el.classList.add('retract');
+        });
+        if (cardHint) cardHint.textContent = 'Tap to share ›';
+        if (hint) hint.innerHTML = '<i class="fas fa-hand-pointer"></i> Tap the card';
+        setTimeout(() => {
+            icons.forEach(el => el.classList.remove('retract'));
+        }, 800);
+    } else {
+        // ── BURST ──
+        sbBurstOpen = true;
+        clearTimeout(sbAutoTimer);
+
+        // Card tap animation
+        card.classList.remove('tapped');
+        void card.offsetWidth; // reflow
+        card.classList.add('tapped');
+
+        // NFC rings
+        rings.classList.remove('fire');
+        void rings.offsetWidth;
+        rings.classList.add('fire');
+        setTimeout(() => rings.classList.remove('fire'), 1000);
+
+        // Sparks burst
+        launchSparks(sparks);
+
+        // Burst icons with stagger
+        icons.forEach((el, i) => {
+            el.classList.remove('retract', 'floating');
+            const delay = parseFloat(getComputedStyle(el).getPropertyValue('--d')) || i * 0.06;
+            el.style.setProperty('--d', delay + 's');
+            void el.offsetWidth;
+            el.classList.add('burst');
+        });
+
+        // Switch to floating idle after burst completes
+        setTimeout(() => {
+            icons.forEach((el, i) => {
+                el.classList.remove('burst');
+                el.style.setProperty('--d', (i * 0.1) + 's');
+                el.classList.add('floating');
+            });
+        }, 1200);
+
+        if (cardHint) cardHint.textContent = 'Tap to close ›';
+        if (hint) hint.innerHTML = '<i class="fas fa-times-circle"></i> Tap to close';
+
+        // Auto retract after 6s
+        sbAutoTimer = setTimeout(() => {
+            if (sbBurstOpen) triggerBurst();
+        }, 6000);
+    }
+}
+
+function launchSparks(container) {
+    if (!container) return;
+    container.innerHTML = '';
+    const colors = ['#c9933a','#dba84f','#f6eee6','#25d366','#1877f2','#fd1d1d'];
+    const count  = 18;
+    for (let i = 0; i < count; i++) {
+        const el  = document.createElement('div');
+        const ang = (i / count) * Math.PI * 2;
+        const r   = 60 + Math.random() * 80;
+        const sx  = Math.cos(ang) * r;
+        const sy  = Math.sin(ang) * r;
+        const dur = 0.5 + Math.random() * 0.5;
+        const del = Math.random() * 0.2;
+        el.className = 'sb-spark';
+        el.style.cssText = `
+            background: ${colors[i % colors.length]};
+            width: ${4 + Math.random() * 5}px;
+            height: ${4 + Math.random() * 5}px;
+            --sx: ${sx}px; --sy: ${sy}px;
+            --sd: ${dur}s;  --ss: ${del}s;
+        `;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), (dur + del + 0.1) * 1000);
+    }
+}
+
+function initSocialBurst() {
+    const stage = document.getElementById('sbStage');
+    if (!stage) return;
+
+    // Auto-trigger demo after 3s if user hasn't interacted
+    sbAutoTimer = setTimeout(() => {
+        if (!sbBurstOpen) triggerBurst();
+    }, 3000);
+}
+
 // ===== THREE.JS NFC CARD =====
 function initThreeJsCard() {
     const canvas = document.getElementById('nfcCanvas');
@@ -594,6 +703,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCounters();
     initStickyCta();
     initLiveToasts();
+    initSocialBurst();
     initThreeJsCard();
     initNfcTapDemo();
     initDemoGenerator();

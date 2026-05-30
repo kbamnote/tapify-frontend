@@ -2105,6 +2105,379 @@ img {
 }
 
 /* ============================================
+   3D SOCIAL BURST SECTION
+   ============================================ */
+.social-burst-section {
+    background: linear-gradient(160deg, #08191a 0%, #0d2829 50%, #0f3030 100%);
+    padding: 100px 0 110px;
+    position: relative;
+    overflow: hidden;
+}
+.social-burst-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(246,238,230,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+/* Ambient light blob */
+.social-burst-section::after {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,147,58,0.08) 0%, transparent 70%);
+    top: 50%; right: -100px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Layout */
+.sb-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Copy side */
+.sb-gold { color: #dba84f; }
+.sb-steps { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+.sb-step {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 0.9rem; color: rgba(246,238,230,0.8); font-weight: 500;
+}
+.sb-step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(201,147,58,0.15);
+    border: 1.5px solid rgba(201,147,58,0.4);
+    color: #dba84f; font-size: 0.7rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; letter-spacing: 0.5px;
+}
+
+/* Stage */
+.sb-stage {
+    position: relative;
+    width: 420px; height: 420px;
+    margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    perspective: 900px;
+    cursor: pointer;
+}
+
+/* Glow backdrop circle */
+.sb-glow {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,147,58,0.12) 0%, transparent 70%);
+    animation: sbGlowPulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes sbGlowPulse {
+    0%,100% { transform: scale(1); opacity: 0.8; }
+    50%      { transform: scale(1.12); opacity: 1; }
+}
+
+/* ---- NFC Card ---- */
+.sb-card {
+    position: relative;
+    width: 260px; height: 164px;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+    z-index: 10;
+    cursor: pointer;
+    animation: sbCardFloat 4s ease-in-out infinite;
+}
+@keyframes sbCardFloat {
+    0%,100% { transform: rotateX(8deg) rotateY(-12deg) translateY(0); }
+    50%      { transform: rotateX(4deg) rotateY(12deg) translateY(-10px); }
+}
+.sb-card.tapped {
+    animation: sbCardTap 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes sbCardTap {
+    0%   { transform: rotateX(8deg) rotateY(-12deg) scale(1); }
+    30%  { transform: rotateX(20deg) rotateY(0deg) scale(0.88) translateZ(-20px); }
+    60%  { transform: rotateX(-5deg) rotateY(5deg) scale(1.06) translateZ(20px); }
+    100% { transform: rotateX(8deg) rotateY(-12deg) scale(1); }
+}
+.sb-card-inner {
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    position: relative;
+}
+.sb-card-face {
+    position: absolute; inset: 0;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+}
+
+/* Card front */
+.sb-card-front {
+    background: linear-gradient(145deg, #0d2829 0%, #153e3f 50%, #1e5557 100%);
+    border: 1.5px solid rgba(201,147,58,0.4);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 1px 0 rgba(255,255,255,0.12) inset;
+    padding: 18px 20px;
+    display: flex; flex-direction: column; justify-content: space-between;
+}
+/* Holographic shimmer on front */
+.sb-card-front::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg,
+        transparent 30%,
+        rgba(201,147,58,0.08) 45%,
+        rgba(255,255,255,0.06) 50%,
+        transparent 60%
+    );
+    animation: sbHolo 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes sbHolo {
+    0%,100% { transform: translateX(-100%) skewX(-15deg); }
+    50%      { transform: translateX(200%) skewX(-15deg); }
+}
+
+.sb-card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+}
+.sb-card-brand {
+    color: #f6eee6; font-size: 1rem; font-weight: 900;
+    letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.sb-nfc-arc {
+    color: rgba(201,147,58,0.8); font-size: 1.2rem;
+    transform: rotate(90deg); display: block;
+}
+
+/* Gold chip */
+.sb-chip {
+    width: 44px; height: 33px;
+    background: linear-gradient(135deg, #c9933a, #e8c060, #c9933a);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.sb-chip-lines { display: flex; flex-direction: column; gap: 4px; }
+.sb-chip-lines span {
+    display: block; width: 28px; height: 1.5px;
+    background: rgba(0,0,0,0.25); border-radius: 2px;
+}
+
+.sb-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.sb-card-name { color: rgba(246,238,230,0.9); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; }
+.sb-card-hint {
+    color: #dba84f; font-size: 0.7rem; font-weight: 700;
+    animation: sbHintBlink 1.5s ease-in-out infinite;
+}
+@keyframes sbHintBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* Card back */
+.sb-card-back {
+    background: linear-gradient(160deg, #0a1e1e, #0d2829);
+    border: 1.5px solid rgba(255,255,255,0.06);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    transform: rotateY(180deg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+}
+.sb-back-strip { position: absolute; top: 24px; left: 0; right: 0; height: 36px; background: #111; }
+.sb-back-logo { color: #c9933a; font-size: 0.9rem; font-weight: 900; letter-spacing: 3px; }
+.sb-back-url  { color: rgba(246,238,230,0.4); font-size: 0.65rem; }
+
+/* ---- NFC rings ---- */
+.sb-rings {
+    position: absolute; inset: -40px;
+    pointer-events: none;
+}
+.sb-ring {
+    position: absolute; border-radius: 50%;
+    border: 2px solid rgba(201,147,58,0.5);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    opacity: 0;
+}
+.sr1 { width: 160px; height: 100px; }
+.sr2 { width: 240px; height: 150px; }
+.sr3 { width: 320px; height: 200px; }
+.sb-rings.fire .sb-ring { animation: sbRingFire 0.9s ease-out forwards; }
+.sb-rings.fire .sr2 { animation-delay: 0.1s; }
+.sb-rings.fire .sr3 { animation-delay: 0.2s; }
+@keyframes sbRingFire {
+    0%   { transform: translate(-50%,-50%) scale(0.3); opacity: 0.8; }
+    100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+}
+
+/* ---- Social Icon Bubbles ---- */
+.sb-icons {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    transform-style: preserve-3d;
+}
+.sbi {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 56px; height: 56px;
+    margin: -28px 0 0 -28px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    transform: translate(0,0) scale(0) translateZ(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+}
+.sbi.burst  { animation: sbiBurst  0.65s cubic-bezier(0.34,1.56,0.64,1) var(--d,0s) forwards; pointer-events: auto; }
+.sbi.retract{ animation: sbiRetract 0.4s cubic-bezier(0.55,0,1,0.45)   var(--d,0s) forwards; pointer-events: none; }
+
+/* Each icon's final translated position (set via inline --tx/--ty) */
+.sbi-0 { --tx:   0px; --ty: -170px; --d: 0.00s; --glow: #25d366; }
+.sbi-1 { --tx: 120px; --ty: -120px; --d: 0.06s; --glow: #fd1d1d; }
+.sbi-2 { --tx: 170px; --ty:    0px; --d: 0.12s; --glow: #0077b5; }
+.sbi-3 { --tx: 120px; --ty:  120px; --d: 0.18s; --glow: #1877f2; }
+.sbi-4 { --tx:   0px; --ty:  170px; --d: 0.24s; --glow: #ff0000; }
+.sbi-5 { --tx:-120px; --ty:  120px; --d: 0.30s; --glow: #aaa; }
+.sbi-6 { --tx:-170px; --ty:    0px; --d: 0.36s; --glow: #1e5557; }
+.sbi-7 { --tx:-120px; --ty: -120px; --d: 0.42s; --glow: #c9933a; }
+
+@keyframes sbiBurst {
+    0%   {
+        transform: translate(0,0) translateZ(0px) scale(0) rotateX(90deg) rotateZ(-180deg);
+        opacity: 0;
+    }
+    40%  {
+        transform: translate(calc(var(--tx)*0.65), calc(var(--ty)*0.65)) translateZ(90px) scale(1.25) rotateX(-15deg) rotateZ(15deg);
+        opacity: 1;
+    }
+    70%  {
+        transform: translate(calc(var(--tx)*1.06), calc(var(--ty)*1.06)) translateZ(50px) scale(0.92) rotateX(5deg) rotateZ(-5deg);
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) translateZ(50px) scale(1) rotateX(0deg) rotateZ(0deg);
+        opacity: 1;
+    }
+}
+@keyframes sbiRetract {
+    0%   {
+        transform: translate(var(--tx), var(--ty)) translateZ(50px) scale(1) rotateX(0deg);
+        opacity: 1;
+    }
+    40%  {
+        transform: translate(calc(var(--tx)*0.5), calc(var(--ty)*0.5)) translateZ(80px) scale(1.15) rotateX(-20deg) rotateZ(120deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(0,0) translateZ(0) scale(0) rotateX(90deg) rotateZ(360deg);
+        opacity: 0;
+    }
+}
+
+/* Idle float after burst settles */
+.sbi.floating {
+    animation: sbiFloat 3s ease-in-out var(--d,0s) infinite;
+}
+@keyframes sbiFloat {
+    0%,100% { transform: translate(var(--tx), calc(var(--ty) - 5px)) translateZ(50px) scale(1); }
+    50%      { transform: translate(var(--tx), calc(var(--ty) + 5px)) translateZ(60px) scale(1.04); }
+}
+
+.sbi-inner {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: #fff;
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.4),
+        0 0 0 3px rgba(255,255,255,0.12),
+        0 0 20px var(--glow, rgba(255,255,255,0.2));
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.sbi-inner::after {
+    content: '';
+    position: absolute;
+    top: -30%; left: -30%;
+    width: 60%; height: 60%;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.sbi-inner:hover { transform: scale(1.15); box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 30px var(--glow, rgba(255,255,255,0.3)); }
+.sbi-label {
+    font-size: 0.58rem; font-weight: 700;
+    color: rgba(246,238,230,0.85);
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+/* ---- Spark particles ---- */
+.sb-sparks { position: absolute; inset: 0; pointer-events: none; }
+.sb-spark {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    animation: sparkFly var(--sd, 0.8s) ease-out var(--ss, 0s) forwards;
+}
+@keyframes sparkFly {
+    0%   { transform: translate(-50%,-50%) translateX(0) translateY(0) scale(1); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--sx,40px)), calc(-50% + var(--sy,-40px))) scale(0); opacity: 0; }
+}
+
+/* ---- Tap hint ---- */
+.sb-tap-hint {
+    position: absolute;
+    bottom: -16px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.78rem; font-weight: 700;
+    color: rgba(246,238,230,0.5);
+    display: flex; align-items: center; gap: 6px;
+    letter-spacing: 0.5px;
+    animation: tapHintBob 2s ease-in-out infinite;
+    white-space: nowrap;
+}
+@keyframes tapHintBob {
+    0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+    50%      { transform: translateX(-50%) translateY(-4px); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .sb-layout { grid-template-columns: 1fr; text-align: center; }
+    .sb-steps { align-items: center; }
+    .sb-stage { width: 360px; height: 360px; }
+    .sbi-0 { --ty: -145px; }
+    .sbi-1 { --tx: 103px; --ty: -103px; }
+    .sbi-2 { --tx: 145px; }
+    .sbi-3 { --tx: 103px; --ty:  103px; }
+    .sbi-4 { --ty: 145px; }
+    .sbi-5 { --tx:-103px; --ty:  103px; }
+    .sbi-6 { --tx:-145px; }
+    .sbi-7 { --tx:-103px; --ty: -103px; }
+    .btn-get-real { margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 480px) {
+    .sb-stage { width: 300px; height: 300px; }
+    .sb-card  { width: 210px; height: 132px; }
+    .sbi-0 { --ty: -120px; }
+    .sbi-1 { --tx:  85px; --ty: -85px; }
+    .sbi-2 { --tx: 120px; }
+    .sbi-3 { --tx:  85px; --ty:  85px; }
+    .sbi-4 { --ty: 120px; }
+    .sbi-5 { --tx: -85px; --ty:  85px; }
+    .sbi-6 { --tx:-120px; }
+    .sbi-7 { --tx: -85px; --ty: -85px; }
+    .sbi-inner { width: 44px; height: 44px; font-size: 1.1rem; }
+    .sbi { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+}
+
+/* ============================================
    NFC TAP DEMO SECTION
    ============================================ */
 .nfc-demo-section {
