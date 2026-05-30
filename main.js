@@ -976,7 +976,7 @@ function initDemoGenerator() {
         const qrEl = document.getElementById('demoQR');
         if (qrEl) {
             qrInstance = new QRCode(qrEl, {
-                text: 'https://tapify.in/demo',
+                text: 'https://tapify.co.in',
                 width: 110, height: 110,
                 colorDark: '#153e3f',
                 colorLight: '#ffffff',
