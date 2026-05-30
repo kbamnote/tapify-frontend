@@ -338,7 +338,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Card Number</label>
-                <input class="form-input" id="fieldCardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" inputmode="numeric" oninput="formatCardNumber(this)">
+                <input class="form-input" id="fieldCardNumber" placeholder="000000 0000 0000000" maxlength="19" inputmode="numeric" oninput="formatCardNumber(this)">
             </div>
             <div class="form-group">
                 <label class="form-label">Expiry Date</label>
@@ -523,9 +523,13 @@
         }
 
         // ─── Input formatters ────────────────────────────────────────────────
+        // Format: 6 · 4 · 7  e.g. "290815 2026 2000000"
         function formatCardNumber(input) {
-            const digits = input.value.replace(/\D/g, '').slice(0, 16);
-            input.value  = digits.replace(/(.{4})/g, '$1 ').trim();
+            const d  = input.value.replace(/\D/g, '').slice(0, 17);
+            const p1 = d.slice(0, 6);
+            const p2 = d.slice(6, 10);
+            const p3 = d.slice(10, 17);
+            input.value = [p1, p2, p3].filter(Boolean).join(' ');
         }
         function formatExpiry(input) {
             const digits = input.value.replace(/\D/g, '').slice(0, 4);

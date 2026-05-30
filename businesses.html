@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Businesses - Tapify | Digital Profiles Powered by Tapify</title>
+    <meta name="description" content="Explore businesses and professionals using Tapify NFC digital cards. Click any card to view their live digital profile.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        *, body { font-family: 'Outfit', 'Poppins', sans-serif; }
+
+        /* ===== NAVBAR ===== */
+        .main-navbar {
+            background: rgba(13, 40, 41, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 0;
+            box-shadow: 0 4px 30px rgba(21,62,63,0.25);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .logo-img { height: 40px; }
+        .main-navbar .navbar-nav .nav-link {
+            color: #f6eee6 !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .navbar-nav .nav-link:hover { color: #dba84f !important; }
+        .main-navbar .navbar-nav .nav-link.active { color: #dba84f !important; }
+        .main-navbar .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 4px; left: 50%;
+            width: 0; height: 2px;
+            background: #c9933a;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .main-navbar .navbar-nav .nav-link:hover::after,
+        .main-navbar .navbar-nav .nav-link.active::after { width: 55%; }
+        .main-navbar .btn-signin {
+            background: #c9933a;
+            color: #0d2829;
+            border: 2px solid #c9933a;
+            border-radius: 50px;
+            padding: 10px 28px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .btn-signin:hover {
+            background: transparent;
+            color: #c9933a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201,147,58,0.35);
+        }
+        .hamburger-icon { display: flex; flex-direction: column; width: 28px; height: 20px; justify-content: space-between; }
+        .hamburger-icon span { display: block; height: 2.5px; background: #f6eee6; border-radius: 3px; transition: all 0.3s ease; }
+        .navbar-toggler { border: none; box-shadow: none !important; padding: 5px; }
+
+        /* ===== HERO ===== */
+        .biz-hero {
+            background: linear-gradient(135deg, #0d2829 0%, #153e3f 55%, #1e5557 100%);
+            padding: 130px 0 100px;
+            text-align: center;
+            color: #f6eee6;
+            position: relative;
+            overflow: hidden;
+        }
+        .biz-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(201,147,58,0.14) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 75%, rgba(246,238,230,0.06) 0%, transparent 55%);
+            pointer-events: none;
+        }
+        .biz-hero::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: radial-gradient(circle, rgba(246,238,230,0.07) 1px, transparent 1px);
+            background-size: 38px 38px;
+            pointer-events: none;
+        }
+        .biz-hero-content { position: relative; z-index: 2; }
+        .badge-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 22px;
+            background: rgba(201,147,58,0.18);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201,147,58,0.35);
+            border-radius: 50px;
+            color: #dba84f;
+            font-size: 0.85rem; font-weight: 700;
+            margin-bottom: 28px; letter-spacing: 0.5px;
+        }
+        .biz-hero h1 { font-size: 3.4rem; font-weight: 900; margin-bottom: 20px; line-height: 1.15; letter-spacing: -1px; color: #f6eee6; }
+        .biz-hero h1 span { color: #dba84f; position: relative; }
+        .biz-hero h1 span::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 3px; background: #c9933a; border-radius: 2px; }
+        .biz-hero p { font-size: 1.08rem; color: rgba(246,238,230,0.82); max-width: 640px; margin: 0 auto; line-height: 1.75; }
+        .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 44px; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat-num { font-size: 2rem; font-weight: 900; color: #dba84f; line-height: 1; }
+        .hero-stat-label { font-size: 0.8rem; font-weight: 600; color: rgba(246,238,230,0.65); margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+        /* ===== CONTROLS ===== */
+        .biz-controls {
+            background: #fff;
+            border-radius: 22px;
+            padding: 26px 32px;
+            margin-top: -52px;
+            position: relative; z-index: 10;
+            box-shadow: 0 20px 60px rgba(21,62,63,0.18);
+            display: flex; align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; gap: 20px;
+            border: 1.5px solid rgba(21,62,63,0.08);
+        }
+        .biz-search { position: relative; flex: 1; min-width: 260px; max-width: 460px; }
+        .biz-search i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #7a9e9f; }
+        .biz-search input {
+            width: 100%; height: 50px;
+            padding: 0 20px 0 48px;
+            background: #f6eee6;
+            border: 2px solid rgba(21,62,63,0.12);
+            border-radius: 14px; font-family: inherit;
+            font-size: 0.95rem; color: #153e3f;
+            transition: all 0.3s ease;
+        }
+        .biz-search input::placeholder { color: #7a9e9f; }
+        .biz-search input:focus { outline: none; border-color: #153e3f; background: #fff; box-shadow: 0 0 0 4px rgba(21,62,63,0.1); }
+
+        .sort-select {
+            height: 50px; padding: 0 16px;
+            background: #f6eee6;
+            border: 2px solid rgba(21,62,63,0.12);
+            border-radius: 14px; font-family: inherit;
+            font-size: 0.88rem; color: #153e3f;
+            cursor: pointer; transition: all 0.3s ease;
+            min-width: 170px;
+        }
+        .sort-select:focus { outline: none; border-color: #153e3f; background: #fff; }
+
+        .biz-count {
+            font-weight: 700; color: #153e3f;
+            font-size: 0.92rem;
+            background: rgba(21,62,63,0.07);
+            padding: 6px 16px; border-radius: 50px;
+            border: 1px solid rgba(21,62,63,0.12);
+            white-space: nowrap;
+        }
+
+        /* ===== GRID ===== */
+        .biz-section { padding: 65px 0 90px; background: #f6eee6; }
+        .biz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 28px; margin-top: 32px;
+        }
+        .biz-card {
+            background: #fff;
+            border-radius: 22px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(21,62,63,0.08);
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer; position: relative;
+            border: 2px solid rgba(21,62,63,0.1);
+        }
+        .biz-card:hover { transform: translateY(-10px); box-shadow: 0 28px 56px rgba(21,62,63,0.2); border-color: #153e3f; }
+
+        /* Banner / cover */
+        .biz-card-banner {
+            height: 110px; position: relative;
+            background: linear-gradient(135deg, #153e3f, #1e5557);
+            overflow: hidden;
+        }
+        .biz-card-banner img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            transition: transform 0.5s ease;
+        }
+        .biz-card:hover .biz-card-banner img { transform: scale(1.06); }
+        .biz-card-banner .banner-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 30%, rgba(13,40,41,0.55) 100%);
+        }
+
+        /* Avatar */
+        .biz-card-avatar {
+            width: 76px; height: 76px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 16px rgba(21,62,63,0.2);
+            position: absolute; bottom: -34px; left: 22px;
+            z-index: 2; overflow: hidden;
+            background: linear-gradient(135deg, #153e3f, #27706e);
+            display: flex; align-items: center; justify-content: center;
+            color: #f6eee6; font-size: 1.5rem; font-weight: 800;
+        }
+        .biz-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .biz-card-body { padding: 44px 22px 18px; }
+        .biz-name { font-size: 1.05rem; font-weight: 800; color: #153e3f; margin-bottom: 2px; line-height: 1.3; }
+        .biz-title { font-size: 0.82rem; color: #7a9e9f; font-weight: 500; margin-bottom: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .biz-card-footer {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            border-top: 1.5px solid rgba(21,62,63,0.08);
+            background: #faf7f4;
+        }
+        .biz-meta { font-size: 0.78rem; color: #7a9e9f; }
+        .biz-meta i { color: #c9933a; margin-right: 4px; }
+        .btn-view-biz {
+            background: linear-gradient(135deg, #153e3f, #1e5557);
+            color: #f6eee6; border: none;
+            padding: 9px 20px; border-radius: 50px;
+            font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 7px;
+            font-family: inherit;
+        }
+        .btn-view-biz:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,62,63,0.35); background: linear-gradient(135deg, #1e5557, #27706e); color: #f6eee6; }
+
+        /* ===== SKELETON LOADER ===== */
+        .skeleton-card { background: #fff; border-radius: 22px; overflow: hidden; border: 2px solid rgba(21,62,63,0.08); }
+        .skeleton-banner { height: 110px; background: linear-gradient(90deg, #ede3d8 25%, #e4d6c8 50%, #ede3d8 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        .skeleton-body { padding: 44px 22px 18px; }
+        .skeleton-line { height: 14px; border-radius: 8px; background: linear-gradient(90deg, #ede3d8 25%, #e4d6c8 50%, #ede3d8 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 10px; }
+        .skeleton-line.w60 { width: 60%; }
+        .skeleton-line.w80 { width: 80%; }
+        .skeleton-footer { height: 52px; background: linear-gradient(90deg, #ede3d8 25%, #e4d6c8 50%, #ede3d8 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ===== LOAD MORE ===== */
+        .load-more-wrap { text-align: center; margin-top: 48px; }
+        .btn-load-more {
+            background: linear-gradient(135deg, #153e3f, #1e5557);
+            color: #f6eee6; border: none;
+            padding: 14px 40px; border-radius: 50px;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
+            font-family: inherit;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-load-more:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(21,62,63,0.35); }
+        .btn-load-more:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ===== EMPTY / ERROR STATE ===== */
+        .state-box { text-align: center; padding: 80px 20px; }
+        .state-box i { font-size: 3rem; color: #adc4c5; margin-bottom: 16px; display: block; }
+        .state-box p { color: #7a9e9f; font-size: 1rem; }
+        .state-box .btn-retry { margin-top: 20px; background: #153e3f; color: #f6eee6; border: none; padding: 10px 28px; border-radius: 50px; font-family: inherit; font-weight: 700; cursor: pointer; }
+
+        /* ===== MODAL ===== */
+        .biz-modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(13,40,41,0.88);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .biz-modal-backdrop.open { display: flex; }
+        .biz-modal {
+            background: #0d2829; border-radius: 24px;
+            width: 100%; max-width: 480px;
+            height: 90vh; max-height: 820px;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            border: 1.5px solid rgba(246,238,230,0.15);
+            animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .biz-modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(21,62,63,0.6);
+            border-bottom: 1px solid rgba(246,238,230,0.1);
+            flex-shrink: 0;
+        }
+        .modal-dots { display: flex; gap: 6px; }
+        .modal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .modal-dot:nth-child(1) { background: #ff5f57; }
+        .modal-dot:nth-child(2) { background: #febc2e; }
+        .modal-dot:nth-child(3) { background: #28c840; }
+        .modal-url-bar {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(246,238,230,0.08);
+            border: 1px solid rgba(246,238,230,0.15);
+            border-radius: 50px; padding: 7px 16px;
+            flex: 1; margin: 0 12px;
+            color: rgba(246,238,230,0.7); font-size: 0.78rem;
+            overflow: hidden;
+        }
+        .modal-url-bar i { color: #2ecc71; font-size: 0.75rem; flex-shrink: 0; }
+        .modal-url-bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn-modal-close {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #f6eee6; font-size: 1rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease; flex-shrink: 0;
+        }
+        .btn-modal-close:hover { background: rgba(255,95,87,0.3); border-color: rgba(255,95,87,0.5); }
+        .biz-modal-iframe { flex: 1; border: none; background: #fff; }
+        .modal-footer-bar {
+            display: flex; align-items: center; justify-content: center;
+            padding: 12px 20px;
+            background: rgba(21,62,63,0.6);
+            border-top: 1px solid rgba(246,238,230,0.1);
+            flex-shrink: 0;
+        }
+        .btn-open-full {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #c9933a, #dba84f);
+            color: #0d2829; border: none;
+            padding: 10px 22px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
+            font-family: inherit; text-decoration: none;
+        }
+        .btn-open-full:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,147,58,0.45); color: #0d2829; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991px) {
+            .navbar-collapse { background: rgba(13,40,41,0.98); padding: 22px; border-radius: 16px; margin-top: 12px; }
+        }
+        @media (max-width: 768px) {
+            .biz-hero { padding: 110px 0 80px; }
+            .biz-hero h1 { font-size: 2.2rem; }
+            .biz-controls { flex-direction: column; align-items: stretch; padding: 20px; }
+            .biz-search { max-width: 100%; }
+            .hero-stats { gap: 24px; }
+            .biz-modal { max-width: 100%; height: 85vh; border-radius: 16px; }
+        }
+        @media (max-width: 480px) {
+            .biz-hero h1 { font-size: 1.8rem; }
+            .modal-url-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-green.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="hamburger-icon"><span></span><span></span><span></span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="businesses.html">Businesses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+                <a href="login.html" class="btn btn-signin">
+                    <i class="fas fa-user me-2"></i>Sign In
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="biz-hero">
+        <div class="container">
+            <div class="biz-hero-content">
+                <div class="badge-pill"><i class="fas fa-building"></i> Powered by Tapify</div>
+                <h1>Businesses <span>Powered by Us</span></h1>
+                <p>Explore real professionals and brands using Tapify NFC digital cards. Click any card to view their live digital profile.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-num" id="statTotal">—</div>
+                        <div class="hero-stat-label">Active Profiles</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">10K+</div>
+                        <div class="hero-stat-label">Active Users</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">50K+</div>
+                        <div class="hero-stat-label">Cards Created</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">20+</div>
+                        <div class="hero-stat-label">Cities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION ===== -->
+    <section class="biz-section">
+        <div class="container">
+
+            <!-- Controls -->
+            <div class="biz-controls">
+                <div class="biz-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="bizSearch" placeholder="Search by name, profession…">
+                </div>
+                <select class="sort-select" id="bizSort">
+                    <option value="newest">Newest First</option>
+                    <option value="name_asc">Name A–Z</option>
+                    <option value="views_desc">Most Viewed</option>
+                </select>
+                <div class="biz-count" id="bizCount">Loading…</div>
+            </div>
+
+            <!-- Grid -->
+            <div class="biz-grid" id="bizGrid"></div>
+
+            <!-- States -->
+            <div class="state-box" id="stateLoading" style="display:none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading profiles…</p>
+            </div>
+            <div class="state-box" id="stateEmpty" style="display:none;">
+                <i class="fas fa-search"></i>
+                <p>No businesses match your search.</p>
+            </div>
+            <div class="state-box" id="stateError" style="display:none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <p id="stateErrorMsg">Could not load businesses.</p>
+                <button class="btn-retry" onclick="loadPage(1)">Try Again</button>
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+                <button class="btn-load-more" id="btnLoadMore">
+                    <i class="fas fa-chevron-down"></i> Load More
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== MODAL ===== -->
+    <div class="biz-modal-backdrop" id="bizModalBackdrop">
+        <div class="biz-modal">
+            <div class="biz-modal-header">
+                <div class="modal-dots">
+                    <div class="modal-dot"></div>
+                    <div class="modal-dot"></div>
+                    <div class="modal-dot"></div>
+                </div>
+                <div class="modal-url-bar">
+                    <i class="fas fa-lock"></i>
+                    <span id="modalUrl">tapify.in/…</span>
+                </div>
+                <button class="btn-modal-close" id="btnModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <iframe class="biz-modal-iframe" id="bizIframe" src="" title="Business Profile"></iframe>
+            <div class="modal-footer-bar">
+                <a href="#" class="btn-open-full" id="btnOpenFull" target="_blank" rel="noopener">
+                    <i class="fas fa-expand-alt"></i> Open Full Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API = 'https://tapify-backend-production.up.railway.app/api/public/vcards-list.php';
+
+        let currentPage = 1;
+        let hasMore     = false;
+        let isLoading   = false;
+        let totalCount  = 0;
+        let searchTimer = null;
+
+        const grid         = document.getElementById('bizGrid');
+        const bizCount     = document.getElementById('bizCount');
+        const statTotal    = document.getElementById('statTotal');
+        const stateLoading = document.getElementById('stateLoading');
+        const stateEmpty   = document.getElementById('stateEmpty');
+        const stateError   = document.getElementById('stateError');
+        const stateErrorMsg= document.getElementById('stateErrorMsg');
+        const loadMoreWrap = document.getElementById('loadMoreWrap');
+        const btnLoadMore  = document.getElementById('btnLoadMore');
+
+        function escHtml(s) {
+            if (!s) return '';
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function buildAvatarStyle(occupation) {
+            // Deterministic gradient per occupation for visual variety
+            const palettes = [
+                ['#0a1628','#1e3a6e'],['#0d3b5e','#1565c0'],['#1a0533','#6a1b9a'],
+                ['#1b2631','#2e4057'],['#3e1a00','#a04000'],['#0d3320','#1b5e35'],
+                ['#0a0a1a','#1a237e'],['#1a1200','#4a3800'],['#3d001a','#880e4f'],
+                ['#12002f','#4a148c'],['#1a1200','#37280a'],['#0d2818','#1a4731'],
+                ['#1c1c1c','#3e3e3e'],['#1a2a00','#33691e'],['#0d1b2a','#1b3a6e'],
+                ['#2d1b0e','#6d4c2a'],['#3d001a','#880e4f'],['#003545','#00687a'],
+                ['#1a2800','#3d5900'],['#1a0030','#4a0080'],['#2d0030','#700070'],
+                ['#00302d','#006b60'],['#1a1200','#3d2d00'],['#1a0020','#4a0060'],
+                ['#002244','#003580'],['#002b1a','#006040'],['#00001a','#00005c'],
+                ['#1a1000','#3d2600'],
+            ];
+            const idx = Math.abs((occupation || '').charCodeAt(0) || 0) % palettes.length;
+            const [c1, c2] = palettes[idx];
+            return `background: linear-gradient(135deg, ${c1}, ${c2});`;
+        }
+
+        function cardHtml(v) {
+            const name       = escHtml(v.vcard_name || 'Tapify User');
+            const occupation = escHtml(v.occupation || 'Professional');
+            const views      = v.view_count || 0;
+            const url        = escHtml(v.preview_url || '#');
+            const alias      = escHtml(v.url_alias  || '');
+
+            const bannerStyle = v.cover_image_url
+                ? ''
+                : `style="${buildAvatarStyle(v.occupation)}"`;
+            const bannerImg = v.cover_image_url
+                ? `<img src="${escHtml(v.cover_image_url)}" alt="${name}" loading="lazy"><div class="banner-overlay"></div>`
+                : '';
+
+            const avatarInner = v.profile_image_url
+                ? `<img src="${escHtml(v.profile_image_url)}" alt="${name}" loading="lazy">`
+                : escHtml(v.initials || name.slice(0,2).toUpperCase());
+
+            return `
+            <div class="biz-card"
+                 data-url="${url}"
+                 data-alias="${alias}">
+                <div class="biz-card-banner" ${bannerStyle}>
+                    ${bannerImg}
+                    <div class="biz-card-avatar">${avatarInner}</div>
+                </div>
+                <div class="biz-card-body">
+                    <div class="biz-name">${name}</div>
+                    <div class="biz-title">${occupation}</div>
+                </div>
+                <div class="biz-card-footer">
+                    <span class="biz-meta"><i class="fas fa-eye"></i> ${views.toLocaleString()} views</span>
+                    <button class="btn-view-biz"><i class="fas fa-external-link-alt"></i> View Profile</button>
+                </div>
+            </div>`;
+        }
+
+        function skeletonHtml(n) {
+            return Array.from({length: n}, () => `
+            <div class="skeleton-card">
+                <div class="skeleton-banner"></div>
+                <div class="skeleton-body">
+                    <div class="skeleton-line w80"></div>
+                    <div class="skeleton-line w60"></div>
+                </div>
+                <div class="skeleton-footer"></div>
+            </div>`).join('');
+        }
+
+        async function loadPage(page) {
+            if (isLoading) return;
+            isLoading = true;
+
+            const search = document.getElementById('bizSearch').value.trim();
+            const sort   = document.getElementById('bizSort').value;
+
+            if (page === 1) {
+                grid.innerHTML = skeletonHtml(8);
+                stateEmpty.style.display = 'none';
+                stateError.style.display = 'none';
+                loadMoreWrap.style.display = 'none';
+                bizCount.textContent = 'Loading…';
+            } else {
+                btnLoadMore.disabled = true;
+                btnLoadMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading…';
+            }
+
+            const params = new URLSearchParams({ sort, page });
+            if (search) params.set('search', search);
+
+            try {
+                const res  = await fetch(`${API}?${params}`);
+                const json = await res.json();
+
+                if (!json.success) throw new Error(json.message || 'API error');
+
+                const vcards = json.data.vcards || [];
+                hasMore      = json.data.has_more;
+                totalCount   = json.data.total;
+
+                if (page === 1) {
+                    grid.innerHTML = '';
+                    statTotal.textContent = totalCount.toLocaleString();
+                }
+
+                if (page === 1 && vcards.length === 0) {
+                    stateEmpty.style.display = 'block';
+                    bizCount.textContent = '0 Businesses';
+                } else {
+                    grid.insertAdjacentHTML('beforeend', vcards.map(cardHtml).join(''));
+                    const visible = grid.querySelectorAll('.biz-card').length;
+                    bizCount.textContent = `${totalCount.toLocaleString()} Business${totalCount !== 1 ? 'es' : ''}`;
+                    attachCardClicks();
+                }
+
+                currentPage = page;
+                loadMoreWrap.style.display = hasMore ? 'block' : 'none';
+
+            } catch (err) {
+                console.error(err);
+                if (page === 1) {
+                    grid.innerHTML = '';
+                    stateError.style.display = 'block';
+                    stateErrorMsg.textContent = 'Could not load businesses. ' + err.message;
+                    bizCount.textContent = '—';
+                }
+            } finally {
+                isLoading = false;
+                btnLoadMore.disabled = false;
+                btnLoadMore.innerHTML = '<i class="fas fa-chevron-down"></i> Load More';
+            }
+        }
+
+        // ===== CARD CLICK → MODAL =====
+        const backdrop  = document.getElementById('bizModalBackdrop');
+        const iframe    = document.getElementById('bizIframe');
+        const btnClose  = document.getElementById('btnModalClose');
+        const btnOpenFull = document.getElementById('btnOpenFull');
+        const modalUrl  = document.getElementById('modalUrl');
+
+        function openModal(profileUrl, alias) {
+            iframe.src         = profileUrl;
+            btnOpenFull.href   = profileUrl;
+            modalUrl.textContent = 'tapify.in/' + alias;
+            backdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            backdrop.classList.remove('open');
+            iframe.src = '';
+            document.body.style.overflow = '';
+        }
+
+        function attachCardClicks() {
+            document.querySelectorAll('.biz-card:not([data-bound])').forEach(card => {
+                card.dataset.bound = '1';
+                card.addEventListener('click', () => {
+                    openModal(card.dataset.url, card.dataset.alias);
+                });
+            });
+        }
+
+        btnClose.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // ===== CONTROLS =====
+        document.getElementById('bizSearch').addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => loadPage(1), 350);
+        });
+        document.getElementById('bizSort').addEventListener('change', () => loadPage(1));
+        btnLoadMore.addEventListener('click', () => loadPage(currentPage + 1));
+
+        // ===== INIT =====
+        loadPage(1);
+    </script>
+</body>
+</html>
