@@ -1,7 +1,7 @@
 /* Shared demo styles for vcard1–42 render.php-based templates */
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--font-body,'Poppins',sans-serif);background:#e5e7eb;min-height:100vh;color:var(--text);}
-body.body-dark{background:#030712;}
+body{font-family:var(--font-body,'Poppins',sans-serif);background:var(--bg);min-height:100vh;color:var(--text);}
+body.body-dark{background:var(--bg);}
 .vcard-container{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,.12);position:relative;overflow:hidden;}
 .theme-dark .vcard-container{box-shadow:0 0 60px rgba(0,0,0,.4);}
 .cover-section{height:var(--cover-h);background:linear-gradient(135deg,var(--primary),var(--secondary));position:relative;overflow:hidden;}
