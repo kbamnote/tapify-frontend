@@ -915,12 +915,27 @@ img {
     transition: var(--transition);
 }
 
+.logo-item img {
+    display: inline-block;
+    height: 140px;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
+    mix-blend-mode: multiply;
+    transition: var(--transition);
+    margin: 0 10px;
+}
+
 .logo-item span:hover {
     background: var(--teal);
     color: var(--cream);
     border-color: var(--teal);
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
+}
+
+.logo-item img:hover {
+    transform: scale(1.05);
 }
 
 /* ============================================
@@ -4220,7 +4235,7 @@ body.dark-mode .accordion-button { background: #1a2828; color: #f0e6da; }
 body.dark-mode .accordion-button:not(.collapsed) { background: #1e3535; }
 body.dark-mode .accordion-body { background: #1a2828; color: #9ab5b5; }
 body.dark-mode footer { background: #0a1212 !important; }
-body.dark-mode .logo-item { background: #1a2828 !important; border-color: rgba(255,255,255,0.07) !important; }
+body.dark-mode .logo-item span { background: #1a2828 !important; border-color: rgba(255,255,255,0.07) !important; }
 body.dark-mode .number-card { background: #1a2828 !important; }
 body.dark-mode .testimonial-card { background: #1a2828 !important; }
 body.dark-mode .live-toast { background: #1a2828; border-color: rgba(255,255,255,0.1); }
