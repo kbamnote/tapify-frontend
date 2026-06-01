@@ -808,6 +808,15 @@ textarea.form-control {
     z-index: 5;
 }
 
+.template-badge-new {
+    background: linear-gradient(135deg, #8338ec, #a855f7);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(131, 56, 236, 0.4);
+    top: 12px;
+    left: auto;
+    right: 12px;
+}
+
 .template-theme-tag {
     position: absolute;
     top: 12px;
