@@ -396,7 +396,8 @@ const templates = [
     { id: 'vcard39', name: 'Bio Black',            category: 'Minimal',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v39.png', demoUrl: '../templates/vcard39-bio-black.html' },
     { id: 'vcard40', name: 'Bio White',            category: 'Minimal',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v40.png', demoUrl: '../templates/vcard40-bio-white.html' },
     { id: 'vcard41', name: 'Social Vcard',         category: 'Social',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v41.png', demoUrl: '../templates/vcard41-social-vcard.html' },
-    { id: 'vcard42', name: 'Social Vcard 2',       category: 'Social',        image: 'https://tapifyworld.com/assets/img/templates/vcard-v42.png', demoUrl: '../templates/vcard42-social-vcard2.html' }
+    { id: 'vcard42', name: 'Social Vcard 2',       category: 'Social',        image: 'https://tapifyworld.com/assets/img/templates/vcard-v42.png', demoUrl: '../templates/vcard42-social-vcard2.html' },
+    { id: 'vcard43', name: 'Stylish Salon',        category: 'Beauty',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v43.png', demoUrl: '../newTemps/imagesSalon/clean.html' }
 ];
 
 function renderTemplates() {
