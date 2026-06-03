@@ -4,6 +4,11 @@ import io,sys,re,os,hashlib,base64 as b64
 sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 FOLDER,SLUG,VID,PRIMARY,FONT,DARK = sys.argv[1:7]
+# Per-template CSS tweaks from review feedback (keyed by slug).
+EXTRA_CSS={
+ 'socialservices': '.contact-box{background:transparent!important;border:none!important;box-shadow:none!important;}',
+ 'retail': '.contact-box{background:transparent!important;border:none!important;box-shadow:none!important;}',
+}
 SRC_DIR=f'D:/Print World/tapify/tapify-frontend/newTemps/{FOLDER}'
 ASSET_DIR=f'D:/Print World/tapify/tapify-backend/images/templates/{SLUG}'
 ASSET_URL=f'/images/templates/{SLUG}'
@@ -44,18 +49,27 @@ gfonts='\n'.join(l for l in re.findall(r'<link[^>]+>',h[:h.lower().find('</head>
 bs=re.search(r'<body[^>]*>',h,re.I)
 body=h[bs.end():h.lower().rfind('</body>') if '</body>' in h.lower() else h.lower().rfind('</html>')]
 body=re.sub(r'<script.*?</script>','',body,flags=re.DOTALL|re.I)
-body=re.sub(r'<iframe[^>]*(?:youtube|youtu\.be)[\s\S]*?</iframe>','',body,flags=re.I)
+# strip ALL leftover iframes (youtube, stripe srcdoc, blockquote embeds) + their stray artifacts
+body=re.sub(r'<iframe[\s\S]*?</iframe>','',body,flags=re.I)
+body=re.sub(r'<iframe[^>]*/?>','',body,flags=re.I)
+body=re.sub(r'<blockquote[^>]*instagram[\s\S]*?</blockquote>','',body,flags=re.I)
 body=re.sub(r'<link[^>]*>','',body,flags=re.I)
+# wire the template's own inquiry form to the backend (was a stripped-JS stub)
+body=re.sub(r'<form[^>]*id=["\']?enquiryForm["\']?[^>]*>',
+            '<form id="enquiryForm" onsubmit="submitInquiry(event)" enctype="multipart/form-data"><input type="hidden" name="vcard_id" value="<?= $vcardId ?>">',
+            body, count=1, flags=re.I)
 
-def balanced_replace(s, open_re, new):
-    """Replace <div ...> matched by open_re ... matching </div> with new. count=1."""
+def balanced_replace(s, open_re, new, max_span=40000):
+    """Replace <div ...> matched by open_re ... matching </div> with new. count=1.
+    Aborts if the matched span exceeds max_span (guards against malformed/unbalanced HTML)."""
     m=re.search(open_re,s)
     if not m: return s,False
-    depth=0;i=m.start()
+    depth=0
     for t in re.finditer(r'<div\b|</div>',s[m.start():]):
         depth+=1 if t.group(0)=='<div' else -1
         if depth==0:
             end=m.start()+t.end()
+            if end-m.start()>max_span: return s,False
             return s[:m.start()]+new+s[end:],True
     return s,False
 
@@ -87,9 +101,31 @@ for i,key in enumerate(['phone','alternate_phone']):
         body=body.replace('tel:'+tels[i],f'tel:<?= htmlspecialchars($vcard["{key}"] ?? "") ?>',1)
         body=re.sub(r'>\s*'+re.escape(tels[i])+r'\s*<',f'><?= htmlspecialchars($vcard["{key}"] ?? "") ?><',body,count=1)
 
-# ---- avatar + banner ----
+# ---- avatar ----
 body=re.sub(r'(<div class="[^"]*card-img[^"]*"[^>]*>\s*<img )src=("?)[^"\'> ]*\2',r'\1src="<?= $profileImg ?>"',body,count=1)
-body=re.sub(r'(<div class="[^"]*banner-img[^"]*"[^>]*>\s*<img )src=("?)[^"\'> ]*\2',r'\1src="<?= $coverImg ?>"',body,count=1)
+# ---- banner / cover (image OR youtube/instagram/video) — replace whole banner-img div ----
+COVER_PHP=('<?php $cvType=$vcard["cover_type"]??"image";$cvVal=$vcard["cover_image"]??"";'
+'$isVid=($cvType==="video")||preg_match("#youtube\\.com|youtu\\.be|instagram\\.com|\\.mp4#i",$cvVal);'
+'if($isVid&&!empty($cvVal)){'
+'if(preg_match("#(?:youtube\\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\\.be/)([^\\"&?/\\s]{11})#i",$cvVal,$mm)){$yt=$mm[1];'
+'echo "<iframe style=\\"width:100%;height:100%;display:block;border:none;\\" src=\\"https://www.youtube.com/embed/".$yt."?autoplay=1&mute=1&loop=1&playlist=".$yt."&controls=0&showinfo=0&rel=0&playsinline=1\\" allow=\\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\\" allowfullscreen></iframe>";}'
+'elseif(stripos($cvVal,"instagram.com")!==false){echo "<iframe style=\\"width:100%;height:100%;display:block;border:none;\\" src=\\"".htmlspecialchars(rtrim($cvVal,"/")."/embed")."\\" allowtransparency=\\"true\\"></iframe>";}'
+'else{echo "<video src=\\"".htmlspecialchars(imgUrl($cvVal))."\\" autoplay loop muted playsinline style=\\"width:100%;height:100%;object-fit:cover;display:block;\\"></video>";}'
+'}else{echo "<img src=\\"".htmlspecialchars($coverImg)."\\" alt=\\"".htmlspecialchars($fullName)."\\" style=\\"width:100%;height:100%;object-fit:cover;display:block;\\">";} ?>')
+BANNER=('<div class="banner-img" style="position:relative;overflow:hidden;height:315px;">'+COVER_PHP+
+'<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.5));"></div></div>')
+SECTION='<div class="banner-section position-relative w-100">'+BANNER+'</div>'
+# Layered so EVERY template gets a cover, regardless of original markup:
+# 1) whole banner-section (school: banner-section>youtube-link)
+body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*banner-section[^>"\']*["\']?[^>]*>',SECTION,max_span=12000)
+how='section'
+if not ok:  # 2) banner-img div (realEstate/CEOCXO: banner-img>youtube-link or img)
+    body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*banner-img[^>"\']*["\']?[^>]*>',BANNER,max_span=8000);how='img-div'
+if not ok:  # 3) banner-img as a class on the <img> itself (programmer)
+    body,n=re.subn(r'<img [^>]*class=["\'][^"\']*banner-img[^"\']*["\'][^>]*>',lambda m:BANNER,body,count=1);ok=bool(n);how='img-tag'
+if not ok:  # 4) template has no banner at all (flowerGarden) — inject one at the top
+    body=SECTION+body;ok=True;how='injected'
+print('banner',ok,how)
 
 # ---- social ----
 soc=('<?php foreach ($socialLinks as $s): $ic=$platformIcons[$s["platform"]] ?? "fa-globe"; ?>'
@@ -115,6 +151,8 @@ BH=('<div class="business-hour-section pt-50 px-30 position-relative"><div class
 '<div class="px-30"><div class="row justify-content-center"><?php foreach ((isset($__bh)?$__bh:($businessHours ?? [])) as $bh): ?>'
 '<div class="col-sm-6"><div class="business-hour-card d-flex gap-2 align-items-center mb-3"><div class="time-icon"><i class="bi bi-clock fs-3"></i></div><div class="d-flex flex-column align-items-start"><span class="fs-14 text-gray lh-1 fw-5"><?= htmlspecialchars(ucfirst(strtolower($bh["day_name"] ?? ""))) ?></span><span class="fs-16 fw-5"><?= !empty($bh["is_open"]) ? htmlspecialchars(trim(($bh["open_time"] ?? "")." - ".($bh["close_time"] ?? ""))) : "Closed" ?></span></div></div></div>'
 '<?php endforeach; ?></div></div></div>')
+SVC='<?php if(!empty($services)): ?>'+SVC+'<?php endif; ?>'
+BH='<?php if(!empty($businessHours)): ?>'+BH+'<?php endif; ?>'
 body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services-section[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
 body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*business-hour(?!-card)[^>"\']*["\']?[^>]*>',BH);print('bh',ok)
 
@@ -123,20 +161,48 @@ supp='<?php $__sv=$services;$__pr=$products;$__ga=$galleries;$__te=$testimonials
 slick=('<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'
 '<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>'
 '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">'
-'<script>jQuery(function($){function ini(s,o){$(s).not(".slick-initialized").slick(o);}'
-'ini(".product-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
-'ini(".gallery-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
-'ini(".testimonial-slider",{slidesToShow:1,arrows:false,dots:true,infinite:true});});</script>')
+'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">'
+'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">'
+'<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>'
+'<script>function tfInit(){if(typeof jQuery==="undefined"||!jQuery.fn||!jQuery.fn.slick){return setTimeout(tfInit,120);}jQuery(function($){'
+# hide empty data sections (heading + content) when there are no records
+'$(".product-slider,.gallery-slider,.testimonial-slider").each(function(){'
+'if($(this).children().length===0){$(this).closest("[class*=section]").hide();$(this).hide();}});'
+'function ini(s,o){var $s=$(s);if(!$s.length||$s.hasClass("slick-initialized"))return;$s.slick(o);}'
+'ini(".product-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
+'ini(".gallery-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
+'ini(".testimonial-slider",{slidesToShow:1,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:4000});'
+# make the template's own appointment date field selectable
+'if(window.flatpickr){flatpickr("#pickUpDate",{minDate:"today",dateFormat:"Y-m-d"});flatpickr(".flatpickr-input",{minDate:"today",dateFormat:"Y-m-d"});}'
+'});}tfInit();</script>')
 
 CDN=('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">'
 '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">'
 '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">')
-FIX=('<style>html,body{overflow-y:auto!important;height:auto!important;position:relative!important;}'
-'body>*{max-width:560px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important;}'
-'.container,.container-fluid{max-width:560px!important;}'
-'.add-to-contact-section,[class*=add-to-contact]{left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:560px!important;width:100%!important;}'
+# Make the template's themed page background clearly visible (some use a low-alpha
+# body color that washes out to near-white). Extract it and apply opaque on html+body.
+PAGEBG=''
+mbg=re.search(r'body\s*\{[^}]*?background(?:-color)?\s*:\s*(#[0-9a-fA-F]{6,8}|rgba?\([\d.,\s%]+\))[^}]*?!important',head_styles,re.I)
+if mbg:
+    c=mbg.group(1).strip()
+    # The themed page background (the colored area around/behind the white card) must
+    # stay visible. Strip alpha so a low-opacity color doesn't wash out to white.
+    m8=re.match(r'#([0-9a-fA-F]{6})[0-9a-fA-F]{2}$',c)
+    if m8: c='#'+m8.group(1)
+    mr=re.match(r'rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,[^)]+)?\)',c)
+    if mr: c=f'rgb({mr.group(1)},{mr.group(2)},{mr.group(3)})'
+    PAGEBG=f'html,body{{background-color:{c}!important;}}'
+FIX=('<style>html,body{overflow-y:auto!important;height:auto!important;min-height:100%!important;position:relative!important;}'
++PAGEBG+
+# Keep the card constrained on desktop WITHOUT overriding the template's own
+# inner layout (so absolutely-positioned vectors/backgrounds stay aligned).
+'.container{max-width:540px!important;margin-left:auto!important;margin-right:auto!important;}'
+# "Add to Contact" bar is position:fixed;left:0;width:100% in the source -> center it within the card
+'.add-to-contact-btn,.add-to-contact-section,[class*=add-to-contact]{left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:540px!important;width:100%!important;}'
 '.blog-section,.blog-card,[class*=blog-]{display:none!important;}'
-'.gallery-slider .slick-slide,.product-slider .slick-slide{padding:0 8px;}</style>')
+'.product-slider,.gallery-slider,.testimonial-slider{overflow:hidden;}'
+'.product-slider .slick-slide,.gallery-slider .slick-slide{padding:0 8px;box-sizing:border-box;}'
++EXTRA_CSS.get(SLUG,'')+'</style>')
 
 PCOL=PRIMARY.lstrip('#')
 php_header=f'''<?php
@@ -156,8 +222,7 @@ out=(php_header+'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><met
 '<link rel="icon" href="<?= !empty($vcard[\'favicon_image\'])?imgUrl($vcard[\'favicon_image\']):\'/images/tapify-logo-green.png\' ?>">'
 +CDN+gfonts+'<style>'+head_styles.replace('<style>','').replace('</style>','')+'</style>'+FIX+
 '<?php if(!empty($vcard["custom_css"])): ?><style><?= $vcard["custom_css"] ?></style><?php endif; ?>'
-'</head><body>'+body+supp+
-'<?php include __DIR__ . "/_features.php"; ?>'+slick+
+'</head><body>'+body+slick+
 '<?php if(!empty($vcard["custom_js"])): ?><script><?= $vcard["custom_js"] ?></script><?php endif; ?>'
 '<?php include __DIR__ . "/_shared-scripts.php"; ?></body></html>')
 open(OUT,'w',encoding='utf-8').write(out)
