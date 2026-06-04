@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deletion - Tapify</title>
+    <meta name="description" content="Account Deletion process for Tapify and Tapify Sales CRM applications.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* =============================================
+           PRIVACY POLICY PAGE / ACCOUNT DELETION PAGE
+           ============================================= */
+        *, body { font-family: 'Outfit', 'Poppins', sans-serif; }
+
+        body {
+            background-color: #f6eee6;
+        }
+
+        /* === HERO === */
+        .policy-hero {
+            background: linear-gradient(135deg, #0d2829 0%, #153e3f 55%, #1e5557 100%);
+            padding: 100px 0 60px;
+            text-align: center;
+            color: #f6eee6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .policy-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 18% 28%, rgba(201,147,58,0.15) 0%, transparent 55%),
+                radial-gradient(ellipse at 82% 72%, rgba(246,238,230,0.06) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        .policy-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #f6eee6;
+        }
+
+        .policy-hero p {
+            font-size: 1.1rem;
+            color: rgba(246,238,230,0.82);
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* === CONTENT SECTION === */
+        .policy-content {
+            padding: 60px 0;
+            background: #f6eee6;
+        }
+
+        .policy-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(21, 62, 63, 0.08);
+            border: 1px solid rgba(21, 62, 63, 0.08);
+            color: #5a7b7c;
+            line-height: 1.8;
+        }
+
+        .policy-card h2 {
+            font-family: 'Outfit', sans-serif;
+            color: #153e3f;
+            font-weight: 800;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .policy-card h3 {
+            font-family: 'Outfit', sans-serif;
+            color: #1e5557;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .policy-card p {
+            margin-bottom: 20px;
+        }
+
+        .policy-card ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .policy-card li {
+            margin-bottom: 10px;
+        }
+
+        /* === NAVBAR OVERRIDE === */
+        .main-navbar {
+            background: rgba(13,40,41,0.97) !important;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 24px rgba(13,40,41,0.3);
+            padding: 14px 0;
+        }
+        .main-navbar .navbar-brand .logo-img { height: 48px; }
+        .main-navbar .navbar-nav .nav-link {
+            color: #f6eee6 !important;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            font-size: 0.95rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .navbar-nav .nav-link:hover { color: #dba84f !important; }
+        .main-navbar .navbar-nav .nav-link.active { color: #dba84f !important; }
+        .main-navbar .btn-signin {
+            background: #c9933a;
+            color: #0d2829 !important;
+            border: 2px solid #c9933a;
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .main-navbar .btn-signin:hover {
+            background: transparent;
+            color: #c9933a !important;
+        }
+
+        /* === FOOTER MINIMAL === */
+        .templates-footer {
+            background: #0d2829;
+            color: rgba(246,238,230,0.65);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(201,147,58,0.2);
+        }
+        .templates-footer strong { color: #dba84f; }
+        
+        .contact-email {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e5557;
+            background: rgba(30, 85, 87, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 10px 0;
+            text-decoration: none;
+        }
+        .contact-email:hover {
+            background: rgba(30, 85, 87, 0.2);
+            color: #1e5557;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
+                <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
+                <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="businesses.html">Our Network</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a href="login.html" class="btn-signin">
+                        <i class="fas fa-user"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="policy-hero">
+        <div class="container" style="position:relative; z-index:2;">
+            <h1>Account Deletion</h1>
+            <p>Learn how to request deletion of your Tapify account and associated data.</p>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="policy-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="policy-card">
+                        <p>Users can request the deletion of their Tapify account and associated data by contacting our support team. Please follow the instructions below to initiate your request.</p>
+
+                        <h2>How to Request Account Deletion</h2>
+                        <p>To request the deletion of your account and associated data, please send an email to:</p>
+                        <p><a href="mailto:kunalbamnote7@gmail.com" class="contact-email">kunalbamnote7@gmail.com</a></p>
+                        
+                        <p>In your email, you must include the following information so we can verify your identity and process the deletion:</p>
+                        <ul>
+                            <li><strong>Registered Email Address:</strong> The email address associated with your Tapify account.</li>
+                            <li><strong>Registered Phone Number:</strong> The phone number linked to your account.</li>
+                        </ul>
+
+                        <h2>Data Deletion Process</h2>
+                        <p>Upon receiving your request and verifying your identity, your account and associated user data will be permanently deleted within <strong>7 business days</strong>.</p>
+                        
+                        <h3>What Data is Deleted:</h3>
+                        <ul>
+                            <li>Your personal profile information (name, phone number, address).</li>
+                            <li>Your login credentials.</li>
+                            <li>Your created digital business cards (vCards) and web stores.</li>
+                            <li>Location logs, photos, and presentation recordings (for Tapify Sales CRM users).</li>
+                        </ul>
+
+                        <h3>What Data May Be Retained:</h3>
+                        <p>We may retain certain information as required by law or for legitimate business purposes, including:</p>
+                        <ul>
+                            <li>Invoices and transaction history for tax and accounting purposes.</li>
+                            <li>Data required to comply with legal obligations, resolve disputes, and enforce our agreements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="templates-footer">
+        <div class="container">
+            <p style="margin: 0; font-size: 0.9rem;">© 2026 <strong>Tapify</strong> — An Innovative Product from MRPRINT WORLD PRIVATE LIMITED</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
