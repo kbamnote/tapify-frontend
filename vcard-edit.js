@@ -375,7 +375,6 @@ const templates = [
     { id: 'vcard2',  name: 'Executive Profile',    category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v2.png',  demoUrl: '../templates/vcard2-executive-profile.html' },
     { id: 'vcard3',  name: 'Clean Canvas',         category: 'Minimal',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v3.png',  demoUrl: '../templates/vcard3-clean-canvas.html' },
     { id: 'vcard4',  name: 'Professional',         category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v4.png',  demoUrl: '../templates/vcard4-professional.html' },
-    { id: 'vcard5',  name: 'Corporate Connect',    category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v5.png',  demoUrl: '../templates/vcard5-corporate-connect.html' },
     { id: 'vcard6',  name: 'Modern Edge',          category: 'Creative',      isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v6.png',  demoUrl: '../templates/vcard6-modern-edge.html' },
     { id: 'vcard7',  name: 'Business Beacon',      category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v7.png',  demoUrl: '../templates/vcard7-business-beacon.html' },
     { id: 'vcard8',  name: 'Corporate Classic',    category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v8.png',  demoUrl: '../templates/vcard8-corporate-classic.html' },
@@ -417,7 +416,8 @@ const templates = [
     { id: 'vcard61', name: 'Social Services', category: 'Nonprofit', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v61.png', demoUrl: '../newTemps/imagesSocialServices/clean.html' },
     { id: 'vcard62', name: 'Taxi Service', category: 'Transport', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v62.png', demoUrl: '../newTemps/imagestaxiservice/clean.html' },
     { id: 'vcard63', name: 'Real Estate', category: 'Real Estate', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v63.png', demoUrl: '../newTemps/realEstate/clean.html' },
-    { id: 'vcard43', name: 'Stylish Salon',        category: 'Beauty',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v43.png', demoUrl: '../newTemps/imagesSalon/clean.html' }
+    { id: 'vcard43', name: 'Stylish Salon',        category: 'Beauty',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v43.png', demoUrl: '../newTemps/imagesSalon/clean.html' },
+    { id: 'vcard5',  name: 'Corporate Connect',   category: 'Corporate',     isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v5.png',  demoUrl: '../newTemps/imagesCorporateConnect/core-connect.html' }
 ];
 
 function renderTemplates() {
