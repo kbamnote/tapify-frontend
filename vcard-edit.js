@@ -1665,6 +1665,202 @@ async function deleteInstaembed(id) {
     } catch (err) { showToast('Delete failed', 'error'); }
 }
 
+// ===== SERVICE CATEGORIES (category -> items with image + name) =====
+let serviceCategoriesData = [];
+let pendingServiceItemImageFile = null;
+
+async function renderServiceCategories() {
+    const wrap = document.getElementById('serviceCategoriesContainer');
+    if (!wrap) return;
+    if (!currentVcardId) {
+        wrap.innerHTML = '<p style="text-align:center;color:var(--text-gray);padding:30px">Save vCard basics first to add service categories.</p>';
+        return;
+    }
+    try {
+        const res = await fetch(`https://app.tapify.co.in/api/service-categories/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const result = await res.json();
+        if (!result.success) { wrap.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">${escapeHtml(result.message || 'Failed to load')}</p>`; return; }
+        serviceCategoriesData = result.data.categories || [];
+        if (serviceCategoriesData.length === 0) {
+            wrap.innerHTML = '<p style="text-align:center;color:var(--text-gray);padding:30px"><i class="fas fa-briefcase" style="font-size:2rem;opacity:.3;display:block;margin-bottom:10px"></i>No categories yet. Click "+ Add Category".</p>';
+            return;
+        }
+        wrap.innerHTML = serviceCategoriesData.map(cat => `
+            <div style="border:1px solid var(--border,#e5e7eb);border-radius:12px;padding:14px;margin-bottom:14px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                    <strong style="flex:1;font-size:15px">${escapeHtml(cat.name)}</strong>
+                    <button class="action-btn-sm action-edit" onclick="editServiceCategory(${cat.id})" title="Edit"><i class="fas fa-pen"></i></button>
+                    <button class="action-btn-sm action-delete" onclick="deleteServiceCategory(${cat.id}, '${escapeHtml(cat.name).replace(/'/g, "\\'")}')" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+                    ${(cat.items || []).map(si => `
+                        <div style="width:90px;position:relative">
+                            <div onclick="showServiceItemModal(${cat.id}, ${si.id})" style="cursor:pointer">
+                                ${si.image
+                                    ? `<img src="/${si.image}?t=${Date.now()}" style="width:90px;height:90px;border-radius:10px;object-fit:cover;display:block">`
+                                    : `<div style="width:90px;height:90px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">📷</div>`}
+                                <div style="font-size:11px;margin-top:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(si.name)}</div>
+                            </div>
+                            <button onclick="deleteServiceItem(${si.id})" title="Delete" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:11px;background:#ef4444;color:#fff;border:none;cursor:pointer;font-weight:700">×</button>
+                        </div>
+                    `).join('') || '<span style="color:var(--text-gray);font-size:12px">No services yet.</span>'}
+                </div>
+                <button class="btn-add" style="font-size:13px" onclick="showServiceItemModal(${cat.id}, 0)"><i class="fas fa-plus"></i> Add Service</button>
+            </div>
+        `).join('');
+    } catch (err) {
+        wrap.innerHTML = '<p style="color:#ef4444;text-align:center;padding:20px">Failed to load service categories</p>';
+    }
+}
+
+function showAddServiceCategory() {
+    if (!currentVcardId) { showToast('Please save vCard basics first', 'error'); return; }
+    showServiceCategoryModal();
+}
+function editServiceCategory(id) {
+    const c = serviceCategoriesData.find(x => x.id == id);
+    if (c) showServiceCategoryModal(c);
+}
+function showServiceCategoryModal(cat = null) {
+    const isEdit = cat !== null;
+    const html = `
+        <div class="modal-overlay show" id="svcCatModal" onclick="if(event.target===this)closeServiceCategoryModal()">
+            <div class="modal-box" style="max-width:460px">
+                <div class="modal-header"><h3>${isEdit ? '✏️ Edit Category' : '➕ Add Category'}</h3><button class="modal-close" onclick="closeServiceCategoryModal()">×</button></div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Category Name <span style="color:#ef4444">*</span></label>
+                        <input type="text" id="svcCatName" value="${cat ? escapeHtml(cat.name) : ''}" placeholder="e.g., Hair Services" maxlength="200">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-modal-cancel" onclick="closeServiceCategoryModal()">Cancel</button>
+                    <button class="btn-modal-confirm" onclick="saveServiceCategory(${cat ? cat.id : 0})"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Add'}</button>
+                </div>
+            </div>
+        </div>`;
+    const old = document.getElementById('svcCatModal'); if (old) old.remove();
+    document.body.insertAdjacentHTML('beforeend', html);
+    setTimeout(() => document.getElementById('svcCatName')?.focus(), 100);
+}
+function closeServiceCategoryModal() {
+    const m = document.getElementById('svcCatModal'); if (m) m.remove();
+}
+async function saveServiceCategory(id) {
+    const name = document.getElementById('svcCatName').value.trim();
+    if (!name) { showToast('Category name is required', 'error'); return; }
+    try {
+        const res = await fetch('https://app.tapify.co.in/api/service-categories/save.php', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id: id || 0, vcard_id: currentVcardId, name })
+        });
+        const result = await res.json();
+        if (result.success) { showToast(id ? 'Category updated!' : 'Category added!', 'success'); closeServiceCategoryModal(); renderServiceCategories(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed to save', 'error'); }
+}
+async function deleteServiceCategory(id, name) {
+    if (!confirm(`Delete category "${name}" and all its services?`)) return;
+    try {
+        const res = await fetch('https://app.tapify.co.in/api/service-categories/delete.php', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id, vcard_id: currentVcardId })
+        });
+        const result = await res.json();
+        if (result.success) { showToast('Category deleted', 'success'); renderServiceCategories(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed to delete', 'error'); }
+}
+
+function showServiceItemModal(categoryId, itemId) {
+    pendingServiceItemImageFile = null;
+    let item = null;
+    if (itemId) {
+        const cat = serviceCategoriesData.find(c => c.id == categoryId);
+        item = cat && (cat.items || []).find(i => i.id == itemId);
+    }
+    const html = `
+        <div class="modal-overlay show" id="svcItemModal" onclick="if(event.target===this)closeServiceItemModal()">
+            <div class="modal-box" style="max-width:460px">
+                <div class="modal-header"><h3>${item ? '✏️ Edit Service' : '➕ Add Service'}</h3><button class="modal-close" onclick="closeServiceItemModal()">×</button></div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Service Image</label>
+                        <div id="svcItemImgPreview" onclick="document.getElementById('svcItemImgInput').click()" style="width:100%;height:150px;border:1.5px dashed var(--border,#d1d5db);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9fafb">
+                            ${item && item.image ? `<img src="/${item.image}?t=${Date.now()}" style="width:100%;height:100%;object-fit:cover">` : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px"></i>Click to choose image</div>`}
+                        </div>
+                        <input type="file" id="svcItemImgInput" accept="image/*" style="display:none" onchange="onServiceItemImagePicked(event)">
+                    </div>
+                    <div class="form-group">
+                        <label>Service Name <span style="color:#ef4444">*</span></label>
+                        <input type="text" id="svcItemName" value="${item ? escapeHtml(item.name) : ''}" placeholder="e.g., Haircut" maxlength="200">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-modal-cancel" onclick="closeServiceItemModal()">Cancel</button>
+                    <button class="btn-modal-confirm" onclick="saveServiceItem(${categoryId}, ${itemId || 0})"><i class="fas fa-save"></i> ${item ? 'Update' : 'Add'}</button>
+                </div>
+            </div>
+        </div>`;
+    const old = document.getElementById('svcItemModal'); if (old) old.remove();
+    document.body.insertAdjacentHTML('beforeend', html);
+    setTimeout(() => document.getElementById('svcItemName')?.focus(), 100);
+}
+function closeServiceItemModal() {
+    pendingServiceItemImageFile = null;
+    const m = document.getElementById('svcItemModal'); if (m) m.remove();
+}
+function onServiceItemImagePicked(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    pendingServiceItemImageFile = file;
+    const preview = document.getElementById('svcItemImgPreview');
+    const reader = new FileReader();
+    reader.onload = (e) => { if (preview) preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`; };
+    reader.readAsDataURL(file);
+}
+async function saveServiceItem(categoryId, itemId) {
+    const name = document.getElementById('svcItemName').value.trim();
+    if (!name) { showToast('Service name is required', 'error'); return; }
+    try {
+        const res = await fetch('https://app.tapify.co.in/api/service-items/save.php', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id: itemId || 0, category_id: categoryId, name })
+        });
+        const result = await res.json();
+        if (!result.success) { showToast(result.message, 'error'); return; }
+        // Upload image (if chosen) now that we have the item id
+        if (pendingServiceItemImageFile) {
+            const targetId = (result.data && result.data.id) ? result.data.id : itemId;
+            if (targetId) {
+                try {
+                    const fd = new FormData();
+                    fd.append('file', pendingServiceItemImageFile);
+                    fd.append('vcard_id', currentVcardId);
+                    fd.append('type', 'service_item');
+                    fd.append('target_id', String(targetId));
+                    await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
+                } catch (e) { showToast('Service saved, but image upload failed', 'error'); }
+            }
+        }
+        showToast(itemId ? 'Service updated!' : 'Service added!', 'success');
+        closeServiceItemModal();
+        renderServiceCategories();
+    } catch (err) { showToast('Failed to save', 'error'); }
+}
+async function deleteServiceItem(id) {
+    if (!confirm('Delete this service?')) return;
+    try {
+        const res = await fetch('https://app.tapify.co.in/api/service-items/delete.php', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ id })
+        });
+        const result = await res.json();
+        if (result.success) { showToast('Service deleted', 'success'); renderServiceCategories(); }
+        else showToast(result.message, 'error');
+    } catch (err) { showToast('Failed to delete', 'error'); }
+}
+
 // ===== GALLERIES (Real Backend - basic) =====
 let galleriesData = [];
 
@@ -2141,6 +2337,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBusinessHours();
     renderAppointments();
     renderServicesTable();
+    renderServiceCategories();
     renderProductsTable();
     renderBlogsTable();
     renderTestimonialsTable();

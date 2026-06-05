@@ -177,6 +177,9 @@
                         <li class="sub-nav-item" data-tab="services">
                             <i class="fas fa-concierge-bell"></i> Services
                         </li>
+                        <li class="sub-nav-item" data-tab="service-categories">
+                            <i class="fas fa-briefcase"></i> Service Categories
+                        </li>
                         <li class="sub-nav-item" data-tab="products">
                             <i class="fas fa-box"></i> Products
                         </li>
@@ -746,6 +749,21 @@
                             </thead>
                             <tbody id="servicesTableBody"></tbody>
                         </table>
+                    </div>
+
+                    <!-- ============ TAB: SERVICE CATEGORIES ============ -->
+                    <div class="tab-content" id="tab-service-categories">
+                        <div class="list-toolbar">
+                            <div class="list-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search categories...">
+                            </div>
+                            <button class="btn-add" onclick="showAddServiceCategory()">
+                                <i class="fas fa-plus"></i> Add Category
+                            </button>
+                        </div>
+                        <p style="color:var(--text-gray);font-size:.85rem;margin:0 0 14px">Create a category, then add services (image + name) inside it. Shown as a carousel on your card.</p>
+                        <div id="serviceCategoriesContainer"></div>
                     </div>
 
                     <!-- ============ TAB 7: PRODUCTS ============ -->
