@@ -65,9 +65,78 @@
         </main>
     </div>
 
+    <!-- Reset Password Modal -->
+    <div id="resetPwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center">
+        <div style="background:#fff;border-radius:12px;padding:24px;width:90%;max-width:400px;box-shadow:0 10px 40px rgba(0,0,0,0.2)">
+            <h3 style="margin:0 0 4px;font-family:Poppins,sans-serif">Reset Password</h3>
+            <p style="margin:0 0 16px;font-size:0.85rem;color:#6b7280">Set a new password for <strong id="resetPwEmail"></strong>. The existing password cannot be viewed.</p>
+            <input type="hidden" id="resetPwUserId">
+            <input type="password" id="resetPwInput" placeholder="New password (min 6 chars)" autocomplete="new-password"
+                   style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:0.95rem;box-sizing:border-box">
+            <div id="resetPwMsg" style="font-size:0.8rem;margin-top:8px;min-height:16px"></div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+                <button onclick="closeResetPasswordModal()" style="padding:9px 16px;border:1px solid #d1d5db;background:#fff;border-radius:8px;cursor:pointer">Cancel</button>
+                <button id="resetPwSubmit" onclick="submitResetPassword()" style="padding:9px 16px;border:none;background:#8338ec;color:#fff;border-radius:8px;cursor:pointer">Set Password</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../admin.js"></script>
     <script>
         const USER_API = 'https://app.tapify.co.in/api/admin/users/list.php';
+        const RESET_PW_API = 'https://app.tapify.co.in/api/admin/users/reset-password.php';
+
+        function showResetPasswordModal(userId, email) {
+            document.getElementById('resetPwUserId').value = userId;
+            document.getElementById('resetPwEmail').textContent = email;
+            document.getElementById('resetPwInput').value = '';
+            document.getElementById('resetPwMsg').textContent = '';
+            document.getElementById('resetPwModal').style.display = 'flex';
+            document.getElementById('resetPwInput').focus();
+        }
+
+        function closeResetPasswordModal() {
+            document.getElementById('resetPwModal').style.display = 'none';
+        }
+
+        async function submitResetPassword() {
+            const userId = document.getElementById('resetPwUserId').value;
+            const newPassword = document.getElementById('resetPwInput').value;
+            const msg = document.getElementById('resetPwMsg');
+            const btn = document.getElementById('resetPwSubmit');
+
+            if (!newPassword || newPassword.length < 6) {
+                msg.style.color = '#dc2626';
+                msg.textContent = 'Password must be at least 6 characters.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            try {
+                const response = await fetch(RESET_PW_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: Number(userId), new_password: newPassword })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    msg.style.color = '#16a34a';
+                    msg.textContent = result.message || 'Password reset successfully.';
+                    setTimeout(closeResetPasswordModal, 1200);
+                } else {
+                    msg.style.color = '#dc2626';
+                    msg.textContent = result.message || 'Failed to reset password.';
+                }
+            } catch (err) {
+                msg.style.color = '#dc2626';
+                msg.textContent = 'Network error. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Set Password';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
@@ -101,6 +170,7 @@
                             <td>${user.last_login || 'Never'}</td>
                             <td>
                                 <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
+                                <button class="action-btn" title="Reset Password" onclick="showResetPasswordModal(${user.id}, '${(user.email || '').replace(/'/g, "\\'")}')"><i class="fas fa-key"></i></button>
                                 <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
