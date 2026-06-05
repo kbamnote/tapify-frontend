@@ -712,6 +712,7 @@ const socialPlatforms = [
 
 // ===== SERVICES (Real Backend) =====
 let servicesData = [];
+let pendingServiceImageFile = null;
 
 async function renderServicesTable() {
     const tbody = document.getElementById('servicesTableBody');
@@ -738,7 +739,7 @@ async function renderServicesTable() {
 
             tbody.innerHTML = servicesData.map(s => `
                 <tr data-id="${s.id}">
-                    <td><div class="item-icon">${escapeHtml(s.name).charAt(0)}</div></td>
+                    <td>${s.image ? `<img src="/${s.image}?t=${Date.now()}" alt="" style="width:38px;height:38px;border-radius:8px;object-fit:cover;display:block;">` : `<div class="item-icon">${escapeHtml(s.name).charAt(0)}</div>`}</td>
                     <td>${escapeHtml(s.name)}</td>
                     <td>${s.service_url ? `<a href="${escapeHtml(s.service_url)}" target="_blank" style="color: var(--primary); text-decoration: none;">${escapeHtml(s.service_url)}</a>` : '<span style="color:#999">No URL</span>'}</td>
                     <td class="td-center">
@@ -778,6 +779,7 @@ function editService(id) {
 
 function showServiceModal(service = null) {
     const isEdit = service !== null;
+    pendingServiceImageFile = null;
 
     const modalHtml = `
         <div class="modal-overlay show" id="serviceModal" onclick="if(event.target===this)closeServiceModal()">
@@ -787,6 +789,15 @@ function showServiceModal(service = null) {
                     <button class="modal-close" onclick="closeServiceModal()">×</button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label>Service Image (optional)</label>
+                        <div id="srvImgPreview" onclick="document.getElementById('srvImgInput').click()" style="width:100%;height:150px;border:1.5px dashed var(--border,#d1d5db);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9fafb;">
+                            ${service && service.image
+                                ? `<img src="/${service.image}?t=${Date.now()}" alt="" style="width:100%;height:100%;object-fit:cover;">`
+                                : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px;"></i>Click to choose image</div>`}
+                        </div>
+                        <input type="file" id="srvImgInput" accept="image/*" style="display:none" onchange="onServiceImagePicked(event)">
+                    </div>
                     <div class="form-group">
                         <label>Service Name <span style="color:#ef4444">*</span></label>
                         <input type="text" id="srvName" value="${service ? escapeHtml(service.name) : ''}" placeholder="e.g., Web Design, Consulting" maxlength="200">
@@ -813,8 +824,21 @@ function showServiceModal(service = null) {
 }
 
 function closeServiceModal() {
+    pendingServiceImageFile = null;
     const modal = document.getElementById('serviceModal');
     if (modal) modal.remove();
+}
+
+function onServiceImagePicked(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    pendingServiceImageFile = file;
+    const preview = document.getElementById('srvImgPreview');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        if (preview) preview.innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    reader.readAsDataURL(file);
 }
 
 async function saveService(id) {
@@ -841,6 +865,22 @@ async function saveService(id) {
         const result = await response.json();
 
         if (result.success) {
+            // Upload the chosen image (if any) now that we have the service id
+            if (pendingServiceImageFile) {
+                const targetId = (result.data && result.data.id) ? result.data.id : id;
+                if (targetId) {
+                    try {
+                        const fd = new FormData();
+                        fd.append('file', pendingServiceImageFile);
+                        fd.append('vcard_id', currentVcardId);
+                        fd.append('type', 'service');
+                        fd.append('target_id', String(targetId));
+                        await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
+                    } catch (e) {
+                        showToast('Service saved, but image upload failed', 'error');
+                    }
+                }
+            }
             showToast(id ? 'Service updated!' : 'Service added!', 'success');
             closeServiceModal();
             renderServicesTable();
