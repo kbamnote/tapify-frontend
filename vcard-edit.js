@@ -739,7 +739,7 @@ async function renderServicesTable() {
 
             tbody.innerHTML = servicesData.map(s => `
                 <tr data-id="${s.id}">
-                    <td>${s.image ? `<img src="/${s.image}?t=${Date.now()}" alt="" style="width:38px;height:38px;border-radius:8px;object-fit:cover;display:block;">` : `<div class="item-icon">${escapeHtml(s.name).charAt(0)}</div>`}</td>
+                    <td>${s.image ? `<img src="${resolveImg(s.image)}" alt="" style="width:38px;height:38px;border-radius:8px;object-fit:cover;display:block;">` : `<div class="item-icon">${escapeHtml(s.name).charAt(0)}</div>`}</td>
                     <td>${escapeHtml(s.name)}</td>
                     <td>${s.service_url ? `<a href="${escapeHtml(s.service_url)}" target="_blank" style="color: var(--primary); text-decoration: none;">${escapeHtml(s.service_url)}</a>` : '<span style="color:#999">No URL</span>'}</td>
                     <td class="td-center">
@@ -793,7 +793,7 @@ function showServiceModal(service = null) {
                         <label>Service Image (optional)</label>
                         <div id="srvImgPreview" onclick="document.getElementById('srvImgInput').click()" style="width:100%;height:150px;border:1.5px dashed var(--border,#d1d5db);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9fafb;">
                             ${service && service.image
-                                ? `<img src="/${service.image}?t=${Date.now()}" alt="" style="width:100%;height:100%;object-fit:cover;">`
+                                ? `<img src="${resolveImg(service.image)}" alt="" style="width:100%;height:100%;object-fit:cover;">`
                                 : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px;"></i>Click to choose image</div>`}
                         </div>
                         <input type="file" id="srvImgInput" accept="image/*" style="display:none" onchange="onServiceImagePicked(event)">
@@ -1669,6 +1669,12 @@ async function deleteInstaembed(id) {
 let serviceCategoriesData = [];
 let pendingServiceItemImageFile = null;
 
+// Resolve a stored image path: Cloudinary/absolute URLs used as-is, else root-relative.
+function resolveImg(p) {
+    if (!p) return '';
+    return /^https?:\/\//i.test(p) ? p : '/' + String(p).replace(/^\/+/, '');
+}
+
 async function renderServiceCategories() {
     const wrap = document.getElementById('serviceCategoriesContainer');
     if (!wrap) return;
@@ -1697,7 +1703,7 @@ async function renderServiceCategories() {
                         <div style="width:90px;position:relative">
                             <div onclick="showServiceItemModal(${cat.id}, ${si.id})" style="cursor:pointer">
                                 ${si.image
-                                    ? `<img src="/${si.image}?t=${Date.now()}" style="width:90px;height:90px;border-radius:10px;object-fit:cover;display:block">`
+                                    ? `<img src="${resolveImg(si.image)}" style="width:90px;height:90px;border-radius:10px;object-fit:cover;display:block">`
                                     : `<div style="width:90px;height:90px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">📷</div>`}
                                 <div style="font-size:11px;margin-top:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(si.name)}</div>
                             </div>
@@ -1787,7 +1793,7 @@ function showServiceItemModal(categoryId, itemId) {
                     <div class="form-group">
                         <label>Service Image</label>
                         <div id="svcItemImgPreview" onclick="document.getElementById('svcItemImgInput').click()" style="width:100%;height:150px;border:1.5px dashed var(--border,#d1d5db);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9fafb">
-                            ${item && item.image ? `<img src="/${item.image}?t=${Date.now()}" style="width:100%;height:100%;object-fit:cover">` : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px"></i>Click to choose image</div>`}
+                            ${item && item.image ? `<img src="${resolveImg(item.image)}" style="width:100%;height:100%;object-fit:cover">` : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px"></i>Click to choose image</div>`}
                         </div>
                         <input type="file" id="svcItemImgInput" accept="image/*" style="display:none" onchange="onServiceItemImagePicked(event)">
                     </div>
@@ -1839,8 +1845,12 @@ async function saveServiceItem(categoryId, itemId) {
                     fd.append('vcard_id', currentVcardId);
                     fd.append('type', 'service_item');
                     fd.append('target_id', String(targetId));
-                    await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
-                } catch (e) { showToast('Service saved, but image upload failed', 'error'); }
+                    const upRes = await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
+                    const upJson = await upRes.json().catch(() => ({}));
+                    if (!upJson.success) {
+                        showToast('Service saved, but image upload failed: ' + (upJson.message || ('HTTP ' + upRes.status)), 'error');
+                    }
+                } catch (e) { showToast('Service saved, but image upload failed (network)', 'error'); }
             }
         }
         showToast(itemId ? 'Service updated!' : 'Service added!', 'success');
