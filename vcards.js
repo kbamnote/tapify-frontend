@@ -2,7 +2,7 @@
    VCARDS PAGE - JavaScript (Real Backend)
    ========================================== */
 
-const API_BASE = 'https://tapify-backend-production.up.railway.app/api/vcards/';
+const API_BASE = 'https://app.tapify.co.in/api/vcards/';
 
 function getLoginPath() {
     return window.location.pathname.includes('/admin/') ? '../login.html' : 'login.html';

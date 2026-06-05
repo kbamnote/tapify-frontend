@@ -8,7 +8,11 @@ VID = 'vcard5'
 PRIMARY = '0f172a'
 FONT = 'inter'
 
-SRC_HTML = r'D:/Print World/tapify/tapify-frontend/newTemps/imagesCorporateConnect/core-connect.html'
+import glob as _glob
+_htmls = [f for f in _glob.glob(r'D:/Print World/tapify/tapify-frontend/newTemps/imagesCorporateConnect/*.html') if 'clean' not in f.lower()]
+SRC_HTML = _htmls[0]
+print(f"Using HTML: {SRC_HTML}")
+IMAGES_DIR = r'D:/Print World/tapify/tapify-frontend/newTemps/imagesCorporateConnect/imagesCorporateConnect'
 CLASSIC_DIR = r'D:/Print World/tapify/tapify-frontend/newTemps/imagesCorporateClassic/imagesCorporateClassic'
 ASSET_DIR = f'D:/Print World/tapify/tapify-backend/images/templates/{SLUG}'
 ASSET_URL = f'/images/templates/{SLUG}'
@@ -48,24 +52,22 @@ ASSET_MAP = {
     'flags.png': 'flags.png',
 }
 
-print("Copying template assets...")
-for connect_name, classic_name in ASSET_MAP.items():
-    src = os.path.join(CLASSIC_DIR, classic_name)
-    dst_name = connect_name  # keep original name for URL replacement
-    dst = os.path.join(ASSET_DIR, dst_name)
-    if os.path.exists(src):
-        shutil.copy2(src, dst)
-        print(f"  Copied {classic_name} -> {dst_name}")
-    else:
-        print(f"  MISSING: {classic_name}")
+print("Copying template assets from imagesCorporateConnect subfolder (preferred) then CorporateClassic...")
+# Copy ALL images from the new imagesCorporateConnect subfolder
+for fname in os.listdir(IMAGES_DIR):
+    src = os.path.join(IMAGES_DIR, fname)
+    dst = os.path.join(ASSET_DIR, fname)
+    shutil.copy2(src, dst)
+    print(f"  Copied from imagesCorporateConnect: {fname}")
 
-# Also copy close.png, next.png, prev.png (for sliders)
-for f in ['close.png', 'next.png', 'prev.png', 'loading.gif']:
-    src = os.path.join(CLASSIC_DIR, f)
-    dst = os.path.join(ASSET_DIR, f)
-    if os.path.exists(src) and not os.path.exists(dst):
-        shutil.copy2(src, dst)
-        print(f"  Copied {f}")
+# Fallback: copy any ASSET_MAP items missing from subfolder
+for connect_name, classic_name in ASSET_MAP.items():
+    dst = os.path.join(ASSET_DIR, connect_name)
+    if not os.path.exists(dst):
+        src = os.path.join(CLASSIC_DIR, classic_name)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+            print(f"  Fallback from CorporateClassic: {classic_name} -> {connect_name}")
 
 # ---- Handle base64 images (only 1 in this HTML) ----
 EXT = {'image/webp': 'webp', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/jpg': 'jpg', 'image/gif': 'gif', 'image/svg+xml': 'svg'}
@@ -89,20 +91,18 @@ h = re.sub(r'data:(image/[a-z+]+);base64,([A-Za-z0-9+/=]+)',
            lambda m: save_b64(m.group(1), m.group(2)) or m.group(0), h)
 print(f"Base64 images saved: {idx[0] - 50}")
 
-# ---- Replace local UI asset refs with hosted paths ----
-for connect_name in ASSET_MAP.keys():
-    h = h.replace(f'src="{connect_name}"', f'src="{ASSET_URL}/{connect_name}"')
-    h = h.replace(f"src='{connect_name}'", f"src='{ASSET_URL}/{connect_name}'")
-    h = h.replace(f'url("{connect_name}")', f'url("{ASSET_URL}/{connect_name}")')
-    h = h.replace(f"url('{connect_name}')", f"url('{ASSET_URL}/{connect_name}')")
+# ---- Replace local (non-base64) image refs with hosted paths ----
+# Any remaining local file refs from the imagesCorporateConnect subfolder
+for fname in os.listdir(IMAGES_DIR):
+    for attr in [f'src="{fname}"', f"src='{fname}'"]:
+        h = h.replace(attr, f'src="{ASSET_URL}/{fname}"')
+    for url_ref in [f'url("{fname}")', f"url('{fname}')"]:
+        h = h.replace(url_ref, f'url("{ASSET_URL}/{fname}")')
 
-# Also replace the gif ref
-h = h.replace('src="2daeaa8b5f19f0bc209d976c02bd6acb51b00b0a.gif"', f'src="{ASSET_URL}/loading.gif"')
-
-# ---- User-specific images -> use as sample cover / fallback ----
-# These are hardcoded user content images - we'll replace them with PHP variables
-# Cover image candidates (Frame-* files used in the main banner area)
-COVER = ASSET_URL + '/cor-003.png'  # fallback placeholder
+# Determine COVER fallback from the newly copied assets
+_asset_files = sorted([f for f in os.listdir(ASSET_DIR) if f.lower().endswith(('.webp','.jpg','.png'))])
+COVER = (ASSET_URL + '/' + _asset_files[len(_asset_files)//2]) if _asset_files else ASSET_URL + '/Frame-1707480741.jpg'
+print(f"Cover fallback: {COVER}")
 
 # ---- Strip fonts, redundant icon CSS ----
 h = re.sub(r'@font-face\s*\{[^}]*\}', '', h)
@@ -273,7 +273,7 @@ FIX = ('<style>html,body{overflow-y:auto!important;height:auto!important;min-hei
 
 php_header = f'''<?php
 /** Tapify vCard Template: {VID} — auto-generated from imagesCorporateConnect (hosted assets). */
-$cardUrl='https://tapify-backend-production.up.railway.app/'.($vcard['url_alias'] ?? $vcardId);
+$cardUrl='https://app.tapify.co.in/'.($vcard['url_alias'] ?? $vcardId);
 $waPhone=preg_replace('/\\D/','',$vcard['phone'] ?? '');
 $locationUrl=!empty($vcard['location_url'])?$vcard['location_url']:'https://maps.google.com/?q='.urlencode($vcard['location'] ?? '');
 $profileImg=!empty($vcard['profile_image'])?imgUrl($vcard['profile_image']):'https://ui-avatars.com/api/?name='.urlencode($fullName).'&size=200&background={PRIMARY}&color=ffffff';

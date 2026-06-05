@@ -215,7 +215,7 @@
 
 <script src="../admin.js"></script>
 <script>
-const API = 'https://tapify-backend-production.up.railway.app/api/profile/';
+const API = 'https://app.tapify.co.in/api/profile/';
 
 document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
@@ -329,7 +329,7 @@ async function changePassword() {
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
             setTimeout(() => {
-                fetch('https://tapify-backend-production.up.railway.app/api/logout.php', { method: 'POST', credentials: 'include' });
+                fetch('https://app.tapify.co.in/api/logout.php', { method: 'POST', credentials: 'include' });
                 window.location.href = '/login';
             }, 2000);
         } else {

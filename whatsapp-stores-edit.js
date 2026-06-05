@@ -1,6 +1,6 @@
 /* WhatsApp Store Edit Page - Real Backend (Phase 7B) */
 
-const API = 'https://tapify-backend-production.up.railway.app/api/';
+const API = 'https://app.tapify.co.in/api/';
 let currentStoreId = null;
 let currentStore = null;
 let categoriesData = [];

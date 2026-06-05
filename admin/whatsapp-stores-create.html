@@ -185,7 +185,7 @@
 
     async function loadUsers() {
         try {
-            const response = await fetch('https://tapify-backend-production.up.railway.app/api/admin/users/list.php', { credentials: 'include' });
+            const response = await fetch('https://app.tapify.co.in/api/admin/users/list.php', { credentials: 'include' });
             if (response.status === 401) { return; }
             const result = await response.json();
             if (result.success) {
@@ -232,7 +232,7 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Creating...</span>';
 
         try {
-            const response = await fetch('https://tapify-backend-production.up.railway.app/api/stores/create.php', {
+            const response = await fetch('https://app.tapify.co.in/api/stores/create.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

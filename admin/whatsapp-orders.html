@@ -156,7 +156,7 @@
 
 <script src="../admin.js"></script>
 <script>
-const ORDERS_API = 'https://tapify-backend-production.up.railway.app/api/store-orders/';
+const ORDERS_API = 'https://app.tapify.co.in/api/store-orders/';
 let allOrders = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadStores() {
     try {
-        const response = await fetch('https://tapify-backend-production.up.railway.app/api/stores/list.php', { credentials: 'include' });
+        const response = await fetch('https://app.tapify.co.in/api/stores/list.php', { credentials: 'include' });
         if (response.status === 401) { window.location.href = '/login'; return; }
         const result = await response.json();
         if (result.success) {

@@ -2,8 +2,8 @@
  * Tapify Frontend Configuration
  */
 const CONFIG = {
-    // API_BASE: 'https://tapify-backend-production.up.railway.app/api'
-    API_BASE: 'https://tapify-backend-production.up.railway.app'
+    // API_BASE: 'https://app.tapify.co.in/api'
+    API_BASE: 'https://app.tapify.co.in'
 };
 
 // Export for use in modules if needed

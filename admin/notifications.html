@@ -147,7 +147,7 @@
             formData.append('target_user', target);
             if(redirect) formData.append('redirect_url', redirect);
 
-            const res = await fetch('https://tapify-backend-production.up.railway.app/api/admin/notifications-send.php', {
+            const res = await fetch('https://app.tapify.co.in/api/admin/notifications-send.php', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'

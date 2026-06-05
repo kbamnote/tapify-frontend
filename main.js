@@ -106,7 +106,7 @@ function declineCookies() {
 }
 
 // ===== LEAD CAPTURE MODAL =====
-const LEAD_API = 'https://tapify-backend-production.up.railway.app/api/public/lead.php';
+const LEAD_API = 'https://app.tapify.co.in/api/public/lead.php';
 
 function openLeadModal(source) {
     const backdrop = document.getElementById('leadModalBackdrop');

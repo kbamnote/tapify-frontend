@@ -81,7 +81,7 @@ if mg:
     body=body[:mg.start()]+galblock+body[end:]
 
 php_header='''<?php
-$cardUrl='https://tapify-backend-production.up.railway.app/'.($vcard['url_alias'] ?? $vcardId);
+$cardUrl='https://app.tapify.co.in/'.($vcard['url_alias'] ?? $vcardId);
 $waPhone=preg_replace('/\\D/','',$vcard['phone'] ?? '');
 $profileImg=!empty($vcard['profile_image'])?imgUrl($vcard['profile_image']):'https://ui-avatars.com/api/?name='.urlencode($fullName).'&size=200&background=222&color=fff';
 $coverImg=!empty($vcard['cover_image'])?imgUrl($vcard['cover_image']):'/images/templates/photographer/p-000.jpg';

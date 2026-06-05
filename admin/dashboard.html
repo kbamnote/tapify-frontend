@@ -218,7 +218,7 @@
 
 <script src="../admin.js"></script>
 <script>
-const API = 'https://tapify-backend-production.up.railway.app/api/analytics/dashboard.php';
+const API = 'https://app.tapify.co.in/api/analytics/dashboard.php';
 let charts = {};
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -504,7 +504,7 @@ function renderTopVcards(vcards) {
     const maxViews = Math.max(...vcards.map(v => v.view_count), 1);
 
     container.innerHTML = vcards.map((v, i) => `
-        <a href="https://tapify-backend-production.up.railway.app/${v.url_alias}" target="_blank" class="vcard-rank">
+        <a href="https://app.tapify.co.in/${v.url_alias}" target="_blank" class="vcard-rank">
             <div class="rank-number">${i + 1}</div>
             <div class="rank-info">
                 <div class="rank-name">${escapeHtml(v.vcard_name)}</div>

@@ -158,7 +158,7 @@
 
 <script src="../admin.js"></script>
 <script>
-const INQ_API = 'https://tapify-backend-production.up.railway.app/api/inquiries/';
+const INQ_API = 'https://app.tapify.co.in/api/inquiries/';
 let allInquiries = [];
 let currentFilter = 'all';
 
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadVcards() {
     try {
-        const response = await fetch('https://tapify-backend-production.up.railway.app/api/vcards/list.php', { credentials: 'include' });
+        const response = await fetch('https://app.tapify.co.in/api/vcards/list.php', { credentials: 'include' });
         if (response.status === 401) { window.location.href = '/login'; return; }
         const result = await response.json();
         if (result.success) {
@@ -254,7 +254,7 @@ function renderInquiries(inquiries) {
             <div class="inquiry-footer">
                 <span style="color:#6b7280;font-size:0.85rem">
                     <i class="fas fa-link"></i>
-                    <a href="https://tapify-backend-production.up.railway.app/${i.vcard_url_alias}" target="_blank" style="color:#8338ec;text-decoration:none">View vCard</a>
+                    <a href="https://app.tapify.co.in/${i.vcard_url_alias}" target="_blank" style="color:#8338ec;text-decoration:none">View vCard</a>
                 </span>
                 <div class="inquiry-actions">
                     ${i.phone ? `

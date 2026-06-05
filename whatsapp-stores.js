@@ -1,6 +1,6 @@
 /* WhatsApp Stores List Page - Real Backend (Phase 7A) */
 
-const STORES_API = 'https://tapify-backend-production.up.railway.app/api/stores/';
+const STORES_API = 'https://app.tapify.co.in/api/stores/';
 let storesData = [];
 let deleteTargetId = null;
 

@@ -281,7 +281,7 @@ document.addEventListener('keydown', (e) => {
 // ===== LOGOUT =====
 async function logout() {
     try {
-        await fetch('https://tapify-backend-production.up.railway.app/api/logout.php', {
+        await fetch('https://app.tapify.co.in/api/logout.php', {
             method: 'POST',
             credentials: 'include'
         });
@@ -345,7 +345,7 @@ async function loadUserInfo() {
 
     // 2. Fetch fresh data from me.php so titanium status is always current
     try {
-        const res  = await fetch('https://tapify-backend-production.up.railway.app/api/me.php', {
+        const res  = await fetch('https://app.tapify.co.in/api/me.php', {
             credentials: 'include'
         });
         if (!res.ok) return;
