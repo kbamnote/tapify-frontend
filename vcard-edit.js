@@ -2020,13 +2020,6 @@ async function deleteGallery(id, name) {
     } catch (err) { showToast('Delete failed', 'error'); }
 }
 
-// ===== IFRAMES (Demo - Phase 4) =====
-function renderIframesTable() {
-    const tbody = document.getElementById('iframesTableBody');
-    if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fas fa-info-circle"></i> Iframes feature coming in Phase 4</td></tr>';
-}
-
 // ===== SOCIAL LINKS (Real Backend - bulk save) =====
 async function renderSocialLinks() {
     const grid = document.getElementById('socialLinksGrid');
@@ -2214,8 +2207,13 @@ function openAddModal(type) {
             title: 'New Iframe',
             body: `
                 <div class="form-group full-width">
-                    <label>URL *</label>
-                    <input type="url" class="form-control" placeholder="Add Iframe URL">
+                    <label>Google Maps / Embed URL *</label>
+                    <input type="url" class="form-control" placeholder="https://www.google.com/maps/embed?pb=...">
+                    <small style="display:block;margin-top:6px;color:var(--text-gray);font-size:.78rem;line-height:1.4;">
+                        Tip: In Google Maps open <b>Share &rarr; "Embed a map"</b> and paste the link from the
+                        <code>&lt;iframe src="&hellip;"&gt;</code> snippet. A normal map/share link is auto-converted,
+                        but the Embed link is most reliable.
+                    </small>
                 </div>
             `
         },
