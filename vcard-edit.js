@@ -2424,17 +2424,17 @@ function populateForm(vcard) {
     if (urlPreview) urlPreview.textContent = vcard.url_alias;
 
     // === Image Previews (Phase 4) ===
-    if (vcard.cover_image) {
+    if (vcard.cover_image && !/youtu|vimeo|youtube/.test(vcard.cover_image)) {
         const coverPreview = document.getElementById('coverPreview');
-        if (coverPreview) coverPreview.innerHTML = `<img src="/${vcard.cover_image}?t=${Date.now()}" alt="Cover">`;
+        if (coverPreview) coverPreview.innerHTML = `<img src="${resolveImg(vcard.cover_image)}" alt="Cover">`;
     }
     if (vcard.profile_image) {
         const profPreview = document.getElementById('profilePreview');
-        if (profPreview) profPreview.innerHTML = `<img src="/${vcard.profile_image}?t=${Date.now()}" alt="Profile">`;
+        if (profPreview) profPreview.innerHTML = `<img src="${resolveImg(vcard.profile_image)}" alt="Profile">`;
     }
     if (vcard.favicon_image) {
         const favPreview = document.getElementById('faviconPreview');
-        if (favPreview) favPreview.innerHTML = `<img src="/${vcard.favicon_image}?t=${Date.now()}" alt="Favicon">`;
+        if (favPreview) favPreview.innerHTML = `<img src="${resolveImg(vcard.favicon_image)}" alt="Favicon">`;
     }
 
     // === Personal Details === (using positional matching since some don't have IDs)
