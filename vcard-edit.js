@@ -1701,12 +1701,15 @@ async function renderServiceCategories() {
                 <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px">
                     ${(cat.items || []).map(si => `
                         <div style="width:90px;position:relative">
-                            <div onclick="showServiceItemModal(${cat.id}, ${si.id})" style="cursor:pointer">
+                            <input type="file" accept="image/*" id="svcItemFile_${si.id}" style="display:none"
+                                onchange="uploadServiceItemImage(event, ${si.id})">
+                            <div onclick="document.getElementById('svcItemFile_${si.id}').click()" style="cursor:pointer" title="Click to upload image">
                                 ${si.image
                                     ? `<img src="${resolveImg(si.image)}" style="width:90px;height:90px;border-radius:10px;object-fit:cover;display:block">`
-                                    : `<div style="width:90px;height:90px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">📷</div>`}
+                                    : `<div style="width:90px;height:90px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:22px">📷</div>`}
                                 <div style="font-size:11px;margin-top:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(si.name)}</div>
                             </div>
+                            <button onclick="showServiceItemModal(${cat.id}, ${si.id})" title="Edit name" style="position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:11px;background:#6b7280;color:#fff;border:none;cursor:pointer;font-size:11px">✏️</button>
                             <button onclick="deleteServiceItem(${si.id})" title="Delete" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:11px;background:#ef4444;color:#fff;border:none;cursor:pointer;font-weight:700">×</button>
                         </div>
                     `).join('') || '<span style="color:var(--text-gray);font-size:12px">No services yet.</span>'}
@@ -1716,6 +1719,32 @@ async function renderServiceCategories() {
         `).join('');
     } catch (err) {
         wrap.innerHTML = '<p style="color:#ef4444;text-align:center;padding:20px">Failed to load service categories</p>';
+    }
+}
+
+async function uploadServiceItemImage(event, itemId) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    event.target.value = ''; // reset so same file can be re-selected
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('vcard_id', currentVcardId);
+    fd.append('type', 'service_item');
+    fd.append('target_id', String(itemId));
+
+    showToast('Uploading image...', 'success');
+    try {
+        const res = await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
+        const result = await res.json().catch(() => ({}));
+        if (result.success) {
+            showToast('Image uploaded!', 'success');
+            renderServiceCategories();
+        } else {
+            showToast('Upload failed: ' + (result.message || 'Unknown error. HTTP ' + res.status), 'error');
+        }
+    } catch (err) {
+        showToast('Upload failed (network error)', 'error');
     }
 }
 
