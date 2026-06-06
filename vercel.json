@@ -22,8 +22,12 @@
             "destination": "/dashboard/$1"
         },
         {
-            "source": "/:slug((?!admin|dashboard|login|index|vcard-templates|webstore|images|templates|webStore_templates).*)",
-            "destination": "/vcard.html"
+            "source": "/uploads/(.*)",
+            "destination": "https://app.tapify.co.in/uploads/$1"
+        },
+        {
+            "source": "/:slug((?!admin|dashboard|login|index|vcard-templates|webstore|images|templates|webStore_templates|uploads).*)",
+            "destination": "https://app.tapify.co.in/:slug"
         }
     ]
 }
