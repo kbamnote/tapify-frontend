@@ -1683,8 +1683,9 @@ async function renderServiceCategories() {
         return;
     }
     try {
-        const res = await fetch(`https://app.tapify.co.in/api/service-categories/list.php?vcard_id=${currentVcardId}`, { credentials: 'include' });
+        const res = await fetch(`https://app.tapify.co.in/api/service-categories/list.php?vcard_id=${currentVcardId}&_=${Date.now()}`, { credentials: 'include' });
         const result = await res.json();
+        console.log('[SVC_CATS] fetched categories:', JSON.stringify((result.data?.categories||[]).map(c=>({id:c.id,name:c.name,items:(c.items||[]).map(i=>({id:i.id,name:i.name,image:i.image}))})) ));
         if (!result.success) { wrap.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">${escapeHtml(result.message || 'Failed to load')}</p>`; return; }
         serviceCategoriesData = result.data.categories || [];
         if (serviceCategoriesData.length === 0) {
@@ -1737,14 +1738,15 @@ async function uploadServiceItemImage(event, itemId) {
     try {
         const res = await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
         const result = await res.json().catch(() => ({}));
+        console.log('[SVC_ITEM_UPLOAD] HTTP', res.status, 'response:', JSON.stringify(result));
         if (result.success) {
-            showToast('Image uploaded!', 'success');
-            renderServiceCategories();
+            showToast('Image uploaded! URL: ' + (result.url || result.path || '(none)'), 'success');
+            await renderServiceCategories();
         } else {
             showToast('Upload failed: ' + (result.message || 'Unknown error. HTTP ' + res.status), 'error');
         }
     } catch (err) {
-        showToast('Upload failed (network error)', 'error');
+        showToast('Upload failed (network error): ' + err.message, 'error');
     }
 }
 
