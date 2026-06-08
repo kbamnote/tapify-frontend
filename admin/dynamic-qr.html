@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic QR Codes - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        .qr-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+        .qr-modal-overlay.show { display:flex; }
+        .qr-modal { background:#fff; border-radius:14px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.2); }
+        .qr-modal-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #eee; }
+        .qr-modal-head h3 { margin:0; font-family:Poppins,sans-serif; font-size:1.1rem; }
+        .qr-modal-body { padding:20px 22px; }
+        .qr-field { margin-bottom:14px; }
+        .qr-field label { display:block; font-size:0.82rem; font-weight:600; margin-bottom:6px; color:#374151; }
+        .qr-field input[type="text"], .qr-field input[type="url"], .qr-field input[type="date"], .qr-field input[type="password"], .qr-field select {
+            width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.92rem; box-sizing:border-box; font-family:inherit;
+        }
+        .qr-field input[type="color"] { width:54px; height:38px; border:1px solid #d1d5db; border-radius:8px; padding:2px; cursor:pointer; vertical-align:middle; }
+        .qr-row { display:flex; gap:14px; }
+        .qr-row > .qr-field { flex:1; }
+        .qr-toggle { display:flex; align-items:center; gap:10px; }
+        .qr-preview-box { text-align:center; margin-top:8px; padding:18px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; }
+        .qr-preview-box img { background:#fff; padding:8px; border-radius:8px; }
+        .qr-short { font-size:0.8rem; color:#6b7280; margin-top:10px; word-break:break-all; }
+        .qr-modal-foot { display:flex; gap:10px; justify-content:flex-end; padding:16px 22px; border-top:1px solid #eee; }
+        .qr-btn { padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.9rem; border:none; }
+        .qr-btn-primary { background:#8338ec; color:#fff; }
+        .qr-btn-ghost { background:#fff; border:1px solid #d1d5db; color:#374151; }
+        .qr-msg { font-size:0.82rem; margin-top:10px; min-height:16px; }
+        .qr-link-cell { color:#8338ec; text-decoration:none; font-size:0.85rem; }
+        .empty-state { text-align:center; padding:50px 20px; color:#9ca3af; }
+        .empty-state i { font-size:2.4rem; opacity:0.4; display:block; margin-bottom:12px; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+            <a href="dynamic-qr.html" class="nav-item active"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon"></i><span>Appointments</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon"></i><span>Inquiries</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+        </nav>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Dynamic QR Codes</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="openQrModal()">
+                    <i class="fas fa-plus"></i> Create Dynamic QR
+                </button>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <p style="margin:0 0 18px;color:#6b7280;font-size:0.9rem;">
+                Create smart QR codes whose destination link can be changed anytime — the printed code never changes.
+            </p>
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Short Link</th>
+                            <th>Destination</th>
+                            <th>Type</th>
+                            <th>Scans</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qrTableBody">
+                        <tr><td colspan="7" class="empty-state">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <div class="qr-modal-overlay" id="qrModal">
+        <div class="qr-modal">
+            <div class="qr-modal-head">
+                <h3 id="qrModalTitle">Create Dynamic QR</h3>
+                <button class="qr-btn-ghost qr-btn" style="padding:6px 12px" onclick="closeQrModal()">✕</button>
+            </div>
+            <div class="qr-modal-body">
+                <input type="hidden" id="qrId">
+                <input type="hidden" id="qrShortUrl">
+                <div class="qr-field">
+                    <label>QR Name *</label>
+                    <input type="text" id="qrName" placeholder="e.g. My Campaign QR">
+                </div>
+                <div class="qr-field">
+                    <label>Destination URL *</label>
+                    <input type="url" id="qrDestination" placeholder="https://example.com">
+                </div>
+                <div class="qr-row">
+                    <div class="qr-field">
+                        <label>QR Type</label>
+                        <select id="qrType">
+                            <option value="website">Website</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="pdf">PDF</option>
+                            <option value="social">Social Media</option>
+                        </select>
+                    </div>
+                    <div class="qr-field" style="flex:0 0 auto">
+                        <label>QR Color</label>
+                        <input type="color" id="qrColor" value="#000000">
+                    </div>
+                </div>
+                <div class="qr-row">
+                    <div class="qr-field">
+                        <label>Password (optional)</label>
+                        <input type="text" id="qrPassword" placeholder="Leave blank for none">
+                    </div>
+                    <div class="qr-field">
+                        <label>Expiry Date (optional)</label>
+                        <input type="date" id="qrExpiry">
+                    </div>
+                </div>
+                <div class="qr-field qr-toggle">
+                    <input type="checkbox" id="qrStatus" checked style="width:18px;height:18px;">
+                    <label for="qrStatus" style="margin:0;">Active</label>
+                </div>
+
+                <div id="qrPreviewWrap" style="display:none;">
+                    <div class="qr-preview-box">
+                        <div style="font-weight:700;color:#8338ec;margin-bottom:12px;">Live QR Preview</div>
+                        <img id="qrPreviewImg" width="180" height="180" alt="QR preview">
+                        <div id="qrPreviewName" style="margin-top:10px;font-weight:600;"></div>
+                        <div class="qr-short" id="qrPreviewLink"></div>
+                        <button class="qr-btn qr-btn-primary" style="margin-top:14px;" onclick="downloadQr()"><i class="fas fa-download"></i> Download QR</button>
+                    </div>
+                </div>
+
+                <div class="qr-msg" id="qrMsg"></div>
+            </div>
+            <div class="qr-modal-foot">
+                <button class="qr-btn qr-btn-ghost" onclick="closeQrModal()">Cancel</button>
+                <button class="qr-btn qr-btn-primary" id="qrSaveBtn" onclick="saveQr()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+        const QR_API = 'https://app.tapify.co.in/api/dynamic-qr';
+        const QR_REDIRECT_BASE = 'https://app.tapify.co.in/qr/';   // scan target (redirect handler)
+
+        let qrList = [];
+
+        function qrImageUrl(shortUrl, color) {
+            const data = encodeURIComponent(QR_REDIRECT_BASE + shortUrl);
+            const col = (color || '#000000').replace('#', '');
+            return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&color=${col}&data=${data}`;
+        }
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+        }
+
+        async function loadQrs() {
+            const tbody = document.getElementById('qrTableBody');
+            try {
+                const res = await fetch(`${QR_API}/list.php`, { credentials: 'include' });
+                const result = await res.json();
+                if (!result.success) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${escapeHtml(result.message || 'Failed to load')}</td></tr>`;
+                    return;
+                }
+                qrList = result.data || [];
+                if (qrList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-qrcode"></i>No dynamic QR codes yet. Click "Create Dynamic QR".</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = qrList.map(q => `
+                    <tr>
+                        <td><strong>${escapeHtml(q.name)}</strong></td>
+                        <td><a class="qr-link-cell" href="${QR_REDIRECT_BASE}${escapeHtml(q.short_url)}" target="_blank">/qr/${escapeHtml(q.short_url)}</a></td>
+                        <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(q.destination_url)}</td>
+                        <td style="text-transform:capitalize;">${escapeHtml(q.qr_type || 'website')}</td>
+                        <td>${q.total_scans || 0}</td>
+                        <td><span class="badge ${q.status == 1 ? 'bg-success' : 'bg-danger'}">${q.status == 1 ? 'Active' : 'Inactive'}</span></td>
+                        <td>
+                            <button class="action-btn" title="View / Download QR" onclick="viewQr(${q.id})"><i class="fas fa-qrcode"></i></button>
+                            <button class="action-btn" title="Edit" onclick="editQr(${q.id})"><i class="fas fa-pen"></i></button>
+                            <button class="action-btn text-danger" title="Delete" onclick="deleteQr(${q.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Network error. Please try again.</td></tr>`;
+            }
+        }
+
+        function openQrModal() {
+            document.getElementById('qrModalTitle').textContent = 'Create Dynamic QR';
+            document.getElementById('qrId').value = '';
+            document.getElementById('qrShortUrl').value = '';
+            document.getElementById('qrName').value = '';
+            document.getElementById('qrDestination').value = '';
+            document.getElementById('qrType').value = 'website';
+            document.getElementById('qrColor').value = '#000000';
+            document.getElementById('qrPassword').value = '';
+            document.getElementById('qrExpiry').value = '';
+            document.getElementById('qrStatus').checked = true;
+            document.getElementById('qrMsg').textContent = '';
+            document.getElementById('qrPreviewWrap').style.display = 'none';
+            document.getElementById('qrModal').classList.add('show');
+        }
+
+        function editQr(id) {
+            const q = qrList.find(x => x.id == id);
+            if (!q) return;
+            document.getElementById('qrModalTitle').textContent = 'Edit Dynamic QR';
+            document.getElementById('qrId').value = q.id;
+            document.getElementById('qrShortUrl').value = q.short_url || '';
+            document.getElementById('qrName').value = q.name || '';
+            document.getElementById('qrDestination').value = q.destination_url || '';
+            document.getElementById('qrType').value = q.qr_type || 'website';
+            document.getElementById('qrColor').value = q.custom_color || '#000000';
+            document.getElementById('qrPassword').value = q.password || '';
+            document.getElementById('qrExpiry').value = q.expiry_date ? String(q.expiry_date).substring(0,10) : '';
+            document.getElementById('qrStatus').checked = q.status == 1;
+            document.getElementById('qrMsg').textContent = '';
+            renderPreview(q.short_url, q.name, q.custom_color);
+            document.getElementById('qrModal').classList.add('show');
+        }
+
+        function viewQr(id) {
+            editQr(id);
+            document.getElementById('qrModalTitle').textContent = 'QR Code';
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').classList.remove('show');
+        }
+
+        function renderPreview(shortUrl, name, color) {
+            if (!shortUrl) { document.getElementById('qrPreviewWrap').style.display = 'none'; return; }
+            document.getElementById('qrPreviewImg').src = qrImageUrl(shortUrl, color);
+            document.getElementById('qrPreviewName').textContent = name || 'Scan Me';
+            document.getElementById('qrPreviewLink').textContent = QR_REDIRECT_BASE + shortUrl;
+            document.getElementById('qrPreviewWrap').style.display = 'block';
+        }
+
+        async function saveQr() {
+            const msg = document.getElementById('qrMsg');
+            const btn = document.getElementById('qrSaveBtn');
+            const name = document.getElementById('qrName').value.trim();
+            const destination_url = document.getElementById('qrDestination').value.trim();
+
+            if (!name) { msg.style.color = '#dc2626'; msg.textContent = 'Please enter a QR name.'; return; }
+            if (!destination_url) { msg.style.color = '#dc2626'; msg.textContent = 'Please enter a destination URL.'; return; }
+
+            const payload = {
+                id: document.getElementById('qrId').value || null,
+                short_url: document.getElementById('qrShortUrl').value || '',
+                name,
+                destination_url,
+                qr_type: document.getElementById('qrType').value,
+                custom_color: document.getElementById('qrColor').value,
+                password: document.getElementById('qrPassword').value.trim(),
+                expiry_date: document.getElementById('qrExpiry').value || null,
+                status: document.getElementById('qrStatus').checked ? 1 : 0
+            };
+
+            btn.disabled = true; btn.textContent = 'Saving…';
+            try {
+                const res = await fetch(`${QR_API}/save.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    msg.style.color = '#16a34a';
+                    msg.textContent = result.message || 'Saved.';
+                    const saved = result.data || {};
+                    // reflect the (possibly new) short_url and show preview/download
+                    document.getElementById('qrId').value = saved.id || payload.id || '';
+                    document.getElementById('qrShortUrl').value = saved.short_url || payload.short_url || '';
+                    document.getElementById('qrModalTitle').textContent = 'Edit Dynamic QR';
+                    renderPreview(saved.short_url || payload.short_url, saved.name || name, saved.custom_color || payload.custom_color);
+                    loadQrs();
+                } else {
+                    msg.style.color = '#dc2626';
+                    msg.textContent = result.message || 'Failed to save.';
+                }
+            } catch (err) {
+                msg.style.color = '#dc2626';
+                msg.textContent = 'Network error. Please try again.';
+            } finally {
+                btn.disabled = false; btn.textContent = 'Save';
+            }
+        }
+
+        async function deleteQr(id) {
+            if (!confirm('Delete this dynamic QR? The printed code will stop working.')) return;
+            try {
+                const res = await fetch(`${QR_API}/delete.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ id })
+                });
+                const result = await res.json();
+                if (result.success) loadQrs();
+                else alert(result.message || 'Failed to delete.');
+            } catch (err) { alert('Network error.'); }
+        }
+
+        async function downloadQr() {
+            const shortUrl = document.getElementById('qrShortUrl').value;
+            const color = document.getElementById('qrColor').value;
+            const name = (document.getElementById('qrName').value.trim() || 'qr-code').replace(/[^a-z0-9_-]+/gi, '-');
+            if (!shortUrl) return;
+            try {
+                const res = await fetch(qrImageUrl(shortUrl, color));
+                const blob = await res.blob();
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${name}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(a.href);
+            } catch (err) {
+                // fallback: open in new tab
+                window.open(qrImageUrl(shortUrl, color), '_blank');
+            }
+        }
+
+        // close modal on overlay click
+        document.getElementById('qrModal').addEventListener('click', e => {
+            if (e.target.id === 'qrModal') closeQrModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadQrs);
+    </script>
+</body>
+</html>
