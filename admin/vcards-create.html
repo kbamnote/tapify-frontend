@@ -390,8 +390,8 @@
                         <!-- CUSTOMER ACCESS SECTION (Admin Only) -->
                         <div id="adminCustomerSection" style="margin-top: 30px; padding: 25px; background: rgba(131, 56, 236, 0.03); border-radius: 12px; border: 1px dashed #8338ec;">
                             <h3 style="font-size: 1rem; color: #8338ec; margin-bottom: 15px;"><i class="fas fa-user-shield"></i> Customer Access (Admin Feature)</h3>
-                            <p style="font-size: 0.82rem; color: #6b7280; margin-bottom: 20px;">Fill this to automatically create a customer account and assign this vCard to them.</p>
-                            
+                            <p style="font-size: 0.82rem; color: #6b7280; margin-bottom: 20px;">A customer login is created and this vCard is assigned to them. Email &amp; password are required so the customer can sign in.</p>
+
                             <div class="form-group">
                                 <label>Customer Name</label>
                                 <input type="text" name="customer_name" placeholder="Customer's Full Name">
@@ -399,12 +399,12 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Customer Login Email</label>
-                                    <input type="email" name="customer_email" placeholder="customer@example.com">
+                                    <label>Customer Login Email <span style="color:#ef4444">*</span></label>
+                                    <input type="email" name="customer_email" placeholder="customer@example.com" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Set Login Password</label>
-                                    <input type="text" name="customer_password" placeholder="Min 6 characters">
+                                    <label>Set Login Password <span style="color:#ef4444">*</span></label>
+                                    <input type="text" name="customer_password" placeholder="Min 6 characters" required minlength="6">
                                 </div>
                             </div>
                         </div>
@@ -466,16 +466,16 @@
 
         const customerEmail = (data.customer_email || '').trim();
         const customerPassword = data.customer_password || '';
-        if (customerEmail && !customerPassword) {
-            showToast('Set a login password when creating a customer account', 'error');
+        if (!customerEmail) {
+            showToast('Customer login email is required', 'error');
             return;
         }
-        if (customerPassword && customerPassword.length < 6) {
+        if (!customerPassword) {
+            showToast('Customer login password is required', 'error');
+            return;
+        }
+        if (customerPassword.length < 6) {
             showToast('Customer password must be at least 6 characters', 'error');
-            return;
-        }
-        if (customerPassword && !customerEmail) {
-            showToast('Customer login email is required when setting a password', 'error');
             return;
         }
 

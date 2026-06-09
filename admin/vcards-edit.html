@@ -343,6 +343,26 @@
                                     </div>
                                     <small class="form-hint">Allowed: png, jpg, jpeg</small>
                                 </div>
+
+                                <!-- CUSTOMER LOGIN ACCESS (Admin Only) -->
+                                <div class="form-group full-width" id="customerAccessPanel" style="display:none;margin-top:10px;padding:22px;background:rgba(131,56,236,0.03);border:1px dashed #8338ec;border-radius:12px;">
+                                    <h3 style="font-size:1rem;color:#8338ec;margin:0 0 6px;"><i class="fas fa-user-shield"></i> Customer Login Access</h3>
+                                    <p style="font-size:0.82rem;color:#6b7280;margin:0 0 16px;" id="customerAccessHint">Set or reset the login email &amp; password the customer uses to sign in and manage this vCard.</p>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label>Customer Login Email <span class="required">*</span></label>
+                                            <input type="email" class="form-control" id="customerEmail" placeholder="customer@example.com">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Set / Reset Password <span class="required">*</span></label>
+                                            <input type="text" class="form-control" id="customerPassword" placeholder="Min 6 characters">
+                                        </div>
+                                    </div>
+                                    <div id="customerAccessMsg" style="font-size:0.82rem;min-height:16px;margin-bottom:10px;"></div>
+                                    <button type="button" class="btn-save" id="customerAccessBtn" onclick="saveCustomerAccess()">
+                                        <i class="fas fa-key"></i> Save Customer Login
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-actions">
@@ -1258,6 +1278,91 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../admin.js"></script>
     <script src="../vcard-edit.js"></script>
+    <script>
+        // ===== Customer Login Access (Admin only) =====
+        const SET_CUSTOMER_API = 'https://app.tapify.co.in/api/admin/vcards/set-customer.php';
+
+        function getVcardIdFromUrl() {
+            return new URLSearchParams(window.location.search).get('id');
+        }
+
+        function isAdminUser() {
+            try {
+                const u = JSON.parse(localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user') || '{}');
+                return u && u.role === 'admin';
+            } catch (e) { return false; }
+        }
+
+        async function initCustomerAccess() {
+            const panel = document.getElementById('customerAccessPanel');
+            const vcardId = getVcardIdFromUrl();
+            if (!panel || !vcardId || !isAdminUser()) return;
+            panel.style.display = 'block';
+
+            try {
+                const res = await fetch(`${SET_CUSTOMER_API}?vcard_id=${encodeURIComponent(vcardId)}`, { credentials: 'include' });
+                const result = await res.json();
+                if (result.success && result.data) {
+                    const hint = document.getElementById('customerAccessHint');
+                    if (result.data.has_login) {
+                        document.getElementById('customerEmail').value = result.data.email || '';
+                        if (hint) hint.innerHTML = 'This vCard already has a customer login. You can update the email or reset the password below.';
+                    } else if (hint) {
+                        hint.innerHTML = '<strong style="color:#b45309;">No customer login is set for this vCard.</strong> Add an email &amp; password so the customer can sign in.';
+                    }
+                }
+            } catch (e) { /* non-fatal */ }
+        }
+
+        async function saveCustomerAccess() {
+            const vcardId = getVcardIdFromUrl();
+            const email = document.getElementById('customerEmail').value.trim();
+            const password = document.getElementById('customerPassword').value;
+            const msg = document.getElementById('customerAccessMsg');
+            const btn = document.getElementById('customerAccessBtn');
+
+            msg.style.color = '#dc2626';
+            if (!email) { msg.textContent = 'Customer login email is required.'; return; }
+            if (!password) { msg.textContent = 'Please set a password (min 6 characters).'; return; }
+            if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; return; }
+
+            btn.disabled = true;
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            try {
+                const res = await fetch(SET_CUSTOMER_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        vcard_id: Number(vcardId),
+                        customer_email: email,
+                        customer_password: password
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    msg.style.color = '#16a34a';
+                    msg.textContent = result.message || 'Customer login saved.';
+                    document.getElementById('customerPassword').value = '';
+                    const hint = document.getElementById('customerAccessHint');
+                    if (hint) hint.innerHTML = 'This vCard already has a customer login. You can update the email or reset the password below.';
+                    if (typeof showToast === 'function') showToast('Customer login saved', 'success');
+                } else {
+                    msg.style.color = '#dc2626';
+                    msg.textContent = result.message || 'Failed to save customer login.';
+                }
+            } catch (e) {
+                msg.style.color = '#dc2626';
+                msg.textContent = 'Network error. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = original;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initCustomerAccess);
+    </script>
 </body>
 </html>
 
