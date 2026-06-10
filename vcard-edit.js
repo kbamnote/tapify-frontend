@@ -1921,7 +1921,7 @@ async function renderGalleriesTable() {
         if (result.success) {
             galleriesData = result.data.galleries;
             if (galleriesData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fas fa-images" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:10px;"></i>No galleries yet. Click "+ Add Gallery"<br><small>(Image upload coming Phase 4)</small></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-gray)"><i class="fas fa-images" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:10px;"></i>No galleries yet. Click "+ Add Gallery"</td></tr>';
                 return;
             }
 
@@ -1955,7 +1955,7 @@ function showGalleryModal(gallery = null) {
     const isEdit = gallery !== null;
     const html = `
         <div class="modal-overlay show" id="galleryModal" onclick="if(event.target===this)closeGalleryModal()">
-            <div class="modal-box" style="max-width: 450px;">
+            <div class="modal-box" style="max-width: 600px;">
                 <div class="modal-header">
                     <h3>${isEdit ? '✏️ Edit Gallery' : '➕ Add Gallery'}</h3>
                     <button class="modal-close" onclick="closeGalleryModal()">×</button>
@@ -1965,9 +1965,25 @@ function showGalleryModal(gallery = null) {
                         <label>Gallery Name <span style="color:#ef4444">*</span></label>
                         <input type="text" id="galName" value="${gallery ? escapeHtml(gallery.name) : ''}" placeholder="e.g., Wedding Photos, Portfolio" maxlength="200">
                     </div>
+                    ${isEdit ? `
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Gallery Images</label>
+                        <div id="galleryImagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 10px 0; min-height: 60px;">
+                            <div style="grid-column: 1/-1; text-align: center; padding: 15px; color: var(--text-gray);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                            <input type="file" id="galleryImageInput" accept="image/jpeg,image/png,image/gif,image/webp" multiple style="display:none" onchange="uploadGalleryImages(${gallery.id})">
+                            <button type="button" class="btn-modal-confirm" style="font-size: 0.85rem; padding: 8px 16px;" onclick="document.getElementById('galleryImageInput').click()">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Images
+                            </button>
+                            <span style="font-size: 0.78rem; color: var(--text-gray);">JPG, PNG, GIF, WebP — Max 5MB each</span>
+                        </div>
+                    </div>
+                    ` : `
                     <p style="color: var(--text-gray); font-size: 0.85rem; margin: 10px 0; padding: 10px; background: rgba(131,56,236,0.05); border-radius: 8px;">
-                        <i class="fas fa-info-circle"></i> Image uploads coming in Phase 4. Right now you can create gallery names.
+                        <i class="fas fa-info-circle"></i> Save the gallery first, then edit it to upload images.
                     </p>
+                    `}
                 </div>
                 <div class="modal-footer">
                     <button class="btn-modal-cancel" onclick="closeGalleryModal()">Cancel</button>
@@ -1979,6 +1995,82 @@ function showGalleryModal(gallery = null) {
     if (old) old.remove();
     document.body.insertAdjacentHTML('beforeend', html);
     setTimeout(() => document.getElementById('galName')?.focus(), 100);
+    if (isEdit) loadGalleryImages(gallery.id);
+}
+
+async function loadGalleryImages(galleryId) {
+    const grid = document.getElementById('galleryImagesGrid');
+    if (!grid) return;
+
+    try {
+        const response = await fetch(`https://app.tapify.co.in/api/uploads/gallery-images.php?gallery_id=${galleryId}`, { credentials: 'include' });
+        const result = await response.json();
+
+        if (result.success && result.data.images.length > 0) {
+            grid.innerHTML = result.data.images.map(img => `
+                <div style="position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1; background: #f3f4f6;">
+                    <img src="${img.public_url}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button onclick="deleteGalleryImage(${img.id}, ${galleryId})" title="Delete image"
+                        style="position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        } else {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-gray); font-size: 0.85rem;"><i class="fas fa-images" style="font-size: 1.5rem; opacity: 0.3; display: block; margin-bottom: 8px;"></i>No images yet. Upload some!</div>';
+        }
+    } catch (err) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 15px; color: #ef4444; font-size: 0.85rem;">Failed to load images</div>';
+    }
+}
+
+async function uploadGalleryImages(galleryId) {
+    const input = document.getElementById('galleryImageInput');
+    const files = input.files;
+    if (!files || files.length === 0) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    let uploaded = 0;
+    let failed = 0;
+
+    for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) { showToast(`${file.name} too large (max 5MB)`, 'error'); failed++; continue; }
+        if (!allowedTypes.includes(file.type)) { showToast(`${file.name} invalid format`, 'error'); failed++; continue; }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('vcard_id', currentVcardId);
+        formData.append('type', 'gallery');
+        formData.append('target_id', galleryId);
+
+        try {
+            const response = await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: formData });
+            if (response.status === 401) { window.location.href = getLoginPath(); return; }
+            const result = await response.json();
+            if (result.success) uploaded++;
+            else { showToast(result.message || `Failed: ${file.name}`, 'error'); failed++; }
+        } catch (err) { showToast(`Upload error: ${file.name}`, 'error'); failed++; }
+    }
+
+    input.value = '';
+    if (uploaded > 0) showToast(`${uploaded} image(s) uploaded!`, 'success');
+    loadGalleryImages(galleryId);
+    renderGalleriesTable();
+}
+
+async function deleteGalleryImage(imageId, galleryId) {
+    if (!confirm('Delete this image?')) return;
+    try {
+        const response = await fetch(UPLOAD_API + 'delete-image.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ vcard_id: currentVcardId, type: 'gallery', image_id: imageId })
+        });
+        const result = await response.json();
+        if (result.success) { showToast('Image deleted', 'success'); loadGalleryImages(galleryId); renderGalleriesTable(); }
+        else showToast(result.message || 'Delete failed', 'error');
+    } catch (err) { showToast('Delete failed', 'error'); }
 }
 
 function closeGalleryModal() {
