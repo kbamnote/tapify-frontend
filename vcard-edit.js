@@ -234,6 +234,24 @@ function revertImagePreview(type, previewId) {
     }
 }
 
+// Apply an external / embedded image link as the cover (no file upload needed)
+async function applyCoverImageUrl() {
+    if (!currentVcardId) { showToast('Please save vCard basics first', 'error'); return; }
+    const input = document.getElementById('coverImageUrl');
+    const url = (input?.value || '').trim();
+    if (!url) { showToast('Please paste an image link', 'error'); return; }
+    if (!/^https?:\/\//i.test(url)) { showToast('Enter a valid link starting with http:// or https://', 'error'); return; }
+
+    // Optimistic preview
+    const preview = document.getElementById('coverPreview');
+    if (preview) preview.innerHTML = `<img src="${url}" alt="Cover">`;
+
+    const ok = await callUpdateAPI({ id: currentVcardId, cover_type: 'image', cover_image: url }, 'Cover link', { reload: false });
+    if (!ok && preview) {
+        revertImagePreview('cover', 'coverPreview');
+    }
+}
+
 // Function to delete image (for use later)
 async function deleteVcardImage(type, targetId = 0) {
     if (!confirm(`Delete this ${type} image?`)) return false;
@@ -2548,6 +2566,9 @@ function populateForm(vcard) {
     if (vcard.cover_image && !/youtu|vimeo|youtube/.test(vcard.cover_image)) {
         const coverPreview = document.getElementById('coverPreview');
         if (coverPreview) coverPreview.innerHTML = `<img src="${resolveImg(vcard.cover_image)}" alt="Cover">`;
+        // Pre-fill the embed-link field when the cover is an external URL
+        const coverUrlInput = document.getElementById('coverImageUrl');
+        if (coverUrlInput && /^https?:\/\//i.test(vcard.cover_image)) coverUrlInput.value = vcard.cover_image;
     }
     if (vcard.profile_image) {
         const profPreview = document.getElementById('profilePreview');

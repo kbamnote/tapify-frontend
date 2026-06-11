@@ -320,6 +320,14 @@
                                         <button class="upload-edit-btn"><i class="fas fa-pen"></i></button>
                                     </div>
                                     <small class="form-hint">Allowed: png, jpg, jpeg</small>
+                                    <div style="margin-top:10px">
+                                        <label style="font-size:.85rem">Or paste an embedded image / banner link</label>
+                                        <div style="display:flex;gap:8px;align-items:center">
+                                            <input type="url" id="coverImageUrl" class="form-control" placeholder="https://example.com/banner.jpg" style="flex:1">
+                                            <button type="button" class="btn-save" style="white-space:nowrap;padding:10px 16px" onclick="applyCoverImageUrl()"><i class="fas fa-link"></i> Apply Link</button>
+                                        </div>
+                                        <small class="form-hint">Paste a direct image link (jpg, png, webp, gif) to use as your cover/banner.</small>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
