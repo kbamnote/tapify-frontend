@@ -439,7 +439,7 @@ const templates = [
     { id: 'vcard64', name: 'Event Management',   category: 'Events',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v64.png', demoUrl: '../newTemps/imagesEventManagement/clean.html' },
     { id: 'vcard65', name: 'Hospital & Doctor',  category: 'Medical',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v65.png', demoUrl: '../newTemps/imagesHospital/clean.html' },
     { id: 'vcard66', name: 'Travel Agency Pro',  category: 'Travel',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v36.png', demoUrl: '../newTemps/imagesTravelAgency/clean.html' },
-    { id: 'vcard67', name: 'Hospital Pro',       category: 'Medical',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v65.png', demoUrl: '../newTemps/imagesHospital/clean.html' },
+    { id: 'vcard67', name: 'Hospital Pro',       category: 'Medical',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v65.png', demoUrl: '../newTemps/imagesHospital/clean-pro.html' },
     { id: 'vcard1', name: 'Simple Contact', category: 'Corporate', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v1.png', demoUrl: '../newTemps/imagesSimpleContact/clean.html' },
     { id: 'vcard2', name: 'Executive Profile', category: 'Corporate', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v2.png', demoUrl: '../newTemps/imagesExecutiveProfile/clean.html' },
     { id: 'vcard3', name: 'Clean Canvas', category: 'Minimal', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v3.png', demoUrl: '../newTemps/imagesCleanCanvas/clean.html' },
