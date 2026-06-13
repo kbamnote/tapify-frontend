@@ -559,9 +559,9 @@ function renderBusinessHours() {
                 <div class="time-input-group">
                     ${data.open ? `
                         <span class="from-to-label">From</span>
-                        <select class="time-select">${timeSelectHTML(data.from)}</select>
+                        <select class="time-select" onchange="setHour('${day}','from',this.value)">${timeSelectHTML(data.from)}</select>
                         <span class="from-to-label">To</span>
-                        <select class="time-select">${timeSelectHTML(data.to)}</select>
+                        <select class="time-select" onchange="setHour('${day}','to',this.value)">${timeSelectHTML(data.to)}</select>
                     ` : `
                         <span class="closed-label"><i class="fas fa-times"></i> Closed</span>
                     `}
@@ -575,6 +575,11 @@ function renderBusinessHours() {
 function toggleDay(day) {
     defaultHours[day].open = !defaultHours[day].open;
     renderBusinessHours();
+}
+
+// Persist time-dropdown changes so saveBusinessHours() reads the latest values
+function setHour(day, field, value) {
+    if (defaultHours[day]) defaultHours[day][field] = value;
 }
 
 // ===== APPOINTMENTS =====
@@ -939,6 +944,7 @@ async function deleteService(id, name) {
 
 // ===== PRODUCTS (Real Backend) =====
 let productsData = [];
+let pendingProductImageFile = null;
 
 async function renderProductsTable() {
     const tbody = document.getElementById('productsTableBody');
@@ -1002,6 +1008,7 @@ function editProduct(id) {
 
 function showProductModal(product = null) {
     const isEdit = product !== null;
+    pendingProductImageFile = null;
 
     const modalHtml = `
         <div class="modal-overlay show" id="productModal" onclick="if(event.target===this)closeProductModal()">
@@ -1011,6 +1018,14 @@ function showProductModal(product = null) {
                     <button class="modal-close" onclick="closeProductModal()">×</button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label>Product Image</label>
+                        <div id="prdImgPreview" onclick="document.getElementById('prdImgInput').click()" style="width:100%;height:160px;border:1.5px dashed var(--border,#d1d5db);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9fafb">
+                            ${product && product.image ? `<img src="${resolveImg(product.image)}" style="width:100%;height:100%;object-fit:cover">` : `<div style="text-align:center;color:#9ca3af"><i class="fas fa-image" style="font-size:1.6rem;display:block;margin-bottom:6px"></i>Click to choose image</div>`}
+                        </div>
+                        <input type="file" id="prdImgInput" accept="image/*" style="display:none" onchange="onProductImagePicked(event)">
+                        <small class="form-hint">JPG, PNG, GIF, WebP — Max 5MB</small>
+                    </div>
                     <div class="form-group">
                         <label>Product Name <span style="color:#ef4444">*</span></label>
                         <input type="text" id="prdName" value="${product ? escapeHtml(product.name) : ''}" placeholder="e.g., Tapify NFC Card" maxlength="200">
@@ -1056,8 +1071,20 @@ function showProductModal(product = null) {
 }
 
 function closeProductModal() {
+    pendingProductImageFile = null;
     const modal = document.getElementById('productModal');
     if (modal) modal.remove();
+}
+
+function onProductImagePicked(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('Image too large. Max 5MB', 'error'); event.target.value = ''; return; }
+    pendingProductImageFile = file;
+    const preview = document.getElementById('prdImgPreview');
+    const reader = new FileReader();
+    reader.onload = (e) => { if (preview) preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`; };
+    reader.readAsDataURL(file);
 }
 
 async function saveProduct(id) {
@@ -1090,6 +1117,23 @@ async function saveProduct(id) {
         const result = await response.json();
 
         if (result.success) {
+            // Upload product image (if chosen) now that we have the product id
+            if (pendingProductImageFile) {
+                const targetId = (result.data && result.data.id) ? result.data.id : id;
+                if (targetId) {
+                    try {
+                        const fd = new FormData();
+                        fd.append('file', pendingProductImageFile);
+                        fd.append('vcard_id', currentVcardId);
+                        fd.append('type', 'product');
+                        fd.append('target_id', String(targetId));
+                        const upRes = await fetch(UPLOAD_API + 'image.php', { method: 'POST', credentials: 'include', body: fd });
+                        if (upRes.status === 401) { window.location.href = getLoginPath(); return; }
+                        const upJson = await upRes.json().catch(() => ({}));
+                        if (!upJson.success) showToast('Product saved, but image upload failed: ' + (upJson.message || ('HTTP ' + upRes.status)), 'error');
+                    } catch (e) { showToast('Product saved, but image upload failed (network)', 'error'); }
+                }
+            }
             showToast(id ? 'Product updated!' : 'Product added!', 'success');
             closeProductModal();
             renderProductsTable();
