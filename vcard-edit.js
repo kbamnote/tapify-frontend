@@ -442,6 +442,7 @@ const templates = [
     { id: 'vcard67', name: 'Hospital Pro',       category: 'Medical',       isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v65.png', demoUrl: '../newTemps/imagesHospital/clean-pro.html' },
     { id: 'vcard68', name: 'Real Estate Pro',    category: 'Real Estate',   isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v63.png', demoUrl: '../newTemps/realEstate/clean-pro.html' },
     { id: 'vcard69', name: 'Flower Garden Pro',  category: 'Nature',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v45.png', demoUrl: '../newTemps/flowerGarden/clean-pro.html' },
+    { id: 'vcard70', name: 'Food & Culinary Pro', category: 'Food',        isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v46.png', demoUrl: '../newTemps/imagesCulinaryFoodServices/clean-pro.html' },
     { id: 'vcard1', name: 'Simple Contact', category: 'Corporate', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v1.png', demoUrl: '../newTemps/imagesSimpleContact/clean.html' },
     { id: 'vcard2', name: 'Executive Profile', category: 'Corporate', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v2.png', demoUrl: '../newTemps/imagesExecutiveProfile/clean.html' },
     { id: 'vcard3', name: 'Clean Canvas', category: 'Minimal', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v3.png', demoUrl: '../newTemps/imagesCleanCanvas/clean.html' },
