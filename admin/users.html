@@ -142,44 +142,71 @@
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
+        function escUser(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+        }
+
+        // Render a single row defensively — a bad/incomplete record can never
+        // throw and blank the whole table; it's shown highlighted instead.
+        function renderUserRow(user) {
+            try {
+                user = user || {};
+                const rawName = (user.name != null && String(user.name).trim() !== '') ? String(user.name) : '';
+                const name = rawName || '(no name)';
+                const initial = rawName ? rawName.charAt(0).toUpperCase() : '?';
+                const role = user.role ? String(user.role).toUpperCase() : 'USER';
+                const email = (user.email != null && String(user.email).trim() !== '') ? String(user.email) : '';
+                const vcards = (user.vcards_count != null) ? user.vcards_count : 0;
+                const isActive = (user.status == 1);
+                const lastLogin = user.last_login ? String(user.last_login) : 'Never';
+                const incomplete = !rawName || !email || !user.role;
+                const emailParam = email.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                return `
+                    <tr${incomplete ? ' style="background:#fff7ed"' : ''}>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <div style="width:35px;height:35px;background:#8338ec;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold">${escUser(initial)}</div>
+                                <div>
+                                    <div style="font-weight:600">${escUser(name)}${incomplete ? ' <span title="Incomplete record" style="color:#f59e0b">&#9888;</span>' : ''}</div>
+                                    <div style="font-size:0.75rem;color:#6b7280">${escUser(role)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${email ? escUser(email) : '<span style="color:#9ca3af">—</span>'}</td>
+                        <td>${escUser(vcards)}</td>
+                        <td><span class="badge ${isActive ? 'bg-success' : 'bg-danger'}">${isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td>${escUser(lastLogin)}</td>
+                        <td>
+                            <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
+                            <button class="action-btn" title="Reset Password" onclick="showResetPasswordModal(${Number(user.id) || 0}, '${emailParam}')"><i class="fas fa-key"></i></button>
+                            <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            } catch (e) {
+                return `<tr style="background:#fef2f2"><td colspan="6" style="color:#dc2626">&#9888; Could not display user #${escUser(user && user.id)} (${escUser(e.message)})</td></tr>`;
+            }
+        }
+
         async function loadUsers() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#6b7280">Loading…</td></tr>';
             try {
                 const response = await fetch(USER_API, { credentials: 'include' });
+                if (response.status === 401) { window.location.href = '/login'; return; }
                 const result = await response.json();
-                
-                if (result.success) {
-                    const tbody = document.getElementById('userTableBody');
-                    tbody.innerHTML = result.data.users.map(user => `
-                        <tr>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:10px">
-                                    <div style="width:35px;height:35px;background:#8338ec;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold">
-                                        ${user.name.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <div style="font-weight:600">${user.name}</div>
-                                        <div style="font-size:0.75rem;color:#6b7280">${user.role.toUpperCase()}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>${user.email}</td>
-                            <td>${user.vcards_count}</td>
-                            <td>
-                                <span class="badge ${user.status == 1 ? 'bg-success' : 'bg-danger'}">
-                                    ${user.status == 1 ? 'Active' : 'Inactive'}
-                                </span>
-                            </td>
-                            <td>${user.last_login || 'Never'}</td>
-                            <td>
-                                <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
-                                <button class="action-btn" title="Reset Password" onclick="showResetPasswordModal(${user.id}, '${(user.email || '').replace(/'/g, "\\'")}')"><i class="fas fa-key"></i></button>
-                                <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `).join('');
+                if (!result.success) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#dc2626">${escUser(result.message || 'Failed to load users')}</td></tr>`;
+                    return;
                 }
+                const users = (result.data && Array.isArray(result.data.users)) ? result.data.users : [];
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#6b7280">No users found.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = users.map(renderUserRow).join('');
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#dc2626">Network error loading users. Please refresh.</td></tr>';
             }
         }
     </script>
