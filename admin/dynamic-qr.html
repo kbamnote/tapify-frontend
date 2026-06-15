@@ -9,7 +9,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../admin-style.css">
     <link rel="stylesheet" href="../vcards-style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
     <style>
+        .qr-design-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .qr-logo-row { display:flex; align-items:center; gap:12px; }
+        .qr-logo-thumb { width:46px; height:46px; border-radius:8px; border:1px solid #e5e7eb; object-fit:contain; background:#fff; display:none; }
+        #qrPreviewCanvas { display:inline-block; }
+        #qrPreviewCanvas canvas, #qrPreviewCanvas svg { border-radius:8px; }
         .qr-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:16px; }
         .qr-modal-overlay.show { display:flex; }
         .qr-modal { background:#fff; border-radius:14px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.2); }
@@ -132,7 +138,52 @@
                         <label>QR Color</label>
                         <input type="color" id="qrColor" value="#000000">
                     </div>
+                    <div class="qr-field" style="flex:0 0 auto">
+                        <label>Corner Color</label>
+                        <input type="color" id="qrCornerColor" value="#8338ec">
+                    </div>
                 </div>
+
+                <div class="qr-field">
+                    <label>Center Logo (optional)</label>
+                    <div class="qr-logo-row">
+                        <input type="file" id="qrLogoFile" accept="image/*" style="flex:1;">
+                        <img id="qrLogoThumb" class="qr-logo-thumb" alt="logo">
+                        <button type="button" class="qr-btn qr-btn-ghost" id="qrLogoRemove" style="display:none;padding:6px 12px;" onclick="removeQrLogo()">Remove</button>
+                    </div>
+                    <input type="hidden" id="qrLogo">
+                    <small id="qrLogoMsg" style="color:#9ca3af;"></small>
+                </div>
+
+                <div class="qr-design-grid">
+                    <div class="qr-field">
+                        <label>Dot Style</label>
+                        <select id="qrDotsType">
+                            <option value="square">Square</option>
+                            <option value="rounded">Rounded</option>
+                            <option value="dots">Dots</option>
+                            <option value="classy">Classy</option>
+                            <option value="classy-rounded">Classy Rounded</option>
+                            <option value="extra-rounded">Extra Rounded</option>
+                        </select>
+                    </div>
+                    <div class="qr-field">
+                        <label>Corner Frame</label>
+                        <select id="qrCornerSquareType">
+                            <option value="square">Square</option>
+                            <option value="extra-rounded">Rounded</option>
+                            <option value="dot">Dot</option>
+                        </select>
+                    </div>
+                    <div class="qr-field">
+                        <label>Corner Dot</label>
+                        <select id="qrCornerDotType">
+                            <option value="square">Square</option>
+                            <option value="dot">Dot</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="qr-row">
                     <div class="qr-field">
                         <label>Password (optional)</label>
@@ -151,7 +202,7 @@
                 <div id="qrPreviewWrap" style="display:none;">
                     <div class="qr-preview-box">
                         <div style="font-weight:700;color:#8338ec;margin-bottom:12px;">Live QR Preview</div>
-                        <img id="qrPreviewImg" width="180" height="180" alt="QR preview">
+                        <div id="qrPreviewCanvas"></div>
                         <div id="qrPreviewName" style="margin-top:10px;font-weight:600;"></div>
                         <div class="qr-short" id="qrPreviewLink"></div>
                         <button class="qr-btn qr-btn-primary" style="margin-top:14px;" onclick="downloadQr()"><i class="fas fa-download"></i> Download QR</button>
@@ -174,10 +225,69 @@
 
         let qrList = [];
 
-        function qrImageUrl(shortUrl, color) {
-            const data = encodeURIComponent(QR_REDIRECT_BASE + shortUrl);
-            const col = (color || '#000000').replace('#', '');
-            return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&color=${col}&data=${data}`;
+        let qrStyling = null;
+
+        function currentStyleOptions() {
+            const color = document.getElementById('qrColor').value || '#000000';
+            return {
+                dotsType: document.getElementById('qrDotsType').value,
+                cornerSquareType: document.getElementById('qrCornerSquareType').value,
+                cornerDotType: document.getElementById('qrCornerDotType').value,
+                color: color,
+                cornerColor: document.getElementById('qrCornerColor').value || color,
+                logo: document.getElementById('qrLogo').value || ''
+            };
+        }
+
+        function buildQrConfig(shortUrl) {
+            const s = currentStyleOptions();
+            const cfg = {
+                width: 200, height: 200, type: 'canvas',
+                data: QR_REDIRECT_BASE + shortUrl,
+                margin: 6,
+                qrOptions: { errorCorrectionLevel: 'H' },
+                backgroundOptions: { color: '#ffffff' },
+                dotsOptions: { color: s.color, type: s.dotsType },
+                cornersSquareOptions: { color: s.cornerColor, type: s.cornerSquareType },
+                cornersDotOptions: { color: s.cornerColor, type: s.cornerDotType }
+            };
+            if (s.logo) {
+                cfg.image = s.logo;
+                cfg.imageOptions = { crossOrigin: 'anonymous', margin: 4, imageSize: 0.38, hideBackgroundDots: true };
+            }
+            return cfg;
+        }
+
+        function renderStyledPreview(shortUrl) {
+            const wrap = document.getElementById('qrPreviewCanvas');
+            const cfg = buildQrConfig(shortUrl);
+            if (!qrStyling) {
+                qrStyling = new QRCodeStyling(cfg);
+                wrap.innerHTML = '';
+                qrStyling.append(wrap);
+            } else {
+                qrStyling.update(cfg);
+            }
+        }
+
+        // Build the style settings object persisted as style_json.
+        function collectStyleJson() {
+            const s = currentStyleOptions();
+            return JSON.stringify({
+                dotsType: s.dotsType,
+                cornerSquareType: s.cornerSquareType,
+                cornerDotType: s.cornerDotType,
+                cornerColor: s.cornerColor
+            });
+        }
+
+        function applyStyleJson(raw) {
+            let s = {};
+            try { s = raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : {}; } catch (e) { s = {}; }
+            document.getElementById('qrDotsType').value = s.dotsType || 'square';
+            document.getElementById('qrCornerSquareType').value = s.cornerSquareType || 'square';
+            document.getElementById('qrCornerDotType').value = s.cornerDotType || 'square';
+            document.getElementById('qrCornerColor').value = s.cornerColor || (document.getElementById('qrColor').value || '#000000');
         }
 
         function escapeHtml(s) {
@@ -227,10 +337,13 @@
             document.getElementById('qrDestination').value = '';
             document.getElementById('qrType').value = 'website';
             document.getElementById('qrColor').value = '#000000';
+            document.getElementById('qrCornerColor').value = '#8338ec';
             document.getElementById('qrPassword').value = '';
             document.getElementById('qrExpiry').value = '';
             document.getElementById('qrStatus').checked = true;
             document.getElementById('qrMsg').textContent = '';
+            resetQrLogo();
+            applyStyleJson(null);
             document.getElementById('qrPreviewWrap').style.display = 'none';
             document.getElementById('qrModal').classList.add('show');
         }
@@ -249,7 +362,9 @@
             document.getElementById('qrExpiry').value = q.expiry_date ? String(q.expiry_date).substring(0,10) : '';
             document.getElementById('qrStatus').checked = q.status == 1;
             document.getElementById('qrMsg').textContent = '';
-            renderPreview(q.short_url, q.name, q.custom_color);
+            applyStyleJson(q.style_json);
+            setQrLogo(q.logo || '');
+            renderPreview(q.short_url, q.name);
             document.getElementById('qrModal').classList.add('show');
         }
 
@@ -262,12 +377,61 @@
             document.getElementById('qrModal').classList.remove('show');
         }
 
-        function renderPreview(shortUrl, name, color) {
+        function renderPreview(shortUrl, name) {
             if (!shortUrl) { document.getElementById('qrPreviewWrap').style.display = 'none'; return; }
-            document.getElementById('qrPreviewImg').src = qrImageUrl(shortUrl, color);
             document.getElementById('qrPreviewName').textContent = name || 'Scan Me';
             document.getElementById('qrPreviewLink').textContent = QR_REDIRECT_BASE + shortUrl;
             document.getElementById('qrPreviewWrap').style.display = 'block';
+            renderStyledPreview(shortUrl);
+        }
+
+        // Re-render the preview live when a design control changes (if a QR exists).
+        function liveStyleUpdate() {
+            const shortUrl = document.getElementById('qrShortUrl').value;
+            if (shortUrl && document.getElementById('qrPreviewWrap').style.display !== 'none') {
+                renderStyledPreview(shortUrl);
+            }
+        }
+
+        // ----- Logo handling -----
+        function setQrLogo(url) {
+            document.getElementById('qrLogo').value = url || '';
+            const thumb = document.getElementById('qrLogoThumb');
+            const removeBtn = document.getElementById('qrLogoRemove');
+            if (url) {
+                thumb.src = url; thumb.style.display = 'inline-block';
+                removeBtn.style.display = 'inline-block';
+            } else {
+                thumb.style.display = 'none'; removeBtn.style.display = 'none';
+            }
+        }
+        function resetQrLogo() {
+            setQrLogo('');
+            const f = document.getElementById('qrLogoFile'); if (f) f.value = '';
+            document.getElementById('qrLogoMsg').textContent = '';
+        }
+        function removeQrLogo() {
+            resetQrLogo();
+            liveStyleUpdate();
+        }
+        async function handleLogoUpload(file) {
+            if (!file) return;
+            const msg = document.getElementById('qrLogoMsg');
+            msg.style.color = '#9ca3af'; msg.textContent = 'Uploading logo…';
+            const fd = new FormData(); fd.append('file', file);
+            try {
+                const res = await fetch(`${QR_API}/upload-logo.php`, { method: 'POST', credentials: 'include', body: fd });
+                const result = await res.json();
+                if (result.success) {
+                    setQrLogo(result.url);
+                    msg.style.color = '#16a34a'; msg.textContent = 'Logo added.';
+                    liveStyleUpdate();
+                } else {
+                    msg.style.color = '#dc2626'; msg.textContent = result.message || 'Logo upload failed.';
+                }
+            } catch (e) {
+                msg.style.color = '#dc2626'; msg.textContent = 'Logo upload failed (network).';
+            }
         }
 
         async function saveQr() {
@@ -286,6 +450,8 @@
                 destination_url,
                 qr_type: document.getElementById('qrType').value,
                 custom_color: document.getElementById('qrColor').value,
+                logo: document.getElementById('qrLogo').value || null,
+                style_json: collectStyleJson(),
                 password: document.getElementById('qrPassword').value.trim(),
                 expiry_date: document.getElementById('qrExpiry').value || null,
                 status: document.getElementById('qrStatus').checked ? 1 : 0
@@ -308,7 +474,7 @@
                     document.getElementById('qrId').value = saved.id || payload.id || '';
                     document.getElementById('qrShortUrl').value = saved.short_url || payload.short_url || '';
                     document.getElementById('qrModalTitle').textContent = 'Edit Dynamic QR';
-                    renderPreview(saved.short_url || payload.short_url, saved.name || name, saved.custom_color || payload.custom_color);
+                    renderPreview(saved.short_url || payload.short_url, saved.name || name);
                     loadQrs();
                 } else {
                     msg.style.color = '#dc2626';
@@ -339,28 +505,29 @@
 
         async function downloadQr() {
             const shortUrl = document.getElementById('qrShortUrl').value;
-            const color = document.getElementById('qrColor').value;
-            const name = (document.getElementById('qrName').value.trim() || 'qr-code').replace(/[^a-z0-9_-]+/gi, '-');
             if (!shortUrl) return;
+            const name = (document.getElementById('qrName').value.trim() || 'qr-code').replace(/[^a-z0-9_-]+/gi, '-');
+            // High-resolution export
+            const exporter = new QRCodeStyling(Object.assign(buildQrConfig(shortUrl), { width: 1000, height: 1000 }));
             try {
-                const res = await fetch(qrImageUrl(shortUrl, color));
-                const blob = await res.blob();
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `${name}.png`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(a.href);
+                await exporter.download({ name, extension: 'png' });
             } catch (err) {
-                // fallback: open in new tab
-                window.open(qrImageUrl(shortUrl, color), '_blank');
+                if (qrStyling) qrStyling.download({ name, extension: 'png' });
             }
         }
 
         // close modal on overlay click
         document.getElementById('qrModal').addEventListener('click', e => {
             if (e.target.id === 'qrModal') closeQrModal();
+        });
+
+        // Live preview wiring for all design controls
+        ['qrColor', 'qrCornerColor', 'qrDotsType', 'qrCornerSquareType', 'qrCornerDotType'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.addEventListener('input', liveStyleUpdate); el.addEventListener('change', liveStyleUpdate); }
+        });
+        document.getElementById('qrLogoFile').addEventListener('change', e => {
+            if (e.target.files && e.target.files[0]) handleLogoUpload(e.target.files[0]);
         });
 
         document.addEventListener('DOMContentLoaded', loadQrs);
