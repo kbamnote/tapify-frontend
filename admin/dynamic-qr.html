@@ -83,6 +83,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Owner</th>
                             <th>Short Link</th>
                             <th>Destination</th>
                             <th>Type</th>
@@ -92,7 +93,7 @@
                         </tr>
                     </thead>
                     <tbody id="qrTableBody">
-                        <tr><td colspan="7" class="empty-state">Loading…</td></tr>
+                        <tr><td colspan="8" class="empty-state">Loading…</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -189,17 +190,18 @@
                 const res = await fetch(`${QR_API}/list.php`, { credentials: 'include' });
                 const result = await res.json();
                 if (!result.success) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${escapeHtml(result.message || 'Failed to load')}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">${escapeHtml(result.message || 'Failed to load')}</td></tr>`;
                     return;
                 }
                 qrList = result.data || [];
                 if (qrList.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-qrcode"></i>No dynamic QR codes yet. Click "Create Dynamic QR".</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><i class="fas fa-qrcode"></i>No dynamic QR codes yet. Click "Create Dynamic QR".</td></tr>`;
                     return;
                 }
                 tbody.innerHTML = qrList.map(q => `
                     <tr>
                         <td><strong>${escapeHtml(q.name)}</strong></td>
+                        <td>${q.owner_name ? escapeHtml(q.owner_name) : '<span style="color:#aaa;">—</span>'}${q.owner_email ? `<br><small style="color:#9ca3af;">${escapeHtml(q.owner_email)}</small>` : ''}</td>
                         <td><a class="qr-link-cell" href="${QR_REDIRECT_BASE}${escapeHtml(q.short_url)}" target="_blank">/qr/${escapeHtml(q.short_url)}</a></td>
                         <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(q.destination_url)}</td>
                         <td style="text-transform:capitalize;">${escapeHtml(q.qr_type || 'website')}</td>
@@ -213,7 +215,7 @@
                     </tr>
                 `).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Network error. Please try again.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Network error. Please try again.</td></tr>`;
             }
         }
 
