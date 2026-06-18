@@ -2500,11 +2500,12 @@ img {
 
 /* Idle float after burst settles */
 .sbi.floating {
-    animation: sbiFloat 3s ease-in-out var(--d,0s) infinite;
+    opacity: 1;
+    animation: sbiFloat 3s ease-in-out var(--d,0s) infinite both;
 }
 @keyframes sbiFloat {
-    0%,100% { transform: translate(var(--tx), calc(var(--ty) - 5px)) translateZ(50px) scale(1); }
-    50%      { transform: translate(var(--tx), calc(var(--ty) + 5px)) translateZ(60px) scale(1.04); }
+    0%,100% { transform: translate(var(--tx), calc(var(--ty) - 5px)) translateZ(50px) scale(1); opacity: 1; }
+    50%      { transform: translate(var(--tx), calc(var(--ty) + 5px)) translateZ(60px) scale(1.04); opacity: 1; }
 }
 
 .sbi-inner {
