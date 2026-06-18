@@ -6,6 +6,20 @@
 /* ===== GOOGLE FONTS IMPORT ===== */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
+/* ===== ACCESSIBILITY / SEO UTILITY ===== */
+/* Visible to screen-readers & search engines, hidden visually */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* ===== CSS VARIABLES ===== */
 :root {
     /* === Brand Colors === */
@@ -2285,7 +2299,7 @@ img {
 /* ---- NFC Card ---- */
 .sb-card {
     position: relative;
-    width: 260px; height: 164px;
+    width: 185px; height: 289px;
     transform-style: preserve-3d;
     transition: transform 0.3s ease;
     z-index: 10;
@@ -2321,13 +2335,19 @@ img {
 /* Card front */
 .sb-card-front {
     background: linear-gradient(145deg, #0d2829 0%, #153e3f 50%, #1e5557 100%);
-    border: 1.5px solid rgba(201,147,58,0.4);
+    border: none;
     box-shadow:
         0 20px 60px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(255,255,255,0.05) inset,
-        0 1px 0 rgba(255,255,255,0.12) inset;
-    padding: 18px 20px;
+        0 0 0 1px rgba(255,255,255,0.05) inset;
+    padding: 0;
     display: flex; flex-direction: column; justify-content: space-between;
+}
+/* Product card image */
+.sb-card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
 }
 /* Holographic shimmer on front */
 .sb-card-front::after {
@@ -2567,7 +2587,7 @@ img {
 }
 @media (max-width: 480px) {
     .sb-stage { width: 300px; height: 300px; }
-    .sb-card  { width: 210px; height: 132px; }
+    .sb-card  { width: 155px; height: 242px; }
     .sbi-0 { --ty: -120px; }
     .sbi-1 { --tx:  85px; --ty: -85px; }
     .sbi-2 { --tx: 120px; }
@@ -3015,8 +3035,8 @@ img {
 }
 
 .nfc-i3d-card {
-    width: 270px;
-    height: 170px;
+    width: 190px;
+    height: 297px;
     border-radius: 16px;
     background: linear-gradient(135deg, #0d2829 0%, #153e3f 55%, #1e5557 100%);
     transform: rotateX(7deg) rotateY(-15deg);
@@ -3049,6 +3069,17 @@ img {
     mix-blend-mode: overlay;
     z-index: 5;
     transition: background 0.06s linear;
+}
+
+/* Product card image */
+.nfc-i3d-card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
 }
 
 /* Card content */
@@ -3126,7 +3157,7 @@ img {
 }
 
 .nfc-i3d-card-shadow {
-    width: 240px; height: 24px;
+    width: 170px; height: 24px;
     background: radial-gradient(ellipse, rgba(0,229,255,0.28) 0%, transparent 70%);
     margin-top: 10px;
     filter: blur(8px);
@@ -3486,7 +3517,7 @@ img {
         max-width: 340px;
     }
     .nfc-i3d-center { order: 3; }
-    .nfc-i3d-card   { width: 240px; height: 152px; }
+    .nfc-i3d-card   { width: 165px; height: 258px; }
     .nfc-i3d-phone  { width: 110px; height: 216px; }
 }
 
