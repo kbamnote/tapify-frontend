@@ -239,16 +239,53 @@ function checkAuth() {
 
     try {
         const user = JSON.parse(userStr);
-        // Admin Page protection: non-admins go to user dashboard
-        if (isAdminPath && user.role !== 'admin') {
-            window.location.href = '/dashboard/dashboard';
+        const role = user.role;
+
+        // Admin pages: full admins get everything; "staff" card-editors get ONLY
+        // the vCard management pages; everyone else is bounced.
+        if (isAdminPath && role !== 'admin') {
+            const seg = path.split('/').pop().replace('.html', '');
+            const staffPages = ['vcards', 'vcards-edit', 'vcards-create'];
+            if (role === 'staff' && staffPages.includes(seg)) {
+                applyStaffRestrictions(); // hide admin-only nav + delete controls
+            } else {
+                window.location.href = (role === 'staff') ? '/admin/vcards' : '/dashboard/dashboard';
+                return;
+            }
         }
-        // User Dashboard protection
-        if (isUserPath && !user.role) {
-            window.location.href = '/login';
+
+        // User dashboard pages
+        if (isUserPath) {
+            if (!role) { window.location.href = '/login'; return; }
+            // Staff belong in the vCards manager, not the single-card user dashboard
+            if (role === 'staff') { window.location.href = '/admin/vcards'; return; }
         }
     } catch (e) {
         console.error('Auth check error', e);
+    }
+}
+
+// Card-editor "staff" accounts: hide admin-only navigation and all card-delete controls.
+function applyStaffRestrictions() {
+    if (!document.getElementById('staff-restrict-css')) {
+        const style = document.createElement('style');
+        style.id = 'staff-restrict-css';
+        // Hides delete buttons even on dynamically-rendered rows.
+        style.textContent = '.btn-delete,.bulk-danger{display:none !important;}';
+        document.head.appendChild(style);
+    }
+    const hideNav = () => {
+        document.querySelectorAll('.sidebar-nav .nav-item').forEach(a => {
+            const href = (a.getAttribute('href') || '').toLowerCase();
+            if (!href.includes('vcards')) a.style.display = 'none';
+        });
+        const footer = document.querySelector('.sidebar-footer');
+        if (footer) footer.style.display = 'none';
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideNav);
+    } else {
+        hideNav();
     }
 }
 
