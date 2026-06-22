@@ -245,7 +245,7 @@ function checkAuth() {
         // the vCard management pages; everyone else is bounced.
         if (isAdminPath && role !== 'admin') {
             const seg = path.split('/').pop().replace('.html', '');
-            const staffPages = ['vcards', 'vcards-edit', 'vcards-create'];
+            const staffPages = ['vcards', 'vcards-edit', 'vcards-create', 'dynamic-qr'];
             if (role === 'staff' && staffPages.includes(seg)) {
                 applyStaffRestrictions(); // hide admin-only nav + delete controls
             } else {
@@ -270,14 +270,15 @@ function applyStaffRestrictions() {
     if (!document.getElementById('staff-restrict-css')) {
         const style = document.createElement('style');
         style.id = 'staff-restrict-css';
-        // Hides delete buttons even on dynamically-rendered rows.
-        style.textContent = '.btn-delete,.bulk-danger{display:none !important;}';
+        // Hides delete buttons even on dynamically-rendered rows (vCards + QRs).
+        style.textContent = '.btn-delete,.bulk-danger,[title="Delete"],[onclick^="deleteQr"]{display:none !important;}';
         document.head.appendChild(style);
     }
     const hideNav = () => {
         document.querySelectorAll('.sidebar-nav .nav-item').forEach(a => {
             const href = (a.getAttribute('href') || '').toLowerCase();
-            if (!href.includes('vcards')) a.style.display = 'none';
+            const allowed = href.includes('vcards') || href.includes('dynamic-qr');
+            if (!allowed) a.style.display = 'none';
         });
         const footer = document.querySelector('.sidebar-footer');
         if (footer) footer.style.display = 'none';
