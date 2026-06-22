@@ -265,6 +265,16 @@ function renderKPIs(s) {
             <div class="kpi-sub">${s.active_vcards} active</div>
         </div>
 
+        ${s.total_users != null ? `
+        <div class="kpi-card blue">
+            <div class="kpi-header">
+                <div><span class="kpi-label">Total Users</span></div>
+                <div class="kpi-icon"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="kpi-value">${s.total_users}</div>
+            <div class="kpi-sub">Registered accounts</div>
+        </div>` : ''}
+
         <div class="kpi-card blue">
             <div class="kpi-header">
                 <div><span class="kpi-label">Total Views</span></div>
