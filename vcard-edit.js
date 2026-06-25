@@ -14,7 +14,20 @@ function goToSubNavTab(tabKey) {
     if (item) item.click();
 }
 
-const PUBLIC_VCARD_BASE = 'https://app.tapify.co.in/';
+const PUBLIC_VCARD_BASE = 'https://app.tapify.co.in/'; // legacy path form (still valid)
+const PUBLIC_BASE_DOMAIN = 'tapify.co.in';
+const USE_SUBDOMAIN_URLS = true; // mirror backend USE_SUBDOMAIN_URLS (flip once wildcard DNS+TLS are live)
+
+// Canonical public URL for a card. Subdomain form (slug.tapify.co.in) when the
+// slug is a valid DNS label; otherwise the legacy path form. Keep in sync with
+// public_card_url() in the backend config.
+function publicCardUrl(alias) {
+    alias = String(alias || '').replace(/^\/+/, '');
+    if (USE_SUBDOMAIN_URLS && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(alias)) {
+        return `https://${alias}.${PUBLIC_BASE_DOMAIN}`;
+    }
+    return `${PUBLIC_VCARD_BASE}${alias}`;
+}
 
 function selectTemplateCardById(templateId) {
     const templateIdx = templates.findIndex(t => t.id === templateId);
@@ -2957,7 +2970,7 @@ async function saveTemplate() {
         selectTemplateCardById(template.id);
         const alias = currentVcardData?.url_alias || document.getElementById('urlAlias')?.value;
         if (alias) {
-            const previewUrl = `${PUBLIC_VCARD_BASE}${alias.replace(/^\//, '')}`;
+            const previewUrl = publicCardUrl(alias);
             showToast(`Template saved. Open live card: ${previewUrl}`, 'success');
         }
     }
