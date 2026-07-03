@@ -87,6 +87,7 @@
     <script>
         const USER_API = 'https://app.tapify.co.in/api/admin/users/list.php';
         const RESET_PW_API = 'https://app.tapify.co.in/api/admin/users/reset-password.php';
+        const SET_STATUS_API = 'https://app.tapify.co.in/api/admin/users/set-status.php';
 
         function showResetPasswordModal(userId, email) {
             document.getElementById('resetPwUserId').value = userId;
@@ -140,6 +141,32 @@
             }
         }
 
+        // Activate / deactivate a user. Deactivated users (status=0) are blocked
+        // at login by the backend (api/login.php).
+        async function toggleUserStatus(userId, newStatus, name) {
+            if (!userId) return;
+            const verb = newStatus ? 'reactivate' : 'deactivate';
+            const warn = newStatus ? '' : '\n\nThey will be blocked from logging in until reactivated.';
+            if (!confirm(`Are you sure you want to ${verb} "${name || 'this user'}"?${warn}`)) return;
+            try {
+                const response = await fetch(SET_STATUS_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: Number(userId), status: newStatus })
+                });
+                if (response.status === 401) { window.location.href = '/login'; return; }
+                const result = await response.json();
+                if (result.success) {
+                    loadUsers();
+                } else {
+                    alert(result.message || 'Failed to update user status.');
+                }
+            } catch (err) {
+                alert('Network error. Please try again.');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', loadUsers);
 
         function escUser(s) {
@@ -161,6 +188,7 @@
                 const lastLogin = user.last_login ? String(user.last_login) : 'Never';
                 const incomplete = !rawName || !email || !user.role;
                 const emailParam = email.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                const nameParam = name.replace(/\\/g, '\\\\').replace(/"/g, '').replace(/'/g, "\\'");
                 return `
                     <tr${incomplete ? ' style="background:#fff7ed"' : ''}>
                         <td>
@@ -179,6 +207,7 @@
                         <td>
                             <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
                             <button class="action-btn" title="Reset Password" onclick="showResetPasswordModal(${Number(user.id) || 0}, '${emailParam}')"><i class="fas fa-key"></i></button>
+                            <button class="action-btn ${isActive ? 'text-danger' : 'text-success'}" title="${isActive ? 'Deactivate user' : 'Activate user'}" onclick="toggleUserStatus(${Number(user.id) || 0}, ${isActive ? 0 : 1}, '${nameParam}')"><i class="fas fa-${isActive ? 'user-slash' : 'user-check'}"></i></button>
                             <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
