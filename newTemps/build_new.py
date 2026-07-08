@@ -53,6 +53,10 @@ body=re.sub(r'<script.*?</script>','',body,flags=re.DOTALL|re.I)
 # strip ALL leftover iframes (youtube, stripe srcdoc, blockquote embeds) + their stray artifacts
 body=re.sub(r'<iframe[\s\S]*?</iframe>','',body,flags=re.I)
 body=re.sub(r'<iframe[^>]*/?>','',body,flags=re.I)
+# orphaned / malformed iframe remnants that survive the strips above (e.g. `</iframe<script>`
+# swallows the next script tag; Google-Forms PING detection spans)
+body=re.sub(r'</iframe\s*>?','',body,flags=re.I)
+body=re.sub(r'<span[^>]*PING_IFRAME[^>]*>.*?</span>','',body,flags=re.I|re.S)
 body=re.sub(r'<blockquote[^>]*instagram[\s\S]*?</blockquote>','',body,flags=re.I)
 body=re.sub(r'<link[^>]*>','',body,flags=re.I)
 # wire the template's own inquiry form to the backend (was a stripped-JS stub)
@@ -104,7 +108,7 @@ if not name_ok:
 print('name dynamic:', name_ok)
 
 # ---- about / description (bind the profile bio to $vcard["description"]) ----
-DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars($vcard["description"])) ?><?php else: ?>'
+DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars(trim(html_entity_decode(strip_tags($vcard["description"]),ENT_QUOTES)))) ?><?php else: ?>'
 DCLS=r'(?:profile-description|profile-desc|profile-bio|profile-about|about-me|about-text|about-desc|bio-text|user-bio|profile-summary)'
 desc_ok=False
 # primary: a clean desc element (no nested same-tag)
@@ -247,7 +251,7 @@ body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*business-hour(?!-card)[
 
 # ---- suppress + features ----
 supp='<?php $__sv=$services;$__pr=$products;$__ga=$galleries;$__te=$testimonials;$__bh=$businessHours;$services=[];$products=[];$galleries=[];$testimonials=[];$businessHours=[]; ?>'
-slick=('<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'
+slick=('<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>'
 '<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>'
 '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">'
 '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">'
@@ -255,8 +259,10 @@ slick=('<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>'
 '<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>'
 '<script>function tfInit(){if(typeof jQuery==="undefined"||!jQuery.fn||!jQuery.fn.slick){return setTimeout(tfInit,120);}jQuery(function($){'
 # hide empty data sections (heading + content) when there are no records
-'$(".product-slider,.gallery-slider,.testimonial-slider").each(function(){'
+'$(".product-slider,.gallery-slider,.testimonial-slider,.blog-slider").each(function(){'
 'if($(this).children().length===0){$(this).closest("[class*=section]").hide();$(this).hide();}});'
+# hide instagram-feed sections that have no items wired
+'$("[class*=instagram],[class*=insta-feed],[class*=insta-section],[class*=insta-feed-section]").each(function(){if($(this).find("img,iframe,.slick-slide,.insta-item,a[href*=instagram]").length===0){$(this).closest("[class*=section]").hide();$(this).hide();}});'
 'function ini(s,o){var $s=$(s);if(!$s.length||$s.hasClass("slick-initialized"))return;$s.slick(o);}'
 'ini(".product-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
 'ini(".gallery-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'

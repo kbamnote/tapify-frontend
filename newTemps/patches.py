@@ -42,7 +42,7 @@ else:
 
 # 4) About binding for templates whose bio sits in a profile-desc container the
 #    generic builder missed (skip testimonial-author profile-desc blocks).
-DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars($vcard["description"])) ?><?php else: ?>'
+DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars(trim(html_entity_decode(strip_tags($vcard["description"]),ENT_QUOTES)))) ?><?php else: ?>'
 for v in [80,83,86,94,96,97]:
     s=rd(v)
     if s.count('$vcard["description"]')>=1: continue
