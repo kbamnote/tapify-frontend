@@ -103,6 +103,27 @@ if not name_ok:
                 body=body.replace(pm.group(0), pm.group(1)+'<?= htmlspecialchars($vcard["occupation"] ?? "") ?>'+pm.group(3), 1)
 print('name dynamic:', name_ok)
 
+# ---- about / description (bind the profile bio to $vcard["description"]) ----
+DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars($vcard["description"])) ?><?php else: ?>'
+DCLS=r'(?:profile-description|profile-desc|profile-bio|profile-about|about-me|about-text|about-desc|bio-text|user-bio|profile-summary)'
+desc_ok=False
+# primary: a clean desc element (no nested same-tag)
+dm=re.search(r'<(p|div|span)([^>]*class="[^"]*'+DCLS+r'[^"]*"[^>]*)>(.*?)</\1>',body,re.I|re.S)
+if dm and len(dm.group(3))<900 and ('<'+dm.group(1).lower()) not in dm.group(3).lower():
+    new='<'+dm.group(1)+dm.group(2)+'>'+DESC_IF+dm.group(3)+'<?php endif; ?></'+dm.group(1)+'>'
+    body=body.replace(dm.group(0),new,1); desc_ok=True
+if not desc_ok:
+    # fallback: a <p> holding the bio text within the profile-desc region (containers w/ nesting)
+    dm2=re.search(r'class="[^"]*'+DCLS+r'[^"]*"',body,re.I)
+    if dm2:
+        win=body[dm2.end():dm2.end()+1200]
+        pm=re.search(r'(<p[^>]*>)(\s*[^<]{30,700}?)(</p>)',win)
+        if pm:
+            new=pm.group(1)+DESC_IF+pm.group(2)+'<?php endif; ?>'+pm.group(3)
+            body=body[:dm2.end()]+win.replace(pm.group(0),new,1)+body[dm2.end()+1200:]
+            desc_ok=True
+print('desc',desc_ok)
+
 # ---- emails / phones ----
 mails=re.findall(r'mailto:([^\s"\'>]+)',body)
 for i,key in enumerate(['email','alternate_email']):
@@ -188,7 +209,28 @@ BH=('<div class="business-hour-section pt-50 px-30 position-relative"><div class
 '<?php endforeach; ?></div></div></div>')
 SVC='<?php if(!empty($services)): ?>'+SVC+'<?php endif; ?>'
 BH='<?php if(!empty($businessHours)): ?>'+BH+'<?php endif; ?>'
-body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services-section[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
+body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services?-(?:section|area)[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
+if not ok:
+    # structure-based fallback: templates that place `service-card`s directly in a .row
+    # with no services-section wrapper. Replace that row's inner with a dynamic card loop.
+    ITEM=('<div class="col-sm-6 col-6 mb-4 px-2"><div class="card service-card h-100">'
+    '<div class="service-img card-img" style="overflow:hidden;border-radius:12px 12px 0 0"><img src="<?= htmlspecialchars($svimg) ?>" alt="<?= htmlspecialchars($sv["name"] ?? "") ?>" class="w-100 object-fit-cover" style="height:170px" loading="lazy"></div>'
+    '<div class="card-body text-center p-3"><h3 class="card-title fs-6 fw-6"><?= htmlspecialchars($sv["name"] ?? "") ?></h3>'
+    '<?php if(!empty($sv["description"])): ?><p class="card-text small mb-0 text-gray"><?= htmlspecialchars($sv["description"]) ?></p><?php endif; ?></div></div></div>')
+    SLOOP=('<?php if(!empty($services)): ?><?php foreach ((isset($__sv)?$__sv:($services ?? [])) as $sv): $svimg=!empty($sv["image"])?imgUrl($sv["image"]):"'+COVER+'"; ?>'+ITEM+'<?php endforeach; ?><?php endif; ?>')
+    fc=re.search(r'class="[^"]*\bservice-card\b',body)
+    if fc:
+        rows=list(re.finditer(r'<div[^>]*class="[^"]*\brow\b[^"]*"[^>]*>',body[:fc.start()],re.I))
+        if rows:
+            rm=rows[-1]; depth=0
+            for t in re.finditer(r'<div\b|</div>',body[rm.start():]):
+                depth+=1 if t.group(0)=='<div' else -1
+                if depth==0:
+                    inner_end=rm.start()+t.start()
+                    if inner_end-rm.end()<40000:
+                        body=body[:rm.end()]+SLOOP+body[inner_end:]; ok=True
+                    break
+    print('svc-fallback',ok)
 body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*business-hour(?!-card)[^>"\']*["\']?[^>]*>',BH);print('bh',ok)
 
 # ---- suppress + features ----
