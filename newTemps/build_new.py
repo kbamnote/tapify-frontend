@@ -211,6 +211,18 @@ SVC='<?php if(!empty($services)): ?>'+SVC+'<?php endif; ?>'
 BH='<?php if(!empty($businessHours)): ?>'+BH+'<?php endif; ?>'
 body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services?-(?:section|area)[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
 if not ok:
+    # section-based: <section class="services-section"> (photographer/portfolio)
+    m=re.search(r'<section[^>]*class="[^"]*(?:our-)?services?-(?:section|area)[^"]*"[^>]*>',body,re.I)
+    if m:
+        depth=0
+        for t in re.finditer(r'<section\b|</section>',body[m.start():],re.I):
+            depth+=1 if t.group(0).lower().startswith('<section') else -1
+            if depth==0:
+                end=m.start()+t.end()
+                if end-m.start()<40000: body=body[:m.start()]+SVC+body[end:]; ok=True
+                break
+    print('svc-section',ok)
+if not ok:
     # structure-based fallback: templates that place `service-card`s directly in a .row
     # with no services-section wrapper. Replace that row's inner with a dynamic card loop.
     ITEM=('<div class="col-sm-6 col-6 mb-4 px-2"><div class="card service-card h-100">'

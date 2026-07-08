@@ -39,3 +39,38 @@ if anchor in s and 'foreach ($socialLinks' not in s:
     wr(94,s.replace(anchor,block+anchor,1)); print('vcard94 social injected')
 else:
     print('vcard94 social:', 'already present' if 'foreach ($socialLinks' in s else 'anchor missing')
+
+# 4) About binding for templates whose bio sits in a profile-desc container the
+#    generic builder missed (skip testimonial-author profile-desc blocks).
+DESC_IF='<?php if(!empty($vcard["description"])): ?><?= nl2br(htmlspecialchars($vcard["description"])) ?><?php else: ?>'
+for v in [80,83,86,94,96,97]:
+    s=rd(v)
+    if s.count('$vcard["description"]')>=1: continue
+    done=False
+    for m in re.finditer(r'<div[^>]*class="[^"]*(?:profile-desc|(?<![-\w])desc(?![-\w]))[^"]*"[^>]*>', s, re.I):
+        depth=0; end=None
+        for t in re.finditer(r'<div\b|</div>', s[m.start():]):
+            depth+=1 if t.group(0)=='<div' else -1
+            if depth==0: end=m.start()+t.end(); break
+        if end is None or end-m.end()>8000: continue
+        inner=s[m.end():end]
+        if '$t[' in inner: continue                       # testimonial author block
+        pm=re.search(r'(<p[^>]*>)((?:(?!</p>).){40,1200}?)(</p>)', inner, re.S)  # allow nested inline tags
+        if pm:
+            newp=pm.group(1)+DESC_IF+pm.group(2)+'<?php endif; ?>'+pm.group(3)
+            s=s[:m.end()]+inner.replace(pm.group(0),newp,1)+s[end:]
+            wr(v,s); done=True; break
+    if not done:
+        # fallback: first substantial <p> after the occupation binding, not inside a section
+        om=s.find('$vcard["occupation"]')
+        if om!=-1:
+            region=s[om:om+3500]
+            BAD=('contact','qr','pwa','service','gallery','product','testimonial',
+                 'business-hour','appointment','blog','install','footer','map-','slick')
+            for pm in re.finditer(r'(<p[^>]*>)((?:(?!</p>).){40,1200}?)(</p>)', region, re.S):
+                pre=region[max(0,pm.start()-220):pm.start()].lower()
+                if any(k in pre for k in BAD): continue
+                newp=pm.group(1)+DESC_IF+pm.group(2)+'<?php endif; ?>'+pm.group(3)
+                s=s[:om]+region.replace(pm.group(0),newp,1)+s[om+3500:]
+                wr(v,s); done=True; break
+    print(f'vcard{v} about:', 'bound' if done else 'NOT FOUND')
