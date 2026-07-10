@@ -61,7 +61,9 @@ body=re.sub(r'<blockquote[^>]*instagram[\s\S]*?</blockquote>','',body,flags=re.I
 body=re.sub(r'<link[^>]*>','',body,flags=re.I)
 # wire the template's own inquiry form to the backend (was a stripped-JS stub)
 body=re.sub(r'<form[^>]*id=["\']?enquiryForm["\']?[^>]*>',
-            '<form id="enquiryForm" onsubmit="submitInquiry(event)" enctype="multipart/form-data"><input type="hidden" name="vcard_id" value="<?= $vcardId ?>">',
+            '<form id="enquiryForm" onsubmit="tfSubmitInquiry(event)" enctype="multipart/form-data"><input type="hidden" name="vcard_id" value="<?= $vcardId ?>">'
+            '<label class="w-100 mb-2" style="display:block;text-align:left"><span style="font-size:13px;opacity:.85">Attachment (optional)</span>'
+            '<input type="file" name="attachment" class="form-control" accept="image/*,.pdf" style="margin-top:4px"></label>',
             body, count=1, flags=re.I)
 
 def balanced_replace(s, open_re, new, max_span=40000):
@@ -145,6 +147,18 @@ if tels:
     if len(d)>=7:
         sep=r'[\s\- ]*'.join(map(re.escape,d))
         body=re.sub(r'>\s*\+?\s*'+sep+r'\s*<','><?= htmlspecialchars($vcard["phone"] ?? "") ?><',body)
+# ANY leftover demo emails/phones (duplicate slots) -> alternate bindings; JS hides empty rows
+for a0 in mails:
+    body=body.replace('mailto:'+a0,'mailto:<?= htmlspecialchars($vcard["alternate_email"] ?? "") ?>')
+    body=re.sub(r'>\s*'+re.escape(a0)+r'\s*<','><?= htmlspecialchars($vcard["alternate_email"] ?? "") ?><',body)
+for t0 in tels:
+    body=body.replace('tel:'+t0,'tel:<?= htmlspecialchars($vcard["alternate_phone"] ?? "") ?>')
+    body=re.sub(r'>\s*'+re.escape(t0)+r'\s*<','><?= htmlspecialchars($vcard["alternate_phone"] ?? "") ?><',body)
+# DOB demo text -> dynamic dob (row hidden by JS when empty)
+body,ndob=re.subn(r'>\s*\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?,?\s+\d{4}\s*<','><?= !empty($vcard["dob"]) ? htmlspecialchars(date("jS F, Y", strtotime($vcard["dob"]))) : "" ?><',body)
+print('dob',ndob)
+# maps links -> dynamic location URL
+body=re.sub(r'href=(["\']?)https?://[^"\'>\s]*(?:google\.[a-z.]+/maps|maps\.app\.goo\.gl|goo\.gl/maps)[^"\'>\s]*\1','href="<?= htmlspecialchars($locationUrl) ?>"',body)
 
 # ---- avatar ----
 body=re.sub(r'(<div class="[^"]*card-img[^"]*"[^>]*>\s*<img )src=("?)[^"\'> ]*\2',r'\1src="<?= $profileImg ?>"',body,count=1)
@@ -260,9 +274,14 @@ slick=('<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.j
 '<script>function tfInit(){if(typeof jQuery==="undefined"||!jQuery.fn||!jQuery.fn.slick){return setTimeout(tfInit,120);}jQuery(function($){'
 # hide empty data sections (heading + content) when there are no records
 '$(".product-slider,.gallery-slider,.testimonial-slider,.blog-slider").each(function(){'
-'if($(this).children().length===0){$(this).closest("[class*=section]").hide();$(this).hide();}});'
+'if($(this).children().length===0){var s=$(this).closest("[class*=section]");if(s.length&&!/main|wrapper|content|page|body/i.test(s.attr("class")||"")&&s.find("[class*=section]").length===0){s.hide();}$(this).hide();}});'
 # hide instagram-feed sections that have no items wired
-'$("[class*=instagram],[class*=insta-feed],[class*=insta-section],[class*=insta-feed-section]").each(function(){if($(this).find("img,iframe,.slick-slide,.insta-item,a[href*=instagram]").length===0){$(this).closest("[class*=section]").hide();$(this).hide();}});'
+'$("[class*=instagram],[class*=insta-feed],[class*=insta-section],[class*=insta-feed-section]").each(function(){if($(this).find("img,iframe,.slick-slide,.insta-item,a[href*=instagram]").length===0){var s=$(this).closest("[class*=section]");if(s.length&&!/main|wrapper|content|page|body/i.test(s.attr("class")||"")&&s.find("[class*=section]").length===0){s.hide();}$(this).hide();}});'
+# hide contact rows whose bound value is empty (alternate email/phone, dob, ...)
+'$("a").each(function(){var h=$(this).attr("href")||"";var tx=$(this).text().replace(/\\s+/g,"");if((h==="mailto:"||h==="tel:")&&tx===""){$(this).closest(".contact-box,.contact-item,li,.col-sm-6,.col-md-6,.col-6,.col-12,.col").hide();}});'
+'$("[class*=contact-box],[class*=contact-item]").each(function(){if($(this).text().replace(/\\s+/g,"")===""){$(this).hide();}});'
+# inquiry submit with optional file attachment (multipart)
+'window.tfSubmitInquiry=async function(ev){ev.preventDefault();var f=ev.target;var b=f.querySelector("button[type=submit]");var fd=new FormData(f);if(b)b.disabled=true;try{var r=await fetch("/inquiry-submit.php",{method:"POST",body:fd});var j=await r.json();if(j.success){if(window.showToast)showToast("Message sent!","success");f.reset();}else{if(window.showToast)showToast(j.message||"Failed","error");}}catch(e){if(window.showToast)showToast("Connection error","error");}finally{if(b)b.disabled=false;}};'
 'function ini(s,o){var $s=$(s);if(!$s.length||$s.hasClass("slick-initialized"))return;$s.slick(o);}'
 'ini(".product-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
 'ini(".gallery-slider",{slidesToShow:2,arrows:false,dots:true,infinite:true,autoplay:true,autoplaySpeed:2500,responsive:[{breakpoint:576,settings:{slidesToShow:1}}]});'
@@ -297,6 +316,18 @@ FIX=('<style>html,body{overflow-y:auto!important;height:auto!important;min-heigh
 '.blog-section,.blog-card,[class*=blog-]{display:none!important;}'
 '.product-slider,.gallery-slider,.testimonial-slider{overflow:hidden;}'
 '.product-slider .slick-slide,.gallery-slider .slick-slide{padding:0 8px;box-sizing:border-box;}'
+# install-app / newsletter popups off
+'.pwa-support,.news-modal,#newsLatter-content{display:none!important}'
+# social icons always visible in the accent color
+'.social-icon i,.social-icon svg,.social-icon .icon{color:#'+PRIMARY.lstrip('#')+'!important;fill:#'+PRIMARY.lstrip('#')+'!important;opacity:1!important}'
+# injected section headings centered + accent colored
+'.our-services-section .section-heading,.business-hour-section .section-heading{text-align:center!important}'
+'.our-services-section .section-heading h2,.business-hour-section .section-heading h2,.qr-code-section .section-heading h2{color:#'+PRIMARY.lstrip('#')+'!important}'
+# self-contained business-hour card styling (works on light + dark templates)
+'.business-hour-section .business-hour-card{background:rgba(127,127,127,.14)!important;border:1px solid rgba(127,127,127,.3)!important;border-radius:10px!important;padding:10px!important;margin-bottom:10px!important}'
+'.business-hour-section .business-hour-card span,.business-hour-section .business-hour-card .time-icon{color:#'+PRIMARY.lstrip('#')+'!important}'
+# QR section text always visible
+'.qr-code-section p,.qr-code-section span,.qr-code-section h4,.qr-code-section h5{color:#'+PRIMARY.lstrip('#')+'!important}'
 +EXTRA_CSS.get(SLUG,'')+'</style>')
 
 PCOL=PRIMARY.lstrip('#')
