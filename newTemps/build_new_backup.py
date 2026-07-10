@@ -218,60 +218,60 @@ body,soc_ok=social_inner_replace(body,soc)
 print('social',soc_ok)
 
 # ---- sliders (balanced inner replace) ----
-# PROD='<div class="product-slider"><?php foreach ((isset($__pr)?$__pr:($products ?? [])) as $p): $pi=!empty($p["image"])?imgUrl($p["image"]):"'+COVER+'"; ?><div class="px-2"><div class="product-card card"><div class="product-img card-img"><img src="<?= htmlspecialchars($pi) ?>" class="w-100 h-100 object-fit-cover" loading="lazy"></div><div class="product-desc card-body d-flex flex-column align-items-center justify-content-between"><div class="product-title"><h3 class="text-dark text-center"><?= htmlspecialchars($p["name"] ?? "") ?></h3></div><?php if(isset($p["price"]) && $p["price"]!==""): ?><div class="product-amount"><span>₹ <?= htmlspecialchars($p["price"]) ?></span></div><?php endif; ?></div></div></div><?php endforeach; ?></div>'
-# GAL='<div class="gallery-slider"><?php foreach ((isset($__ga)?$__ga:($galleries ?? [])) as $g): foreach (($g["images"] ?? []) as $im): $gi=imgUrl($im["image_url"] ?? ($im["image"] ?? "")); ?><div class="px-2"><div class="gallery-img-wrapper"><div class="gallery-img" style="background-image:url(\'<?= htmlspecialchars($gi) ?>\');background-size:cover;background-position:center;height:280px;border-radius:12px;"></div></div></div><?php endforeach; endforeach; ?></div>'
-# TES='<div class="testimonial-slider"><?php foreach ((isset($__te)?$__te:($testimonials ?? [])) as $t): ?><div class="px-2"><div class="testimonial-card p-0"><div class="card-body text-center position-relative"><div class="text-center"><p class="text-gray mb-0">“<?= htmlspecialchars($t["message"] ?? "") ?>”</p></div></div><div class="d-flex flex-column align-items-center justify-content-center gap-2 profile-desc"><?php if(!empty($t["image"])): ?><div class="card-img" style="width:60px;height:60px;border-radius:50%;overflow:hidden;"><img src="<?= htmlspecialchars(imgUrl($t["image"])) ?>" class="w-100 h-100 object-fit-cover"></div><?php endif; ?><h5 class="fw-6 mb-0"><?= htmlspecialchars($t["author_name"] ?? ($t["author"] ?? "")) ?></h5></div></div></div><?php endforeach; ?></div>'
-# for opn,new,lbl in [(r'<div class="[^"]*product-slider[^"]*"[^>]*>',PROD,'prod'),
-#                     (r'<div class="[^"]*gallery-slider[^"]*"[^>]*>',GAL,'gal'),
-#                     (r'<div class="[^"]*testimonial-slider[^"]*"[^>]*>',TES,'tes')]:
-#     body,ok=balanced_replace(body,opn,new);print(lbl,ok)
-# 
+PROD='<div class="product-slider"><?php foreach ((isset($__pr)?$__pr:($products ?? [])) as $p): $pi=!empty($p["image"])?imgUrl($p["image"]):"'+COVER+'"; ?><div class="px-2"><div class="product-card card"><div class="product-img card-img"><img src="<?= htmlspecialchars($pi) ?>" class="w-100 h-100 object-fit-cover" loading="lazy"></div><div class="product-desc card-body d-flex flex-column align-items-center justify-content-between"><div class="product-title"><h3 class="text-dark text-center"><?= htmlspecialchars($p["name"] ?? "") ?></h3></div><?php if(isset($p["price"]) && $p["price"]!==""): ?><div class="product-amount"><span>₹ <?= htmlspecialchars($p["price"]) ?></span></div><?php endif; ?></div></div></div><?php endforeach; ?></div>'
+GAL='<div class="gallery-slider"><?php foreach ((isset($__ga)?$__ga:($galleries ?? [])) as $g): foreach (($g["images"] ?? []) as $im): $gi=imgUrl($im["image_url"] ?? ($im["image"] ?? "")); ?><div class="px-2"><div class="gallery-img-wrapper"><div class="gallery-img" style="background-image:url(\'<?= htmlspecialchars($gi) ?>\');background-size:cover;background-position:center;height:280px;border-radius:12px;"></div></div></div><?php endforeach; endforeach; ?></div>'
+TES='<div class="testimonial-slider"><?php foreach ((isset($__te)?$__te:($testimonials ?? [])) as $t): ?><div class="px-2"><div class="testimonial-card p-0"><div class="card-body text-center position-relative"><div class="text-center"><p class="text-gray mb-0">“<?= htmlspecialchars($t["message"] ?? "") ?>”</p></div></div><div class="d-flex flex-column align-items-center justify-content-center gap-2 profile-desc"><?php if(!empty($t["image"])): ?><div class="card-img" style="width:60px;height:60px;border-radius:50%;overflow:hidden;"><img src="<?= htmlspecialchars(imgUrl($t["image"])) ?>" class="w-100 h-100 object-fit-cover"></div><?php endif; ?><h5 class="fw-6 mb-0"><?= htmlspecialchars($t["author_name"] ?? ($t["author"] ?? "")) ?></h5></div></div></div><?php endforeach; ?></div>'
+for opn,new,lbl in [(r'<div class="[^"]*product-slider[^"]*"[^>]*>',PROD,'prod'),
+                    (r'<div class="[^"]*gallery-slider[^"]*"[^>]*>',GAL,'gal'),
+                    (r'<div class="[^"]*testimonial-slider[^"]*"[^>]*>',TES,'tes')]:
+    body,ok=balanced_replace(body,opn,new);print(lbl,ok)
+
 # ---- services + business-hours: replace whole section (keep template classes) ----
-# SVC=('<div class="our-services-section pt-50 position-relative"><div class="section-heading"><h2>Our Services</h2></div>'
-# '<div class="services"><div class="px-30"><div class="row"><?php foreach ((isset($__sv)?$__sv:($services ?? [])) as $sv): $svimg=!empty($sv["image"])?imgUrl($sv["image"]):"'+COVER+'"; ?>'
-# '<div class="col-sm-6 mb-sm-0 mb-40 p-3"><div class="card-wrapper h-100"><a href="javascript:void(0)" class="text-decoration-none"><div class="service-card card h-100"><div class="card-img mx-auto"><img src="<?= htmlspecialchars($svimg) ?>" alt="<?= htmlspecialchars($sv["name"] ?? "") ?>" class="w-100 h-100 object-fit-cover" loading="lazy"></div><div class="card-body text-center"><h3 class="card-title text-primary"><?= htmlspecialchars($sv["name"] ?? "") ?></h3><?php if(!empty($sv["description"])): ?><p class="mb-0 text-gray"><?= htmlspecialchars($sv["description"]) ?></p><?php endif; ?></div></div></a></div></div>'
-# '<?php endforeach; ?></div></div></div></div>')
-# BH=('<div class="business-hour-section pt-50 px-30 position-relative"><div class="section-heading"><h2>Business Hours</h2></div>'
-# '<div class="px-30"><div class="row justify-content-center"><?php foreach ((isset($__bh)?$__bh:($businessHours ?? [])) as $bh): ?>'
-# '<div class="col-sm-6"><div class="business-hour-card d-flex gap-2 align-items-center mb-3"><div class="time-icon"><i class="bi bi-clock fs-3"></i></div><div class="d-flex flex-column align-items-start"><span class="fs-14 text-gray lh-1 fw-5"><?= htmlspecialchars(ucfirst(strtolower($bh["day_name"] ?? ""))) ?></span><span class="fs-16 fw-5"><?= !empty($bh["is_open"]) ? htmlspecialchars(trim(($bh["open_time"] ?? "")." - ".($bh["close_time"] ?? ""))) : "Closed" ?></span></div></div></div>'
-# '<?php endforeach; ?></div></div></div>')
-# SVC='<?php if(!empty($services)): ?>'+SVC+'<?php endif; ?>'
-# BH='<?php if(!empty($businessHours)): ?>'+BH+'<?php endif; ?>'
-# body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services?-(?:section|area)[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
-# if not ok:
-#     # section-based: <section class="services-section"> (photographer/portfolio)
-#     m=re.search(r'<section[^>]*class="[^"]*(?:our-)?services?-(?:section|area)[^"]*"[^>]*>',body,re.I)
-#     if m:
-#         depth=0
-#         for t in re.finditer(r'<section\b|</section>',body[m.start():],re.I):
-#             depth+=1 if t.group(0).lower().startswith('<section') else -1
-#             if depth==0:
-#                 end=m.start()+t.end()
-#                 if end-m.start()<40000: body=body[:m.start()]+SVC+body[end:]; ok=True
-#                 break
-#     print('svc-section',ok)
-# if not ok:
-#     # structure-based fallback: templates that place `service-card`s directly in a .row
-#     # with no services-section wrapper. Replace that row's inner with a dynamic card loop.
-#     ITEM=('<div class="col-sm-6 col-6 mb-4 px-2"><div class="card service-card h-100">'
-#     '<div class="service-img card-img" style="overflow:hidden;border-radius:12px 12px 0 0"><img src="<?= htmlspecialchars($svimg) ?>" alt="<?= htmlspecialchars($sv["name"] ?? "") ?>" class="w-100 object-fit-cover" style="height:170px" loading="lazy"></div>'
-#     '<div class="card-body text-center p-3"><h3 class="card-title fs-6 fw-6"><?= htmlspecialchars($sv["name"] ?? "") ?></h3>'
-#     '<?php if(!empty($sv["description"])): ?><p class="card-text small mb-0 text-gray"><?= htmlspecialchars($sv["description"]) ?></p><?php endif; ?></div></div></div>')
-#     SLOOP=('<?php if(!empty($services)): ?><?php foreach ((isset($__sv)?$__sv:($services ?? [])) as $sv): $svimg=!empty($sv["image"])?imgUrl($sv["image"]):"'+COVER+'"; ?>'+ITEM+'<?php endforeach; ?><?php endif; ?>')
-#     fc=re.search(r'class="[^"]*\bservice-card\b',body)
-#     if fc:
-#         rows=list(re.finditer(r'<div[^>]*class="[^"]*\brow\b[^"]*"[^>]*>',body[:fc.start()],re.I))
-#         if rows:
-#             rm=rows[-1]; depth=0
-#             for t in re.finditer(r'<div\b|</div>',body[rm.start():]):
-#                 depth+=1 if t.group(0)=='<div' else -1
-#                 if depth==0:
-#                     inner_end=rm.start()+t.start()
-#                     if inner_end-rm.end()<40000:
-#                         body=body[:rm.end()]+SLOOP+body[inner_end:]; ok=True
-#                     break
-#     print('svc-fallback',ok)
-# body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*business-hour(?!-card)[^>"\']*["\']?[^>]*>',BH);print('bh',ok)
+SVC=('<div class="our-services-section pt-50 position-relative"><div class="section-heading"><h2>Our Services</h2></div>'
+'<div class="services"><div class="px-30"><div class="row"><?php foreach ((isset($__sv)?$__sv:($services ?? [])) as $sv): $svimg=!empty($sv["image"])?imgUrl($sv["image"]):"'+COVER+'"; ?>'
+'<div class="col-sm-6 mb-sm-0 mb-40 p-3"><div class="card-wrapper h-100"><a href="javascript:void(0)" class="text-decoration-none"><div class="service-card card h-100"><div class="card-img mx-auto"><img src="<?= htmlspecialchars($svimg) ?>" alt="<?= htmlspecialchars($sv["name"] ?? "") ?>" class="w-100 h-100 object-fit-cover" loading="lazy"></div><div class="card-body text-center"><h3 class="card-title text-primary"><?= htmlspecialchars($sv["name"] ?? "") ?></h3><?php if(!empty($sv["description"])): ?><p class="mb-0 text-gray"><?= htmlspecialchars($sv["description"]) ?></p><?php endif; ?></div></div></a></div></div>'
+'<?php endforeach; ?></div></div></div></div>')
+BH=('<div class="business-hour-section pt-50 px-30 position-relative"><div class="section-heading"><h2>Business Hours</h2></div>'
+'<div class="px-30"><div class="row justify-content-center"><?php foreach ((isset($__bh)?$__bh:($businessHours ?? [])) as $bh): ?>'
+'<div class="col-sm-6"><div class="business-hour-card d-flex gap-2 align-items-center mb-3"><div class="time-icon"><i class="bi bi-clock fs-3"></i></div><div class="d-flex flex-column align-items-start"><span class="fs-14 text-gray lh-1 fw-5"><?= htmlspecialchars(ucfirst(strtolower($bh["day_name"] ?? ""))) ?></span><span class="fs-16 fw-5"><?= !empty($bh["is_open"]) ? htmlspecialchars(trim(($bh["open_time"] ?? "")." - ".($bh["close_time"] ?? ""))) : "Closed" ?></span></div></div></div>'
+'<?php endforeach; ?></div></div></div>')
+SVC='<?php if(!empty($services)): ?>'+SVC+'<?php endif; ?>'
+BH='<?php if(!empty($businessHours)): ?>'+BH+'<?php endif; ?>'
+body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*(?:our-)?services?-(?:section|area)[^>"\']*["\']?[^>]*>',SVC);print('svc',ok)
+if not ok:
+    # section-based: <section class="services-section"> (photographer/portfolio)
+    m=re.search(r'<section[^>]*class="[^"]*(?:our-)?services?-(?:section|area)[^"]*"[^>]*>',body,re.I)
+    if m:
+        depth=0
+        for t in re.finditer(r'<section\b|</section>',body[m.start():],re.I):
+            depth+=1 if t.group(0).lower().startswith('<section') else -1
+            if depth==0:
+                end=m.start()+t.end()
+                if end-m.start()<40000: body=body[:m.start()]+SVC+body[end:]; ok=True
+                break
+    print('svc-section',ok)
+if not ok:
+    # structure-based fallback: templates that place `service-card`s directly in a .row
+    # with no services-section wrapper. Replace that row's inner with a dynamic card loop.
+    ITEM=('<div class="col-sm-6 col-6 mb-4 px-2"><div class="card service-card h-100">'
+    '<div class="service-img card-img" style="overflow:hidden;border-radius:12px 12px 0 0"><img src="<?= htmlspecialchars($svimg) ?>" alt="<?= htmlspecialchars($sv["name"] ?? "") ?>" class="w-100 object-fit-cover" style="height:170px" loading="lazy"></div>'
+    '<div class="card-body text-center p-3"><h3 class="card-title fs-6 fw-6"><?= htmlspecialchars($sv["name"] ?? "") ?></h3>'
+    '<?php if(!empty($sv["description"])): ?><p class="card-text small mb-0 text-gray"><?= htmlspecialchars($sv["description"]) ?></p><?php endif; ?></div></div></div>')
+    SLOOP=('<?php if(!empty($services)): ?><?php foreach ((isset($__sv)?$__sv:($services ?? [])) as $sv): $svimg=!empty($sv["image"])?imgUrl($sv["image"]):"'+COVER+'"; ?>'+ITEM+'<?php endforeach; ?><?php endif; ?>')
+    fc=re.search(r'class="[^"]*\bservice-card\b',body)
+    if fc:
+        rows=list(re.finditer(r'<div[^>]*class="[^"]*\brow\b[^"]*"[^>]*>',body[:fc.start()],re.I))
+        if rows:
+            rm=rows[-1]; depth=0
+            for t in re.finditer(r'<div\b|</div>',body[rm.start():]):
+                depth+=1 if t.group(0)=='<div' else -1
+                if depth==0:
+                    inner_end=rm.start()+t.start()
+                    if inner_end-rm.end()<40000:
+                        body=body[:rm.end()]+SLOOP+body[inner_end:]; ok=True
+                    break
+    print('svc-fallback',ok)
+body,ok=balanced_replace(body,r'<div class=["\']?[^>"\']*business-hour(?!-card)[^>"\']*["\']?[^>]*>',BH);print('bh',ok)
 
 # ---- suppress + features ----
 supp='<?php $__sv=$services;$__pr=$products;$__ga=$galleries;$__te=$testimonials;$__bh=$businessHours;$services=[];$products=[];$galleries=[];$testimonials=[];$businessHours=[]; ?>'
