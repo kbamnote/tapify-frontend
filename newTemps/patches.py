@@ -32,9 +32,9 @@ s=rd(94)
 anchor='<div class="contact-section pt-50 pb-50 position-relative">'
 block=('<?php if(!empty($socialLinks)): ?><div class="social-media-section text-center py-4">'
  '<div class="d-flex justify-content-center flex-wrap gap-3"><?php foreach ($socialLinks as $s): '
- '$ic=$platformIcons[strtolower($s["platform"] ?? "")] ?? "fa-globe"; ?>'
+ '$__sp=strtolower($s["platform"] ?? ""); $__svg=$socialSvgs[$__sp] ?? $socialSvgs["globe"]; ?>'
  '<a href="<?= htmlspecialchars($s["url"]) ?>" target="_blank" rel="noopener" class="social-icon">'
- '<i class="fab <?= $ic ?> icon fa-2x"></i></a><?php endforeach; ?></div></div><?php endif; ?>')
+ '<?= $__svg ?></a><?php endforeach; ?></div></div><?php endif; ?>')
 if anchor in s and 'foreach ($socialLinks' not in s:
     wr(94,s.replace(anchor,block+anchor,1)); print('vcard94 social injected')
 else:
