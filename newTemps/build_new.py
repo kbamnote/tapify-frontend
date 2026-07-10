@@ -34,6 +34,10 @@ def save(mime,data):
     open(os.path.join(ASSET_DIR,fn),'wb').write(raw);seen[m]=ASSET_URL+'/'+fn
     return seen[m]
 h=re.sub(r'data:(image/[a-z+]+);base64,([A-Za-z0-9+/=]+)',lambda m:save(m.group(1),m.group(2)) or m.group(0),h)
+# Tapify's transparent SVG-placeholder src contains raw <svg>/<rect> markup which the HTML
+# parser treats as real elements (breaks the <img> tag, dumps its attributes as text).
+# Swap it for a <-free 1x1 transparent GIF so the CSS-var background-image shows cleanly.
+h=re.sub(r'data:image/svg\+xml,<svg\b[\s\S]*?</svg>','data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',h)
 COVER=ASSET_URL+f'/{SLUG[:3]}-003.webp'
 ifn=sorted([f for f in os.listdir(ASSET_DIR) if f.endswith(('.webp','.jpg','.png'))])
 if ifn: COVER=ASSET_URL+'/'+ifn[len(ifn)//2]
@@ -57,6 +61,12 @@ body=re.sub(r'<iframe[^>]*/?>','',body,flags=re.I)
 # swallows the next script tag; Google-Forms PING detection spans)
 body=re.sub(r'</iframe\s*>?','',body,flags=re.I)
 body=re.sub(r'<span[^>]*PING_IFRAME[^>]*>.*?</span>','',body,flags=re.I|re.S)
+# unwrap declarative shadow DOM (<template shadowrootmode=...>) into light-DOM divs so the
+# page's CSS variables (e.g. logo/background-image:var(--sf-img-N)) actually reach the content
+body=re.sub(r'<template[^>]*shadowrootmode[^>]*>','<div style="display:contents">',body,flags=re.I)
+body=body.replace('</template>','</div>')
+# repair malformed closing tags like `</div<script>` (missing >) that swallow the next element
+body=re.sub(r'</([a-zA-Z][\w-]*)(?=<)', r'</\1>', body)
 body=re.sub(r'<blockquote[^>]*instagram[\s\S]*?</blockquote>','',body,flags=re.I)
 body=re.sub(r'<link[^>]*>','',body,flags=re.I)
 # wire the template's own inquiry form to the backend (was a stripped-JS stub)
@@ -277,6 +287,9 @@ slick=('<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.j
 'if($(this).children().length===0){var s=$(this).closest("[class*=section]");if(s.length&&!/main|wrapper|content|page|body/i.test(s.attr("class")||"")&&s.find("[class*=section]").length===0){s.hide();}$(this).hide();}});'
 # hide instagram-feed sections that have no items wired
 '$("[class*=instagram],[class*=insta-feed],[class*=insta-section],[class*=insta-feed-section]").each(function(){if($(this).find("img,iframe,.slick-slide,.insta-item,a[href*=instagram]").length===0){var s=$(this).closest("[class*=section]");if(s.length&&!/main|wrapper|content|page|body/i.test(s.attr("class")||"")&&s.find("[class*=section]").length===0){s.hide();}$(this).hide();}});'
+# hide empty BEM data blocks (e.g. .vcard-one__gallery / __products / __testimonial): the
+# wrapper stays even when its slider is empty, so hide the wrapper when its slider has no items
+'$("[class*=__gallery],[class*=__product],[class*=__testimonial]").each(function(){var sl=$(this).find(".gallery-slider,.product-slider,.testimonial-slider").first();if(sl.length&&sl.children().length===0){$(this).hide();}});'
 # hide contact rows whose bound value is empty (alternate email/phone, dob, ...)
 '$("a").each(function(){var h=$(this).attr("href")||"";var tx=$(this).text().replace(/\\s+/g,"");if((h==="mailto:"||h==="tel:")&&tx===""){$(this).closest(".contact-box,.contact-item,li,.col-sm-6,.col-md-6,.col-6,.col-12,.col").hide();}});'
 '$("[class*=contact-box],[class*=contact-item]").each(function(){if($(this).text().replace(/\\s+/g,"")===""){$(this).hide();}});'
@@ -313,7 +326,7 @@ FIX=('<style>html,body{overflow-y:auto!important;height:auto!important;min-heigh
 '.container{max-width:540px!important;margin-left:auto!important;margin-right:auto!important;}'
 # "Add to Contact" bar is position:fixed;left:0;width:100% in the source -> center it within the card
 '.add-to-contact-btn,.add-to-contact-section,[class*=add-to-contact]{left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:540px!important;width:100%!important;}'
-'.blog-section,.blog-card,[class*=blog-]{display:none!important;}'
+'.blog-section,.blog-card,[class*=blog-],[class*=__blog],[class*=blog-section]{display:none!important;}'
 '.product-slider,.gallery-slider,.testimonial-slider{overflow:hidden;}'
 '.product-slider .slick-slide,.gallery-slider .slick-slide{padding:0 8px;box-sizing:border-box;}'
 # install-app / newsletter popups off
@@ -351,5 +364,7 @@ out=(php_header+'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><met
 '</head><body>'+body+slick+
 '<?php if(!empty($vcard["custom_js"])): ?><script><?= $vcard["custom_js"] ?></script><?php endif; ?>'
 '<?php include __DIR__ . "/_shared-scripts.php"; ?></body></html>')
+# final pass: repair malformed closing tags at the body/script boundary (</div<script -> </div><script)
+out=re.sub(r'</([a-zA-Z][\w-]*)(?=<[a-zA-Z/])', r'</\1>', out)
 open(OUT,'w',encoding='utf-8').write(out)
 print('WROTE',VID,len(out)//1024,'KB | base64 left:',len(re.findall(r'base64,[A-Za-z0-9+/=]{80,}',out)))
