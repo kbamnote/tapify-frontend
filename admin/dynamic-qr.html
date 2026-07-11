@@ -87,6 +87,12 @@
             <p style="margin:0 0 18px;color:#6b7280;font-size:0.9rem;">
                 Create smart QR codes whose destination link can be changed anytime — the printed code never changes.
             </p>
+            <div id="filterContainer" style="display:none; margin-bottom: 15px; align-items: center; gap: 15px;">
+                <label style="font-weight: 500; font-size: 0.9rem;">Filter by Client:</label>
+                <select id="clientFilter" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; max-width: 300px; width: 100%; font-family: inherit;">
+                    <option value="">All Clients</option>
+                </select>
+            </div>
             <div class="vcards-table-wrapper">
                 <table class="vcards-table">
                     <thead>
@@ -119,6 +125,12 @@
             <div class="qr-modal-body">
                 <input type="hidden" id="qrId">
                 <input type="hidden" id="qrShortUrl">
+                <div class="qr-field" id="qrOwnerField" style="display:none;">
+                    <label>Assign to Client (Admin/Staff only)</label>
+                    <select id="qrOwner">
+                        <option value="">-- Loading --</option>
+                    </select>
+                </div>
                 <div class="qr-field">
                     <label>QR Name *</label>
                     <input type="text" id="qrName" placeholder="e.g. My Campaign QR">
@@ -224,9 +236,43 @@
     <script src="../admin.js"></script>
     <script>
         const QR_API = 'https://app.tapify.co.in/api/dynamic-qr';
+        const USERS_API = 'https://app.tapify.co.in/api/admin/users/list.php';
         const QR_REDIRECT_BASE = 'https://app.tapify.co.in/qr/';   // scan target (redirect handler)
 
         let qrList = [];
+        let usersList = [];
+
+        async function loadUsers() {
+            const userStr = localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user');
+            if (!userStr) return;
+            try {
+                const currentUser = JSON.parse(userStr);
+                if (currentUser.role === 'admin' || currentUser.role === 'staff') {
+                    const res = await fetch(USERS_API, { credentials: 'include' });
+                    const result = await res.json();
+                    const users = (result.data && result.data.users) ? result.data.users : [];
+                    usersList = users;
+                    
+                    const options = '<option value="">All Clients</option>' + 
+                        users.map(u => `<option value="${u.id}">${escapeHtml(u.name || 'User #' + u.id)} (${escapeHtml(u.email || '')})</option>`).join('');
+                    const selectOptions = '<option value="">-- Myself --</option>' + 
+                        users.map(u => `<option value="${u.id}">${escapeHtml(u.name || 'User #' + u.id)} (${escapeHtml(u.email || '')})</option>`).join('');
+                        
+                    const filterEl = document.getElementById('clientFilter');
+                    if (filterEl) {
+                        filterEl.innerHTML = options;
+                        filterEl.addEventListener('change', renderTable);
+                        document.getElementById('filterContainer').style.display = 'flex';
+                    }
+                    
+                    const ownerEl = document.getElementById('qrOwner');
+                    if (ownerEl) {
+                        ownerEl.innerHTML = selectOptions;
+                        document.getElementById('qrOwnerField').style.display = 'block';
+                    }
+                }
+            } catch(e) {}
+        }
 
         let qrStyling = null;
 
@@ -297,6 +343,38 @@
             return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
         }
 
+        function renderTable() {
+            const tbody = document.getElementById('qrTableBody');
+            const filterUserId = document.getElementById('clientFilter') ? document.getElementById('clientFilter').value : '';
+            
+            let filteredList = qrList;
+            if (filterUserId) {
+                filteredList = filteredList.filter(q => String(q.user_id) === filterUserId);
+            }
+            
+            if (filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><i class="fas fa-qrcode"></i>No dynamic QR codes found.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = filteredList.map(q => `
+                <tr>
+                    <td><strong>${escapeHtml(q.name)}</strong></td>
+                    <td>${q.owner_name ? escapeHtml(q.owner_name) : '<span style="color:#aaa;">—</span>'}${q.owner_email ? `<br><small style="color:#9ca3af;">${escapeHtml(q.owner_email)}</small>` : ''}</td>
+                    <td><a class="qr-link-cell" href="${QR_REDIRECT_BASE}${escapeHtml(q.short_url)}" target="_blank">/qr/${escapeHtml(q.short_url)}</a></td>
+                    <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(q.destination_url)}</td>
+                    <td style="text-transform:capitalize;">${escapeHtml(q.qr_type || 'website')}</td>
+                    <td>${q.total_scans || 0}</td>
+                    <td><span class="badge ${q.status == 1 ? 'bg-success' : 'bg-danger'}">${q.status == 1 ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button class="action-btn" title="View / Download QR" onclick="viewQr(${q.id})"><i class="fas fa-qrcode"></i></button>
+                        <button class="action-btn" title="Edit" onclick="editQr(${q.id})"><i class="fas fa-pen"></i></button>
+                        <button class="action-btn text-danger" title="Delete" onclick="deleteQr(${q.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         async function loadQrs() {
             const tbody = document.getElementById('qrTableBody');
             try {
@@ -307,26 +385,7 @@
                     return;
                 }
                 qrList = result.data || [];
-                if (qrList.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><i class="fas fa-qrcode"></i>No dynamic QR codes yet. Click "Create Dynamic QR".</td></tr>`;
-                    return;
-                }
-                tbody.innerHTML = qrList.map(q => `
-                    <tr>
-                        <td><strong>${escapeHtml(q.name)}</strong></td>
-                        <td>${q.owner_name ? escapeHtml(q.owner_name) : '<span style="color:#aaa;">—</span>'}${q.owner_email ? `<br><small style="color:#9ca3af;">${escapeHtml(q.owner_email)}</small>` : ''}</td>
-                        <td><a class="qr-link-cell" href="${QR_REDIRECT_BASE}${escapeHtml(q.short_url)}" target="_blank">/qr/${escapeHtml(q.short_url)}</a></td>
-                        <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(q.destination_url)}</td>
-                        <td style="text-transform:capitalize;">${escapeHtml(q.qr_type || 'website')}</td>
-                        <td>${q.total_scans || 0}</td>
-                        <td><span class="badge ${q.status == 1 ? 'bg-success' : 'bg-danger'}">${q.status == 1 ? 'Active' : 'Inactive'}</span></td>
-                        <td>
-                            <button class="action-btn" title="View / Download QR" onclick="viewQr(${q.id})"><i class="fas fa-qrcode"></i></button>
-                            <button class="action-btn" title="Edit" onclick="editQr(${q.id})"><i class="fas fa-pen"></i></button>
-                            <button class="action-btn text-danger" title="Delete" onclick="deleteQr(${q.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
+                renderTable();
             } catch (err) {
                 tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Network error. Please try again.</td></tr>`;
             }
@@ -345,6 +404,9 @@
             document.getElementById('qrExpiry').value = '';
             document.getElementById('qrStatus').checked = true;
             document.getElementById('qrMsg').textContent = '';
+            if (document.getElementById('qrOwnerField').style.display !== 'none') {
+                document.getElementById('qrOwner').value = '';
+            }
             resetQrLogo();
             applyStyleJson(null);
             document.getElementById('qrPreviewWrap').style.display = 'none';
@@ -365,6 +427,9 @@
             document.getElementById('qrExpiry').value = q.expiry_date ? String(q.expiry_date).substring(0,10) : '';
             document.getElementById('qrStatus').checked = q.status == 1;
             document.getElementById('qrMsg').textContent = '';
+            if (document.getElementById('qrOwnerField').style.display !== 'none') {
+                document.getElementById('qrOwner').value = q.user_id || '';
+            }
             applyStyleJson(q.style_json);
             setQrLogo(q.logo || '');
             renderPreview(q.short_url, q.name);
@@ -455,6 +520,7 @@
                 custom_color: document.getElementById('qrColor').value,
                 logo: document.getElementById('qrLogo').value || null,
                 style_json: collectStyleJson(),
+                user_id: document.getElementById('qrOwnerField').style.display !== 'none' ? document.getElementById('qrOwner').value : null,
                 password: document.getElementById('qrPassword').value.trim(),
                 expiry_date: document.getElementById('qrExpiry').value || null,
                 status: document.getElementById('qrStatus').checked ? 1 : 0
@@ -533,7 +599,10 @@
             if (e.target.files && e.target.files[0]) handleLogoUpload(e.target.files[0]);
         });
 
-        document.addEventListener('DOMContentLoaded', loadQrs);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+            loadQrs();
+        });
     </script>
 </body>
 </html>
