@@ -245,7 +245,7 @@ function checkAuth() {
         // the vCard management pages; everyone else is bounced.
         if (isAdminPath && role !== 'admin') {
             const seg = path.split('/').pop().replace('.html', '');
-            const staffPages = ['vcards', 'vcards-edit', 'vcards-create', 'dynamic-qr'];
+            const staffPages = ['vcards', 'vcards-edit', 'vcards-create', 'dynamic-qr', 'review-funnel'];
             if (role === 'staff' && staffPages.includes(seg)) {
                 applyStaffRestrictions(); // hide admin-only nav + delete controls
             } else {
@@ -277,7 +277,7 @@ function applyStaffRestrictions() {
     const hideNav = () => {
         document.querySelectorAll('.sidebar-nav .nav-item').forEach(a => {
             const href = (a.getAttribute('href') || '').toLowerCase();
-            const allowed = href.includes('vcards') || href.includes('dynamic-qr');
+            const allowed = href.includes('vcards') || href.includes('dynamic-qr') || href.includes('review-funnel');
             if (!allowed) a.style.display = 'none';
         });
         const footer = document.querySelector('.sidebar-footer');
