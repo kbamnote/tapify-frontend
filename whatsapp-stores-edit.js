@@ -6,29 +6,41 @@ let currentStore = null;
 let categoriesData = [];
 let productsData = [];
 
-// Store Templates
+// Store Templates — the only 8 themes offered for the web store.
 // NOTE: A store's data is shared across ALL templates. Switching template only
 // changes the UI (the whatsapp_stores.template_id column) — no data is migrated.
+// (The older v1 template files still exist on disk but are no longer offered
+// here or renderable — store.php aliases any legacy template_id to one of these 8.)
 const storeTemplates = [
-    // ── v2 — new full-width listing themes (webStoreTemps) ──
-    { id: 'store_template_9',  name: 'Ethereal Beauty',   category: 'Beauty',   badge: 'New', image: 'https://via.placeholder.com/400x600/fdf6f0/c29c77?text=Ethereal+Beauty', demoUrl: '../webStore_templates/store-template-9-beauty.php' },
-    { id: 'store_template_10', name: 'Prime Store',       category: 'Retail',   badge: 'New', image: 'https://via.placeholder.com/400x600/eef1fb/2650d7?text=Prime+Store',     demoUrl: '../webStore_templates/store-template-10-ecommerce.php' },
-    { id: 'store_template_11', name: 'Mahejbani',         category: 'Food',     badge: 'New', image: 'https://via.placeholder.com/400x600/f7f0e6/bf9157?text=Restaurant',      demoUrl: '../webStore_templates/store-template-11-restaurant.php' },
-    { id: 'store_template_12', name: 'Grocery Store',     category: 'Grocery',  badge: 'New', image: 'https://via.placeholder.com/400x600/eef8ef/72bf78?text=Grocery',         demoUrl: '../webStore_templates/store-template-12-grocery.php' },
-    { id: 'store_template_13', name: 'Cloth Store',       category: 'Fashion',  badge: 'New', image: 'https://via.placeholder.com/400x600/f0f0f2/27262e?text=Cloth+Store',     demoUrl: '../webStore_templates/store-template-13-cloth.php' },
-    { id: 'store_template_14', name: 'Home Decor',        category: 'Decor',    badge: 'New', image: 'https://via.placeholder.com/400x600/eef2f5/19496a?text=Home+Decor',      demoUrl: '../webStore_templates/store-template-14-home-decor.php' },
-    { id: 'store_template_15', name: 'The Royal Jewellers', category: 'Luxury', badge: 'New', image: 'https://via.placeholder.com/400x600/f7f2e2/b8860b?text=Jewellery',       demoUrl: '../webStore_templates/store-template-15-jewellery.php' },
-    { id: 'store_template_16', name: 'Desi Miles Travel', category: 'Travel',   badge: 'New', image: 'https://via.placeholder.com/400x600/e9f4f7/1e88a8?text=Travel',          demoUrl: '../webStore_templates/store-template-16-travel.php' },
-    // ── v1 — original mobile-first themes ──
-    { id: 'store_template_1', name: 'Beauty (Classic)', category: 'Beauty', image: 'https://via.placeholder.com/400x600/fdf2f8/ec4899?text=Beauty+Classic', demoUrl: '../webStore_templates/store-template-1-beauty-product.php' },
-    { id: 'store_template_2', name: 'E-commerce (Classic)', category: 'Retail', image: 'https://via.placeholder.com/400x600/eff6ff/3b82f6?text=E-commerce', demoUrl: '../webStore_templates/store-template-2-e-commerce.php' },
-    { id: 'store_template_3', name: 'Restaurant (Classic)', category: 'Food', image: 'https://via.placeholder.com/400x600/fffbeb/f59e0b?text=Restaurant', demoUrl: '../webStore_templates/store-template-3-restaurant.php' },
-    { id: 'store_template_4', name: 'Grocery (Classic)', category: 'Retail', image: 'https://via.placeholder.com/400x600/f0fdf4/22c55e?text=Grocery', demoUrl: '../webStore_templates/store-template-4-grocery.php' },
-    { id: 'store_template_5', name: 'Clothing (Classic)', category: 'Fashion', image: 'https://via.placeholder.com/400x600/f5f3ff/8b5cf6?text=Clothing', demoUrl: '../webStore_templates/store-template-5-cloth-store.php' },
-    { id: 'store_template_6', name: 'Home Decor (Classic)', category: 'Retail', image: 'https://via.placeholder.com/400x600/fff1f2/f43f5e?text=Home+Decor', demoUrl: '../webStore_templates/store-template-6-home-decor.php' },
-    { id: 'store_template_7', name: 'Jewellery (Classic)', category: 'Fashion', image: 'https://via.placeholder.com/400x600/fefce8/eab308?text=Jewellery', demoUrl: '../webStore_templates/store-template-7-jewellery.php' },
-    { id: 'store_template_8', name: 'Travel (Classic)', category: 'Services', image: 'https://via.placeholder.com/400x600/ecfeff/06b6d4?text=Travel', demoUrl: '../webStore_templates/store-template-8-travel.php' }
+    { id: 'store_template_9',  name: 'Ethereal Beauty',     category: 'Beauty',  image: 'https://via.placeholder.com/400x600/fdf6f0/c29c77?text=Ethereal+Beauty', demoUrl: '../webStore_templates/store-template-9-beauty.php' },
+    { id: 'store_template_10', name: 'Prime Store',         category: 'Retail',  image: 'https://via.placeholder.com/400x600/eef1fb/2650d7?text=Prime+Store',     demoUrl: '../webStore_templates/store-template-10-ecommerce.php' },
+    { id: 'store_template_11', name: 'Mahejbani',           category: 'Food',    image: 'https://via.placeholder.com/400x600/f7f0e6/bf9157?text=Restaurant',      demoUrl: '../webStore_templates/store-template-11-restaurant.php' },
+    { id: 'store_template_12', name: 'Grocery Store',       category: 'Grocery', image: 'https://via.placeholder.com/400x600/eef8ef/72bf78?text=Grocery',         demoUrl: '../webStore_templates/store-template-12-grocery.php' },
+    { id: 'store_template_13', name: 'Cloth Store',         category: 'Fashion', image: 'https://via.placeholder.com/400x600/f0f0f2/27262e?text=Cloth+Store',     demoUrl: '../webStore_templates/store-template-13-cloth.php' },
+    { id: 'store_template_14', name: 'Home Decor',          category: 'Decor',   image: 'https://via.placeholder.com/400x600/eef2f5/19496a?text=Home+Decor',      demoUrl: '../webStore_templates/store-template-14-home-decor.php' },
+    { id: 'store_template_15', name: 'The Royal Jewellers', category: 'Luxury',  image: 'https://via.placeholder.com/400x600/f7f2e2/b8860b?text=Jewellery',       demoUrl: '../webStore_templates/store-template-15-jewellery.php' },
+    { id: 'store_template_16', name: 'Desi Miles Travel',   category: 'Travel',  image: 'https://via.placeholder.com/400x600/e9f4f7/1e88a8?text=Travel',          demoUrl: '../webStore_templates/store-template-16-travel.php' }
 ];
+
+// Legacy ids a store might still carry in the DB — mapped to their v2
+// equivalent so the picker highlights the right (only offered) card.
+const LEGACY_TEMPLATE_ALIASES = {
+    'store_template_1': 'store_template_9',
+    'store_template_2': 'store_template_10',
+    'store_template_3': 'store_template_11',
+    'store_template_4': 'store_template_12',
+    'store_template_5': 'store_template_13',
+    'store_template_6': 'store_template_14',
+    'store_template_7': 'store_template_15',
+    'store_template_8': 'store_template_16',
+    'whatsapp_store_default': 'store_template_10',
+    'default': 'store_template_10'
+};
+function resolveTemplateId(id) {
+    if (!id) return 'store_template_10';
+    if (storeTemplates.some(t => t.id === id)) return id;
+    return LEGACY_TEMPLATE_ALIASES[id] || 'store_template_10';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
@@ -123,12 +135,8 @@ function populateForm(s) {
     if (s.cover_url) document.getElementById('coverPreview').innerHTML = `<img src="${s.cover_url}?t=${Date.now()}">`;
     if (s.favicon_url) document.getElementById('faviconPreview').innerHTML = `<img src="${s.favicon_url}?t=${Date.now()}">`;
 
-    if (s.template_id) {
-        selectStoreTemplate(s.template_id);
-    } else {
-        // default if none selected
-        selectStoreTemplate('store_template_1');
-    }
+    // Resolve any legacy/unknown template_id to one of the 8 offered v2 templates.
+    selectStoreTemplate(resolveTemplateId(s.template_id));
 }
 
 function setVal(id, val) {
@@ -575,8 +583,8 @@ function renderStoreTemplates() {
 }
 
 function selectStoreTemplate(id) {
-    if (!id) id = 'store_template_1';
-    
+    id = resolveTemplateId(id);
+
     // Update UI
     document.querySelectorAll('#storeTemplatesGrid .template-card').forEach(card => {
         card.classList.remove('selected');
