@@ -707,6 +707,54 @@ function removeAppointmentSlot(day, idx) {
     }
 }
 
+// day_of_week convention used by the backend (vcard_weekly_schedule / slots_manage.php): 0=Sunday..6=Saturday
+const APPT_DAY_TO_NUM = { SUNDAY: 0, MONDAY: 1, TUESDAY: 2, WEDNESDAY: 3, THURSDAY: 4, FRIDAY: 5, SATURDAY: 6 };
+const APPT_NUM_TO_DAY = { 0: 'SUNDAY', 1: 'MONDAY', 2: 'TUESDAY', 3: 'WEDNESDAY', 4: 'THURSDAY', 5: 'FRIDAY', 6: 'SATURDAY' };
+
+// "HH:MM" / "HH:MM:SS" (24h, from the DB) -> "HH:MM AM/PM" (matches the <select> option values)
+function apptTimeTo12h(t) {
+    const [hStr, mStr] = String(t).split(':');
+    let h = parseInt(hStr, 10) || 0;
+    const suffix = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    return `${h.toString().padStart(2, '0')}:${(mStr || '00').padStart(2, '0')} ${suffix}`;
+}
+
+// Load the saved weekly schedule (same endpoint the mobile app already uses) and refresh the UI.
+// If nothing has been saved yet, leave the friendly built-in defaults as-is.
+async function loadAppointmentSchedule(vcardId) {
+    if (!vcardId) return;
+    try {
+        const response = await fetch(`https://app.tapify.co.in/api/appointments/slots_manage.php?vcard_id=${vcardId}`, {
+            credentials: 'include'
+        });
+        const result = await response.json();
+        if (!result.success || !Array.isArray(result.data) || result.data.length === 0) return;
+
+        days.forEach(day => { appointmentDays[day].open = false; appointmentDays[day].slots = []; });
+
+        result.data.forEach(row => {
+            const dayName = APPT_NUM_TO_DAY[row.day_of_week];
+            if (!dayName) return;
+            appointmentDays[dayName].open = true;
+            appointmentDays[dayName].slots.push({
+                from: apptTimeTo12h(row.start_time),
+                to: apptTimeTo12h(row.end_time)
+            });
+        });
+
+        days.forEach(day => {
+            if (appointmentDays[day].slots.length === 0) {
+                appointmentDays[day].slots = [{ from: '10:00 AM', to: '06:00 PM' }];
+            }
+        });
+
+        renderAppointments();
+    } catch (err) {
+        console.error('Failed to load appointment schedule:', err);
+    }
+}
+
 // ===== SERVICES / PRODUCTS / etc. (sample data) =====
 const sampleServices = [
     { name: 'Premium QR & NFC Review Standee', url: 'https://wa.link/fibnre' },
@@ -2568,6 +2616,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentVcardId = parseInt(id);
         // Load real data from backend
         loadVcardData(id);
+        loadAppointmentSchedule(currentVcardId);
     } else {
         document.getElementById('editPageTitle').textContent = 'New vCard';
         showToast('No vCard ID provided. Please open from vCards list.', 'error');
@@ -2846,6 +2895,8 @@ function setupSaveButtons() {
                 saveResult = await saveTemplate();
             } else if (activeMainTab && activeMainTab.id === 'tab-business-hours') {
                 saveResult = await saveBusinessHours();
+            } else if (activeMainTab && activeMainTab.id === 'tab-appointments') {
+                saveResult = await saveAppointments();
             } else if (activeMainTab && activeMainTab.id === 'tab-dynamic-vcard') {
                 saveResult = await saveDynamicConfig();
             } else if (activeMainTab && activeMainTab.id === 'tab-qr-code') {
@@ -3020,6 +3071,51 @@ async function saveBusinessHours() {
         id: currentVcardId,
         business_hours: business_hours
     }, 'Business hours');
+}
+
+// Save the "Appointments" weekly availability (open days + time slots) -- same
+// backend endpoint (slots_manage.php) the mobile app's Appointments screen already
+// uses, so this is what actually drives /api/appointments/slots_public.php on the
+// live vCard's booking widget.
+async function saveAppointments() {
+    if (!currentVcardId) return false;
+
+    const schedule = [];
+    days.forEach(day => {
+        const data = appointmentDays[day];
+        if (!data.open) return;
+        data.slots.forEach(slot => {
+            if (slot.from && slot.to) {
+                schedule.push({ day: APPT_DAY_TO_NUM[day], start: slot.from, end: slot.to });
+            }
+        });
+    });
+
+    try {
+        const response = await fetch('https://app.tapify.co.in/api/appointments/slots_manage.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ action: 'save_week', vcard_id: currentVcardId, schedule })
+        });
+
+        if (response.status === 401) {
+            window.location.href = getLoginPath();
+            return false;
+        }
+
+        const result = await response.json();
+        if (result.success) {
+            showToast('✓ Appointment schedule saved successfully!', 'success');
+            return true;
+        }
+        showToast(result.message || 'Failed to save appointment schedule', 'error');
+        return false;
+    } catch (err) {
+        console.error('Save appointments error:', err);
+        showToast('Connection error: ' + err.message, 'error');
+        return false;
+    }
 }
 
 // Save Dynamic vCard configuration (colors, button styles)
