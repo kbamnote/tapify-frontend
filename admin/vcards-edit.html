@@ -355,7 +355,7 @@
                                     <small class="form-hint">Allowed: png, jpg, jpeg</small>
                                 </div>
 
-                                <!-- CUSTOMER LOGIN ACCESS (Admin Only) -->
+                                <!-- CUSTOMER LOGIN ACCESS (Admin + Staff) -->
                                 <div class="form-group full-width" id="customerAccessPanel" style="display:none;margin-top:10px;padding:22px;background:rgba(131,56,236,0.03);border:1px dashed #8338ec;border-radius:12px;">
                                     <h3 style="font-size:1rem;color:#8338ec;margin:0 0 6px;"><i class="fas fa-user-shield"></i> Customer Login Access</h3>
                                     <p style="font-size:0.82rem;color:#6b7280;margin:0 0 16px;" id="customerAccessHint">Set or reset the login email &amp; password the customer uses to sign in and manage this vCard.</p>
@@ -1290,17 +1290,18 @@
     <script src="../admin.js"></script>
     <script src="../vcard-edit.js"></script>
     <script>
-        // ===== Customer Login Access (Admin only) =====
+        // ===== Customer Login Access (Admin + Staff) =====
         const SET_CUSTOMER_API = 'https://app.tapify.co.in/api/admin/vcards/set-customer.php';
 
         function getVcardIdFromUrl() {
             return new URLSearchParams(window.location.search).get('id');
         }
 
+        // Admins and staff (card editors) may set/reset the customer login.
         function isAdminUser() {
             try {
                 const u = JSON.parse(localStorage.getItem('tapify_user') || sessionStorage.getItem('tapify_user') || '{}');
-                return u && u.role === 'admin';
+                return u && (u.role === 'admin' || u.role === 'staff');
             } catch (e) { return false; }
         }
 
