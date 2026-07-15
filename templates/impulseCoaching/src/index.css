@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --primary-light: #3B82F6;
+    --accent: #60A5FA;
+    --accent-warm: #F59E0B;
+    --accent-warm-light: #FBBF24;
+    --white: #FFFFFF;
+    --bg-light: #F8FAFF;
+    --bg-gradient-start: #EFF6FF;
+    --bg-gradient-end: #DBEAFE;
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+    --text-muted: #94A3B8;
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-bg-strong: rgba(255, 255, 255, 0.88);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: rgba(37, 99, 235, 0.08);
+    --dark-overlay: rgba(15, 23, 42, 0.6);
+    --shadow-sm: 0 1px 3px rgba(37, 99, 235, 0.06);
+    --shadow-card: 0 4px 24px rgba(37, 99, 235, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 12px 40px rgba(37, 99, 235, 0.14), 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-float: 0 8px 32px rgba(37, 99, 235, 0.2);
+    --shadow-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(37, 99, 235, 0.06);
+    --shadow-book: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.15);
+    --border-glass: 1px solid rgba(255, 255, 255, 0.5);
+    --border-subtle: 1px solid rgba(37, 99, 235, 0.1);
+    --border-accent: 2px solid #2563EB;
+    --radius: 0.75rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .font-h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.75rem, 3vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .font-h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .font-h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.125rem, 1.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .font-body {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.9375rem, 1vw, 1.125rem);
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .font-body-sm {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.8125rem, 0.9vw, 1rem);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .font-caption {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.6875rem, 0.8vw, 0.8125rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  .font-button {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.8125rem, 0.9vw, 0.9375rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  .font-label {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.625rem, 0.7vw, 0.75rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: var(--border-glass);
+    border-radius: clamp(16px, 2vw, 20px);
+    box-shadow: var(--shadow-card), var(--shadow-inner-glow);
+  }
+
+  .glass-card-hover {
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .glass-card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  }
+
+  .gradient-primary-hover {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  }
+
+  .section-padding {
+    padding: clamp(64px, 8vw, 96px) clamp(20px, 4vw, max(24px, calc((100vw - 1200px) / 2)));
+  }
+
+  .card-padding {
+    padding: clamp(24px, 3vw, 32px);
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3); }
+    50% { box-shadow: 0 4px 24px rgba(37, 99, 235, 0.5); }
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .pulse-glow:hover {
+    animation-play-state: paused;
+  }
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    background: linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%);
+  }
+
+  .bg-section-alt {
+    background: #F8FAFF;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
