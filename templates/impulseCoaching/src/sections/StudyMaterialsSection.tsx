@@ -17,6 +17,9 @@ export default function StudyMaterialsSection() {
   const pdfPages = siteData.pdf_pages || "250";
   const pdfSize = siteData.pdf_size || "15 MB";
   const pdfUrl = siteData.pdf_url || "#";
+  const pageImages = ((siteData as { pdf_page_images?: string[] }).pdf_page_images || []).filter(
+    (p) => p && !p.includes("{{")
+  );
 
   return (
     <section id="materials" className="section-padding bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#2563EB] relative overflow-hidden">
@@ -169,6 +172,7 @@ export default function StudyMaterialsSection() {
         pdfCover={pdfCover}
         readOnlineText={siteData.pdf_read_online_text || "Read Online"}
         downloadText={siteData.pdf_download_text || "Download"}
+        pages={pageImages.length ? pageImages : undefined}
       />
     </section>
   );

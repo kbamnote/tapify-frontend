@@ -14,6 +14,7 @@ interface BookViewerProps {
   pdfCover: string;
   readOnlineText: string;
   downloadText: string;
+  pages?: string[];
 }
 
 export default function BookViewer({
@@ -27,11 +28,13 @@ export default function BookViewer({
   pdfCover,
   readOnlineText,
   downloadText,
+  pages,
 }: BookViewerProps) {
   const [viewerMode, setViewerMode] = useState<"cover" | "reading">("cover");
   const [currentPage, setCurrentPage] = useState(0);
 
-  const totalPages = parseInt(pdfPages) || 100;
+  const pageImages = pages && pages.length ? pages : null;
+  const totalPages = pageImages ? pageImages.length : parseInt(pdfPages) || 100;
 
   const openBook = () => setViewerMode("reading");
 
@@ -200,12 +203,23 @@ export default function BookViewer({
                       exit={{ rotateY: -90, opacity: 0 }}
                       transition={{ type: "spring", stiffness: 60, damping: 15 }}
                     >
-                      <iframe
-                        src={`${pdfUrl}#page=${currentPage + 1}`}
-                        title={`${pdfTitle} - Page ${currentPage + 1}`}
-                        className="w-full border-0"
-                        style={{ height: "70vh" }}
-                      />
+                      {pageImages ? (
+                        <div className="flex items-center justify-center" style={{ minHeight: "70vh" }}>
+                          <img
+                            src={pageImages[currentPage]}
+                            alt={`${pdfTitle} — Page ${currentPage + 1}`}
+                            className="max-w-full max-h-[70vh] w-auto h-auto object-contain shadow-lg"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <iframe
+                          src={`${pdfUrl}#page=${currentPage + 1}`}
+                          title={`${pdfTitle} - Page ${currentPage + 1}`}
+                          className="w-full border-0"
+                          style={{ height: "70vh" }}
+                        />
+                      )}
                     </motion.div>
                   </AnimatePresence>
 

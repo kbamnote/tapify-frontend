@@ -5,6 +5,7 @@ import FloatingActionBar from "@/components/shared/FloatingActionBar";
 import Footer from "@/components/shared/Footer";
 import HeroSection from "@/sections/HeroSection";
 import AboutSection from "@/sections/AboutSection";
+import DirectorSection from "@/sections/DirectorSection";
 import WhyChooseUsSection from "@/sections/WhyChooseUsSection";
 import CoursesSection from "@/sections/CoursesSection";
 import FacultiesSection from "@/sections/FacultiesSection";
@@ -76,6 +77,7 @@ function App() {
           <main>
             <HeroSection />
             <AboutSection />
+            <DirectorSection />
             <WhyChooseUsSection />
             <CoursesSection />
             <FacultiesSection />

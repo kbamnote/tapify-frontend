@@ -1,7 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // Absolute, config-relative globs so Tailwind scans the right files no matter
+  // what the process cwd is (e.g. when Vite is launched with an explicit root).
+  content: [
+    __dirname.replace(/\\/g, "/") + "/index.html",
+    __dirname.replace(/\\/g, "/") + "/src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {

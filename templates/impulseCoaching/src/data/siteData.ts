@@ -45,6 +45,13 @@ export const siteData = {
   mission_title: "Our Mission",
   mission_description: "Our mission is not only to help students secure admission into premier institutions but also to shape responsible leaders who create a positive impact on society. We are committed to building a strong foundation of knowledge, character, and leadership.",
 
+  // --- Director's Message ---
+  director_section_title: "Director's Message",
+  director_name: "Animesh A. Deotale",
+  director_designation: "Founder & CEO, Impulsse Career Institutions",
+  director_photo: "/assets/director-1.jpg",
+  director_message: "At Impulsse, we believe a person is the product of their thoughts — what you think, you become. This is a golden era for career education, and our aim is to impart value-based knowledge through our unique MKUA Learning & 360° Teaching Methodology. Under one roof, Impulsse-Gurukul brings together the best educators and a proven learning structure to help students achieve top ranks in IIT-JEE, NEET & MHT-CET. We warmly invite you to begin your Success Journey with us.",
+
   // --- Why Choose Us (Array) ---
   // NOTE: icon must be a key of the section's iconMap:
   // Users, BookOpen, Monitor, CalendarCheck, UserCheck, HelpCircle
@@ -140,6 +147,22 @@ export const siteData = {
       experience: "28 Years",
       subject: "Chemistry",
       bio: "Executive Director and Chemistry mentor, renowned for making the toughest concepts simple for competitive-exam success.",
+    },
+    {
+      photo: "/assets/faculty-4.jpg",
+      name: "Dr. Surendra Gole",
+      qualification: "Fellow of NITIE (Ph.D), M.Tech, M.S. Psychotherapy & Counseling",
+      experience: "28 Years",
+      subject: "Mentoring & Counseling",
+      bio: "Guest Academic Mentor guiding students on mindset, motivation and performance psychology for competitive exams.",
+    },
+    {
+      photo: "/assets/faculty-5.jpg",
+      name: "Dr. Abha Shende",
+      qualification: "Ph.D., PDCP (USA) / LLB — Business Expert",
+      experience: "26 Years",
+      subject: "Aptitude & Guidance",
+      bio: "Guest Academic Mentor supporting students with aptitude, communication and holistic career guidance.",
     },
   ],
 
@@ -247,11 +270,18 @@ export const siteData = {
   pdf_author: "Impulsse Career Institutions",
   pdf_pages: "16",
   pdf_size: "4.7 MB",
-  pdf_url: "#",
+  pdf_url: "/assets/impulsse-brochure.pdf",
   pdf_description: "The complete Impulsse prospectus — programs, methodology (MKUA & 360°), Ekalavya test series, results and admission details for IIT-JEE, NEET & MHT-CET aspirants.",
   pdf_read_online_text: "Read Online",
   pdf_download_text: "Download Prospectus",
-  pdf_open_book_text: "Open Prospectus",
+  pdf_open_book_text: "Flip Through Prospectus",
+  // Brochure pages shown as a flip-through book (StudyMaterials → BookViewer).
+  pdf_page_images: [
+    "/assets/brochure/page-01.jpg", "/assets/brochure/page-02.jpg", "/assets/brochure/page-03.jpg", "/assets/brochure/page-04.jpg",
+    "/assets/brochure/page-05.jpg", "/assets/brochure/page-06.jpg", "/assets/brochure/page-07.jpg", "/assets/brochure/page-08.jpg",
+    "/assets/brochure/page-09.jpg", "/assets/brochure/page-10.jpg", "/assets/brochure/page-11.jpg", "/assets/brochure/page-12.jpg",
+    "/assets/brochure/page-13.jpg", "/assets/brochure/page-14.jpg", "/assets/brochure/page-15.jpg", "/assets/brochure/page-16.jpg",
+  ],
 
   // --- FAQ (Array) ---
   faqs: [
