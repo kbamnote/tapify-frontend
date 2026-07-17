@@ -471,6 +471,7 @@ const templates = [
     { id: 'vcard96', name: 'Social Media Pro', category: 'Social', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v96.png', demoUrl: '../newTemps/tempsNewAdded/Social Media/influencers ｜ Tapify (7_6_2026 12：51：50 PM).html' },
     { id: 'vcard97', name: 'Social Services Pro', category: 'Nonprofit', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v97.png', demoUrl: '../newTemps/tempsNewAdded/Social Services/Social Services ｜ Tapify (7_6_2026 12：29：31 PM).html' },
     { id: 'vcard98', name: 'Royal Voyage Pro', category: 'Travel', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v36.png', demoUrl: '../newTemps/imagesTravelAgency/clean.html' },
+    { id: 'vcard99', name: 'Cars Pro', category: 'Automotive', isNew: true, image: 'https://tapifyworld.com/assets/img/templates/vcard-v46.png', demoUrl: '../newTemps/imagesCulinaryFoodServices/clean-pro.html' },
 ];
 
 function renderTemplates() {
