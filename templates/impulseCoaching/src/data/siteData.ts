@@ -23,7 +23,7 @@ export const siteData = {
   accent_color: "#F7941D",
 
   // --- Hero Section ---
-  hero_background_image: "/assets/hero-bg.jpg",
+  hero_background_image: "/assets/about-img.jpg",
   hero_student_image: "/assets/hero-student.jpg",
   hero_title: "You Have Dreams, We Turn Them Into Reality",
   hero_subtitle: "Central India's award-winning, most trusted & premier institution for IIT-JEE (Mains & Advanced), NEET (UG) & MHT-CET. An extraordinary learning experience for extraordinary students — 17 years of excellence.",

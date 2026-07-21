@@ -33,11 +33,12 @@ export default function DirectorSection() {
             transition={{ duration: 0.5 }}
           >
             <div className="w-[260px] mx-auto">
-              <div className="w-[260px] h-[320px] rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-1 ring-black/5">
+              {/* Natural aspect ratio so the director's full photo is shown, never cropped. */}
+              <div className="w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-1 ring-black/5">
                 <img
                   src={photo}
                   alt={d.director_name}
-                  className="w-full h-full object-cover object-top"
+                  className="block w-full h-auto"
                   loading="lazy"
                 />
               </div>
