@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Inquiries - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        .inq-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-card h3 { font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #1a2035; }
+        .stat-card.unread .value { color: #f59e0b; }
+        .stat-card.today .value { color: #3b82f6; }
+
+        .filters-bar { background: white; border-radius: 14px; padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .filters-bar input { padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.9rem; background: #f9fafb; flex: 1; min-width: 200px; }
+        .filters-bar input:focus { outline: none; border-color: #8338ec; background: white; }
+        .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-tab { background: transparent; border: 1.5px solid #e5e7eb; padding: 8px 18px; border-radius: 50px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: #6b7280; transition: all 0.3s; }
+        .filter-tab.active, .filter-tab:hover { background: #8338ec; color: white; border-color: #8338ec; }
+
+        .inq-card { background: white; border-radius: 14px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #e5e7eb; }
+        .inq-card.unread { border-left-color: #f59e0b; background: rgba(245,158,11,0.02); }
+        .inq-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .inq-name { font-size: 1.05rem; font-weight: 700; color: #1a2035; margin: 6px 0 0; }
+        .inq-site { background: rgba(131,56,236,0.1); color: #8338ec; padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .inq-time { color: #9ca3af; font-size: 0.78rem; white-space: nowrap; }
+        .inq-meta { display: flex; gap: 14px; flex-wrap: wrap; color: #6b7280; font-size: 0.85rem; margin: 8px 0; }
+        .inq-meta a { color: #8338ec; text-decoration: none; }
+        .inq-subject { font-weight: 600; color: #374151; font-size: .92rem; margin-top: 8px; }
+        .inq-message { background: #f9fafb; border-radius: 10px; padding: 14px 18px; color: #374151; font-size: 0.92rem; line-height: 1.6; margin: 10px 0; border-left: 3px solid #8338ec; white-space: pre-wrap; }
+        .inq-foot { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding-top: 12px; border-top: 1px solid #f3f4f6; flex-wrap: wrap; }
+        .inq-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-action { padding: 7px 14px; border: 1px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer; font-family: inherit; font-size: 0.78rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; color: inherit; }
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .btn-whatsapp { background: #25D366; color: white; border-color: #25D366; }
+        .btn-call { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .btn-email { background: #ef4444; color: white; border-color: #ef4444; }
+        .btn-delete { color: #ef4444; border-color: #fecaca; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
+        .empty-state i { font-size: 3rem; margin-bottom: 14px; display: block; opacity: .5; }
+    </style>
+</head>
+<body>
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo"><img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span></a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon"></i><span>Appointments</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon"></i><span>Inquiries</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon"></i><span>WhatsApp Product Order</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item active"><i class="fas fa-envelope-open-text nav-icon"></i><span>Website Inquiries</span></a>
+            <a href="site-appointments.html" class="nav-item">
+                <i class="fas fa-calendar-day nav-icon"></i>
+                <span>Site Appointments</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Website Inquiries</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span>Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="inq-container">
+                <div class="stats-row">
+                    <div class="stat-card"><h3>Total</h3><div class="value" id="cAll">0</div></div>
+                    <div class="stat-card unread"><h3>Unread</h3><div class="value" id="cUnread">0</div></div>
+                    <div class="stat-card today"><h3>Today</h3><div class="value" id="cToday">0</div></div>
+                </div>
+
+                <div class="filters-bar">
+                    <input type="text" id="search" placeholder="Search by name, phone, email or message...">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-f="">All</button>
+                        <button class="filter-tab" data-f="unread">Unread</button>
+                    </div>
+                </div>
+
+                <div id="list"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading inquiries...</div></div>
+            </div>
+        </div>
+    </div>
+
+<script src="../admin.js"></script>
+<script>
+const INQ_API = 'https://app.tapify.co.in/api/sites/inquiries.php';
+let ALL = [];
+let onlyUnread = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    load();
+    document.getElementById('search').addEventListener('input', render);
+    document.querySelectorAll('.filter-tab').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        onlyUnread = b.dataset.f === 'unread';
+        render();
+    }));
+});
+
+async function load() {
+    try {
+        const res = await fetch(INQ_API, { credentials: 'include' });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+        ALL = (json.data && json.data.inquiries) || [];
+        const c = (json.data && json.data.counts) || {};
+        document.getElementById('cAll').textContent = c.all || 0;
+        document.getElementById('cUnread').textContent = c.unread || 0;
+        document.getElementById('cToday').textContent = c.today || 0;
+        render();
+    } catch (e) {
+        document.getElementById('list').innerHTML =
+            '<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>Could not load inquiries. Please refresh.</div>';
+    }
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+function render() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    let rows = ALL;
+    if (onlyUnread) rows = rows.filter(i => !i.is_read);
+    if (q) rows = rows.filter(i =>
+        (i.name || '').toLowerCase().includes(q) ||
+        (i.phone || '').toLowerCase().includes(q) ||
+        (i.email || '').toLowerCase().includes(q) ||
+        (i.message || '').toLowerCase().includes(q));
+
+    const wrap = document.getElementById('list');
+    if (!rows.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open-text"></i>No inquiries yet.<br><small>Messages sent from your website Contact form will appear here.</small></div>';
+        return;
+    }
+
+    wrap.innerHTML = rows.map(i => {
+        const phone = (i.phone || '').replace(/\D/g, '');
+        const when = i.created_at ? new Date(i.created_at.replace(' ', 'T')).toLocaleString() : '';
+        return `
+        <div class="inq-card ${i.is_read ? '' : 'unread'}">
+            <div class="inq-top">
+                <div>
+                    <span class="inq-site"><i class="fas fa-globe"></i> ${esc(i.site_name || i.site_slug)}</span>
+                    <p class="inq-name">${esc(i.name)}</p>
+                </div>
+                <div class="inq-time">${esc(when)}</div>
+            </div>
+            <div class="inq-meta">
+                ${i.phone ? `<span><i class="fas fa-phone"></i> <a href="tel:${esc(i.phone)}">${esc(i.phone)}</a></span>` : ''}
+                ${i.email ? `<span><i class="fas fa-envelope"></i> <a href="mailto:${esc(i.email)}">${esc(i.email)}</a></span>` : ''}
+            </div>
+            ${i.subject ? `<div class="inq-subject">${esc(i.subject)}</div>` : ''}
+            <div class="inq-message">${esc(i.message)}</div>
+            <div class="inq-foot">
+                <div class="inq-actions">
+                    ${phone ? `<a class="btn-action btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${phone}"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+                    ${phone ? `<a class="btn-action btn-call" href="tel:${esc(i.phone)}"><i class="fas fa-phone"></i> Call</a>` : ''}
+                    ${i.email ? `<a class="btn-action btn-email" href="mailto:${esc(i.email)}"><i class="fas fa-envelope"></i> Email</a>` : ''}
+                </div>
+                <div class="inq-actions">
+                    <button class="btn-action" onclick="setRead(${i.id}, ${i.is_read ? 0 : 1})">
+                        <i class="fas fa-${i.is_read ? 'envelope' : 'envelope-open'}"></i> Mark ${i.is_read ? 'unread' : 'read'}
+                    </button>
+                    <button class="btn-action btn-delete" onclick="del(${i.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function post(body) {
+    const res = await fetch(INQ_API, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', body: JSON.stringify(body)
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message);
+}
+
+async function setRead(id, isRead) {
+    try { await post({ id, action: 'read', is_read: isRead }); load(); }
+    catch (e) { alert('Could not update this inquiry.'); }
+}
+
+async function del(id) {
+    if (!confirm('Delete this inquiry?')) return;
+    try { await post({ id, action: 'delete' }); load(); }
+    catch (e) { alert('Could not delete this inquiry.'); }
+}
+</script>
+</body>
+</html>
