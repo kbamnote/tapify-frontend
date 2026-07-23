@@ -131,6 +131,10 @@
                 <i class="fas fa-globe nav-icon"></i>
                 <span>Website Builder</span>
             </a>
+            <a href="site-orders.html" class="nav-item">
+                <i class="fas fa-receipt nav-icon"></i>
+                <span>Orders</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
@@ -327,16 +331,16 @@ function renderApptCard(a) {
         <div class="apt-actions">
             <span class="status-badge status-${a.status}">${a.status.replace('_', ' ')}</span>
             <div class="action-buttons">
-                <a href="https://wa.me/${phoneClean}" target="_blank" class="btn-action btn-whatsapp" onclick="markRead(${a.id})">
+                <a href="https://wa.me/${phoneClean}" target="_blank" class="btn-action btn-whatsapp" onclick="markRead(${a.id}, '${a.source || 'vcard'}')">
                     <i class="fab fa-whatsapp"></i>
                 </a>
                 <a href="tel:${escapeHtml(a.customer_phone)}" class="btn-action btn-call" onclick="markRead(${a.id})">
                     <i class="fas fa-phone"></i>
                 </a>
-                ${a.status === 'pending' ? `<button class="btn-action btn-confirm" onclick="updateStatus(${a.id}, 'confirmed')"><i class="fas fa-check"></i> Confirm</button>` : ''}
-                ${a.status === 'confirmed' ? `<button class="btn-action btn-complete" onclick="updateStatus(${a.id}, 'completed')"><i class="fas fa-check-double"></i> Complete</button>` : ''}
-                ${!['cancelled', 'completed', 'no_show'].includes(a.status) ? `<button class="btn-action btn-cancel" onclick="updateStatus(${a.id}, 'cancelled')"><i class="fas fa-times"></i></button>` : ''}
-                <button class="btn-action btn-delete" onclick="deleteAppointment(${a.id})"><i class="fas fa-trash"></i></button>
+                ${a.status === 'pending' ? `<button class="btn-action btn-confirm" onclick="updateStatus(${a.id}, 'confirmed', '${a.source || 'vcard'}')"><i class="fas fa-check"></i> Confirm</button>` : ''}
+                ${a.status === 'confirmed' ? `<button class="btn-action btn-complete" onclick="updateStatus(${a.id}, 'completed', '${a.source || 'vcard'}')"><i class="fas fa-check-double"></i> Complete</button>` : ''}
+                ${!['cancelled', 'completed', 'no_show'].includes(a.status) ? `<button class="btn-action btn-cancel" onclick="updateStatus(${a.id}, 'cancelled', '${a.source || 'vcard'}')"><i class="fas fa-times"></i></button>` : ''}
+                <button class="btn-action btn-delete" onclick="deleteAppointment(${a.id}, '${a.source || 'vcard'}')"><i class="fas fa-trash"></i></button>
             </div>
         </div>
     </div>`;
@@ -359,22 +363,22 @@ function filterClient() {
     renderAppointments(filtered);
 }
 
-async function markRead(id) {
+async function markRead(id, source = 'vcard') {
     try {
         await fetch(`${APT_API}mark-read.php`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-            body: JSON.stringify({ id, is_read: 1 })
+            body: JSON.stringify({ id, is_read: 1, source })
         });
         const a = allAppointments.find(x => x.id == id);
         if (a) a.is_read = true;
     } catch (err) {}
 }
 
-async function updateStatus(id, status) {
+async function updateStatus(id, status, source = 'vcard') {
     try {
         const response = await fetch(`${APT_API}update-status.php`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-            body: JSON.stringify({ id, status })
+            body: JSON.stringify({ id, status, source })
         });
         const result = await response.json();
         if (result.success) { showToast(`Marked as ${status}`, 'success'); loadAppointments(); }
@@ -382,12 +386,12 @@ async function updateStatus(id, status) {
     } catch (err) { showToast('Update failed', 'error'); }
 }
 
-async function deleteAppointment(id) {
+async function deleteAppointment(id, source = 'vcard') {
     if (!confirm('Delete this appointment?')) return;
     try {
         const response = await fetch(`${APT_API}delete.php`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-            body: JSON.stringify({ id })
+            body: JSON.stringify({ id, source })
         });
         const result = await response.json();
         if (result.success) { showToast('Deleted', 'success'); loadAppointments(); }
