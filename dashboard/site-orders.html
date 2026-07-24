@@ -188,6 +188,7 @@ function render() {
             <div class="order-top">
                 <div>
                     <span class="order-site"><i class="fas fa-globe"></i> ${esc(o.site_name || o.site_slug)}</span>
+                    <span class="order-site" style="background:#eef2ff;color:#4338ca;margin-left:6px"><i class="fas fa-hashtag"></i> Order #${esc(o.id)}</span>
                     <p class="order-item" style="margin-top:6px">${esc(o.item_title || 'Order')}</p>
                     <span class="order-price">${esc(o.price || '')}</span>
                     ${o.mrp ? `<span class="order-mrp">${esc(o.mrp)}</span>` : ''}
