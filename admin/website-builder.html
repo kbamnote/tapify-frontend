@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Builder - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        /* The builder is a full editor — give it the whole content area, no padding.
+           The iframe height is sized in JS to fill from where it starts to the
+           viewport bottom, so it always fits exactly. */
+        .builder-content { padding: 0 !important; overflow: hidden; }
+        #builderFrame { width: 100%; border: 0; display: block; background: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item active"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="whatsapp-stores.html" class="nav-item"><i class="fab fa-whatsapp nav-icon icon-whatsapp"></i><span>WhatsApp Stores</span></a>
+            <a href="whatsapp-orders.html" class="nav-item"><i class="fas fa-shopping-bag nav-icon icon-orders"></i><span>WhatsApp Orders</span></a>
+            <a href="inquiries.html" class="nav-item"><i class="fas fa-info-circle nav-icon icon-inquiries"></i><span>Inquiries</span></a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check nav-icon icon-appointments"></i><span>Appointments</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Website Builder</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span id="userName">Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- BUILDER (embedded) — admins create sites & assign them to clients here. -->
+        <main class="page-content builder-content">
+            <iframe
+                id="builderFrame"
+                title="Website Builder"
+                src="https://builder.tapify.co.in/builder"
+                allow="clipboard-write; fullscreen"></iframe>
+        </main>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <script src="../admin.js"></script>
+    <script>
+        // Size the builder iframe to fill from where it starts to the bottom of the
+        // viewport — robust to any header height or sidebar state.
+        (function () {
+            var frame = document.getElementById('builderFrame');
+            function fit() {
+                if (!frame) return;
+                var top = frame.getBoundingClientRect().top;
+                frame.style.height = Math.max(360, window.innerHeight - top) + 'px';
+            }
+            window.addEventListener('resize', fit);
+            window.addEventListener('load', fit);
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.hamburger-btn, .sidebar-toggle-mobile')) setTimeout(fit, 350);
+            });
+            fit();
+        })();
+    </script>
+</body>
+</html>
