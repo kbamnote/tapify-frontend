@@ -290,6 +290,26 @@ function applyStaffRestrictions() {
     }
 }
 
+// ===== FEATURE-GATED NAV =====
+// Nav items marked data-feature="x" start hidden (inline style="display:none") and are
+// only revealed once /api/sites/features.php confirms the user actually uses that
+// feature (e.g. "Feedback" only for users who added a Feedback section to a site).
+async function applyFeatureNav() {
+    const items = document.querySelectorAll('.sidebar-nav [data-feature]');
+    if (!items.length) return;
+    try {
+        const res = await fetch('https://app.tapify.co.in/api/sites/features.php', { credentials: 'include' });
+        const json = await res.json();
+        const features = (json.success && json.data) || {};
+        items.forEach(a => {
+            const key = a.getAttribute('data-feature');
+            a.style.display = features[key] ? '' : 'none';
+        });
+    } catch (e) {
+        // Leave hidden on failure — safer default than showing a broken link.
+    }
+}
+
 // ===== HANDLE WINDOW RESIZE =====
 window.addEventListener('resize', () => {
     if (window.innerWidth > 991) {
@@ -432,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSidebarSearch();
     checkAuth();
     loadUserInfo();
+    applyFeatureNav();
 
     // Animate counters after a small delay
     setTimeout(animateCounters, 300);
