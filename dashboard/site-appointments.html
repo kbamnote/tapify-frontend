@@ -70,6 +70,9 @@
         .av-day-name strong { font-size: 0.8rem; color: #4b5563; letter-spacing: .3px; }
         .av-ranges { flex-grow: 1; }
         .av-range { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; flex-wrap: wrap; }
+        .av-time { background: #fff; cursor: pointer; min-width: 116px; }
+        .av-day-actions { width: 66px; display: flex; justify-content: flex-end; gap: 2px; margin-top: 4px; flex-shrink: 0; }
+        .av-icon-btn:disabled { opacity: .3; cursor: default; }
         .av-unavail { color: #9ca3af; font-size: 0.85rem; font-style: italic; margin-bottom: 8px; }
         .av-icon-btn { background: none; border: none; cursor: pointer; padding: 5px; font-size: 1rem; }
         .av-rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 18px; padding: 14px; background: #f9fafb; border-radius: 12px; }
@@ -352,6 +355,36 @@ async function loadAvailability(firstOpen = false) {
     }
 }
 
+/* A dropdown of times in AM/PM, every 15 minutes.
+   <input type="time"> shows 24-hour or AM/PM entirely according to the browser
+   and OS locale — it cannot be forced from markup — so on most Indian and
+   European setups it rendered "18:00". This guarantees AM/PM everywhere.
+   The VALUE stays 24-hour HH:MM, which is what the API and MySQL TIME expect. */
+function timeOptions(selected) {
+    let out = '';
+    let matched = false;
+    for (let h = 0; h < 24; h++) {
+        for (const m of [0, 15, 30, 45]) {
+            const v = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+            const ap = h < 12 ? 'AM' : 'PM';
+            const hh = (h % 12) || 12;
+            const label = String(hh).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ap;
+            if (v === selected) matched = true;
+            out += `<option value="${v}"${v === selected ? ' selected' : ''}>${label}</option>`;
+        }
+    }
+    // A previously saved time that is not on a 15-minute boundary (e.g. 09:20)
+    // would otherwise fall off the list and silently snap to 12:00 AM on the
+    // next save, quietly changing the owner's hours. Keep it as its own option.
+    if (selected && !matched) {
+        const [hs, ms] = selected.split(':');
+        const h = parseInt(hs, 10);
+        const label = String((h % 12) || 12).padStart(2, '0') + ':' + ms + ' ' + (h < 12 ? 'AM' : 'PM');
+        out = `<option value="${selected}" selected>${label}</option>` + out;
+    }
+    return out;
+}
+
 function renderAvailability() {
     const rows = DAY_ORDER.map(day => {
         const ranges = avWeek[day] || [];
@@ -359,9 +392,9 @@ function renderAvailability() {
         const body = on
             ? ranges.map((r, i) => `
                 <div class="av-range">
-                  <input type="time" class="av-input" value="${r.start}" onchange="avUpdate(${day},${i},'start',this.value)">
+                  <select class="av-input av-time" onchange="avUpdate(${day},${i},'start',this.value)">${timeOptions(r.start)}</select>
                   <span style="color:#6b7280;font-size:.85rem">to</span>
-                  <input type="time" class="av-input" value="${r.end}" onchange="avUpdate(${day},${i},'end',this.value)">
+                  <select class="av-input av-time" onchange="avUpdate(${day},${i},'end',this.value)">${timeOptions(r.end)}</select>
                   <button class="av-icon-btn" style="color:#ef4444" title="Remove" onclick="avRemove(${day},${i})"><i class="fas fa-trash"></i></button>
                 </div>`).join('')
             : '<div class="av-unavail">Not taking bookings</div>';
@@ -373,8 +406,9 @@ function renderAvailability() {
               <strong>${DAY_NAMES[day]}</strong>
             </div>
             <div class="av-ranges">${body}</div>
-            <div style="width:38px;text-align:right;margin-top:4px">
+            <div class="av-day-actions">
               <button class="av-icon-btn" style="color:#8338ec" title="Add another range" onclick="avAdd(${day})"><i class="fas fa-plus"></i></button>
+              <button class="av-icon-btn" style="color:#6b7280" title="Apply these timings to every day" onclick="avCopyToAll(${day})"${on ? '' : ' disabled'}><i class="fas fa-copy"></i></button>
             </div>
           </div>`;
     }).join('');
@@ -412,7 +446,8 @@ function renderAvailability() {
       </div>
       ${rows}
       <p class="av-hint" style="margin-top:12px">
-        Tip: add two ranges to a day to leave a break — e.g. 10:00–13:00 and 16:00–19:00 keeps 13:00–16:00 free.
+        Add two ranges to a day to leave a break — 10:00 AM–01:00 PM and 04:00 PM–07:00 PM keeps the afternoon free.
+        Use the <i class="fas fa-copy"></i> button to apply a day's timings to the whole week.
       </p>`;
 }
 
@@ -423,6 +458,30 @@ function avToggle(day, on) {
 function avAdd(day)    { avWeek[day].push({ start: '09:00', end: '17:00' }); renderAvailability(); }
 function avRemove(day, i) { avWeek[day].splice(i, 1); renderAvailability(); }
 function avUpdate(day, i, field, val) { avWeek[day][i][field] = val; }
+
+/** Apply one day's timings to every other day. */
+function avCopyToAll(day) {
+    const src = avWeek[day] || [];
+    if (!src.length) { alert('Add a time range to this day first, then copy it.'); return; }
+    const summary = src.map(r => fmtAmPm(r.start) + '–' + fmtAmPm(r.end)).join(', ');
+    if (!confirm(`Apply ${summary} to every day?\n\nThis replaces the timings currently set on all other days.`)) return;
+
+    DAY_ORDER.forEach(d => {
+        if (d === day) return;
+        // Clone each range. Assigning the array itself would make all seven days
+        // share the same objects, so editing Monday would silently edit them all.
+        avWeek[d] = src.map(r => ({ start: r.start, end: r.end }));
+    });
+    renderAvailability();
+}
+
+/** "18:00" -> "06:00 PM", for confirmation text. */
+function fmtAmPm(v) {
+    const [hs, ms] = String(v || '').split(':');
+    const h = parseInt(hs, 10);
+    if (isNaN(h)) return v;
+    return String((h % 12) || 12).padStart(2, '0') + ':' + (ms || '00') + ' ' + (h < 12 ? 'AM' : 'PM');
+}
 
 async function saveAvailability() {
     const siteId = document.getElementById('avSite')?.value;
