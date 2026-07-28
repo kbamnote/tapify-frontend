@@ -51,6 +51,33 @@
         .status-select { padding: 7px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; background: #f9fafb; cursor: pointer; }
         .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
         .empty-state i { font-size: 3rem; margin-bottom: 14px; display: block; opacity: .5; }
+
+        /* --- availability manager --- */
+        .btn-availability { background: #8338ec; color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .btn-availability:hover { background: #6d28d9; }
+        .av-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.55); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+        .av-box { background: #fff; border-radius: 16px; max-width: 720px; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+        .av-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
+        .av-head h3 { margin: 0; font-size: 1.05rem; color: #1a2035; }
+        .av-close { background: none; border: none; font-size: 1.5rem; line-height: 1; color: #9ca3af; cursor: pointer; }
+        .av-body { padding: 20px 22px; overflow-y: auto; flex-grow: 1; }
+        .av-foot { padding: 16px 22px; border-top: 1px solid #f3f4f6; display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+        .av-label { display: block; font-size: 0.78rem; font-weight: 700; color: #4b5563; margin-bottom: 6px; }
+        .av-input { padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 0.88rem; }
+        .av-select { width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: 0.9rem; background: #f9fafb; }
+        .av-day { display: flex; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
+        .av-day-name { width: 132px; display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+        .av-day-name strong { font-size: 0.8rem; color: #4b5563; letter-spacing: .3px; }
+        .av-ranges { flex-grow: 1; }
+        .av-range { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; flex-wrap: wrap; }
+        .av-unavail { color: #9ca3af; font-size: 0.85rem; font-style: italic; margin-bottom: 8px; }
+        .av-icon-btn { background: none; border: none; cursor: pointer; padding: 5px; font-size: 1rem; }
+        .av-rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 18px; padding: 14px; background: #f9fafb; border-radius: 12px; }
+        .av-hint { font-size: 0.75rem; color: #9ca3af; margin: 4px 0 0; }
+        .av-note { font-size: 0.82rem; color: #6b7280; background: #eff6ff; border: 1px solid #dbeafe; border-radius: 10px; padding: 10px 12px; margin-bottom: 16px; }
+        .btn-modal-cancel { padding: 10px 18px; border: 1.5px solid #e5e7eb; background: #fff; border-radius: 10px; font-family: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; }
+        .btn-modal-confirm { padding: 10px 20px; border: none; background: #8338ec; color: #fff; border-radius: 10px; font-family: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+        .btn-modal-confirm:disabled { opacity: .55; cursor: default; }
     </style>
 </head>
 <body>
@@ -110,6 +137,9 @@
 
                 <div class="filters-bar">
                     <input type="text" id="search" placeholder="Search by name, phone or service...">
+                    <button class="btn-availability" onclick="showAvailabilityModal()">
+                        <i class="fas fa-clock"></i> Manage Availability
+                    </button>
                     <div class="filter-tabs">
                         <button class="filter-tab active" data-status="">All</button>
                         <button class="filter-tab" data-status="pending">Pending</button>
@@ -226,6 +256,209 @@ async function setStatus(id, status) {
         loadAppointments();
     } catch (e) {
         alert('Could not update the appointment status.');
+    }
+}
+
+/* ===================== Weekly availability manager =====================
+   The owner sets which hours are bookable on each day. The published site
+   reads this (api/sites/slots_public.php) and offers only those times, minus
+   whatever is already booked — so visitors can no longer request 3am, and two
+   people cannot take the same slot.
+
+   A day with no ranges = closed for bookings. Several ranges on one day is how
+   a lunch break is expressed: 10:00-13:00 and 16:00-19:00 leaves 13:00-16:00
+   unbookable.                                                              */
+const SLOTS_API = 'https://app.tapify.co.in/api/sites/slots_manage.php';
+const DAY_NAMES = { 1:'MONDAY', 2:'TUESDAY', 3:'WEDNESDAY', 4:'THURSDAY', 5:'FRIDAY', 6:'SATURDAY', 0:'SUNDAY' };
+const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
+let avWeek = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[] };
+let avSettings = { slot_minutes: 30, lead_minutes: 120, horizon_days: 60, capacity: 1 };
+
+function showAvailabilityModal() {
+    document.body.insertAdjacentHTML('beforeend', `
+        <div class="av-overlay" id="avModal" onclick="if(event.target===this)closeAvailabilityModal()">
+          <div class="av-box">
+            <div class="av-head">
+              <h3><i class="fas fa-clock" style="color:#8338ec"></i> Manage Availability</h3>
+              <button class="av-close" onclick="closeAvailabilityModal()">&times;</button>
+            </div>
+            <div class="av-body">
+              <div class="av-note">
+                Visitors booking on your website will only be offered these times, and any slot
+                that's already booked disappears automatically. Leave a day switched off to stop
+                taking bookings that day.
+              </div>
+              <div style="margin-bottom:16px">
+                <label class="av-label">Website</label>
+                <select id="avSite" class="av-select" onchange="loadAvailability()"></select>
+              </div>
+              <div id="avContent">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>
+              </div>
+            </div>
+            <div class="av-foot">
+              <button class="btn-modal-cancel" onclick="closeAvailabilityModal()">Cancel</button>
+              <button class="btn-modal-confirm" id="avSave" onclick="saveAvailability()">
+                <i class="fas fa-save"></i> Save Availability
+              </button>
+            </div>
+          </div>
+        </div>`);
+    loadAvailability(true);
+}
+
+function closeAvailabilityModal() { document.getElementById('avModal')?.remove(); }
+
+async function loadAvailability(firstOpen = false) {
+    const content = document.getElementById('avContent');
+    const siteSel = document.getElementById('avSite');
+    if (!content) return;
+    content.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>';
+
+    const siteId = (!firstOpen && siteSel && siteSel.value) ? siteSel.value : '';
+    try {
+        const res  = await fetch(SLOTS_API + (siteId ? ('?site_id=' + encodeURIComponent(siteId)) : ''), { credentials: 'include' });
+        if (res.status === 401) { window.location.href = '../login.html'; return; }
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+        const d = json.data || {};
+
+        if (firstOpen && siteSel) {
+            const sites = d.sites || [];
+            if (!sites.length) {
+                content.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i>You don\'t have a website yet.<br><small>Create one in the Website Builder first.</small></div>';
+                document.getElementById('avSave').disabled = true;
+                return;
+            }
+            siteSel.innerHTML = sites.map(s => `<option value="${s.id}">${esc(s.name || s.slug)}</option>`).join('');
+            if (d.site_id) siteSel.value = d.site_id;
+        }
+
+        avWeek = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[] };
+        (d.schedule || []).forEach(r => {
+            avWeek[r.day_of_week].push({ start: String(r.start_time).slice(0,5), end: String(r.end_time).slice(0,5) });
+        });
+        avSettings = Object.assign(avSettings, d.settings || {});
+
+        if (d.migrated === false) {
+            content.innerHTML = '<div class="empty-state"><i class="fas fa-database"></i>Availability isn\'t set up on the server yet.<br><small>Run migration_site_schedule.sql, then reload this page.</small></div>';
+            document.getElementById('avSave').disabled = true;
+            return;
+        }
+        document.getElementById('avSave').disabled = false;
+        renderAvailability();
+    } catch (e) {
+        content.innerHTML = '<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>Could not load availability.</div>';
+    }
+}
+
+function renderAvailability() {
+    const rows = DAY_ORDER.map(day => {
+        const ranges = avWeek[day] || [];
+        const on = ranges.length > 0;
+        const body = on
+            ? ranges.map((r, i) => `
+                <div class="av-range">
+                  <input type="time" class="av-input" value="${r.start}" onchange="avUpdate(${day},${i},'start',this.value)">
+                  <span style="color:#6b7280;font-size:.85rem">to</span>
+                  <input type="time" class="av-input" value="${r.end}" onchange="avUpdate(${day},${i},'end',this.value)">
+                  <button class="av-icon-btn" style="color:#ef4444" title="Remove" onclick="avRemove(${day},${i})"><i class="fas fa-trash"></i></button>
+                </div>`).join('')
+            : '<div class="av-unavail">Not taking bookings</div>';
+        return `
+          <div class="av-day">
+            <div class="av-day-name">
+              <input type="checkbox" ${on ? 'checked' : ''} onchange="avToggle(${day},this.checked)"
+                     style="width:18px;height:18px;accent-color:#8338ec;cursor:pointer">
+              <strong>${DAY_NAMES[day]}</strong>
+            </div>
+            <div class="av-ranges">${body}</div>
+            <div style="width:38px;text-align:right;margin-top:4px">
+              <button class="av-icon-btn" style="color:#8338ec" title="Add another range" onclick="avAdd(${day})"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>`;
+    }).join('');
+
+    document.getElementById('avContent').innerHTML = `
+      <div class="av-rules">
+        <div>
+          <label class="av-label">Slot length</label>
+          <select class="av-select" onchange="avSettings.slot_minutes=parseInt(this.value,10)">
+            ${[15,20,30,45,60,90,120].map(v => `<option value="${v}" ${avSettings.slot_minutes==v?'selected':''}>${v} minutes</option>`).join('')}
+          </select>
+          <p class="av-hint">How long each booking takes.</p>
+        </div>
+        <div>
+          <label class="av-label">Minimum notice</label>
+          <select class="av-select" onchange="avSettings.lead_minutes=parseInt(this.value,10)">
+            ${[0,30,60,120,240,720,1440].map(v => `<option value="${v}" ${avSettings.lead_minutes==v?'selected':''}>${v===0?'None':(v<60?v+' minutes':(v/60)+' hour'+(v>60?'s':''))}</option>`).join('')}
+          </select>
+          <p class="av-hint">Stops last-minute bookings.</p>
+        </div>
+        <div>
+          <label class="av-label">Book up to</label>
+          <select class="av-select" onchange="avSettings.horizon_days=parseInt(this.value,10)">
+            ${[7,14,30,60,90,180,365].map(v => `<option value="${v}" ${avSettings.horizon_days==v?'selected':''}>${v} days ahead</option>`).join('')}
+          </select>
+          <p class="av-hint">How far in advance people can book.</p>
+        </div>
+        <div>
+          <label class="av-label">Bookings per slot</label>
+          <select class="av-select" onchange="avSettings.capacity=parseInt(this.value,10)">
+            ${[1,2,3,4,5,6,8,10,12,15,20,30,50].map(v => `<option value="${v}" ${avSettings.capacity==v?'selected':''}>${v} ${v===1?'booking':'bookings'}</option>`).join('')}
+          </select>
+          <p class="av-hint">How many people you can take at the same time — chairs, doctors, tables. Once a slot is full it disappears from the website.</p>
+        </div>
+      </div>
+      ${rows}
+      <p class="av-hint" style="margin-top:12px">
+        Tip: add two ranges to a day to leave a break — e.g. 10:00–13:00 and 16:00–19:00 keeps 13:00–16:00 free.
+      </p>`;
+}
+
+function avToggle(day, on) {
+    avWeek[day] = on ? (avWeek[day].length ? avWeek[day] : [{ start: '09:00', end: '17:00' }]) : [];
+    renderAvailability();
+}
+function avAdd(day)    { avWeek[day].push({ start: '09:00', end: '17:00' }); renderAvailability(); }
+function avRemove(day, i) { avWeek[day].splice(i, 1); renderAvailability(); }
+function avUpdate(day, i, field, val) { avWeek[day][i][field] = val; }
+
+async function saveAvailability() {
+    const siteId = document.getElementById('avSite')?.value;
+    if (!siteId) return;
+
+    const schedule = [];
+    let bad = null;
+    Object.keys(avWeek).forEach(day => {
+        avWeek[day].forEach(r => {
+            if (!r.start || !r.end) return;
+            // Caught here as well as server-side so the owner gets a pointed
+            // message instead of a generic failure.
+            if (r.end <= r.start) bad = `${DAY_NAMES[day]}: ${r.start}–${r.end} ends before it starts.`;
+            schedule.push({ day: parseInt(day, 10), start: r.start, end: r.end });
+        });
+    });
+    if (bad) { alert(bad); return; }
+
+    const btn = document.getElementById('avSave');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+    try {
+        const res = await fetch(SLOTS_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ action: 'save_week', site_id: siteId, schedule, settings: avSettings })
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+        closeAvailabilityModal();
+    } catch (e) {
+        alert(e.message || 'Could not save availability.');
+        btn.disabled = false;
+        btn.innerHTML = original;
     }
 }
 </script>
