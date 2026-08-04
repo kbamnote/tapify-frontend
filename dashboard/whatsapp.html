@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        .wa-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+
+        /* connect card */
+        .wa-connect { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,.04); text-align: center; }
+        .wa-connect .wa-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(37,211,102,.12); color: #25D366; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 16px; }
+        .wa-connect h2 { font-size: 1.15rem; color: #1a2035; margin-bottom: 8px; }
+        .wa-connect p { color: #6b7280; font-size: .9rem; max-width: 520px; margin: 0 auto 18px; line-height: 1.6; }
+        .btn-wa { background: #25D366; color: #fff; border: none; padding: 12px 26px; border-radius: 10px; font-family: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; }
+        .btn-wa:hover { background: #1da851; }
+        .btn-wa:disabled { opacity: .5; cursor: default; }
+        .wa-note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 10px; padding: 12px 14px; font-size: .82rem; margin-top: 18px; text-align: left; line-height: 1.55; }
+
+        /* connected bar */
+        .wa-bar { background: #fff; border-radius: 14px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,.04); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+        .wa-dot { width: 10px; height: 10px; border-radius: 50%; background: #16a34a; flex-shrink: 0; }
+        .wa-bar .num { font-weight: 700; color: #1a2035; }
+        .wa-bar .biz { color: #6b7280; font-size: .85rem; }
+        .wa-bar .spacer { flex: 1; }
+        .btn-ghost { background: #fff; border: 1.5px solid #e5e7eb; padding: 8px 14px; border-radius: 9px; font-family: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; color: #4b5563; }
+        .btn-ghost:hover { background: #f9fafb; }
+
+        /* inbox layout */
+        .wa-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+        @media (max-width: 900px) { .wa-grid { grid-template-columns: 1fr; } .wa-thread-pane { min-height: 420px; } }
+        .wa-panel { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); overflow: hidden; }
+        .wa-panel-head { padding: 14px 16px; border-bottom: 1px solid #f3f4f6; font-weight: 700; font-size: .9rem; color: #1a2035; display: flex; align-items: center; justify-content: space-between; }
+        .wa-list { max-height: 62vh; overflow-y: auto; }
+        .wa-convo { padding: 13px 16px; border-bottom: 1px solid #f7f8fa; cursor: pointer; display: flex; gap: 11px; align-items: flex-start; }
+        .wa-convo:hover { background: #f9fafb; }
+        .wa-convo.active { background: rgba(131,56,236,.06); }
+        .wa-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ede9fe; color: #7c3aed; font-weight: 700; font-size: .82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .wa-convo-main { flex: 1; min-width: 0; }
+        .wa-convo-name { font-weight: 600; font-size: .88rem; color: #1a2035; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wa-convo-last { color: #6b7280; font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .wa-badge { background: #25D366; color: #fff; border-radius: 999px; min-width: 20px; height: 20px; font-size: .68rem; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; flex-shrink: 0; }
+
+        .wa-thread-pane { display: flex; flex-direction: column; height: 68vh; }
+        .wa-msgs { flex: 1; overflow-y: auto; padding: 18px; background: #f7f8fa; }
+        .wa-msg { max-width: 74%; margin-bottom: 12px; padding: 10px 13px; border-radius: 12px; font-size: .87rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .wa-msg.out { margin-left: auto; background: #dcf8c6; border-bottom-right-radius: 3px; }
+        .wa-msg.in { background: #fff; border: 1px solid #eef0f3; border-bottom-left-radius: 3px; }
+        .wa-meta { font-size: .68rem; color: #9ca3af; margin-top: 5px; text-align: right; }
+        .wa-compose { border-top: 1px solid #f3f4f6; padding: 12px; background: #fff; }
+        .wa-compose textarea { width: 100%; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: .88rem; resize: none; height: 62px; outline: none; }
+        .wa-compose textarea:focus { border-color: #25D366; }
+        .wa-compose-row { display: flex; gap: 9px; align-items: center; margin-top: 9px; }
+        .wa-window { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; border-radius: 9px; padding: 9px 12px; font-size: .78rem; line-height: 1.5; margin-bottom: 10px; }
+        .wa-select { padding: 9px 11px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-family: inherit; font-size: .82rem; background: #f9fafb; flex: 1; }
+        .empty-state { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: .88rem; }
+        .empty-state i { font-size: 2.4rem; margin-bottom: 12px; display: block; opacity: .45; }
+
+        /* view switcher */
+        .wa-tabs { display: flex; gap: 6px; }
+        .wa-tab { background: transparent; border: 1.5px solid #e5e7eb; padding: 7px 16px; border-radius: 50px; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 600; color: #6b7280; }
+        .wa-tab.active { background: #25D366; color: #fff; border-color: #25D366; }
+
+        /* bot editor */
+        .bot-card { background: #fff; border-radius: 14px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.04); margin-bottom: 16px; }
+        .bot-card h3 { font-size: .98rem; color: #1a2035; margin: 0 0 4px; }
+        .bot-card .sub { color: #6b7280; font-size: .82rem; margin-bottom: 16px; line-height: 1.55; }
+        .bot-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f7f8fa; }
+        .bot-row:last-child { border-bottom: 0; }
+        .bot-row label { font-size: .86rem; color: #374151; font-weight: 600; flex: 1; }
+        .bot-field { margin-bottom: 14px; }
+        .bot-field label { display: block; font-size: .76rem; font-weight: 700; color: #4b5563; margin-bottom: 5px; }
+        .bot-input { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-family: inherit; font-size: .86rem; outline: none; }
+        .bot-input:focus { border-color: #25D366; }
+        textarea.bot-input { resize: vertical; min-height: 76px; }
+        .bot-hint { font-size: .72rem; color: #9ca3af; margin-top: 4px; }
+        .bot-item { border: 1px solid #eef0f3; border-radius: 11px; padding: 13px; margin-bottom: 10px; background: #fbfcfd; }
+        .bot-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+        .bot-item-head strong { font-size: .78rem; color: #6b7280; flex: 1; }
+        .bot-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: .95rem; padding: 3px; }
+        .btn-add { background: #fff; border: 1.5px dashed #cbd5e1; color: #4b5563; padding: 9px 16px; border-radius: 9px; font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; }
+        .btn-add:hover { border-color: #25D366; color: #16a34a; }
+        .btn-add:disabled { opacity: .45; cursor: default; }
+        .bot-save-bar { position: sticky; bottom: 0; background: #fff; border-radius: 14px; padding: 14px 18px; box-shadow: 0 -2px 12px rgba(0,0,0,.06); display: flex; align-items: center; gap: 12px; }
+        .bot-save-bar .msg { flex: 1; font-size: .82rem; font-weight: 600; }
+        .switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch span { position: absolute; inset: 0; background: #cbd5e1; border-radius: 999px; cursor: pointer; transition: .2s; }
+        .switch span::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+        .switch input:checked + span { background: #25D366; }
+        .switch input:checked + span::before { transform: translateX(18px); }
+    </style>
+</head>
+<body>
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo"><img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span></a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item active"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item">
+                <i class="fas fa-envelope-open-text nav-icon"></i>
+                <span>Inquiries</span>
+            </a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none">
+                <i class="fas fa-star nav-icon"></i>
+                <span>Feedback</span>
+            </a>
+            <a href="site-appointments.html" class="nav-item">
+                <i class="fas fa-calendar-day nav-icon"></i>
+                <span>Appointments</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">WhatsApp</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span>Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="wa-container" id="waRoot">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>
+            </div>
+        </div>
+    </div>
+
+<script src="../admin.js"></script>
+<script>
+/* ── WhatsApp for the customer's own number ──────────────────────────────────
+   Everything goes through api/whatsapp/proxy.php. The CRM that actually holds
+   the inbox is never contacted from the browser — it is private, and the PHP
+   session is what authorises us.                                             */
+const WA_API      = 'https://app.tapify.co.in/api/whatsapp/proxy.php';
+const WA_CONNECT  = 'https://app.tapify.co.in/api/whatsapp/connect.php';
+const POLL_MS     = 15000;   // no websocket through the proxy, so poll
+
+let status = null, convos = [], activePhone = null, templates = [], pollTimer = null;
+
+document.addEventListener('DOMContentLoaded', boot);
+window.addEventListener('beforeunload', () => clearInterval(pollTimer));
+
+async function api(action, opts = {}) {
+    const url = WA_API + '?action=' + encodeURIComponent(action) + (opts.qs || '');
+    const res = await fetch(url, {
+        method: opts.method || 'GET',
+        credentials: 'include',
+        headers: opts.body ? { 'Content-Type': 'application/json' } : undefined,
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    if (res.status === 401) { window.location.href = '../login.html'; throw new Error('auth'); }
+    const json = await res.json().catch(() => ({}));
+    // The CRM's own error codes (not_connected, window_closed) come through with
+    // their status, so callers can react rather than showing a generic failure.
+    if (!res.ok) { const e = new Error(json.message || json.error || 'Request failed'); e.code = json.error; e.status = res.status; throw e; }
+    return json;
+}
+
+async function boot() {
+    try {
+        status = await api('status');
+    } catch (e) {
+        return render(`<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    if (!status.connected) return renderConnect();
+    renderInbox();
+    await loadConvos();
+    pollTimer = setInterval(refresh, POLL_MS);
+}
+
+function render(html) { document.getElementById('waRoot').innerHTML = html; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+/* ── not connected ─────────────────────────────────────────────────────── */
+async function renderConnect() {
+    let cfg = { ready: false };
+    try { cfg = (await (await fetch(WA_CONNECT, { credentials: 'include' })).json()).data || {}; } catch (_) {}
+
+    render(`
+      <div class="wa-connect">
+        <div class="wa-icon"><i class="fab fa-whatsapp"></i></div>
+        <h2>Connect your WhatsApp number</h2>
+        <p>
+          Send order confirmations, appointment reminders and enquiry replies from your
+          own WhatsApp Business number — automatically. You'll also get a shared inbox
+          for everything customers send back.
+        </p>
+        <button class="btn-wa" id="btnConnect" ${cfg.ready ? '' : 'disabled'}>
+          <i class="fab fa-whatsapp"></i> Connect WhatsApp
+        </button>
+        ${cfg.ready ? '' : '<p style="margin-top:14px;font-size:.82rem;color:#9ca3af">WhatsApp onboarding is not enabled on your account yet. Please contact Tapify support.</p>'}
+        <div class="wa-note">
+          <strong>Before you start:</strong> the number you connect must <em>not</em> be signed in
+          to the normal WhatsApp or WhatsApp Business app. If it is, delete that account
+          first (Settings → Account → Delete my account), otherwise verification will fail.
+        </div>
+      </div>`);
+
+    if (cfg.ready) document.getElementById('btnConnect').addEventListener('click', () => startSignup(cfg));
+}
+
+/* Meta Embedded Signup. The popup returns an auth code plus the customer's
+   waba_id / phone_number_id; the code is exchanged server-side. */
+function startSignup(cfg) {
+    const btn = document.getElementById('btnConnect');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening…';
+
+    const reset = () => { btn.disabled = false; btn.innerHTML = '<i class="fab fa-whatsapp"></i> Connect WhatsApp'; };
+    let signupData = null;
+
+    // Meta posts the selected WABA/phone ids via postMessage, separately from
+    // the login callback — so capture them before the callback fires.
+    const onMessage = (ev) => {
+        if (!/facebook\.com$/.test(new URL(ev.origin).hostname)) return;
+        try {
+            const d = JSON.parse(ev.data);
+            if (d.type === 'WA_EMBEDDED_SIGNUP' && d.event === 'FINISH') signupData = d.data;
+        } catch (_) {}
+    };
+    window.addEventListener('message', onMessage);
+
+    loadFbSdk(cfg).then(() => {
+        FB.login((resp) => {
+            window.removeEventListener('message', onMessage);
+            const code = resp && resp.authResponse && resp.authResponse.code;
+            if (!code) { reset(); return; }              // user closed the popup
+            if (!signupData || !signupData.waba_id || !signupData.phone_number_id) {
+                alert('WhatsApp did not return your account details. Please try again.');
+                reset(); return;
+            }
+            finishSignup(code, signupData, reset);
+        }, {
+            config_id: cfg.config_id,
+            response_type: 'code',
+            override_default_response_type: true,
+            extras: { setup: {}, featureType: '', sessionInfoVersion: '3' },
+        });
+    }).catch(() => { alert('Could not load the WhatsApp signup. Please try again.'); reset(); });
+}
+
+function loadFbSdk(cfg) {
+    return new Promise((resolve, reject) => {
+        if (window.FB) return resolve();
+        window.fbAsyncInit = function () {
+            FB.init({ appId: cfg.app_id, cookie: true, xfbml: false, version: cfg.graph_version || 'v20.0' });
+            resolve();
+        };
+        const s = document.createElement('script');
+        s.src = 'https://connect.facebook.net/en_US/sdk.js';
+        s.async = true; s.defer = true; s.crossOrigin = 'anonymous';
+        s.onerror = reject;
+        document.body.appendChild(s);
+    });
+}
+
+async function finishSignup(code, data, reset) {
+    try {
+        const res = await fetch(WA_CONNECT, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, waba_id: data.waba_id, phone_number_id: data.phone_number_id }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) throw new Error(json.message || 'Could not connect WhatsApp.');
+        boot();                                          // reload into the inbox
+    } catch (e) {
+        alert(e.message);
+        reset();
+    }
+}
+
+async function disconnect() {
+    if (!confirm('Disconnect WhatsApp?\n\nAutomated messages will stop going out from your number. Your conversation history is kept.')) return;
+    try {
+        await fetch(WA_CONNECT + '?disconnect=1', { method: 'POST', credentials: 'include' });
+        clearInterval(pollTimer);
+        boot();
+    } catch (_) { alert('Could not disconnect.'); }
+}
+
+/* ── connected: inbox ──────────────────────────────────────────────────── */
+/** The bar shown above whichever view is active. */
+function barHtml(view) {
+    return `
+      <div class="wa-bar">
+        <span class="wa-dot"></span>
+        <span class="num">${esc(status.displayPhone || 'Connected')}</span>
+        <span class="biz">${esc(status.name || '')}</span>
+        <span class="spacer"></span>
+        <div class="wa-tabs">
+          <button class="wa-tab ${view === 'inbox' ? 'active' : ''}" onclick="showInbox()">Inbox</button>
+          <button class="wa-tab ${view === 'bot' ? 'active' : ''}" onclick="showBot()">Auto-replies</button>
+        </div>
+        <button class="btn-ghost" onclick="disconnect()">Disconnect</button>
+      </div>`;
+}
+
+function renderInbox() {
+    render(barHtml('inbox') + `
+      <div class="wa-grid">
+        <div class="wa-panel">
+          <div class="wa-panel-head">Conversations <span id="convoCount" style="color:#9ca3af;font-weight:600"></span></div>
+          <div class="wa-list" id="convoList"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div></div>
+        </div>
+        <div class="wa-panel wa-thread-pane" id="threadPane">
+          <div class="empty-state" style="margin:auto"><i class="fab fa-whatsapp"></i>Select a conversation</div>
+        </div>
+      </div>`);
+}
+
+function showInbox() {
+    clearInterval(pollTimer);
+    renderInbox();
+    loadConvos();
+    pollTimer = setInterval(refresh, POLL_MS);
+}
+
+async function loadConvos() {
+    try {
+        convos = await api('conversations');
+    } catch (e) {
+        return document.getElementById('convoList').innerHTML =
+            `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`;
+    }
+    const list = document.getElementById('convoList');
+    if (!list) return;
+    document.getElementById('convoCount').textContent = convos.length ? `(${convos.length})` : '';
+    if (!convos.length) {
+        list.innerHTML = '<div class="empty-state"><i class="far fa-comments"></i>No conversations yet.<br><small>Messages sent from your website will appear here.</small></div>';
+        return;
+    }
+    list.innerHTML = convos.map(c => `
+      <div class="wa-convo ${c.phone === activePhone ? 'active' : ''}" onclick="openThread('${esc(c.phone)}')">
+        <div class="wa-avatar">${esc((c.name || c.phone || '?').trim().charAt(0).toUpperCase())}</div>
+        <div class="wa-convo-main">
+          <div class="wa-convo-name">${esc(c.name || c.phone)}</div>
+          <div class="wa-convo-last">${c.lastDirection === 'out' ? '<i class="fas fa-reply" style="font-size:.7rem"></i> ' : ''}${esc(c.lastMessage || '')}</div>
+        </div>
+        ${c.unread ? `<span class="wa-badge">${c.unread}</span>` : ''}
+      </div>`).join('');
+}
+
+async function openThread(phone) {
+    activePhone = phone;
+    loadConvos();
+    const pane = document.getElementById('threadPane');
+    pane.innerHTML = '<div class="empty-state" style="margin:auto"><i class="fas fa-spinner fa-spin"></i>Loading…</div>';
+
+    let msgs = [];
+    try { msgs = await api('thread', { qs: '&phone=' + encodeURIComponent(phone) }); }
+    catch (e) { pane.innerHTML = `<div class="empty-state" style="margin:auto">${esc(e.message)}</div>`; return; }
+
+    // Free text only delivers within 24h of their last inbound message. Work it
+    // out here so the composer can say so BEFORE they type a reply that would
+    // be rejected by Meta.
+    const lastIn = [...msgs].reverse().find(m => m.direction === 'in');
+    const open = lastIn && (Date.now() - new Date(lastIn.createdAt).getTime()) < 24 * 3600 * 1000;
+
+    pane.innerHTML = `
+      <div class="wa-panel-head">${esc(msgs[0]?.name || phone)}</div>
+      <div class="wa-msgs" id="msgs">${msgs.map(renderMsg).join('') || '<div class="empty-state">No messages</div>'}</div>
+      <div class="wa-compose">
+        ${open ? '' : `<div class="wa-window">
+            <strong>24-hour window closed.</strong> ${esc(msgs[0]?.name || 'This contact')} hasn't messaged you in the
+            last 24 hours, so WhatsApp won't deliver a typed reply. Send an approved template instead.
+          </div>`}
+        ${open ? `
+          <textarea id="replyBox" placeholder="Type a reply…"></textarea>
+          <div class="wa-compose-row">
+            <span style="flex:1"></span>
+            <button class="btn-wa" onclick="sendReply()"><i class="fas fa-paper-plane"></i> Send</button>
+          </div>`
+        : `<div class="wa-compose-row">
+            <select class="wa-select" id="tplPick"><option value="">Loading templates…</option></select>
+            <button class="btn-wa" onclick="sendTemplate()"><i class="fas fa-paper-plane"></i> Send</button>
+          </div>`}
+      </div>`;
+
+    const box = document.getElementById('msgs');
+    if (box) box.scrollTop = box.scrollHeight;
+    if (!open) loadTemplates();
+}
+
+function renderMsg(m) {
+    const t = m.createdAt ? new Date(m.createdAt).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+    const tick = m.direction === 'out'
+        ? ({ read: '✓✓', delivered: '✓✓', sent: '✓', queued: '🕓', failed: '⚠' }[m.status] || '')
+        : '';
+    return `<div class="wa-msg ${m.direction === 'out' ? 'out' : 'in'}">${esc(m.body || '')}
+              <div class="wa-meta">${esc(t)} ${tick}</div></div>`;
+}
+
+async function loadTemplates() {
+    const sel = document.getElementById('tplPick');
+    if (!sel) return;
+    try {
+        templates = await api('templates');
+        sel.innerHTML = templates.length
+            ? '<option value="">Choose an approved template…</option>' + templates.map(t => `<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('')
+            : '<option value="">No approved templates yet</option>';
+    } catch (_) { sel.innerHTML = '<option value="">Could not load templates</option>'; }
+}
+
+async function sendReply() {
+    const box = document.getElementById('replyBox');
+    const body = (box.value || '').trim();
+    if (!body) return;
+    box.disabled = true;
+    try {
+        await api('send', { method: 'POST', body: { phone: activePhone, body } });
+        box.value = '';
+        openThread(activePhone);
+        loadConvos();
+    } catch (e) {
+        // The server re-checks the window; if it closed while typing, say why.
+        alert(e.code === 'window_closed' ? e.message : ('Could not send: ' + e.message));
+    } finally { box.disabled = false; }
+}
+
+async function sendTemplate() {
+    const sel = document.getElementById('tplPick');
+    const templateName = sel && sel.value;
+    if (!templateName) { alert('Choose a template first.'); return; }
+    try {
+        await api('send', { method: 'POST', body: { phone: activePhone, templateName, params: [] } });
+        openThread(activePhone);
+        loadConvos();
+    } catch (e) { alert('Could not send: ' + e.message); }
+}
+
+/* ── auto-reply editor ─────────────────────────────────────────────────── */
+let bot = null;
+
+async function showBot() {
+    clearInterval(pollTimer);                    // stop inbox polling while editing
+    render(barHtml('bot') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    try {
+        bot = await api('bot');
+    } catch (e) {
+        return render(barHtml('bot') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    bot.menu = bot.menu || { header: '', body: 'How can we help you today?', footer: '', button: 'Choose an option', sectionTitle: 'Options', rows: [] };
+    bot.menu.rows = bot.menu.rows || [];
+    bot.replies = bot.replies || [];
+    renderBot();
+}
+
+function renderBot() {
+    const m = bot.menu;
+    render(barHtml('bot') + `
+      <div class="bot-card">
+        <h3>Automatic replies</h3>
+        <p class="sub">
+          Reply to common questions instantly, without anyone at the counter. Replies only go out
+          within 24 hours of a customer messaging you — that is WhatsApp's rule, not ours.
+        </p>
+        <div class="bot-row">
+          <label for="botEnabled">Auto-replies switched on</label>
+          <span class="switch"><input type="checkbox" id="botEnabled" ${bot.enabled ? 'checked' : ''}><span></span></span>
+        </div>
+        <div class="bot-row">
+          <label for="botGreet">Show a menu when someone says "hi"</label>
+          <span class="switch"><input type="checkbox" id="botGreet" ${bot.greetingEnabled !== false ? 'checked' : ''}><span></span></span>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <h3>Greeting menu</h3>
+        <p class="sub">The tappable list a customer sees when they greet you. Leave the options empty to send no menu.</p>
+        <div class="bot-field">
+          <label>Title</label>
+          <input class="bot-input" id="mHeader" maxlength="60" value="${esc(m.header || '')}" placeholder="e.g. Glow Salon">
+        </div>
+        <div class="bot-field">
+          <label>Message</label>
+          <textarea class="bot-input" id="mBody" maxlength="1024" placeholder="How can we help you today?">${esc(m.body || '')}</textarea>
+        </div>
+        <div class="bot-field">
+          <label>Button text</label>
+          <input class="bot-input" id="mButton" maxlength="20" value="${esc(m.button || 'Choose an option')}">
+          <p class="bot-hint">WhatsApp allows 20 characters here.</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Options (${m.rows.length}/10)</label>
+          ${m.rows.map((r, i) => `
+            <div class="bot-item">
+              <div class="bot-item-head">
+                <strong>Option ${i + 1}</strong>
+                <button class="bot-del" title="Remove" onclick="botRowDel(${i})"><i class="fas fa-trash"></i></button>
+              </div>
+              <input class="bot-input" style="margin-bottom:7px" maxlength="24" placeholder="Title (max 24 characters)"
+                     value="${esc(r.title || '')}" oninput="botRowSet(${i},'title',this.value)">
+              <input class="bot-input" maxlength="72" placeholder="Short description (optional)"
+                     value="${esc(r.description || '')}" oninput="botRowSet(${i},'description',this.value)">
+            </div>`).join('')}
+          <button class="btn-add" onclick="botRowAdd()" ${m.rows.length >= 10 ? 'disabled' : ''}>
+            <i class="fas fa-plus"></i> Add option${m.rows.length >= 10 ? ' (limit reached)' : ''}
+          </button>
+          <p class="bot-hint">Tapping an option sends its title back to you, so give each one a matching reply below.</p>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <h3>Keyword replies</h3>
+        <p class="sub">When a customer's message matches a phrase exactly, send this reply. Capitals, punctuation and emoji are ignored when matching.</p>
+        ${bot.replies.map((r, i) => `
+          <div class="bot-item">
+            <div class="bot-item-head">
+              <strong>Rule ${i + 1}</strong>
+              <button class="bot-del" title="Remove" onclick="botReplyDel(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+            <input class="bot-input" style="margin-bottom:7px" maxlength="200" placeholder="If they say… e.g. timings"
+                   value="${esc(r.match || '')}" oninput="botReplySet(${i},'match',this.value)">
+            <textarea class="bot-input" maxlength="4000" placeholder="Reply with…"
+                      oninput="botReplySet(${i},'reply',this.value)">${esc(r.reply || '')}</textarea>
+          </div>`).join('')}
+        <button class="btn-add" onclick="botReplyAdd()" ${bot.replies.length >= 50 ? 'disabled' : ''}>
+          <i class="fas fa-plus"></i> Add reply
+        </button>
+      </div>
+
+      <div class="bot-save-bar">
+        <span class="msg" id="botMsg"></span>
+        <button class="btn-wa" id="botSave" onclick="saveBot()"><i class="fas fa-save"></i> Save</button>
+      </div>`);
+}
+
+// Edits update state only — renderBot() is NOT called on every keystroke, or the
+// field being typed into would lose focus and the caret would jump.
+function botRowSet(i, k, v) { bot.menu.rows[i][k] = v; }
+function botReplySet(i, k, v) { bot.replies[i][k] = v; }
+function botRowAdd()   { if (bot.menu.rows.length < 10) { bot.menu.rows.push({ id: '', title: '', description: '' }); renderBot(); } }
+function botRowDel(i)  { bot.menu.rows.splice(i, 1); renderBot(); }
+function botReplyAdd() { if (bot.replies.length < 50) { bot.replies.push({ match: '', reply: '' }); renderBot(); } }
+function botReplyDel(i){ bot.replies.splice(i, 1); renderBot(); }
+
+async function saveBot() {
+    const btn = document.getElementById('botSave');
+    const msg = document.getElementById('botMsg');
+
+    bot.enabled = document.getElementById('botEnabled').checked;
+    bot.greetingEnabled = document.getElementById('botGreet').checked;
+    bot.menu.header = document.getElementById('mHeader').value;
+    bot.menu.body = document.getElementById('mBody').value;
+    bot.menu.button = document.getElementById('mButton').value;
+    // A row's id is what comes back when it's tapped, so it must equal the title.
+    bot.menu.rows.forEach(r => { r.id = (r.title || '').trim().toLowerCase(); });
+
+    const blankRow = bot.menu.rows.some(r => !(r.title || '').trim());
+    const blankRule = bot.replies.some(r => !(r.match || '').trim() || !(r.reply || '').trim());
+    if (blankRow)  { msg.style.color = '#dc2626'; msg.textContent = 'Every menu option needs a title.'; return; }
+    if (blankRule) { msg.style.color = '#dc2626'; msg.textContent = 'Every keyword rule needs both a phrase and a reply.'; return; }
+
+    btn.disabled = true; msg.style.color = '#6b7280'; msg.textContent = 'Saving…';
+    try {
+        bot = await api('bot-save', { method: 'POST', body: bot });
+        bot.menu = bot.menu || { rows: [] };
+        bot.menu.rows = bot.menu.rows || [];
+        bot.replies = bot.replies || [];
+        renderBot();
+        const m2 = document.getElementById('botMsg');
+        m2.style.color = '#16a34a'; m2.textContent = '✓ Saved';
+    } catch (e) {
+        msg.style.color = '#dc2626'; msg.textContent = e.message;
+        btn.disabled = false;
+    }
+}
+
+/** Poll for new messages; refresh the open thread only if it is still open. */
+async function refresh() {
+    if (document.hidden) return;          // don't poll a background tab
+    await loadConvos();
+    if (activePhone) {
+        const pane = document.getElementById('threadPane');
+        const typing = document.getElementById('replyBox');
+        // Never clobber a half-typed reply.
+        if (pane && !(typing && typing.value.trim())) openThread(activePhone);
+    }
+}
+</script>
+</body>
+</html>
