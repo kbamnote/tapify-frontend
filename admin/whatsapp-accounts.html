@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Accounts - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .wa-container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+        .stat-card h3 { font-size: .78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #1a2035; }
+        .stat-card.ok .value { color: #16a34a; }
+        .stat-card.msg .value { color: #3b82f6; }
+        .stat-card.bad .value { color: #ef4444; }
+
+        .toolbar { background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+        .toolbar input { flex: 1; min-width: 220px; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-family: inherit; font-size: .9rem; background: #f9fafb; }
+        .toolbar input:focus { outline: none; border-color: #8338ec; background: #fff; }
+        .btn-refresh { background: #8338ec; color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-family: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+
+        .table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 940px; }
+        th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #6b7280; padding: 13px 14px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+        td { padding: 13px 14px; border-bottom: 1px solid #f7f8fa; font-size: .87rem; color: #374151; vertical-align: top; }
+        tr:last-child td { border-bottom: 0; }
+        .biz { font-weight: 700; color: #1a2035; }
+        .cust { font-size: .78rem; color: #6b7280; margin-top: 2px; }
+        .num { font-variant-numeric: tabular-nums; }
+        .pill { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+        .pill.live { background: rgba(22,163,74,.12); color: #16a34a; }
+        .pill.broken { background: rgba(239,68,68,.12); color: #dc2626; }
+        .pill.off { background: #f3f4f6; color: #6b7280; }
+        .pill.tapify { background: rgba(131,56,236,.1); color: #8338ec; }
+        .warn { color: #dc2626; font-weight: 700; }
+        .muted { color: #9ca3af; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
+        .empty-state i { font-size: 3rem; margin-bottom: 14px; display: block; opacity: .5; }
+    </style>
+</head>
+<body>
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo"><img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span></a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item active"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">WhatsApp Accounts</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span id="userName">Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="wa-container">
+                <div class="stats-row">
+                    <div class="stat-card"><h3>Connected</h3><div class="value" id="sConnected">–</div></div>
+                    <div class="stat-card ok"><h3>Working</h3><div class="value" id="sActive">–</div></div>
+                    <div class="stat-card msg"><h3>Messages</h3><div class="value" id="sMessages">–</div></div>
+                    <div class="stat-card bad"><h3>Failed sends</h3><div class="value" id="sFailed">–</div></div>
+                </div>
+
+                <div class="toolbar">
+                    <input type="text" id="search" placeholder="Search by business, customer, email or number…">
+                    <button class="btn-refresh" onclick="load()"><i class="fas fa-rotate"></i> Refresh</button>
+                </div>
+
+                <div class="table-wrap" id="wrap">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<script src="../admin.js"></script>
+<script>
+const API = 'https://app.tapify.co.in/api/whatsapp/admin-accounts.php';
+let ROWS = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    load();
+    document.getElementById('search').addEventListener('input', render);
+});
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+function ago(v) {
+    if (!v) return '<span class="muted">never</span>';
+    const t = new Date(v).getTime();
+    if (isNaN(t)) return '<span class="muted">—</span>';
+    const mins = Math.floor((Date.now() - t) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    if (mins < 1440) return Math.floor(mins / 60) + 'h ago';
+    const d = Math.floor(mins / 1440);
+    return d + (d === 1 ? ' day ago' : ' days ago');
+}
+
+async function load() {
+    const wrap = document.getElementById('wrap');
+    wrap.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>';
+    try {
+        const res = await fetch(API, { credentials: 'include' });
+        if (res.status === 401) { window.location.href = '../login.html'; return; }
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message || 'Failed');
+        const d = json.data || {};
+        ROWS = d.accounts || [];
+        const t = d.totals || {};
+        document.getElementById('sConnected').textContent = t.connected ?? 0;
+        document.getElementById('sActive').textContent    = t.active ?? 0;
+        document.getElementById('sMessages').textContent  = (t.messages ?? 0).toLocaleString();
+        document.getElementById('sFailed').textContent    = t.failed ?? 0;
+        render();
+    } catch (e) {
+        wrap.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`;
+    }
+}
+
+function render() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    let rows = ROWS;
+    if (q) rows = rows.filter(r => [r.name, r.customerName, r.customerEmail, r.displayPhone]
+        .some(v => String(v || '').toLowerCase().includes(q)));
+
+    const wrap = document.getElementById('wrap');
+    if (!rows.length) {
+        wrap.innerHTML = ROWS.length
+            ? '<div class="empty-state"><i class="fas fa-magnifying-glass"></i>No accounts match that search.</div>'
+            : '<div class="empty-state"><i class="fab fa-whatsapp"></i>No customer has connected a WhatsApp number yet.</div>';
+        return;
+    }
+
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Business</th><th>Number</th><th>State</th><th>Bot</th>
+            <th class="num">Messages</th><th class="num">In / Out</th><th class="num">Failed</th>
+            <th>Last activity</th><th>Connected</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => {
+            // "active" only means the row wasn't disconnected. Without a token it
+            // cannot actually send, so show that distinctly rather than green.
+            const state = r.status !== 'active'
+                ? `<span class="pill off">${esc(r.status)}</span>`
+                : (r.ready ? '<span class="pill live">working</span>'
+                           : '<span class="pill broken">no token</span>');
+            return `
+            <tr>
+              <td>
+                <div class="biz">${esc(r.name || '—')} ${r.isDefault ? '<span class="pill tapify">Tapify</span>' : ''}</div>
+                <div class="cust">${esc(r.customerName || (r.tapifyUserId ? 'user #' + r.tapifyUserId : 'not linked'))}${r.customerEmail ? ' · ' + esc(r.customerEmail) : ''}</div>
+              </td>
+              <td>${esc(r.displayPhone || '—')}</td>
+              <td>${state}</td>
+              <td>${r.botEnabled ? '<span class="pill live">on</span>' : '<span class="pill off">off</span>'}</td>
+              <td class="num">${(r.messages || 0).toLocaleString()}</td>
+              <td class="num">${r.inbound || 0} / ${r.outbound || 0}</td>
+              <td class="num ${r.failed ? 'warn' : 'muted'}">${r.failed || 0}${r.queued ? ` <span class="muted">(${r.queued} queued)</span>` : ''}</td>
+              <td>${ago(r.lastActivity)}</td>
+              <td class="muted">${r.connectedAt ? esc(new Date(r.connectedAt).toLocaleDateString()) : '—'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+}
+</script>
+</body>
+</html>
