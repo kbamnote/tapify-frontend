@@ -242,10 +242,11 @@ function checkAuth() {
         const role = user.role;
 
         // Admin pages: full admins get everything; "staff" card-editors get ONLY
-        // the vCard management pages; everyone else is bounced.
+        // the vCard management pages plus the website builder (staff may create,
+        // edit and publish sites); everyone else is bounced.
         if (isAdminPath && role !== 'admin') {
             const seg = path.split('/').pop().replace('.html', '');
-            const staffPages = ['vcards', 'vcards-edit', 'vcards-create', 'dynamic-qr', 'review-funnel', 'users'];
+            const staffPages = ['vcards', 'vcards-edit', 'vcards-create', 'dynamic-qr', 'review-funnel', 'users', 'website-builder'];
             if (role === 'staff' && staffPages.includes(seg)) {
                 applyStaffRestrictions(); // hide admin-only nav + delete controls
             } else {
