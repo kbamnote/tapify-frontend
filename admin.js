@@ -277,7 +277,15 @@ function applyStaffRestrictions() {
     const hideNav = () => {
         document.querySelectorAll('.sidebar-nav .nav-item').forEach(a => {
             const href = (a.getAttribute('href') || '').toLowerCase();
-            const allowed = href.includes('vcards') || href.includes('dynamic-qr') || href.includes('review-funnel') || href.includes('users');
+            // Staff may create, edit and publish websites — api/sites/create.php,
+            // save-draft.php and publish.php all accept isStaffOrAdmin(). Deletes
+            // stay admin-only and are hidden inside the builder by can_delete from
+            // list.php, so exposing this nav item does not widen what they can do.
+            const allowed = href.includes('vcards')
+                || href.includes('dynamic-qr')
+                || href.includes('review-funnel')
+                || href.includes('users')
+                || href.includes('website-builder');
             if (!allowed) a.style.display = 'none';
         });
         const footer = document.querySelector('.sidebar-footer');
