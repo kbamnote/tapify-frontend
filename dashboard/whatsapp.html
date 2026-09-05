@@ -58,6 +58,8 @@
         .wa-compose-row { display: flex; gap: 9px; align-items: center; margin-top: 9px; }
         .wa-window { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; border-radius: 9px; padding: 9px 12px; font-size: .78rem; line-height: 1.5; margin-bottom: 10px; }
         .wa-select { padding: 9px 11px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-family: inherit; font-size: .82rem; background: #f9fafb; flex: 1; }
+        /* The chosen template's text, so it is clear where each {{n}} lands. */
+        .wa-tpl-preview:not(:empty) { margin-top: 8px; padding: 8px 10px; background: #f0fdf4; border-left: 3px solid #25D366; border-radius: 0 7px 7px 0; font-size: .8rem; color: #14532d; line-height: 1.5; white-space: pre-wrap; }
         .empty-state { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: .88rem; }
         .empty-state i { font-size: 2.4rem; margin-bottom: 12px; display: block; opacity: .45; }
 
@@ -399,9 +401,11 @@ async function openThread(phone) {
             <button class="btn-wa" onclick="sendReply()"><i class="fas fa-paper-plane"></i> Send</button>
           </div>`
         : `<div class="wa-compose-row">
-            <select class="wa-select" id="tplPick"><option value="">Loading templates…</option></select>
+            <select class="wa-select" id="tplPick" onchange="renderTplParams()"><option value="">Loading templates…</option></select>
             <button class="btn-wa" onclick="sendTemplate()"><i class="fas fa-paper-plane"></i> Send</button>
-          </div>`}
+          </div>
+          <div id="tplPreview" class="wa-tpl-preview"></div>
+          <div id="tplParams"></div>`}
       </div>`;
 
     const box = document.getElementById('msgs');
@@ -426,6 +430,7 @@ async function loadTemplates() {
         sel.innerHTML = templates.length
             ? '<option value="">Choose an approved template…</option>' + templates.map(t => `<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('')
             : '<option value="">No approved templates yet</option>';
+        renderTplParams();
     } catch (_) { sel.innerHTML = '<option value="">Could not load templates</option>'; }
 }
 
@@ -445,12 +450,49 @@ async function sendReply() {
     } finally { box.disabled = false; }
 }
 
+/**
+ * Show the chosen template's text, and one input per {{n}} it contains.
+ *
+ * Without this the send below passed `params: []` for every template. Meta
+ * rejects that for any template with a placeholder — which is all of ours — so
+ * template sending from this dashboard never actually worked.
+ */
+function renderTplParams() {
+    const sel = document.getElementById('tplPick');
+    const prev = document.getElementById('tplPreview');
+    const wrap = document.getElementById('tplParams');
+    if (!sel || !wrap || !prev) return;
+    const t = (templates || []).find(x => x.name === sel.value);
+    prev.textContent = t && t.body ? t.body : '';
+    const n = (t && t.paramCount) || 0;
+    wrap.innerHTML = '';
+    for (let i = 1; i <= n; i++) {
+        const inp = document.createElement('input');
+        inp.className = 'wa-select';
+        inp.id = 'tplP' + i;
+        inp.placeholder = 'Value for {{' + i + '}}';
+        inp.style.cssText = 'width:100%;margin-top:7px';
+        wrap.appendChild(inp);
+    }
+}
+
 async function sendTemplate() {
     const sel = document.getElementById('tplPick');
     const templateName = sel && sel.value;
     if (!templateName) { alert('Choose a template first.'); return; }
+    const t = (templates || []).find(x => x.name === templateName);
+    const n = (t && t.paramCount) || 0;
+    const params = [];
+    for (let i = 1; i <= n; i++) {
+        const el = document.getElementById('tplP' + i);
+        const v = el ? el.value.trim() : '';
+        // An empty placeholder fails at Meta with an error the user cannot act
+        // on, so stop here where we can say which field is missing.
+        if (!v) { alert('Fill in the value for {{' + i + '}} before sending.'); return; }
+        params.push(v);
+    }
     try {
-        await api('send', { method: 'POST', body: { phone: activePhone, templateName, params: [] } });
+        await api('send', { method: 'POST', body: { phone: activePhone, templateName, params } });
         openThread(activePhone);
         loadConvos();
     } catch (e) { alert('Could not send: ' + e.message); }
