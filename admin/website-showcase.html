@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Showcase - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .sc-intro { background: #fff; border-radius: 16px; padding: 18px 22px; margin-bottom: 18px; box-shadow: 0 2px 12px rgba(0,0,0,.05); display: flex; gap: 16px; align-items: flex-start; }
+        .sc-intro i { color: #3b82f6; font-size: 1.3rem; margin-top: 2px; }
+        .sc-intro p { margin: 0; color: #475569; font-size: .9rem; line-height: 1.6; }
+        .sc-intro a { color: #0f766e; font-weight: 600; }
+        .sc-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+        .sc-bar input, .sc-bar select { height: 42px; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0 14px; font-family: inherit; font-size: .88rem; background: #fff; }
+        .sc-bar input { flex: 1; min-width: 220px; }
+        .sc-count { font-size: .85rem; color: #64748b; margin-left: auto; }
+        .sc-table-wrap { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.05); overflow-x: auto; }
+        .sc-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+        .sc-table th { text-align: left; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b; padding: 14px 16px; border-bottom: 1px solid #eef2f7; background: #f8fafc; }
+        .sc-table td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: .88rem; color: #1e293b; vertical-align: middle; }
+        .sc-table tr:last-child td { border-bottom: 0; }
+        .sc-name { font-weight: 600; }
+        .sc-sub { font-size: .78rem; color: #64748b; }
+        .sc-sub a { color: #0f766e; text-decoration: none; }
+        .sc-sub a:hover { text-decoration: underline; }
+        .sc-pill { display: inline-block; font-size: .72rem; font-weight: 600; padding: 3px 10px; border-radius: 50px; }
+        .sc-pill.live { background: #dcfce7; color: #166534; }
+        .sc-pill.draft { background: #f1f5f9; color: #64748b; }
+        .sc-center { text-align: center; }
+        .sc-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .sc-switch input { opacity: 0; width: 0; height: 0; }
+        .sc-slider { position: absolute; inset: 0; cursor: pointer; background: #cbd5e1; border-radius: 24px; transition: .2s; }
+        .sc-slider:before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+        .sc-switch input:checked + .sc-slider { background: #10b981; }
+        .sc-switch input:checked + .sc-slider:before { transform: translateX(20px); }
+        .sc-switch input:disabled + .sc-slider { opacity: .45; cursor: not-allowed; }
+        .sc-order { width: 64px; height: 34px; border: 1.5px solid #e2e8f0; border-radius: 8px; text-align: center; font-family: inherit; }
+        .sc-empty { padding: 50px 20px; text-align: center; color: #64748b; }
+        .sc-toast { position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: .88rem; opacity: 0; transform: translateY(10px); transition: .25s; z-index: 9999; pointer-events: none; }
+        .sc-toast.show { opacity: 1; transform: none; }
+        .sc-toast.err { background: #b91c1c; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="website-showcase.html" class="nav-item active"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Website Showcase</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span id="userName">Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="sc-intro">
+                <i class="fas fa-circle-info"></i>
+                <p>Choose which builder websites appear on tapify.co.in.
+                    <b>Our Network</b> lists client websites on <a href="https://tapify.co.in/businesses.html" target="_blank" rel="noopener">tapify.co.in/businesses.html</a>;
+                    <b>Website Demo</b> lists demo websites on <a href="https://tapify.co.in/website-demos.html" target="_blank" rel="noopener">tapify.co.in/website-demos.html</a>.
+                    Only published websites can be shown. Lower <b>Order</b> numbers appear first. Changes go live within about 5 minutes.</p>
+            </div>
+
+            <div class="sc-bar">
+                <input type="text" id="scSearch" placeholder="Search by site, slug, owner…">
+                <select id="scFilter">
+                    <option value="">All websites</option>
+                    <option value="network">Shown in Our Network</option>
+                    <option value="demo">Shown as Website Demo</option>
+                    <option value="live">Published only</option>
+                </select>
+                <span class="sc-count" id="scCount"></span>
+            </div>
+
+            <div class="sc-table-wrap">
+                <table class="sc-table">
+                    <thead>
+                        <tr>
+                            <th>Website</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th class="sc-center">Our Network</th>
+                            <th class="sc-center">Website Demo</th>
+                            <th class="sc-center">Order</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scBody">
+                        <tr><td colspan="6" class="sc-empty"><i class="fas fa-spinner fa-spin"></i> Loading websites…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sc-toast" id="scToast"></div>
+
+    <script src="../admin.js"></script>
+    <script>
+    (function () {
+        var API = 'https://app.tapify.co.in/api/admin/sites/showcase.php';
+        var sites = [];
+        var body = document.getElementById('scBody');
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function toast(msg, err) {
+            var t = document.getElementById('scToast');
+            t.textContent = msg;
+            t.className = 'sc-toast show' + (err ? ' err' : '');
+            clearTimeout(toast._t);
+            toast._t = setTimeout(function () { t.className = 'sc-toast'; }, 2200);
+        }
+        function sw(s, flag) {
+            var dis = s.published ? '' : ' disabled title="Publish this website first"';
+            return '<label class="sc-switch"><input type="checkbox" data-id="' + s.id + '" data-flag="' + flag + '"' +
+                (s[flag] ? ' checked' : '') + dis + '><span class="sc-slider"></span></label>';
+        }
+
+        function render() {
+            var q = document.getElementById('scSearch').value.trim().toLowerCase();
+            var f = document.getElementById('scFilter').value;
+            var list = sites.filter(function (s) {
+                if (f === 'network' && !s.show_in_network) return false;
+                if (f === 'demo' && !s.show_as_demo) return false;
+                if (f === 'live' && !s.published) return false;
+                if (!q) return true;
+                return [s.name, s.slug, s.industry, s.owner_name, s.owner_email, s.url].join(' ').toLowerCase().indexOf(q) !== -1;
+            });
+            document.getElementById('scCount').textContent =
+                list.length + ' of ' + sites.length + ' · ' +
+                sites.filter(function (s) { return s.show_in_network; }).length + ' in network · ' +
+                sites.filter(function (s) { return s.show_as_demo; }).length + ' demos';
+            if (!list.length) {
+                body.innerHTML = '<tr><td colspan="6" class="sc-empty">No websites match.</td></tr>';
+                return;
+            }
+            body.innerHTML = list.map(function (s) {
+                return '<tr>' +
+                    '<td><div class="sc-name">' + esc(s.name) + '</div>' +
+                        '<div class="sc-sub"><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.url.replace(/^https?:\/\//, '')) + '</a>' +
+                        (s.industry ? ' · ' + esc(s.industry) : '') + '</div></td>' +
+                    '<td><div>' + esc(s.owner_name || '—') + '</div><div class="sc-sub">' + esc(s.owner_email || '') + '</div></td>' +
+                    '<td><span class="sc-pill ' + (s.published ? 'live">Published' : 'draft">Draft') + '</span></td>' +
+                    '<td class="sc-center">' + sw(s, 'show_in_network') + '</td>' +
+                    '<td class="sc-center">' + sw(s, 'show_as_demo') + '</td>' +
+                    '<td class="sc-center"><input type="number" class="sc-order" data-id="' + s.id + '" value="' + (s.showcase_order || 0) + '"></td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function post(payload) {
+            return fetch(API, {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (r) { return r.json(); }).then(function (j) {
+                if (!j.success) throw new Error(j.message || 'Save failed');
+                return j;
+            });
+        }
+
+        body.addEventListener('change', function (e) {
+            var el = e.target;
+            var id = +el.getAttribute('data-id');
+            var s = sites.filter(function (x) { return x.id === id; })[0];
+            if (!s) return;
+
+            if (el.matches('input[type=checkbox]')) {
+                var flag = el.getAttribute('data-flag'), on = el.checked;
+                el.disabled = true;
+                post({ site_id: id, flag: flag, value: on }).then(function () {
+                    s[flag] = on;
+                    toast((on ? 'Now showing ' : 'Hidden ') + s.name + (flag === 'show_as_demo' ? ' (Website Demo)' : ' (Our Network)'));
+                    render();
+                }).catch(function (err) {
+                    el.checked = !on; el.disabled = false;
+                    toast(err.message, true);
+                });
+            } else if (el.classList.contains('sc-order')) {
+                var v = parseInt(el.value, 10) || 0;
+                post({ site_id: id, showcase_order: v }).then(function () {
+                    s.showcase_order = v;
+                    toast('Order saved');
+                }).catch(function (err) { toast(err.message, true); });
+            }
+        });
+
+        document.getElementById('scSearch').addEventListener('input', render);
+        document.getElementById('scFilter').addEventListener('change', render);
+
+        fetch(API, { credentials: 'include' })
+            .then(function (r) { return r.json(); })
+            .then(function (j) {
+                if (!j.success) throw new Error(j.message || 'Failed to load');
+                sites = j.data.sites || [];
+                render();
+            })
+            .catch(function (err) {
+                body.innerHTML = '<tr><td colspan="6" class="sc-empty">Could not load websites: ' + esc(err.message) + '</td></tr>';
+            });
+    })();
+    </script>
+</body>
+</html>
