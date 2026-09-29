@@ -4273,3 +4273,43 @@ body.dark-mode .testimonial-card { background: #1a2828 !important; }
 body.dark-mode .live-toast { background: #1a2828; border-color: rgba(255,255,255,0.1); }
 body.dark-mode .live-toast-name { color: #dba84f; }
 body.dark-mode .btn-darkmode i::before { content: '\f185'; } /* fa-sun */
+
+
+/* ============================================================
+   CLIENT STORIES — real customer videos on the homepage
+   ============================================================ */
+.stories-section { padding: 90px 0; background: #f6eee6; }
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+}
+.story-card {
+    margin: 0;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1.5px solid rgba(21, 62, 63, 0.1);
+    box-shadow: 0 6px 24px rgba(21, 62, 63, 0.08);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s;
+}
+.story-card:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(21, 62, 63, 0.16); }
+/* A fixed frame keeps the row tidy whether a clip was shot portrait or
+   landscape; the poster and the video are cropped to fill it. */
+.story-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    background: #0d2829;
+}
+.story-card figcaption { padding: 16px 18px 18px; }
+.story-card figcaption h5 { font-size: 1rem; font-weight: 800; color: #153e3f; margin: 0 0 4px; }
+.story-card figcaption p { font-size: 0.84rem; color: #7a9e9f; margin: 0; line-height: 1.5; }
+
+@media (max-width: 576px) {
+    .stories-section { padding: 60px 0; }
+    .stories-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .story-card figcaption { padding: 12px 12px 14px; }
+}

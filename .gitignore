@@ -1,0 +1,8 @@
+# The original 4K client footage: 230-470 MB each, and GitHub refuses any file
+# over 100 MB, so a push carrying these fails outright. They are the masters —
+# keep them on the machine and on your own backup. What the site serves is the
+# compressed set in images/clients/, which IS committed.
+images/DENTAL FUL VIDEO.mp4
+images/Surya multi solar company video.mp4
+images/Protein basket.mp4
+images/shree Sai  video 1.mp4

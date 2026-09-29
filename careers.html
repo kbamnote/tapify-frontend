@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - Join Tapify</title>
+    <meta name="description" content="Join Tapify. Field sales and support roles across Vidarbha, and channel partnerships for firms who want to sell Tapify in their city.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== CAREERS ===== */
+        .car-hero { background: linear-gradient(135deg, #0d2829, #153e3f 55%, #1e5557); padding: 150px 0 110px; color: #f6eee6; position: relative; overflow: hidden; }
+        .car-hero:after { content: ''; position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; border-radius: 50%; background: rgba(201,147,58,0.16); }
+        .car-hero-content { position: relative; z-index: 2; max-width: 760px; }
+        .badge-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(246,238,230,0.12); border: 1px solid rgba(246,238,230,0.25); color: #f6eee6; padding: 7px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; margin-bottom: 18px; }
+        .car-hero h1 { font-size: 3rem; font-weight: 900; line-height: 1.12; margin-bottom: 14px; }
+        .car-hero h1 span { color: #dba84f; }
+        .car-hero p { font-size: 1.05rem; color: rgba(246,238,230,0.85); line-height: 1.65; }
+
+        .car-section { background: #f6eee6; padding: 0 0 90px; }
+        .car-tabs { display: flex; gap: 10px; background: #fff; border-radius: 20px; padding: 10px; margin-top: -42px; position: relative; z-index: 10; box-shadow: 0 20px 60px rgba(21,62,63,0.18); border: 1.5px solid rgba(21,62,63,0.08); flex-wrap: wrap; }
+        .car-tab { flex: 1; min-width: 200px; border: 2px solid transparent; background: #f6eee6; border-radius: 14px; padding: 16px 18px; cursor: pointer; text-align: left; font-family: inherit; transition: all .25s ease; }
+        .car-tab strong { display: block; font-size: 1rem; font-weight: 800; color: #153e3f; }
+        .car-tab span { font-size: 0.82rem; color: #7a9e9f; }
+        .car-tab.active { background: linear-gradient(135deg, #153e3f, #1e5557); }
+        .car-tab.active strong, .car-tab.active span { color: #f6eee6; }
+
+        .car-panel { display: none; padding-top: 44px; }
+        .car-panel.active { display: block; }
+        .car-lead { max-width: 720px; margin-bottom: 26px; }
+        .car-lead h2 { font-size: 1.9rem; font-weight: 900; color: #153e3f; margin-bottom: 10px; }
+        .car-lead p { color: #5b7d7e; line-height: 1.7; font-size: 0.98rem; }
+
+        .city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+        .city-card { background: #fff; border: 2px solid rgba(21,62,63,0.1); border-radius: 16px; padding: 20px; cursor: pointer; transition: all .3s cubic-bezier(.4,0,.2,1); text-align: left; font-family: inherit; }
+        .city-card:hover { transform: translateY(-6px); border-color: #153e3f; box-shadow: 0 20px 40px rgba(21,62,63,.16); }
+        .city-card i { color: #c9933a; font-size: 1.1rem; }
+        .city-card h3 { font-size: 1.08rem; font-weight: 800; color: #153e3f; margin: 10px 0 4px; }
+        .city-card p { font-size: 0.82rem; color: #7a9e9f; margin: 0; }
+        .city-card .apply { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.82rem; font-weight: 800; color: #153e3f; }
+
+        .perks { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-top: 40px; }
+        .perk { background: #fff; border-radius: 16px; padding: 22px; border: 1.5px solid rgba(21,62,63,0.08); }
+        .perk i { font-size: 1.4rem; color: #c9933a; }
+        .perk h4 { font-size: 1rem; font-weight: 800; color: #153e3f; margin: 10px 0 6px; }
+        .perk p { font-size: 0.86rem; color: #7a9e9f; line-height: 1.6; margin: 0; }
+
+        /* Forms */
+        .car-form { background: #fff; border-radius: 22px; padding: 30px; border: 1.5px solid rgba(21,62,63,0.1); box-shadow: 0 10px 40px rgba(21,62,63,.08); }
+        .car-form h3 { font-size: 1.3rem; font-weight: 900; color: #153e3f; margin-bottom: 4px; }
+        .car-form .sub { font-size: 0.88rem; color: #7a9e9f; margin-bottom: 22px; }
+        .fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.full { grid-column: 1 / -1; }
+        .field label { font-size: 0.82rem; font-weight: 700; color: #153e3f; }
+        .field label .req { color: #c0392b; }
+        .field input, .field select, .field textarea {
+            border: 2px solid rgba(21,62,63,0.12); border-radius: 12px; padding: 12px 14px;
+            font-family: inherit; font-size: 0.92rem; color: #153e3f; background: #faf7f4; width: 100%;
+        }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #153e3f; background: #fff; }
+        .field textarea { min-height: 110px; resize: vertical; }
+        .field .hint { font-size: 0.75rem; color: #9bb3b4; }
+        .honey { position: absolute; left: -9999px; opacity: 0; height: 0; width: 0; }
+        .btn-submit { margin-top: 24px; background: linear-gradient(135deg, #153e3f, #1e5557); color: #f6eee6; border: none; padding: 15px 40px; border-radius: 50px; font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit; }
+        .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+        .btn-back { background: none; border: none; color: #153e3f; font-weight: 800; font-size: 0.9rem; cursor: pointer; font-family: inherit; margin-bottom: 18px; padding: 0; }
+        .form-note { margin-top: 14px; font-size: 0.8rem; color: #7a9e9f; }
+        .form-msg { margin-top: 18px; padding: 14px 16px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; display: none; }
+        .form-msg.ok { display: block; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .form-msg.err { display: block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        .thanks { text-align: center; padding: 50px 20px; }
+        .thanks i { font-size: 3rem; color: #059669; }
+        .thanks h3 { font-size: 1.5rem; font-weight: 900; color: #153e3f; margin: 14px 0 8px; }
+        .thanks p { color: #7a9e9f; }
+
+        @media (max-width: 768px) {
+            .car-hero { padding: 120px 0 90px; }
+            .car-hero h1 { font-size: 2.1rem; }
+            .car-tab { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="toggler-icon"><span></span><span></span><span></span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="website-demos.html">Website Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="businesses.html">Our Network</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="careers.html">Careers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a href="login.html" class="btn-signin">
+                        <i class="fas fa-user"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="car-hero">
+        <div class="container">
+            <div class="car-hero-content">
+                <div class="badge-pill"><i class="fas fa-briefcase"></i> We are hiring across Vidarbha</div>
+                <h1>Build your career with <span>Tapify</span></h1>
+                <p>
+                    We are putting small businesses across Vidarbha online — NFC cards, websites and Google
+                    presence. That takes people on the ground in every district, and partners who already
+                    know their market. Both are open.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="car-section">
+        <div class="container">
+
+            <div class="car-tabs">
+                <button class="car-tab active" data-tab="hiring" type="button">
+                    <strong>🧑‍💼 Vidarbha Hiring</strong>
+                    <span>Field sales, support and office roles — 11 districts</span>
+                </button>
+                <button class="car-tab" data-tab="partner" type="button">
+                    <strong>🤝 Channel Partners</strong>
+                    <span>Sell Tapify in your city and earn on every client</span>
+                </button>
+            </div>
+
+            <!-- ============ VIDARBHA HIRING ============ -->
+            <div class="car-panel active" id="panel-hiring">
+
+                <div id="cityPicker">
+                    <div class="car-lead">
+                        <h2>Choose your district</h2>
+                        <p>
+                            Pick where you want to work. You will be asked a few questions about yourself and
+                            the kind of work you are looking for — it takes about two minutes, and you can
+                            attach your resume if you have one ready.
+                        </p>
+                    </div>
+
+                    <div class="city-grid" id="cityGrid"></div>
+
+                    <div class="perks">
+                        <div class="perk">
+                            <i class="fas fa-indian-rupee-sign"></i>
+                            <h4>Fixed salary + incentive</h4>
+                            <p>A monthly salary you can rely on, and incentive on every client you bring in.</p>
+                        </div>
+                        <div class="perk">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h4>Training provided</h4>
+                            <p>No printing or tech background needed. We train you on the product and the pitch.</p>
+                        </div>
+                        <div class="perk">
+                            <i class="fas fa-map-location-dot"></i>
+                            <h4>Work in your own district</h4>
+                            <p>You work in the area you already know. No relocation, no long postings.</p>
+                        </div>
+                        <div class="perk">
+                            <i class="fas fa-arrow-trend-up"></i>
+                            <h4>Room to grow</h4>
+                            <p>Team leader and area roles open first to people already doing the work.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hiring form (shown after a district is chosen) -->
+                <div id="hiringForm" style="display:none;">
+                    <button class="btn-back" type="button" id="backToCities">← All districts</button>
+                    <div class="car-form">
+                        <h3>Apply — <span id="chosenCity">Nagpur</span></h3>
+                        <p class="sub">Fields marked <span style="color:#c0392b">*</span> are required. Everything else helps us place you in the right role.</p>
+
+                        <form id="formHiring" autocomplete="on">
+                            <input type="text" name="website" class="honey" tabindex="-1" autocomplete="off">
+                            <input type="hidden" name="type" value="hiring">
+                            <input type="hidden" name="city" id="hiringCity">
+
+                            <div class="fgrid">
+                                <div class="field"><label>Full name <span class="req">*</span></label><input name="name" required maxlength="120"></div>
+                                <div class="field"><label>Mobile number <span class="req">*</span></label><input name="phone" required inputmode="tel" maxlength="24" placeholder="98765 43210"></div>
+                                <div class="field"><label>Email</label><input name="email" type="email" maxlength="160"></div>
+                                <div class="field"><label>Taluka / area</label><input name="taluka" maxlength="80"></div>
+
+                                <div class="field">
+                                    <label>Role you want</label>
+                                    <select name="role" id="roleSelect"></select>
+                                </div>
+                                <div class="field"><label>Age</label><input name="age" inputmode="numeric" maxlength="20"></div>
+
+                                <div class="field"><label>What are you doing currently?</label><input name="current_occupation" maxlength="120" placeholder="Job, business, studying…"></div>
+                                <div class="field">
+                                    <label>Total work experience</label>
+                                    <select name="experience">
+                                        <option value="">Select</option>
+                                        <option>Fresher</option><option>Less than 1 year</option>
+                                        <option>1-3 years</option><option>3-5 years</option><option>5+ years</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Sales experience</label>
+                                    <select name="sales_experience">
+                                        <option value="">Select</option>
+                                        <option>None</option><option>Less than 1 year</option>
+                                        <option>1-3 years</option><option>3+ years</option>
+                                    </select>
+                                </div>
+                                <div class="field"><label>Which industry before?</label><input name="previous_industry" maxlength="120"></div>
+                                <div class="field"><label>Current salary (monthly)</label><input name="current_salary" maxlength="60"></div>
+                                <div class="field"><label>Expected salary (monthly)</label><input name="expected_salary" maxlength="60"></div>
+
+                                <div class="field"><label>Do you have a two-wheeler?</label><select name="has_two_wheeler"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                                <div class="field"><label>Android smartphone?</label><select name="has_android_phone"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                                <div class="field"><label>Laptop?</label><select name="has_laptop"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                                <div class="field"><label>Full-time field work is fine?</label><select name="full_time_field"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                                <div class="field"><label>Handled a team before?</label><select name="team_handling"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                                <div class="field"><label>Can you join immediately?</label><select name="immediate_joining"><option value="">Select</option><option>Yes</option><option>Within 15 days</option><option>Within a month</option></select></div>
+
+                                <div class="field full">
+                                    <label>Resume</label>
+                                    <input type="file" name="resume" id="resumeInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                                    <span class="hint">Optional. PDF or Word, up to 5 MB.</span>
+                                </div>
+
+                                <div class="field full">
+                                    <label>Anything you would like to add</label>
+                                    <textarea name="message" maxlength="2000" placeholder="Tell us briefly about yourself…"></textarea>
+                                </div>
+                            </div>
+
+                            <button class="btn-submit" type="submit" id="hiringSubmit">Submit application</button>
+                            <p class="form-note">By applying you agree that Tapify may contact you about this and future openings.</p>
+                            <div class="form-msg" id="hiringMsg"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="hiringThanks" style="display:none;">
+                    <div class="car-form thanks">
+                        <i class="fas fa-circle-check"></i>
+                        <h3>Application received</h3>
+                        <p>Thank you. Our team reviews every application and will call you if there is a fit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ CHANNEL PARTNERS ============ -->
+            <div class="car-panel" id="panel-partner">
+                <div class="car-lead">
+                    <h2>Become a Tapify channel partner</h2>
+                    <p>
+                        If you already sell to local businesses — printing, IT, marketing, insurance, mobile
+                        retail — Tapify is something your existing customers need. You sell and service in
+                        your city, we handle the product, the platform and the support. You earn on every
+                        client and on every renewal.
+                    </p>
+                </div>
+
+                <div class="perks" style="margin-top:0; margin-bottom:34px;">
+                    <div class="perk"><i class="fas fa-percent"></i><h4>Margin on every sale</h4><p>Partner pricing on cards, websites and subscriptions, with recurring earnings on renewals.</p></div>
+                    <div class="perk"><i class="fas fa-box-open"></i><h4>Ready product</h4><p>NFC cards, websites, Google tools — nothing to build, nothing to stock beyond samples.</p></div>
+                    <div class="perk"><i class="fas fa-headset"></i><h4>We do the support</h4><p>Onboarding, technical help and design support come from our team, not yours.</p></div>
+                    <div class="perk"><i class="fas fa-map-pin"></i><h4>Your own area</h4><p>Work your city without us appointing a second partner next door.</p></div>
+                </div>
+
+                <div class="car-form">
+                    <h3>Partner enquiry</h3>
+                    <p class="sub">Tell us about your business and we will get back to you with terms.</p>
+
+                    <form id="formPartner" autocomplete="on">
+                        <input type="text" name="website" class="honey" tabindex="-1" autocomplete="off">
+                        <input type="hidden" name="type" value="partner">
+
+                        <div class="fgrid">
+                            <div class="field"><label>Your name <span class="req">*</span></label><input name="name" required maxlength="120"></div>
+                            <div class="field"><label>Firm / business name</label><input name="firm" maxlength="140"></div>
+                            <div class="field"><label>Mobile number <span class="req">*</span></label><input name="phone" required inputmode="tel" maxlength="24" placeholder="98765 43210"></div>
+                            <div class="field"><label>Email</label><input name="email" type="email" maxlength="160"></div>
+                            <div class="field"><label>City <span class="req">*</span></label><input name="city" required maxlength="80" list="cityList"><datalist id="cityList"></datalist></div>
+                            <div class="field">
+                                <label>What is your business?</label>
+                                <select name="business_type">
+                                    <option value="">Select</option>
+                                    <option>Printing / stationery</option>
+                                    <option>IT / computer sales</option>
+                                    <option>Marketing / advertising agency</option>
+                                    <option>Mobile / electronics retail</option>
+                                    <option>Insurance / financial services</option>
+                                    <option>Freelance / individual</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Years in business</label>
+                                <select name="years">
+                                    <option value="">Select</option>
+                                    <option>Just starting</option><option>1-3 years</option>
+                                    <option>3-5 years</option><option>5-10 years</option><option>10+ years</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Team size</label>
+                                <select name="team_size">
+                                    <option value="">Select</option>
+                                    <option>Just me</option><option>2-5</option><option>6-15</option><option>15+</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Investment you can start with</label>
+                                <select name="investment">
+                                    <option value="">Select</option>
+                                    <option>Under ₹25,000</option><option>₹25,000 - ₹50,000</option>
+                                    <option>₹50,000 - ₹1,00,000</option><option>Above ₹1,00,000</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label>Tell us about your customer base</label>
+                                <textarea name="message" maxlength="2000" placeholder="Who do you sell to today, and roughly how many customers?"></textarea>
+                            </div>
+                        </div>
+
+                        <button class="btn-submit" type="submit" id="partnerSubmit">Send enquiry</button>
+                        <p class="form-note">We reply to partner enquiries within two working days.</p>
+                        <div class="form-msg" id="partnerMsg"></div>
+                    </form>
+                </div>
+
+                <div id="partnerThanks" style="display:none;">
+                    <div class="car-form thanks">
+                        <i class="fas fa-circle-check"></i>
+                        <h3>Enquiry received</h3>
+                        <p>Thank you. Our partnership team will contact you shortly.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    (function () {
+        var API = 'https://app.tapify.co.in/api/public/careers-apply.php';
+
+        // Kept in step with careers_cities() in the backend, which rejects
+        // anything not on its own list — so a stale copy here fails honestly
+        // rather than storing a district we do not hire in.
+        var CITIES = ['Nagpur', 'Wardha', 'Bhandara', 'Gondia', 'Chandrapur', 'Gadchiroli',
+                      'Amravati', 'Akola', 'Washim', 'Buldhana', 'Yavatmal'];
+        var ROLES = ['Field Sales Executive', 'Team Leader / Area Sales', 'Telecaller',
+                     'Graphic Designer', 'Customer Support', 'Delivery / Installation', 'Other'];
+
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ---- tabs ---- */
+        document.querySelectorAll('.car-tab').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.car-tab').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                document.querySelectorAll('.car-panel').forEach(function (p) { p.classList.remove('active'); });
+                $('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+                window.scrollTo({ top: document.querySelector('.car-tabs').offsetTop - 80, behavior: 'smooth' });
+            });
+        });
+
+        /* ---- district cards ---- */
+        $('cityGrid').innerHTML = CITIES.map(function (c) {
+            return '<button type="button" class="city-card" data-city="' + c + '">' +
+                     '<i class="fas fa-location-dot"></i>' +
+                     '<h3>' + c + '</h3>' +
+                     '<p>Field sales & support roles</p>' +
+                     '<span class="apply">Apply here <i class="fas fa-arrow-right"></i></span>' +
+                   '</button>';
+        }).join('');
+
+        $('roleSelect').innerHTML = '<option value="">Select</option>' +
+            ROLES.map(function (r) { return '<option>' + r + '</option>'; }).join('');
+        $('cityList').innerHTML = CITIES.map(function (c) { return '<option value="' + c + '">'; }).join('');
+
+        $('cityGrid').addEventListener('click', function (e) {
+            var card = e.target.closest('.city-card');
+            if (!card) return;
+            var city = card.getAttribute('data-city');
+            $('chosenCity').textContent = city;
+            $('hiringCity').value = city;
+            $('cityPicker').style.display = 'none';
+            $('hiringForm').style.display = 'block';
+            window.scrollTo({ top: $('hiringForm').offsetTop - 90, behavior: 'smooth' });
+        });
+
+        $('backToCities').addEventListener('click', function () {
+            $('hiringForm').style.display = 'none';
+            $('cityPicker').style.display = 'block';
+            window.scrollTo({ top: document.querySelector('.car-tabs').offsetTop - 80, behavior: 'smooth' });
+        });
+
+        function show(msgEl, text, ok) {
+            msgEl.textContent = text;
+            msgEl.className = 'form-msg ' + (ok ? 'ok' : 'err');
+        }
+
+        /* ---- hiring: multipart, because of the resume ---- */
+        $('formHiring').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var btn = $('hiringSubmit'), msg = $('hiringMsg');
+            var file = $('resumeInput').files[0];
+            if (file && file.size > 5 * 1024 * 1024) {
+                show(msg, 'That resume is larger than 5 MB. Please attach a smaller file.', false);
+                return;
+            }
+            btn.disabled = true; btn.textContent = 'Sending…';
+            fetch(API, { method: 'POST', body: new FormData(e.target) })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.success) throw new Error(j.message || 'Could not submit');
+                    $('hiringForm').style.display = 'none';
+                    $('hiringThanks').style.display = 'block';
+                    window.scrollTo({ top: $('hiringThanks').offsetTop - 90, behavior: 'smooth' });
+                })
+                .catch(function (err) { show(msg, err.message, false); })
+                .finally(function () { btn.disabled = false; btn.textContent = 'Submit application'; });
+        });
+
+        /* ---- partner: plain JSON, no file ---- */
+        $('formPartner').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var btn = $('partnerSubmit'), msg = $('partnerMsg');
+            var data = {};
+            new FormData(e.target).forEach(function (v, k) { data[k] = v; });
+            btn.disabled = true; btn.textContent = 'Sending…';
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.success) throw new Error(j.message || 'Could not submit');
+                    document.querySelector('#panel-partner .car-form').style.display = 'none';
+                    $('partnerThanks').style.display = 'block';
+                    window.scrollTo({ top: $('partnerThanks').offsetTop - 90, behavior: 'smooth' });
+                })
+                .catch(function (err) { show(msg, err.message, false); })
+                .finally(function () { btn.disabled = false; btn.textContent = 'Send enquiry'; });
+        });
+    })();
+    </script>
+</body>
+</html>

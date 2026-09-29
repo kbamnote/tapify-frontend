@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Everything Tapify Does</title>
+    <meta name="description" content="NFC smart cards, standees and keychains, AI Google review tools, websites and online stores, Meta ads, GMB management and social posting — every Tapify feature in one place.">
+
+    <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== FEATURES ===== */
+        .ft-hero { background: linear-gradient(135deg, #0d2829, #153e3f 55%, #1e5557); padding: 150px 0 110px; color: #f6eee6; position: relative; overflow: hidden; }
+        .ft-hero:after { content: ''; position: absolute; right: -140px; top: -140px; width: 460px; height: 460px; border-radius: 50%; background: rgba(201,147,58,0.16); }
+        .ft-hero-in { position: relative; z-index: 2; max-width: 780px; }
+        .badge-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(246,238,230,0.12); border: 1px solid rgba(246,238,230,0.25); color: #f6eee6; padding: 7px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; margin-bottom: 18px; }
+        .ft-hero h1 { font-size: 3rem; font-weight: 900; line-height: 1.12; margin-bottom: 14px; }
+        .ft-hero h1 span { color: #dba84f; }
+        .ft-hero p { font-size: 1.06rem; color: rgba(246,238,230,0.85); line-height: 1.65; }
+
+        /* jump chips */
+        .ft-jump { display: flex; gap: 10px; flex-wrap: wrap; background: #fff; border-radius: 20px; padding: 14px; margin-top: -40px; position: relative; z-index: 10; box-shadow: 0 20px 60px rgba(21,62,63,0.18); border: 1.5px solid rgba(21,62,63,0.08); }
+        .ft-jump a { flex: 1; min-width: 150px; text-align: center; padding: 12px 14px; border-radius: 12px; background: #f6eee6; color: #153e3f; font-weight: 800; font-size: 0.86rem; text-decoration: none; transition: all .25s; }
+        .ft-jump a:hover { background: linear-gradient(135deg, #153e3f, #1e5557); color: #f6eee6; }
+
+        .ft-wrap { background: #f6eee6; padding: 70px 0 100px; }
+        .ft-block { padding-top: 26px; margin-bottom: 64px; scroll-margin-top: 90px; }
+        .ft-eyebrow { font-size: 0.78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #c9933a; margin-bottom: 8px; }
+        .ft-block > h2 { font-size: 2.1rem; font-weight: 900; color: #153e3f; margin-bottom: 10px; }
+        .ft-block > .intro { color: #5b7d7e; line-height: 1.7; max-width: 760px; margin-bottom: 30px; }
+
+        .ft-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+        .ft-card { background: #fff; border: 1.5px solid rgba(21,62,63,0.1); border-radius: 20px; padding: 26px; transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s, border-color .3s; }
+        .ft-card:hover { transform: translateY(-6px); border-color: #153e3f; box-shadow: 0 24px 48px rgba(21,62,63,.14); }
+        .ft-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .ft-ico { width: 48px; height: 48px; border-radius: 14px; background: rgba(21,62,63,0.07); display: flex; align-items: center; justify-content: center; color: #153e3f; font-size: 1.2rem; }
+        .ft-tag { background: #fdf6e8; color: #a9762a; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 50px; white-space: nowrap; }
+        .ft-card h3 { font-size: 1.2rem; font-weight: 800; color: #153e3f; margin-bottom: 4px; }
+        .ft-card .sub { font-size: 0.84rem; font-weight: 700; color: #2f7d63; margin-bottom: 12px; }
+        .ft-card p { font-size: 0.92rem; color: #5b7d7e; line-height: 1.68; margin-bottom: 0; }
+        .ft-list { list-style: none; padding: 0; margin: 16px 0 0; }
+        .ft-list li { position: relative; padding-left: 24px; font-size: 0.88rem; color: #3a6b6c; line-height: 1.55; margin-bottom: 9px; }
+        .ft-list li:before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 1px; color: #2f7d63; font-size: 0.76rem; }
+        .ft-foot { margin-top: 18px; padding-top: 16px; border-top: 1.5px solid rgba(21,62,63,.08); }
+        .ft-foot a { font-size: 0.86rem; font-weight: 800; color: #153e3f; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+        .ft-foot a:hover { color: #c9933a; }
+
+        /* the "everything else" strip */
+        .ft-mini { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+        .mini { background: #fff; border-radius: 16px; padding: 20px; border: 1.5px solid rgba(21,62,63,0.08); }
+        .mini i { color: #c9933a; font-size: 1.15rem; }
+        .mini h4 { font-size: 0.98rem; font-weight: 800; color: #153e3f; margin: 10px 0 6px; }
+        .mini p { font-size: 0.85rem; color: #7a9e9f; line-height: 1.6; margin: 0; }
+
+        .ft-cta { background: linear-gradient(135deg, #153e3f, #1e5557); border-radius: 26px; padding: 50px 40px; color: #f6eee6; text-align: center; }
+        .ft-cta h2 { font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
+        .ft-cta p { color: rgba(246,238,230,0.82); max-width: 560px; margin: 0 auto 26px; line-height: 1.65; }
+        .ft-cta .btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .ft-cta .b1 { background: linear-gradient(135deg, #c9933a, #dba84f); color: #0d2829; padding: 14px 32px; border-radius: 50px; font-weight: 800; text-decoration: none; }
+        .ft-cta .b2 { background: rgba(246,238,230,0.12); border: 1.5px solid rgba(246,238,230,0.3); color: #f6eee6; padding: 14px 32px; border-radius: 50px; font-weight: 800; text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .ft-hero { padding: 120px 0 90px; }
+            .ft-hero h1 { font-size: 2.1rem; }
+            .ft-block > h2 { font-size: 1.7rem; }
+            .ft-cta { padding: 38px 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="toggler-icon"><span></span><span></span><span></span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="features.html">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="website-demos.html">Website Demo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="businesses.html">Our Network</a></li>
+                    <li class="nav-item"><a class="nav-link" href="careers.html">Careers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-cta">
+                    <a href="login.html" class="btn-signin">
+                        <i class="fas fa-user"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="ft-hero">
+        <div class="container">
+            <div class="ft-hero-in">
+                <div class="badge-pill"><i class="fas fa-layer-group"></i> Hardware + software, one company</div>
+                <h1>Everything <span>Tapify</span> does for your business</h1>
+                <p>
+                    Smart NFC hardware you can hand to a customer, and the software that turns every tap into
+                    a review, an enquiry or an order. No app for your customers to install — one tap works on
+                    Android and iPhone alike.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="ft-wrap">
+        <div class="container">
+
+            <div class="ft-jump">
+                <a href="#hardware">NFC Products</a>
+                <a href="#google">Google &amp; Reviews</a>
+                <a href="#websites">Websites</a>
+                <a href="#marketing">Ads &amp; Social</a>
+                <a href="#platform">Platform</a>
+            </div>
+
+            <!-- ================= NFC HARDWARE ================= -->
+            <section class="ft-block" id="hardware">
+                <p class="ft-eyebrow">Hardware range</p>
+                <h2>NFC products we provide</h2>
+                <p class="intro">
+                    Physical tap-and-share products, printed in-house and embedded with NFC chips. Every one
+                    of them points at a profile you control, so you can change what a tap opens without
+                    reprinting anything. No app required — works on both Android and iPhone with a single tap.
+                </p>
+
+                <div class="ft-grid">
+                    <div class="ft-card">
+                        <div class="ft-top">
+                            <div class="ft-ico"><i class="fas fa-id-card"></i></div>
+                            <span class="ft-tag">Popular</span>
+                        </div>
+                        <h3>NFC Smart Cards</h3>
+                        <div class="sub">Digital business cards</div>
+                        <p>
+                            Custom-printed premium PVC, metallic or wooden cards embedded with NFC chips.
+                            Share contact info, digital profiles and social links instantly with one tap.
+                        </p>
+                        <ul class="ft-list">
+                            <li>PVC, metal and wood finishes, printed to your branding</li>
+                            <li>Saves straight into the customer's phone contacts</li>
+                            <li>Links to your photos, services, catalogue and payment details</li>
+                            <li>Edit the profile any time — the printed card never changes</li>
+                            <li>Also works as a QR code for phones without NFC</li>
+                        </ul>
+                        <div class="ft-foot"><a href="contact.html">Order smart cards <i class="fas fa-arrow-right"></i></a></div>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top">
+                            <div class="ft-ico"><i class="fas fa-table-columns"></i></div>
+                            <span class="ft-tag">High conversion</span>
+                        </div>
+                        <h3>NFC Standees</h3>
+                        <div class="sub">Countertop review &amp; payment stands</div>
+                        <p>
+                            Durable acrylic and wooden countertop standees for stores, reception desks and
+                            showrooms. Collect instant Google reviews or receive payments with a simple phone tap.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Sits on the counter where the customer is already standing</li>
+                            <li>Taps straight through to your Google review page</li>
+                            <li>Or to your UPI payment, menu, catalogue or enquiry form</li>
+                            <li>Acrylic and wooden bodies, printed with your logo</li>
+                            <li>Every tap is counted, so you can see which counter performs</li>
+                        </ul>
+                        <div class="ft-foot"><a href="contact.html">Order standees <i class="fas fa-arrow-right"></i></a></div>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top">
+                            <div class="ft-ico"><i class="fas fa-key"></i></div>
+                            <span class="ft-tag">Compact</span>
+                        </div>
+                        <h3>NFC Keychains</h3>
+                        <div class="sub">Portable tap-to-share keychains</div>
+                        <p>
+                            Compact, stylish NFC keychains designed for professionals on the move. Always carry
+                            your digital profile and contact details right on your key ring.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Pocket-sized — nothing to carry that you were not carrying anyway</li>
+                            <li>Same profile as your card, so both stay in step</li>
+                            <li>Good for field staff, delivery teams and site visits</li>
+                            <li>Hard-wearing body that survives a key ring</li>
+                        </ul>
+                        <div class="ft-foot"><a href="contact.html">Order keychains <i class="fas fa-arrow-right"></i></a></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= GOOGLE ================= -->
+            <section class="ft-block" id="google">
+                <p class="ft-eyebrow">Google presence</p>
+                <h2>Get found, and get reviewed</h2>
+                <p class="intro">
+                    For a local business, the Google listing is the shopfront most customers see first. Tapify
+                    connects to your Google Business Profile and lets you run all of it from your phone —
+                    reviews, posts, photos, services and the numbers behind them.
+                </p>
+
+                <div class="ft-grid">
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-star"></i></div></div>
+                        <h3>AI-Powered Google Review Cards</h3>
+                        <div class="sub">More 5-star reviews, without asking awkwardly</div>
+                        <p>
+                            Accelerate 5-star customer reviews with smart AI prompts that guide happy clients
+                            straight to your Google My Business review page in seconds.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Tap a card or standee and the review page opens — no searching</li>
+                            <li>Request a review over WhatsApp, with the message written for you</li>
+                            <li>Every request is logged, so nobody gets asked twice</li>
+                            <li>AI writes a reply to each review in four tones; you post the one you like</li>
+                            <li>Optional auto-reply for positive reviews, with a star rating floor you set</li>
+                        </ul>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-location-dot"></i></div></div>
+                        <h3>Manage Google My Business (GMB)</h3>
+                        <div class="sub">Your whole listing, from the app</div>
+                        <p>
+                            Control your GMB listings, respond to customer reviews, update business hours and
+                            improve local SEO ranking all in one place.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Edit your business name, description, phone and website</li>
+                            <li>List your services and set the attributes customers filter by</li>
+                            <li>Publish Google Posts — offers, updates and news on the listing itself</li>
+                            <li>Upload photos in a batch, the single biggest driver of calls</li>
+                            <li>Manage several businesses from one login and switch between them</li>
+                        </ul>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-gauge-high"></i></div></div>
+                        <h3>Marketing score &amp; performance</h3>
+                        <div class="sub">What is working, in plain numbers</div>
+                        <p>
+                            A single score for how actively your listing is being managed, and the real Google
+                            numbers behind it — so you can tell whether any of this is paying off.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Calls, direction requests and views, with the trend against last month</li>
+                            <li>A score that moves as you post, reply and add photos — and drifts if you stop</li>
+                            <li>Every gap comes with the screen that fixes it, one tap away</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= WEBSITES ================= -->
+            <section class="ft-block" id="websites">
+                <p class="ft-eyebrow">Web presence</p>
+                <h2>Websites and online stores</h2>
+                <p class="intro">
+                    Custom corporate websites and scalable e-commerce online stores designed for lightning
+                    speed, mobile responsiveness and high conversion rates — built for you, then yours to edit.
+                </p>
+
+                <div class="ft-grid">
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-globe"></i></div></div>
+                        <h3>Professional &amp; E-Commerce Websites</h3>
+                        <div class="sub">Built for you, editable by you</div>
+                        <p>
+                            A proper website for your business — pages, photos, services and contact details —
+                            or a full online store with a product catalogue and checkout.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Designed and set up by our team, then edited from your dashboard</li>
+                            <li>Fast and mobile-first, because most of your visitors are on a phone</li>
+                            <li>Your own domain, or a free yourname.tapify.co.in address</li>
+                            <li>Search-engine basics handled: titles, descriptions and share images</li>
+                        </ul>
+                        <div class="ft-foot"><a href="website-demos.html">See live examples <i class="fas fa-arrow-right"></i></a></div>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-cart-shopping"></i></div></div>
+                        <h3>Orders, bookings and enquiries</h3>
+                        <div class="sub">The website actually does something</div>
+                        <p>
+                            Everything a visitor sends lands in one place — on your phone, not in an inbox you
+                            forget to check.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Online orders with customer details and order status</li>
+                            <li>Appointment booking against the slots you make available</li>
+                            <li>Enquiry forms, with a call and WhatsApp button beside every one</li>
+                            <li>Customer feedback collected on your own site</li>
+                        </ul>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fab fa-whatsapp"></i></div></div>
+                        <h3>WhatsApp store</h3>
+                        <div class="sub">Sell where your customers already are</div>
+                        <p>
+                            A shareable catalogue where the order arrives as a WhatsApp message, for businesses
+                            whose customers would rather chat than check out.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Products with photos, prices and variants</li>
+                            <li>Orders arrive on WhatsApp, ready to confirm</li>
+                            <li>Automatic replies and broadcast messages to past customers</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MARKETING ================= -->
+            <section class="ft-block" id="marketing">
+                <p class="ft-eyebrow">Software &amp; digital growth</p>
+                <h2>Ads and social, from one dashboard</h2>
+                <p class="intro">
+                    Manage your websites, reviews, social content and ad campaigns from one powerful dashboard,
+                    instead of four apps and an agency invoice.
+                </p>
+
+                <div class="ft-grid">
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-bullseye"></i></div></div>
+                        <h3>Run Meta Ads from One Platform</h3>
+                        <div class="sub">Facebook and Instagram campaigns</div>
+                        <p>
+                            Launch, track and optimize targeted Facebook and Instagram ad campaigns with ease
+                            from a single, unified dashboard.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Boost a post you have already published, in a few taps</li>
+                            <li>Set your own budget and audience — no minimum contract</li>
+                            <li>Reach, clicks and spend reported back in the same place</li>
+                            <li>Top up a wallet and spend it when you want to</li>
+                        </ul>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-share-nodes"></i></div></div>
+                        <h3>Social &amp; Meta Posting Automation</h3>
+                        <div class="sub">Post once, publish everywhere</div>
+                        <p>
+                            Schedule, automate and publish content across Facebook, Instagram and social
+                            channels effortlessly from one central platform.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Write once and publish to your connected pages together</li>
+                            <li>Schedule a week of posts in one sitting</li>
+                            <li>Upload photos and videos from your phone</li>
+                            <li>AI drafts the caption when you are short of words</li>
+                        </ul>
+                    </div>
+
+                    <div class="ft-card">
+                        <div class="ft-top"><div class="ft-ico"><i class="fas fa-wand-magic-sparkles"></i></div></div>
+                        <h3>AI Growth Center</h3>
+                        <div class="sub">The writing, done for you</div>
+                        <p>
+                            The part most owners never get round to — the words. Tapify's AI writes them from
+                            what it already knows about your business.
+                        </p>
+                        <ul class="ft-list">
+                            <li>Your Google business description, written and applied in one tap</li>
+                            <li>Replies to reviews that mention the service the customer came for</li>
+                            <li>Google Posts and answers to the questions customers keep asking</li>
+                            <li>Everything publishes from the same screen — nothing to copy and paste</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PLATFORM ================= -->
+            <section class="ft-block" id="platform">
+                <p class="ft-eyebrow">The platform</p>
+                <h2>And the rest of it</h2>
+                <p class="intro">
+                    Everything above runs on one account, on your phone or a browser, for one business or for
+                    several.
+                </p>
+
+                <div class="ft-mini">
+                    <div class="mini">
+                        <i class="fas fa-mobile-screen"></i>
+                        <h4>Android &amp; iOS app</h4>
+                        <p>The whole platform in your pocket, with alerts when an order or enquiry arrives.</p>
+                    </div>
+                    <div class="mini">
+                        <i class="fas fa-qrcode"></i>
+                        <h4>Dynamic QR codes</h4>
+                        <p>Print once, point it somewhere else later. Change the destination without reprinting.</p>
+                    </div>
+                    <div class="mini">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Taps and view analytics</h4>
+                        <p>Who tapped, what they opened and which card or standee is doing the work.</p>
+                    </div>
+                    <div class="mini">
+                        <i class="fas fa-images"></i>
+                        <h4>Gallery, services &amp; testimonials</h4>
+                        <p>Show your work, list what you charge for and let past customers speak for you.</p>
+                    </div>
+                    <div class="mini">
+                        <i class="fas fa-user-group"></i>
+                        <h4>Team accounts</h4>
+                        <p>A card and profile for every staff member, managed from one company login.</p>
+                    </div>
+                    <div class="mini">
+                        <i class="fas fa-headset"></i>
+                        <h4>Setup &amp; support</h4>
+                        <p>We set the profile up with you, in your language, and stay reachable afterwards.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="ft-cta">
+                <h2>See it on your own business</h2>
+                <p>
+                    Tell us what you do and we will set up a demo profile with your details, so you can tap a
+                    card and see exactly what your customers would see.
+                </p>
+                <div class="btns">
+                    <a href="contact.html" class="b1">Talk to us</a>
+                    <a href="website-demos.html" class="b2">See live websites</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

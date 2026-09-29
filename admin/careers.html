@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .cr-tabs { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .cr-tab { border: 1.5px solid #e2e8f0; background: #fff; border-radius: 10px; padding: 10px 18px; font-family: inherit; font-size: .9rem; font-weight: 700; color: #475569; cursor: pointer; }
+        .cr-tab.active { background: #0f766e; border-color: #0f766e; color: #fff; }
+        .cr-tab .n { opacity: .75; font-weight: 600; margin-left: 6px; }
+
+        .cr-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+        .cr-bar input, .cr-bar select { height: 42px; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0 14px; font-family: inherit; font-size: .88rem; background: #fff; }
+        .cr-bar input { flex: 1; min-width: 200px; }
+        .cr-count { margin-left: auto; font-size: .85rem; color: #64748b; }
+
+        .cr-list { display: grid; gap: 12px; }
+        .cr-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.05); padding: 16px 18px; }
+        .cr-head { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+        .cr-name { font-size: 1rem; font-weight: 800; color: #0f172a; }
+        .cr-sub { font-size: .8rem; color: #64748b; margin-top: 2px; }
+        .cr-sub a { color: #0f766e; text-decoration: none; }
+        .cr-pill { font-size: .7rem; font-weight: 800; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: .04em; }
+        .st-NEW { background: #dbeafe; color: #1e40af; }
+        .st-REVIEWED { background: #ede9fe; color: #5b21b6; }
+        .st-SHORTLISTED { background: #fef3c7; color: #92400e; }
+        .st-REJECTED { background: #fee2e2; color: #991b1b; }
+        .st-HIRED, .st-APPROVED { background: #dcfce7; color: #166534; }
+        .cr-when { margin-left: auto; font-size: .78rem; color: #94a3b8; white-space: nowrap; }
+
+        .cr-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 20px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1f5f9; }
+        .fact .k { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; font-weight: 700; }
+        .fact .v { font-size: .86rem; color: #1e293b; }
+        .cr-msg { margin-top: 12px; background: #f8fafc; border-radius: 10px; padding: 10px 12px; font-size: .86rem; color: #334155; line-height: 1.5; white-space: pre-wrap; }
+
+        .cr-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+        .cr-actions select { height: 36px; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: .82rem; }
+        .cr-actions .btn { border: 0; border-radius: 8px; padding: 9px 14px; font-size: .8rem; font-weight: 700; font-family: inherit; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-resume { background: #0f766e; color: #fff; }
+        .btn-note { background: #f1f5f9; color: #334155; }
+        .btn-wa { background: #25D366; color: #fff; }
+        .btn-del { background: #fee2e2; color: #b91c1c; margin-left: auto; }
+        .cr-note { margin-top: 10px; display: none; }
+        .cr-note textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; font-family: inherit; font-size: .86rem; min-height: 70px; }
+        .cr-empty { background: #fff; border-radius: 14px; padding: 50px 20px; text-align: center; color: #64748b; }
+        .cr-more { text-align: center; margin-top: 16px; }
+        .cr-more button { background: #0f172a; color: #fff; border: 0; border-radius: 10px; padding: 11px 26px; font-weight: 700; font-family: inherit; cursor: pointer; }
+        .cr-toast { position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: .88rem; opacity: 0; transform: translateY(10px); transition: .25s; z-index: 9999; pointer-events: none; }
+        .cr-toast.show { opacity: 1; transform: none; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+            <button class="sidebar-toggle-mobile" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon icon-dashboard"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon icon-vcards"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="website-showcase.html" class="nav-item"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+            <a href="careers.html" class="nav-item active"><i class="fas fa-briefcase nav-icon" style="color:#f97316"></i><span>Careers</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="product-orders.html" class="nav-item"><i class="fas fa-box-open nav-icon icon-product-orders"></i><span>Product Orders</span></a>
+            <a href="virtual-backgrounds.html" class="nav-item"><i class="fas fa-image nav-icon icon-backgrounds"></i><span>Virtual Backgrounds</span></a>
+            <a href="storage.html" class="nav-item"><i class="fas fa-hdd nav-icon icon-storage"></i><span>Storage</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon icon-settings"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Careers</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-dropdown profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown('profileDropdown')">
+                        <img src="../images/tapify-logo-green.png" alt="Profile" class="profile-avatar"><span id="userName">Tapify World</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu profile-menu" id="profileDropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Account</a>
+                        <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="cr-tabs">
+                <button class="cr-tab active" data-type="hiring">Vidarbha Hiring <span class="n" id="nHiring"></span></button>
+                <button class="cr-tab" data-type="partner">Channel Partners <span class="n" id="nPartner"></span></button>
+            </div>
+
+            <div class="cr-bar">
+                <input type="text" id="crSearch" placeholder="Search name, phone or email…">
+                <select id="crStatus"><option value="">All statuses</option></select>
+                <select id="crCity"><option value="">All cities</option></select>
+                <span class="cr-count" id="crCount"></span>
+            </div>
+
+            <div class="cr-list" id="crList">
+                <div class="cr-empty"><i class="fas fa-spinner fa-spin"></i> Loading applications…</div>
+            </div>
+            <div class="cr-more" id="crMore" style="display:none;"><button type="button">Load more</button></div>
+        </main>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="cr-toast" id="crToast"></div>
+
+    <script src="../admin.js"></script>
+    <script>
+    (function () {
+        var LIST   = 'https://app.tapify.co.in/api/admin/careers/list.php';
+        var UPDATE = 'https://app.tapify.co.in/api/admin/careers/update.php';
+        var RESUME = 'https://app.tapify.co.in/api/admin/careers/resume.php';
+
+        var type = 'hiring', page = 1, rows = [], statuses = [], cities = [];
+        var list = document.getElementById('crList');
+        var timer = null;
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function toast(m, err) {
+            var t = document.getElementById('crToast');
+            t.textContent = m;
+            t.className = 'cr-toast show' + (err ? ' err' : '');
+            clearTimeout(toast._t);
+            toast._t = setTimeout(function () { t.className = 'cr-toast'; }, 2200);
+        }
+        function when(iso) {
+            if (!iso) return '';
+            var d = new Date(iso.replace(' ', 'T'));
+            if (isNaN(d)) return iso;
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ', ' +
+                   d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+        }
+        function fact(k, v) {
+            return v ? '<div class="fact"><div class="k">' + k + '</div><div class="v">' + esc(v) + '</div></div>' : '';
+        }
+        /** Digits only, India-first — so the WhatsApp link opens the right chat. */
+        function wa(phone) {
+            var d = String(phone || '').replace(/\D+/g, '');
+            if (d.length === 10) d = '91' + d;
+            return d;
+        }
+
+        function card(r) {
+            var facts = type === 'partner'
+                ? fact('Firm', r.firm) + fact('City', r.city) + fact('Business', r.business_type) +
+                  fact('Years', r.years) + fact('Team size', r.team_size) + fact('Investment', r.investment)
+                : fact('District', r.city) + fact('Role wanted', r.role) + fact('Taluka', r.taluka) +
+                  fact('Age', r.age) + fact('Doing now', r.current_occupation) +
+                  fact('Experience', r.experience) + fact('Sales exp.', r.sales_experience) +
+                  fact('Industry', r.previous_industry) + fact('Current salary', r.current_salary) +
+                  fact('Expected', r.expected_salary) + fact('Two-wheeler', r.has_two_wheeler) +
+                  fact('Android phone', r.has_android_phone) + fact('Laptop', r.has_laptop) +
+                  fact('Field work OK', r.full_time_field) + fact('Team handling', r.team_handling) +
+                  fact('Can join', r.immediate_joining);
+
+            var opts = statuses.map(function (s) {
+                return '<option value="' + s + '"' + (s === r.status ? ' selected' : '') + '>' + s + '</option>';
+            }).join('');
+
+            return '<div class="cr-card" data-id="' + r.id + '">' +
+                '<div class="cr-head">' +
+                    '<div>' +
+                        '<div class="cr-name">' + esc(r.name) + '</div>' +
+                        '<div class="cr-sub">' +
+                            '<a href="tel:' + esc(r.phone) + '">' + esc(r.phone) + '</a>' +
+                            (r.email ? ' · <a href="mailto:' + esc(r.email) + '">' + esc(r.email) + '</a>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<span class="cr-pill st-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
+                    '<span class="cr-when">' + when(r.created_at) + '</span>' +
+                '</div>' +
+                '<div class="cr-facts">' + facts + '</div>' +
+                (r.message ? '<div class="cr-msg">' + esc(r.message) + '</div>' : '') +
+                (r.notes ? '<div class="cr-msg"><b>Internal note:</b> ' + esc(r.notes) + '</div>' : '') +
+                '<div class="cr-actions">' +
+                    '<select data-act="status">' + opts + '</select>' +
+                    (r.resume_name
+                        ? '<a class="btn btn-resume" href="' + RESUME + '?id=' + r.id + '" target="_blank" rel="noopener">' +
+                          '<i class="fas fa-file-arrow-down"></i> Resume</a>'
+                        : '') +
+                    '<a class="btn btn-wa" href="https://wa.me/' + wa(r.phone) + '" target="_blank" rel="noopener">' +
+                        '<i class="fab fa-whatsapp"></i> WhatsApp</a>' +
+                    '<button class="btn btn-note" data-act="note"><i class="fas fa-pen"></i> Note</button>' +
+                    '<button class="btn btn-del" data-act="delete"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+                '<div class="cr-note"><textarea placeholder="Internal note — only the team sees this">' + esc(r.notes || '') + '</textarea>' +
+                    '<button class="btn btn-note" data-act="save-note" style="margin-top:8px;">Save note</button></div>' +
+            '</div>';
+        }
+
+        function render(append) {
+            if (!rows.length && !append) {
+                list.innerHTML = '<div class="cr-empty">No applications yet.</div>';
+                return;
+            }
+            list.innerHTML = rows.map(card).join('');
+        }
+
+        function load(append) {
+            if (!append) { page = 1; rows = []; list.innerHTML = '<div class="cr-empty"><i class="fas fa-spinner fa-spin"></i> Loading…</div>'; }
+            var p = new URLSearchParams({ type: type, page: page });
+            var s = document.getElementById('crSearch').value.trim();
+            if (s) p.set('search', s);
+            if (document.getElementById('crStatus').value) p.set('status', document.getElementById('crStatus').value);
+            if (document.getElementById('crCity').value) p.set('city', document.getElementById('crCity').value);
+
+            fetch(LIST + '?' + p, { credentials: 'include' })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.success) throw new Error(j.message || 'Failed');
+                    var d = j.data;
+                    statuses = d.statuses; cities = d.cities;
+                    rows = append ? rows.concat(d.rows) : d.rows;
+
+                    document.getElementById('nHiring').textContent = d.tab_counts.hiring;
+                    document.getElementById('nPartner').textContent = d.tab_counts.partner;
+                    document.getElementById('crCount').textContent =
+                        d.total + (d.total === 1 ? ' application' : ' applications') +
+                        (d.by_status.NEW ? ' · ' + d.by_status.NEW + ' new' : '');
+
+                    var sel = document.getElementById('crStatus');
+                    if (sel.options.length === 1) {
+                        sel.innerHTML = '<option value="">All statuses</option>' +
+                            statuses.map(function (x) { return '<option>' + x + '</option>'; }).join('');
+                    }
+                    var csel = document.getElementById('crCity');
+                    if (csel.options.length === 1) {
+                        csel.innerHTML = '<option value="">All cities</option>' +
+                            cities.map(function (x) { return '<option>' + x + '</option>'; }).join('');
+                    }
+
+                    render(append);
+                    document.getElementById('crMore').style.display = d.has_more ? 'block' : 'none';
+                })
+                .catch(function (e) {
+                    list.innerHTML = '<div class="cr-empty">Could not load: ' + esc(e.message) + '</div>';
+                });
+        }
+
+        function post(body) {
+            return fetch(UPDATE, {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ type: type }, body)),
+            }).then(function (r) { return r.json(); }).then(function (j) {
+                if (!j.success) throw new Error(j.message || 'Failed');
+                return j;
+            });
+        }
+
+        list.addEventListener('change', function (e) {
+            if (e.target.getAttribute('data-act') !== 'status') return;
+            var card = e.target.closest('.cr-card');
+            var id = +card.getAttribute('data-id');
+            post({ id: id, status: e.target.value }).then(function () {
+                var pill = card.querySelector('.cr-pill');
+                pill.textContent = e.target.value;
+                pill.className = 'cr-pill st-' + e.target.value;
+                toast('Status updated');
+            }).catch(function (err) { toast(err.message, true); });
+        });
+
+        list.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-act]');
+            if (!btn || btn.tagName === 'SELECT') return;
+            var card = btn.closest('.cr-card');
+            var id = +card.getAttribute('data-id');
+            var act = btn.getAttribute('data-act');
+
+            if (act === 'note') {
+                var box = card.querySelector('.cr-note');
+                box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            } else if (act === 'save-note') {
+                var text = card.querySelector('.cr-note textarea').value;
+                post({ id: id, notes: text }).then(function () { toast('Note saved'); load(); })
+                    .catch(function (err) { toast(err.message, true); });
+            } else if (act === 'delete') {
+                if (!confirm('Delete this application? This cannot be undone.')) return;
+                post({ id: id, delete: true }).then(function () { toast('Deleted'); load(); })
+                    .catch(function (err) { toast(err.message, true); });
+            }
+        });
+
+        document.querySelectorAll('.cr-tab').forEach(function (t) {
+            t.addEventListener('click', function () {
+                document.querySelectorAll('.cr-tab').forEach(function (x) { x.classList.remove('active'); });
+                t.classList.add('active');
+                type = t.getAttribute('data-type');
+                document.getElementById('crCity').value = '';
+                load();
+            });
+        });
+        document.getElementById('crSearch').addEventListener('input', function () {
+            clearTimeout(timer); timer = setTimeout(load, 300);
+        });
+        document.getElementById('crStatus').addEventListener('change', function () { load(); });
+        document.getElementById('crCity').addEventListener('change', function () { load(); });
+        document.getElementById('crMore').addEventListener('click', function () { page += 1; load(true); });
+
+        load();
+    })();
+    </script>
+</body>
+</html>

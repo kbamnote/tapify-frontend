@@ -1122,3 +1122,15 @@ document.querySelectorAll('form').forEach(form => {
 
 console.log('%c🚀 Tapify - The Future of Business Networking', 'color: #8338ec; font-size: 16px; font-weight: bold;');
 console.log('%cWebsite loaded successfully!', 'color: #28a745; font-size: 12px;');
+
+
+/* ===== CLIENT STORIES =====
+   Only one testimonial plays at a time. Four people talking over each other is
+   the kind of thing nobody notices until it happens on someone's phone. */
+document.querySelectorAll('.story-video').forEach(function (video) {
+    video.addEventListener('play', function () {
+        document.querySelectorAll('.story-video').forEach(function (other) {
+            if (other !== video) other.pause();
+        });
+    });
+});
