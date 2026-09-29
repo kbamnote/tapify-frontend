@@ -937,7 +937,6 @@ function initTestimonialCarousel() {
         { img: 'PANACHE-MAHAL testimonial.jpeg',                                name: 'Panache-Mahal' },
         { img: 'PRAKASH OPTICALS testimonial.jpeg',                             name: 'Prakash Opticals' },
         { img: 'SAMRAT INFRASTRUCTURE testimonial.jpeg',                        name: 'Samrat Infrastructure' },
-        { img: 'SP CONSTRUCTIONS & INTERIORS testimonial.jpeg',                 name: 'SP Constructions & Interiors' },
         { img: 'TRUE SMILE DENTAL CLINIC testimonial.jpeg',                     name: 'True Smile Dental Clinic' },
     ];
 
