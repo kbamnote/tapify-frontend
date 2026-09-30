@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Careers - Join Tapify</title>
-    <meta name="description" content="Join Tapify. Field sales and support roles across Vidarbha, and channel partnerships for firms who want to sell Tapify in their city.">
+    <meta name="description" content="Join Tapify. Field sales and support roles across 24 districts of Maharashtra — Nagpur, Amravati, Nashik and Chhatrapati Sambhajinagar divisions — plus channel partnerships for firms who want to sell Tapify in their city.">
 
     <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -35,9 +35,21 @@
         .car-lead h2 { font-size: 1.9rem; font-weight: 900; color: #153e3f; margin-bottom: 10px; }
         .car-lead p { color: #5b7d7e; line-height: 1.7; font-size: 0.98rem; }
 
-        .city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+        .city-grid { display: block; }
+        .division { margin-bottom: 34px; }
+        .division-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+        .division-head h3 { font-size: 1.05rem; font-weight: 800; color: #153e3f; margin: 0; }
+        .division-badge { font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 5px 12px; border-radius: 50px; }
+        .division-badge.open { background: #ecfdf5; color: #047857; }
+        .division-badge.soon { background: #f1ece4; color: #8a7a5f; }
+        .city-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
         .city-card { background: #fff; border: 2px solid rgba(21,62,63,0.1); border-radius: 16px; padding: 20px; cursor: pointer; transition: all .3s cubic-bezier(.4,0,.2,1); text-align: left; font-family: inherit; }
         .city-card:hover { transform: translateY(-6px); border-color: #153e3f; box-shadow: 0 20px 40px rgba(21,62,63,.16); }
+        .city-card.soon { cursor: default; background: #faf7f2; border-style: dashed; border-color: rgba(21,62,63,.16); display: block; }
+        .city-card.soon:hover { transform: none; box-shadow: none; border-color: rgba(21,62,63,.16); }
+        .city-card.soon h3 { color: #7a9e9f; }
+        .city-card.soon i { color: #b9a88a; }
+        .soon-tag { color: #9a8b73; }
         .city-card i { color: #c9933a; font-size: 1.1rem; }
         .city-card h3 { font-size: 1.08rem; font-weight: 800; color: #153e3f; margin: 10px 0 4px; }
         .city-card p { font-size: 0.82rem; color: #7a9e9f; margin: 0; }
@@ -119,12 +131,12 @@
     <section class="car-hero">
         <div class="container">
             <div class="car-hero-content">
-                <div class="badge-pill"><i class="fas fa-briefcase"></i> We are hiring across Vidarbha</div>
+                <div class="badge-pill"><i class="fas fa-briefcase"></i> We are hiring across Maharashtra</div>
                 <h1>Build your career with <span>Tapify</span></h1>
                 <p>
-                    We are putting small businesses across Vidarbha online — NFC cards, websites and Google
-                    presence. That takes people on the ground in every district, and partners who already
-                    know their market. Both are open.
+                    We are putting small businesses across Maharashtra online — NFC cards, websites and
+                    Google presence. That takes people on the ground in every district, and partners who
+                    already know their market. Both are open.
                 </p>
             </div>
         </div>
@@ -135,8 +147,8 @@
 
             <div class="car-tabs">
                 <button class="car-tab active" data-tab="hiring" type="button">
-                    <strong>🧑‍💼 Vidarbha Hiring</strong>
-                    <span>Field sales, support and office roles — 11 districts</span>
+                    <strong>🧑‍💼 Maharashtra Openings</strong>
+                    <span>Field sales and team leader roles — 24 districts open</span>
                 </button>
                 <button class="car-tab" data-tab="partner" type="button">
                     <strong>🤝 Channel Partners</strong>
@@ -153,7 +165,8 @@
                         <p>
                             Pick where you want to work. You will be asked a few questions about yourself and
                             the kind of work you are looking for — it takes about two minutes, and you can
-                            attach your resume if you have one ready.
+                            attach your resume if you have one ready. Pune and Konkan divisions are opening
+                            later; we are not taking applications for those districts yet.
                         </p>
                     </div>
 
@@ -421,7 +434,7 @@
                     <div class="col-md-12">
                         <p class="popular-services-title">Popular Services:</p>
                         <p class="popular-services-list">
-                            NFC Card Mumbai | NFC Card Delhi | NFC Card Bangalore | NFC Card Hyderabad | NFC Card Chennai | NFC Card Kolkata | NFC Card Pune | NFC Card Ahmedabad | NFC Card Jaipur | NFC Card Lucknow | Digital Visiting Card | Smart Business Card India
+                            NFC Card Nagpur | NFC Card Wardha | NFC Card Bhandara | NFC Card Gondia | NFC Card Chandrapur | NFC Card Gadchiroli | NFC Card Amravati | NFC Card Akola | NFC Card Washim | NFC Card Buldhana | NFC Card Yavatmal | Digital Visiting Card | Smart Business Card Vidarbha
                         </p>
                     </div>
                 </div>
@@ -442,13 +455,29 @@
     (function () {
         var API = 'https://app.tapify.co.in/api/public/careers-apply.php';
 
-        // Kept in step with careers_cities() in the backend, which rejects
-        // anything not on its own list — so a stale copy here fails honestly
-        // rather than storing a district we do not hire in.
-        var CITIES = ['Nagpur', 'Wardha', 'Bhandara', 'Gondia', 'Chandrapur', 'Gadchiroli',
-                      'Amravati', 'Akola', 'Washim', 'Buldhana', 'Yavatmal'];
-        var ROLES = ['Field Sales Executive', 'Team Leader / Area Sales', 'Telecaller',
-                     'Graphic Designer', 'Customer Support', 'Delivery / Installation', 'Other'];
+        // Kept in step with careers_divisions() in the backend, which accepts an
+        // application only from a division marked open — so a stale copy here
+        // fails honestly instead of storing a district we do not hire in.
+        var DIVISIONS = [
+            { name: 'Nagpur Division', open: true,
+              cities: ['Nagpur', 'Wardha', 'Bhandara', 'Gondia', 'Chandrapur', 'Gadchiroli'] },
+            { name: 'Amravati Division', open: true,
+              cities: ['Amravati', 'Akola', 'Washim', 'Buldhana', 'Yavatmal'] },
+            { name: 'Nashik Division', open: true,
+              cities: ['Nashik', 'Jalgaon', 'Dhule', 'Nandurbar', 'Ahilyanagar'] },
+            { name: 'Chhatrapati Sambhajinagar Division', open: true,
+              cities: ['Chhatrapati Sambhajinagar', 'Jalna', 'Beed', 'Latur', 'Nanded',
+                       'Parbhani', 'Hingoli', 'Dharashiv'] },
+            { name: 'Pune Division', open: false,
+              cities: ['Pune', 'Satara', 'Sangli', 'Kolhapur', 'Solapur'] },
+            { name: 'Konkan Division', open: false,
+              cities: ['Mumbai City', 'Mumbai Suburban', 'Thane', 'Palghar', 'Raigad',
+                       'Ratnagiri', 'Sindhudurg'] },
+        ];
+        var OPEN_CITIES = DIVISIONS.filter(function (d) { return d.open; })
+                                   .reduce(function (a, d) { return a.concat(d.cities); }, []);
+        var ALL_CITIES = DIVISIONS.reduce(function (a, d) { return a.concat(d.cities); }, []);
+        var ROLES = ['Field Sales Executive', 'Team Leader / Area Sales'];
 
         var $ = function (id) { return document.getElementById(id); };
 
@@ -463,19 +492,39 @@
             });
         });
 
-        /* ---- district cards ---- */
-        $('cityGrid').innerHTML = CITIES.map(function (c) {
-            return '<button type="button" class="city-card" data-city="' + c + '">' +
-                     '<i class="fas fa-location-dot"></i>' +
-                     '<h3>' + c + '</h3>' +
-                     '<p>Field sales & support roles</p>' +
-                     '<span class="apply">Apply here <i class="fas fa-arrow-right"></i></span>' +
-                   '</button>';
+        /* ---- district cards, grouped by division ---- */
+        $('cityGrid').innerHTML = DIVISIONS.map(function (d) {
+            var cards = d.cities.map(function (c) {
+                if (!d.open) {
+                    // A span, not a button: nothing to tab to and nothing to click.
+                    return '<span class="city-card soon">' +
+                             '<i class="fas fa-clock"></i>' +
+                             '<h3>' + c + '</h3>' +
+                             '<p>Not hiring here yet</p>' +
+                             '<span class="apply soon-tag">Coming soon</span>' +
+                           '</span>';
+                }
+                return '<button type="button" class="city-card" data-city="' + c + '">' +
+                         '<i class="fas fa-location-dot"></i>' +
+                         '<h3>' + c + '</h3>' +
+                         '<p>Field sales &amp; team leader roles</p>' +
+                         '<span class="apply">Apply here <i class="fas fa-arrow-right"></i></span>' +
+                       '</button>';
+            }).join('');
+            return '<div class="division' + (d.open ? '' : ' is-soon') + '">' +
+                     '<div class="division-head">' +
+                       '<h3>' + d.name + '</h3>' +
+                       (d.open
+                         ? '<span class="division-badge open">Hiring now</span>'
+                         : '<span class="division-badge soon">Coming soon</span>') +
+                     '</div>' +
+                     '<div class="city-row">' + cards + '</div>' +
+                   '</div>';
         }).join('');
 
         $('roleSelect').innerHTML = '<option value="">Select</option>' +
             ROLES.map(function (r) { return '<option>' + r + '</option>'; }).join('');
-        $('cityList').innerHTML = CITIES.map(function (c) { return '<option value="' + c + '">'; }).join('');
+        $('cityList').innerHTML = ALL_CITIES.map(function (c) { return '<option value="' + c + '">'; }).join('');
 
         $('cityGrid').addEventListener('click', function (e) {
             var card = e.target.closest('.city-card');
