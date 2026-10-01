@@ -128,6 +128,34 @@
         .switch span::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
         .switch input:checked + span { background: #25D366; }
         .switch input:checked + span::before { transform: translateX(18px); }
+
+        /* ── message charges + ready-made templates ───────────────────────── */
+        .wa-cost-strip { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+                         background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+                         padding: 10px 14px; margin-bottom: 14px; font-size: .86rem; color: #166534; }
+        .wa-cost-strip strong { font-weight: 800; }
+        .wa-cost-strip .spacer { flex: 1; }
+        .wa-cost-strip a { color: #15803d; font-weight: 700; text-decoration: none; }
+        .wa-cost-strip a:hover { text-decoration: underline; }
+
+        .rate-row { display: flex; align-items: center; gap: 12px; padding: 10px 0;
+                    border-top: 1px solid #f1f5f9; }
+        .rate-row .label { font-size: .88rem; font-weight: 700; color: #111827; }
+        .rate-row .note { font-size: .77rem; color: #9ca3af; margin-top: 2px; }
+        .rate-row .price { margin-left: auto; font-size: .95rem; font-weight: 800; color: #153e3f; white-space: nowrap; }
+        .rate-row .price.free { color: #16a34a; }
+
+        .starter-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0;
+                       border-top: 1px solid #f1f5f9; }
+        .starter-row .t { font-size: .88rem; font-weight: 700; color: #111827; }
+        .starter-row .p { font-size: .78rem; color: #6b7280; margin-top: 2px; line-height: 1.5; }
+        .starter-row .cost { font-size: .76rem; color: #153e3f; font-weight: 700; margin-top: 4px; }
+        .pill { margin-left: auto; font-size: .68rem; font-weight: 800; padding: 3px 8px;
+                border-radius: 6px; white-space: nowrap; }
+        .pill.ok   { background: #dcfce7; color: #16a34a; }
+        .pill.wait { background: #fef3c7; color: #b4762f; }
+        .pill.no   { background: #f1f5f9; color: #6b7280; }
+        .pill.bad  { background: #fee2e2; color: #dc2626; }
     </style>
 </head>
 <body>
@@ -196,9 +224,14 @@
    session is what authorises us.                                             */
 const WA_API      = 'https://app.tapify.co.in/api/whatsapp/proxy.php';
 const WA_CONNECT  = 'https://app.tapify.co.in/api/whatsapp/connect.php';
+const WA_PRICING  = 'https://app.tapify.co.in/api/whatsapp/pricing.php';
 const POLL_MS     = 15000;   // no websocket through the proxy, so poll
 
 let status = null, convos = [], activePhone = null, templates = [], pollTimer = null;
+// Rate card + wallet balance, and the ready-made set with its state on this
+// number. Neither is required for the inbox to work — a failure to load either
+// must never stop someone answering a customer.
+let pricing = null, library = null, libBusy = false;
 
 document.addEventListener('DOMContentLoaded', boot);
 window.addEventListener('beforeunload', () => clearInterval(pollTimer));
@@ -228,7 +261,159 @@ async function boot() {
     if (!status.connected) return renderConnect();
     renderInbox();
     await loadConvos();
+    loadPricing();                               // fills the charges strip
     pollTimer = setInterval(refresh, POLL_MS);
+}
+
+/* ── message charges ───────────────────────────────────────────────────────
+   Read from the server, never hardcoded here: the same class that prices this
+   card prices the actual debit, so what is shown is what is charged.        */
+async function loadPricing() {
+    try {
+        const res = await fetch(WA_PRICING, { credentials: 'include' });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.success !== false) {
+            pricing = json.data || null;
+            paintCostStrip();
+        }
+    } catch (_) { /* advisory only */ }
+}
+
+/** "Rs 0.40" for one message of a category, or null when nothing is charged. */
+function priceFor(category) {
+    if (!pricing || !pricing.billing_enabled) return null;
+    const row = (pricing.rates || []).find(r => String(r.category).toUpperCase() === String(category || '').toUpperCase());
+    if (!row) return null;
+    return row.free ? 'Free' : '\u20b9' + row.inr;
+}
+
+/** The balance strip above the inbox, filled in once pricing arrives. */
+function paintCostStrip() {
+    const el = document.getElementById('waCostStrip');
+    if (!el || !pricing) return;
+    if (!pricing.billing_enabled) {
+        el.innerHTML = '<i class="fas fa-circle-info"></i> Sending is not charged on your account at the '
+            + 'moment. <span class="spacer"></span><a href="#" onclick="showTemplates();return false;">See rates</a>';
+        return;
+    }
+    el.innerHTML = '<i class="fas fa-wallet"></i> Wallet balance <strong>\u20b9' + esc(pricing.balance_inr) + '</strong>'
+        + ' (' + pricing.balance + ' pts)<span class="spacer"></span>'
+        + '<a href="#" onclick="showTemplates();return false;">Rates &amp; templates</a>';
+}
+
+/**
+ * Turn a billing refusal into something the customer can act on.
+ * @returns true when the error was handled here.
+ */
+function handleBillingError(e) {
+    if (e.code === 'insufficient_balance') {
+        alert('Not enough wallet balance to send this.\n\n' + (e.message || '')
+            + '\n\nTop up your wallet from the Tapify app and try again.');
+        loadPricing();
+        return true;
+    }
+    if (e.code === 'billing_unavailable') {
+        alert('Your wallet could not be reached, so nothing was sent or charged. Please try again.');
+        return true;
+    }
+    return false;
+}
+
+/* ── the ready-made set ────────────────────────────────────────────────────
+   Approval is granted per WhatsApp Business Account, so Tapify cannot hand over
+   templates approved on its own number — it creates this set on the customer's
+   account instead, with wording already proven to pass review.              */
+const STARTER_PILL = {
+    APPROVED:  ['ok',   'Ready'],
+    PENDING:   ['wait', 'Approving'],
+    REJECTED:  ['bad',  'Rejected'],
+    NOT_ADDED: ['no',   'Not added'],
+};
+
+async function loadLibrary() {
+    try {
+        const r = await api('template-library');
+        library = r && Array.isArray(r.items) ? r.items : [];
+    } catch (_) { library = []; }
+}
+
+async function installStarters() {
+    if (libBusy) return;
+    libBusy = true;
+    renderTemplates();
+    try {
+        const r = await api('templates-install', { method: 'POST', body: {} });
+        if (r && r.failed && r.failed.length) {
+            alert(r.failed.length + ' template(s) could not be added. This usually means your WhatsApp '
+                + 'Business account is still being verified by Meta. Try again in a little while.');
+        } else if (r && r.message) {
+            alert(r.message);
+        }
+        templates = [];                       // the send picker must refetch
+    } catch (e) {
+        alert('Could not add templates: ' + e.message);
+    } finally {
+        libBusy = false;
+        await loadLibrary();
+        await tplLoad();                      // repaints the whole Templates tab
+    }
+}
+
+/** The rate card + ready-made set, shown above the template builder. */
+function chargesAndStarterHtml() {
+    const rates = !pricing ? '' : `
+      <div class="bot-card">
+        <h3>What messages cost</h3>
+        <p class="sub">
+          ${pricing.billing_enabled
+            ? 'Charged from your Tapify wallet as messages go out. Top up from the Tapify app.'
+            : 'Sending is not charged on your account at the moment. These are the rates that will apply when it is.'}
+        </p>
+        ${pricing.billing_enabled ? `
+          <div class="rate-row" style="border-top:none">
+            <div><div class="label">Wallet balance</div></div>
+            <div class="price">\u20b9${esc(pricing.balance_inr)} <span style="font-weight:600;color:#9ca3af">(${pricing.balance} pts)</span></div>
+          </div>` : ''}
+        ${(pricing.rates || []).map(r => `
+          <div class="rate-row">
+            <div><div class="label">${esc(r.label)}</div><div class="note">${esc(r.note)}</div></div>
+            <div class="price ${r.free ? 'free' : ''}">${r.free ? 'Free' : '\u20b9' + esc(r.inr)}</div>
+          </div>`).join('')}
+        <p class="sub" style="margin:12px 0 0;font-style:italic">${esc(pricing.free_window_note || '')}</p>
+      </div>`;
+
+    const items = library || [];
+    if (!items.length) return rates;
+
+    const ready   = items.filter(t => t.state === 'APPROVED').length;
+    const pending = items.filter(t => t.state === 'PENDING').length;
+    const missing = items.filter(t => t.state === 'NOT_ADDED').length;
+
+    return rates + `
+      <div class="bot-card">
+        <h3>Ready-made templates</h3>
+        <p class="sub">
+          ${ready} ready${pending ? ` &middot; ${pending} being approved` : ''}${missing ? ` &middot; ${missing} not added yet` : ''}.
+          Tapify sets these up on your own WhatsApp number so you have something to send from day one.
+          You do not need to write or submit them yourself.
+        </p>
+        ${missing ? `<button class="btn-wa" onclick="installStarters()" ${libBusy ? 'disabled' : ''}>
+            <i class="fas fa-wand-magic-sparkles"></i> ${libBusy ? 'Setting up…' : 'Add ' + missing + ' ready-made template' + (missing > 1 ? 's' : '')}
+          </button>` : ''}
+        ${items.map(t => {
+            const pill = STARTER_PILL[t.state] || STARTER_PILL.NOT_ADDED;
+            const cost = priceFor(t.category);
+            return `
+              <div class="starter-row">
+                <div style="min-width:0">
+                  <div class="t">${esc(t.title)}</div>
+                  <div class="p">${esc(t.purpose)}</div>
+                  ${cost ? `<div class="cost">${esc(cost)} per message &middot; ${t.category === 'UTILITY' ? 'order &amp; service update' : 'promotional'}</div>` : ''}
+                </div>
+                <span class="pill ${pill[0]}">${pill[1]}</span>
+              </div>`;
+        }).join('')}
+      </div>`;
 }
 
 function render(html) { document.getElementById('waRoot').innerHTML = html; }
@@ -362,6 +547,7 @@ function barHtml(view) {
 
 function renderInbox() {
     render(barHtml('inbox') + `
+      <div class="wa-cost-strip" id="waCostStrip"><i class="fas fa-wallet"></i> Loading charges…</div>
       <div class="wa-grid">
         <div class="wa-panel">
           <div class="wa-panel-head">Conversations <span id="convoCount" style="color:#9ca3af;font-weight:600"></span></div>
@@ -377,6 +563,8 @@ function showInbox() {
     clearInterval(pollTimer);
     renderInbox();
     loadConvos();
+    paintCostStrip();                            // from cache, so it never flashes
+    loadPricing();
     pollTimer = setInterval(refresh, POLL_MS);
 }
 
@@ -461,10 +649,20 @@ async function loadTemplates() {
     const sel = document.getElementById('tplPick');
     if (!sel) return;
     try {
-        templates = await api('templates');
-        sel.innerHTML = templates.length
-            ? '<option value="">Choose an approved template…</option>' + templates.map(t => `<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('')
-            : '<option value="">No approved templates yet</option>';
+        // includePending so a template created minutes ago shows as "approving"
+        // rather than being absent — an empty picker reads as a broken feature,
+        // which is the wrong conclusion while Meta is still reviewing.
+        templates = await api('templates', { qs: '&includePending=1' });
+        if (!templates.length) {
+            sel.innerHTML = '<option value="">No templates yet — add the ready-made set</option>';
+        } else {
+            sel.innerHTML = '<option value="">Choose a template…</option>' + templates.map(t => {
+                const blocked = t.ready === false;
+                const cost = priceFor(t.category);
+                const suffix = blocked ? ' — approving' : (cost ? ' — ' + cost : '');
+                return `<option value="${esc(t.name)}"${blocked ? ' disabled' : ''}>${esc(t.name)}${esc(suffix)}</option>`;
+            }).join('');
+        }
         renderTplParams();
     } catch (_) { sel.innerHTML = '<option value="">Could not load templates</option>'; }
 }
@@ -481,7 +679,9 @@ async function sendReply() {
         loadConvos();
     } catch (e) {
         // The server re-checks the window; if it closed while typing, say why.
-        alert(e.code === 'window_closed' ? e.message : ('Could not send: ' + e.message));
+        if (!handleBillingError(e)) {
+            alert(e.code === 'window_closed' ? e.message : ('Could not send: ' + e.message));
+        }
     } finally { box.disabled = false; }
 }
 
@@ -530,7 +730,10 @@ async function sendTemplate() {
         await api('send', { method: 'POST', body: { phone: activePhone, templateName, params } });
         openThread(activePhone);
         loadConvos();
-    } catch (e) { alert('Could not send: ' + e.message); }
+        loadPricing();                           // the balance just moved
+    } catch (e) {
+        if (!handleBillingError(e)) alert('Could not send: ' + e.message);
+    }
 }
 
 /* ── templates ─────────────────────────────────────────────────────────── */
@@ -560,6 +763,12 @@ async function showTemplates() {
 }
 
 async function tplLoad() {
+    // The rate card and the ready-made set head this tab, so both are needed
+    // before it paints. Neither failing stops the builder below from working.
+    await Promise.all([
+        pricing ? Promise.resolve() : loadPricing(),
+        library ? Promise.resolve() : loadLibrary(),
+    ]);
     try {
         tplList = await api('templates-all') || [];
     } catch (e) {
@@ -579,13 +788,13 @@ function renderTemplates() {
     const order = { REJECTED: 0, PENDING: 1, APPROVED: 2 };
     const sorted = [...tplList].sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
 
-    render(barHtml('tpl') + `
+    render(barHtml('tpl') + chargesAndStarterHtml() + `
       <div class="bot-card">
-        <h3>Submit a template for approval</h3>
+        <h3>Write your own template</h3>
         <p class="sub">
-          Meta reviews every template before it can be sent to someone outside a live conversation.
-          Review usually takes a few minutes. A rejected name stays reserved until you delete it, so it is
-          worth getting right first time.
+          Only if you need wording the ready-made set above does not cover. Meta reviews every template
+          before it can be sent to someone outside a live conversation; review usually takes a few minutes.
+          A rejected name stays reserved until you delete it, so it is worth getting right first time.
         </p>
 
         <div class="bot-field">
