@@ -85,6 +85,9 @@
         .bot-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
         .bot-item-head strong { font-size: .78rem; color: #6b7280; flex: 1; }
         .bot-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: .95rem; padding: 3px; }
+        .bot-warn { background: #fef3c7; color: #92400e; border-radius: 6px; padding: 2px 7px; font-size: .68rem; font-weight: 700; }
+        .bot-alert { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 9px; padding: 9px 12px; font-size: .78rem; line-height: 1.5; margin-top: 8px; }
+        .btn-link { background: none; border: none; color: #92400e; font-weight: 700; text-decoration: underline; cursor: pointer; font-size: .78rem; padding: 0; }
         .btn-add { background: #fff; border: 1.5px dashed #cbd5e1; color: #4b5563; padding: 9px 16px; border-radius: 9px; font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-add:hover { border-color: #25D366; color: #16a34a; }
         .btn-add:disabled { opacity: .45; cursor: default; }
@@ -526,11 +529,11 @@ function renderBot() {
         </p>
         <div class="bot-row">
           <label for="botEnabled">Auto-replies switched on</label>
-          <span class="switch"><input type="checkbox" id="botEnabled" ${bot.enabled ? 'checked' : ''}><span></span></span>
+          <span class="switch"><input type="checkbox" id="botEnabled" ${bot.enabled ? 'checked' : ''} onchange="bot.enabled = this.checked"><span></span></span>
         </div>
         <div class="bot-row">
           <label for="botGreet">Show a menu when someone says "hi"</label>
-          <span class="switch"><input type="checkbox" id="botGreet" ${bot.greetingEnabled !== false ? 'checked' : ''}><span></span></span>
+          <span class="switch"><input type="checkbox" id="botGreet" ${bot.greetingEnabled !== false ? 'checked' : ''} onchange="bot.greetingEnabled = this.checked"><span></span></span>
         </div>
       </div>
 
@@ -539,15 +542,18 @@ function renderBot() {
         <p class="sub">The tappable list a customer sees when they greet you. Leave the options empty to send no menu.</p>
         <div class="bot-field">
           <label>Title</label>
-          <input class="bot-input" id="mHeader" maxlength="60" value="${esc(m.header || '')}" placeholder="e.g. Glow Salon">
+          <input class="bot-input" id="mHeader" maxlength="60" value="${esc(m.header || '')}" placeholder="e.g. Glow Salon"
+                 oninput="bot.menu.header = this.value">
         </div>
         <div class="bot-field">
           <label>Message</label>
-          <textarea class="bot-input" id="mBody" maxlength="1024" placeholder="How can we help you today?">${esc(m.body || '')}</textarea>
+          <textarea class="bot-input" id="mBody" maxlength="1024" placeholder="How can we help you today?"
+                    oninput="bot.menu.body = this.value">${esc(m.body || '')}</textarea>
         </div>
         <div class="bot-field">
           <label>Button text</label>
-          <input class="bot-input" id="mButton" maxlength="20" value="${esc(m.button || 'Choose an option')}">
+          <input class="bot-input" id="mButton" maxlength="20" value="${esc(m.button || 'Choose an option')}"
+                 oninput="bot.menu.button = this.value">
           <p class="bot-hint">WhatsApp allows 20 characters here.</p>
         </div>
 
@@ -557,6 +563,7 @@ function renderBot() {
             <div class="bot-item">
               <div class="bot-item-head">
                 <strong>Option ${i + 1}</strong>
+                ${botReplyFor(r.title) ? '' : '<span class="bot-warn" title="Tapping this option will get no answer">no reply yet</span>'}
                 <button class="bot-del" title="Remove" onclick="botRowDel(${i})"><i class="fas fa-trash"></i></button>
               </div>
               <input class="bot-input" style="margin-bottom:7px" maxlength="24" placeholder="Title (max 24 characters)"
@@ -567,7 +574,12 @@ function renderBot() {
           <button class="btn-add" onclick="botRowAdd()" ${m.rows.length >= 10 ? 'disabled' : ''}>
             <i class="fas fa-plus"></i> Add option${m.rows.length >= 10 ? ' (limit reached)' : ''}
           </button>
-          <p class="bot-hint">Tapping an option sends its title back to you, so give each one a matching reply below.</p>
+          <p class="bot-hint">Tapping an option sends its title back to you, so each one needs a keyword reply below
+             with the same wording — otherwise the customer taps it and hears nothing.</p>
+          ${m.rows.filter(r => (r.title || '').trim() && !botReplyFor(r.title)).length
+            ? `<p class="bot-alert">${m.rows.filter(r => (r.title || '').trim() && !botReplyFor(r.title)).length}
+                 option(s) have no reply. <button class="btn-link" onclick="botAddMissingReplies()">Create the missing replies</button></p>`
+            : ''}
         </div>
       </div>
 
@@ -594,6 +606,31 @@ function renderBot() {
         <span class="msg" id="botMsg"></span>
         <button class="btn-wa" id="botSave" onclick="saveBot()"><i class="fas fa-save"></i> Save</button>
       </div>`);
+}
+
+/**
+ * How the bot compares a customer's message to a rule: case, spacing and
+ * punctuation are not meaningful. Used here only to tell whether a menu option
+ * already has a reply behind it.
+ */
+function botNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+
+/** The keyword rule that answers this menu option, if there is one. */
+function botReplyFor(title) {
+    const want = botNorm(title);
+    if (!want) return null;
+    return (bot.replies || []).find(r => botNorm(r.match) === want) || null;
+}
+
+/** Add an empty rule for every option that has none, so none is left silent. */
+function botAddMissingReplies() {
+    (bot.menu.rows || []).forEach(r => {
+        const title = (r.title || '').trim();
+        if (title && !botReplyFor(title) && bot.replies.length < 50) {
+            bot.replies.push({ match: title, reply: '' });
+        }
+    });
+    renderBot();
 }
 
 // Edits update state only — renderBot() is NOT called on every keystroke, or the
