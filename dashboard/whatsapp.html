@@ -88,6 +88,26 @@
         .bot-warn { background: #fef3c7; color: #92400e; border-radius: 6px; padding: 2px 7px; font-size: .68rem; font-weight: 700; }
         .bot-alert { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 9px; padding: 9px 12px; font-size: .78rem; line-height: 1.5; margin-top: 8px; }
         .btn-link { background: none; border: none; color: #92400e; font-weight: 700; text-decoration: underline; cursor: pointer; font-size: .78rem; padding: 0; }
+        .bc-tpl { border: 1.5px solid #eef0f3; border-radius: 11px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+        .bc-tpl.on { border-color: #25D366; background: #f0fdf4; }
+        .bc-tpl b { font-size: .86rem; color: #1a2035; }
+        .bc-tpl p { font-size: .78rem; color: #6b7280; margin: 5px 0 0; line-height: 1.5; white-space: pre-wrap; }
+        .bc-drop { border: 1.5px dashed #25D366; border-radius: 11px; padding: 16px; text-align: center; margin-bottom: 10px; }
+        .bc-drop input[type=file] { display: none; }
+        .bc-pick { display: inline-block; background: #25D366; color: #fff; font-weight: 700; font-size: .82rem; padding: 9px 16px; border-radius: 9px; cursor: pointer; }
+        .bc-note { font-size: .76rem; color: #6b7280; margin-top: 8px; line-height: 1.5; }
+        .bc-note.err { color: #dc2626; font-weight: 600; }
+        .bc-list { max-height: 320px; overflow-y: auto; border: 1px solid #eef0f3; border-radius: 11px; }
+        .bc-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid #f7f8fa; font-size: .83rem; }
+        .bc-row:last-child { border-bottom: 0; }
+        .bc-row .nm { flex: 1; color: #1a2035; font-weight: 600; }
+        .bc-row .ph { color: #9ca3af; font-size: .76rem; }
+        .bc-row .tag { background: #eef2ff; color: #4338ca; border-radius: 5px; padding: 1px 6px; font-size: .66rem; font-weight: 700; }
+        .bc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .8rem; color: #6b7280; }
+        .bc-head button { background: none; border: none; color: #25D366; font-weight: 700; cursor: pointer; font-size: .8rem; padding: 0; }
+        .bc-run { border: 1px solid #eef0f3; border-radius: 11px; padding: 12px; margin-bottom: 8px; background: #fff; }
+        .bc-bar { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; margin-top: 7px; }
+        .bc-bar i { display: block; height: 100%; background: #25D366; }
         .btn-add { background: #fff; border: 1.5px dashed #cbd5e1; color: #4b5563; padding: 9px 16px; border-radius: 9px; font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-add:hover { border-color: #25D366; color: #16a34a; }
         .btn-add:disabled { opacity: .45; cursor: default; }
@@ -159,6 +179,7 @@
     </div>
 
 <script src="../admin.js"></script>
+<script src="../js/leadImport.js"></script>
 <script>
 /* ── WhatsApp for the customer's own number ──────────────────────────────────
    Everything goes through api/whatsapp/proxy.php. The CRM that actually holds
@@ -323,6 +344,7 @@ function barHtml(view) {
         <div class="wa-tabs">
           <button class="wa-tab ${view === 'inbox' ? 'active' : ''}" onclick="showInbox()">Inbox</button>
           <button class="wa-tab ${view === 'bot' ? 'active' : ''}" onclick="showBot()">Auto-replies</button>
+          <button class="wa-tab ${view === 'bc' ? 'active' : ''}" onclick="showBroadcast()">Broadcast</button>
         </div>
         <button class="btn-ghost" onclick="disconnect()">Disconnect</button>
       </div>`;
@@ -499,6 +521,230 @@ async function sendTemplate() {
         openThread(activePhone);
         loadConvos();
     } catch (e) { alert('Could not send: ' + e.message); }
+}
+
+/* ── broadcast ─────────────────────────────────────────────────────────── */
+/*
+ * Bulk template send. TEMPLATES ONLY: free text is deliverable only inside a
+ * contact's own 24-hour window, which across a campaign is almost nobody.
+ *
+ * {{1}} IS ALWAYS THE RECIPIENT'S NAME, filled per person by the server, so the
+ * inputs here start at {{2}}. Numbering them from 1 would put every value in
+ * the wrong placeholder.
+ */
+let bcTpls = [], bcTpl = '', bcExtras = [], bcPeople = [], bcPicked = {}, bcRuns = [], bcNote = '', bcErr = false, bcTimer = null;
+// Held in state for the same reason the greeting fields are: any re-render
+// would otherwise throw away what the customer had pasted but not yet added.
+let bcPasteText = '';
+const BC_MAX = 500;
+
+async function showBroadcast() {
+    clearInterval(pollTimer);
+    render(barHtml('bc') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    try {
+        const [tpl, convos] = await Promise.all([api('templates'), api('conversations')]);
+        bcTpls = Array.isArray(tpl) ? tpl : [];
+        // Keep anyone imported this session; reloading conversations must not drop them.
+        const imported = bcPeople.filter(p => p.imported);
+        bcPeople = LeadImport.mergeLeads(Array.isArray(convos) ? convos : [], imported, BC_MAX).contacts;
+    } catch (e) {
+        return render(barHtml('bc') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    await loadRuns();
+    renderBroadcast();
+}
+
+async function loadRuns() {
+    try { bcRuns = await api('broadcasts') || []; } catch (_) { /* history is not worth failing over */ }
+    clearInterval(bcTimer);
+    if (bcRuns.some(r => r.status === 'running')) bcTimer = setInterval(async () => {
+        try { bcRuns = await api('broadcasts') || []; renderBroadcast(); } catch (_) {}
+        if (!bcRuns.some(r => r.status === 'running')) clearInterval(bcTimer);
+    }, 4000);
+}
+
+function bcChosen()  { return bcTpls.find(t => t.name === bcTpl); }
+function bcNeeded()  { return Math.max(0, ((bcChosen() || {}).paramCount || 0) - 1); }
+function bcSelected(){ return bcPeople.filter(p => bcPicked[p.phone]); }
+
+function renderBroadcast() {
+    const need = bcNeeded(), sel = bcSelected();
+    render(barHtml('bc') + `
+      <div class="bot-card">
+        <h3>1. Choose a template</h3>
+        <p class="sub">Only templates WhatsApp has already approved can be sent to people outside a live conversation.</p>
+        ${bcTpls.length ? bcTpls.map(t => `
+          <div class="bc-tpl ${t.name === bcTpl ? 'on' : ''}" onclick="bcPickTpl('${esc(t.name)}')">
+            <b>${esc(t.name)}</b>
+            ${t.body ? `<p>${esc(t.body)}</p>` : ''}
+          </div>`).join('') : '<p class="sub">No approved templates yet.</p>'}
+        ${need ? `
+          <div class="bot-field" style="margin-top:12px">
+            <label>Fill the template's blanks</label>
+            ${Array.from({length: need}, (_, i) => `
+              <input class="bot-input" style="margin-bottom:7px" placeholder="Value for {{${i + 2}}}"
+                     value="${esc(bcExtras[i] || '')}" oninput="bcExtras[${i}] = this.value">`).join('')}
+            <p class="bot-hint">{{1}} is each person's own name and is filled in for you.</p>
+          </div>` : ''}
+      </div>
+
+      <div class="bot-card">
+        <h3>2. Choose who receives it</h3>
+        <p class="sub">People who have messaged you, plus anyone you add. Up to ${BC_MAX} per broadcast.</p>
+
+        <div class="bc-drop">
+          <label class="bc-pick">
+            Upload Excel or CSV
+            <input type="file" accept=".xlsx,.xls,.csv,.tsv,.txt" onchange="bcFile(this)">
+          </label>
+          <p class="bc-note">A column of numbers is enough. Headings like Name and Phone are understood in any order.</p>
+        </div>
+        <textarea class="bot-input" id="bcPaste" oninput="bcPasteText = this.value"
+                  placeholder="…or paste rows here:&#10;Name,Phone&#10;Abid Khan,9876543210">${esc(bcPasteText)}</textarea>
+        <button class="btn-add" style="margin-top:8px" onclick="bcAddPasted()"><i class="fas fa-plus"></i> Add pasted rows</button>
+        ${bcNote ? `<p class="bc-note ${bcErr ? 'err' : ''}">${esc(bcNote)}</p>` : ''}
+
+        <div class="bc-head" style="margin-top:14px">
+          <button onclick="bcToggleAll()">${sel.length === bcPeople.length && bcPeople.length ? 'Clear selection' : 'Select all'}</button>
+          <span>${sel.length} of ${bcPeople.length} selected</span>
+        </div>
+        ${bcPeople.length ? `<div class="bc-list">${bcPeople.map(p => `
+          <label class="bc-row">
+            <input type="checkbox" ${bcPicked[p.phone] ? 'checked' : ''} onchange="bcPick('${esc(p.phone)}', this.checked)">
+            <span class="nm">${esc(p.name || 'No name')}</span>
+            ${p.imported ? '<span class="tag">added</span>' : ''}
+            <span class="ph">+${esc(p.phone)}</span>
+          </label>`).join('')}</div>`
+          : '<p class="sub">Nobody here yet. Upload a list or wait for someone to message you.</p>'}
+      </div>
+
+      <div class="bot-save-bar">
+        <span class="msg" id="bcMsg"></span>
+        <button class="btn-wa" id="bcSend" onclick="bcSend()"><i class="fas fa-paper-plane"></i> Send to ${sel.length}</button>
+      </div>
+
+      ${bcRuns.length ? `<div class="bot-card" style="margin-top:16px">
+        <h3>Recent broadcasts</h3>
+        ${bcRuns.map(r => {
+          const done = (r.sent || 0) + (r.failed || 0);
+          const pct = r.total ? Math.round(done / r.total * 100) : 0;
+          return `<div class="bc-run">
+            <div class="bot-item-head"><strong>${esc(r.templateName || '')}</strong><span>${esc(r.status || '')}</span></div>
+            <div class="bc-note">${r.sent || 0} sent${r.failed ? ` · ${r.failed} failed` : ''} of ${r.total || 0}</div>
+            ${r.status === 'running' ? `<div class="bc-bar"><i style="width:${pct}%"></i></div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>` : ''}`);
+}
+
+function bcPickTpl(name) {
+    const same = name === bcTpl;
+    bcTpl = same ? '' : name;
+    bcExtras = same ? [] : new Array(bcNeeded()).fill('');
+    renderBroadcast();
+}
+function bcPick(phone, on) { if (on) bcPicked[phone] = true; else delete bcPicked[phone]; renderBroadcastMsgOnly(); }
+function bcToggleAll() {
+    if (bcSelected().length === bcPeople.length) bcPicked = {};
+    else { bcPicked = {}; bcPeople.slice(0, BC_MAX).forEach(p => { bcPicked[p.phone] = true; }); }
+    renderBroadcast();
+}
+// Ticking one box must not repaint the list, or the scroll position jumps.
+function renderBroadcastMsgOnly() {
+    const b = document.getElementById('bcSend');
+    if (b) b.innerHTML = '<i class="fas fa-paper-plane"></i> Send to ' + bcSelected().length;
+}
+
+/** Fold imported people in, tick them, and say what was dropped and why. */
+function bcTake(result) {
+    const { leads, invalid, duplicates } = result;
+    if (!leads.length) {
+        bcErr = true;
+        bcNote = invalid ? `No usable numbers in those ${invalid} row(s).` : 'Nothing to add.';
+        return renderBroadcast();
+    }
+    const { contacts, added, merged, overflow } = LeadImport.mergeLeads(bcPeople, leads, BC_MAX);
+    bcPeople = contacts;
+    leads.forEach(l => { if (contacts.some(c => c.phone === l.phone)) bcPicked[l.phone] = true; });
+    const bits = [];
+    if (added) bits.push(`${added} added`);
+    if (merged) bits.push(`${merged} already on the list`);
+    if (invalid) bits.push(`${invalid} without a usable number`);
+    if (duplicates) bits.push(`${duplicates} repeated`);
+    if (overflow) bits.push(`${overflow} over the ${BC_MAX} limit`);
+    bcErr = false;
+    bcNote = bits.join(' · ');
+    bcPasteText = '';                                  // its rows are on the list now
+    renderBroadcast();
+}
+
+function bcAddPasted() {
+    const el = document.getElementById('bcPaste');
+    bcPasteText = el ? el.value : bcPasteText;
+    bcTake(LeadImport.leadsFromText(bcPasteText));
+}
+
+/** SheetJS, fetched only when a real spreadsheet is opened. */
+function bcLoadXlsx() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = () => resolve(window.XLSX);
+        s.onerror = () => reject(new Error('could not load the spreadsheet reader'));
+        document.head.appendChild(s);
+    });
+}
+
+async function bcFile(input) {
+    const file = input.files && input.files[0];
+    input.value = '';                                  // so the same file can be re-picked
+    if (!file) return;
+    const xlsx = /\.(xlsx|xls)$/i.test(file.name);
+    try {
+        if (!xlsx) {
+            // CSV/TSV is text; no library needed.
+            return bcTake(LeadImport.leadsFromText(await file.text()));
+        }
+        const XLSX = await bcLoadXlsx();
+        const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        // Back to CSV so one parser handles every format — the same one the
+        // phone app uses, so an import behaves identically on both.
+        bcTake(LeadImport.leadsFromText(XLSX.utils.sheet_to_csv(sheet)));
+    } catch (e) {
+        bcErr = true;
+        bcNote = `Could not read ${file.name}: ${e.message}. Saving it as CSV and uploading that will work.`;
+        renderBroadcast();
+    }
+}
+
+async function bcSend() {
+    const msg = document.getElementById('bcMsg'), btn = document.getElementById('bcSend');
+    const sel = bcSelected();
+    const fail = (t) => { msg.style.color = '#dc2626'; msg.textContent = t; };
+
+    if (!bcTpl) return fail('Choose a template first.');
+    if (!sel.length) return fail('Select at least one recipient.');
+    if (bcExtras.slice(0, bcNeeded()).some(v => !String(v || '').trim())) return fail('Fill every blank in the template.');
+    if (!confirm(`Send "${bcTpl}" to ${sel.length} ${sel.length === 1 ? 'person' : 'people'}?\n\nThis cannot be undone once it starts.`)) return;
+
+    btn.disabled = true; msg.style.color = '#6b7280'; msg.textContent = 'Starting…';
+    try {
+        await api('broadcast', { method: 'POST', body: {
+            templateName: bcTpl,
+            params: bcExtras.slice(0, bcNeeded()),
+            recipients: sel.map(p => ({ phone: p.phone, name: p.name || '' })),
+        }});
+        bcPicked = {}; bcTpl = ''; bcExtras = []; bcNote = '';
+        await loadRuns();
+        renderBroadcast();
+        const m = document.getElementById('bcMsg');
+        if (m) { m.style.color = '#16a34a'; m.textContent = '✓ Sending has started'; }
+    } catch (e) {
+        fail(e.message);
+        btn.disabled = false;
+    }
 }
 
 /* ── auto-reply editor ─────────────────────────────────────────────────── */
