@@ -108,6 +108,15 @@
         .bc-run { border: 1px solid #eef0f3; border-radius: 11px; padding: 12px; margin-bottom: 8px; background: #fff; }
         .bc-bar { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; margin-top: 7px; }
         .bc-bar i { display: block; height: 100%; background: #25D366; }
+        .tpl-item { border: 1px solid #eef0f3; border-radius: 11px; padding: 13px; margin-bottom: 9px; background: #fff; }
+        .tpl-item h4 { margin: 0; font-size: .88rem; color: #1a2035; }
+        .tpl-item pre { margin: 7px 0 0; font-size: .78rem; color: #4b5563; white-space: pre-wrap; font-family: inherit; line-height: 1.5; }
+        .tpl-badge { border-radius: 6px; padding: 2px 8px; font-size: .68rem; font-weight: 800; letter-spacing: .3px; }
+        .tpl-APPROVED { background: #dcfce7; color: #166534; }
+        .tpl-PENDING  { background: #fef3c7; color: #92400e; }
+        .tpl-REJECTED { background: #fee2e2; color: #991b1b; }
+        .tpl-why { background: #fff1f2; border: 1px solid #fecdd3; color: #991b1b; border-radius: 8px; padding: 7px 10px; font-size: .74rem; margin-top: 8px; }
+        .tpl-meta { font-size: .72rem; color: #9ca3af; margin-top: 5px; }
         .btn-add { background: #fff; border: 1.5px dashed #cbd5e1; color: #4b5563; padding: 9px 16px; border-radius: 9px; font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-add:hover { border-color: #25D366; color: #16a34a; }
         .btn-add:disabled { opacity: .45; cursor: default; }
@@ -345,6 +354,7 @@ function barHtml(view) {
           <button class="wa-tab ${view === 'inbox' ? 'active' : ''}" onclick="showInbox()">Inbox</button>
           <button class="wa-tab ${view === 'bot' ? 'active' : ''}" onclick="showBot()">Auto-replies</button>
           <button class="wa-tab ${view === 'bc' ? 'active' : ''}" onclick="showBroadcast()">Broadcast</button>
+          <button class="wa-tab ${view === 'tpl' ? 'active' : ''}" onclick="showTemplates()">Templates</button>
         </div>
         <button class="btn-ghost" onclick="disconnect()">Disconnect</button>
       </div>`;
@@ -521,6 +531,178 @@ async function sendTemplate() {
         openThread(activePhone);
         loadConvos();
     } catch (e) { alert('Could not send: ' + e.message); }
+}
+
+/* ── templates ─────────────────────────────────────────────────────────── */
+/*
+ * Submitting a template to Meta and watching it through review.
+ *
+ * Every template a business sends outside a live 24-hour window must be
+ * approved by Meta first, and until now that could only be done in Meta's own
+ * Business Manager. This submits from here and shows the verdict.
+ *
+ * A rejection is not free — Meta keeps the NAME reserved, so a corrected
+ * version cannot be resubmitted under it until the old one is deleted. That is
+ * why the draft is checked against Meta's rules before it is sent, and why
+ * Delete sits next to a rejected template.
+ */
+let tplList = [], tplDraft = null, tplBusy = false, tplMsg = '', tplErr = false;
+
+function tplBlank() {
+    return { name: '', category: 'UTILITY', language: 'en', header: '', body: '', footer: '', example: [] };
+}
+
+async function showTemplates() {
+    clearInterval(pollTimer);
+    if (!tplDraft) tplDraft = tplBlank();
+    render(barHtml('tpl') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    await tplLoad();
+}
+
+async function tplLoad() {
+    try {
+        tplList = await api('templates-all') || [];
+    } catch (e) {
+        return render(barHtml('tpl') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    renderTemplates();
+}
+
+/** How many {{n}} the body uses — one example value is needed for each. */
+function tplPlaceholders(body) {
+    const nums = [...String(body || '').matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map(m => parseInt(m[1], 10));
+    return [...new Set(nums)].sort((a, b) => a - b);
+}
+
+function renderTemplates() {
+    const d = tplDraft, ph = tplPlaceholders(d.body);
+    const order = { REJECTED: 0, PENDING: 1, APPROVED: 2 };
+    const sorted = [...tplList].sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
+
+    render(barHtml('tpl') + `
+      <div class="bot-card">
+        <h3>Submit a template for approval</h3>
+        <p class="sub">
+          Meta reviews every template before it can be sent to someone outside a live conversation.
+          Review usually takes a few minutes. A rejected name stays reserved until you delete it, so it is
+          worth getting right first time.
+        </p>
+
+        <div class="bot-field">
+          <label>Name</label>
+          <input class="bot-input" maxlength="512" value="${esc(d.name)}" placeholder="order_update"
+                 oninput="tplDraft.name = this.value.toLowerCase(); this.value = tplDraft.name">
+          <p class="bot-hint">Lowercase letters, numbers and underscores only — Meta's rule, not ours.</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Category</label>
+          <select class="bot-input" onchange="tplDraft.category = this.value">
+            ${['UTILITY', 'MARKETING', 'AUTHENTICATION'].map(c =>
+              `<option value="${c}" ${d.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+          <p class="bot-hint">Utility = order updates and reminders. Marketing = offers. Meta can re-categorise and may reject a marketing message filed as utility.</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Language</label>
+          <input class="bot-input" maxlength="8" value="${esc(d.language)}" placeholder="en"
+                 oninput="tplDraft.language = this.value">
+          <p class="bot-hint">en, en_US, hi, mr …</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Header <span style="font-weight:400;color:#9ca3af">(optional, 60 characters)</span></label>
+          <input class="bot-input" maxlength="60" value="${esc(d.header)}" oninput="tplDraft.header = this.value">
+        </div>
+
+        <div class="bot-field">
+          <label>Message</label>
+          <textarea class="bot-input" maxlength="1024" placeholder="Hi {{1}}, your order {{2}} is ready for collection."
+                    oninput="tplDraft.body = this.value; tplSyncExamples()">${esc(d.body)}</textarea>
+          <p class="bot-hint">Use {{1}}, {{2}} for anything that changes per person. They must start at 1 with none skipped.</p>
+        </div>
+
+        ${ph.length ? `
+        <div class="bot-field">
+          <label>Example values (${ph.length})</label>
+          ${ph.map((n, i) => `
+            <input class="bot-input" style="margin-bottom:7px" placeholder="What {{${n}}} might be — e.g. Abid"
+                   value="${esc(d.example[i] || '')}" oninput="tplDraft.example[${i}] = this.value">`).join('')}
+          <p class="bot-hint">Meta rejects a template with placeholders and no examples. They are only shown to the reviewer.</p>
+        </div>` : ''}
+
+        <div class="bot-field">
+          <label>Footer <span style="font-weight:400;color:#9ca3af">(optional, 60 characters)</span></label>
+          <input class="bot-input" maxlength="60" value="${esc(d.footer)}" oninput="tplDraft.footer = this.value">
+        </div>
+
+        ${tplMsg ? `<p class="bc-note ${tplErr ? 'err' : ''}">${esc(tplMsg)}</p>` : ''}
+        <button class="btn-wa" onclick="tplSubmit()" ${tplBusy ? 'disabled' : ''}>
+          <i class="fas fa-paper-plane"></i> ${tplBusy ? 'Submitting…' : 'Submit for approval'}
+        </button>
+      </div>
+
+      <div class="bot-card">
+        <h3>Your templates (${tplList.length})</h3>
+        ${sorted.length ? sorted.map(t => `
+          <div class="tpl-item">
+            <div class="bot-item-head">
+              <h4 style="flex:1">${esc(t.name)}</h4>
+              <span class="tpl-badge tpl-${esc(t.status)}">${esc(t.status)}</span>
+            </div>
+            ${t.header ? `<pre><b>${esc(t.header)}</b></pre>` : ''}
+            <pre>${esc(t.body)}</pre>
+            ${t.footer ? `<pre style="color:#9ca3af">${esc(t.footer)}</pre>` : ''}
+            <div class="tpl-meta">${esc(t.category || '')} · ${esc(t.language || '')}</div>
+            ${t.status === 'REJECTED' ? `<div class="tpl-why">
+               ${t.rejectedReason ? esc(t.rejectedReason) : 'Meta gave no reason.'}
+               Delete it to free the name, then submit a corrected version.</div>` : ''}
+            ${t.status !== 'APPROVED' ? `<button class="btn-link" style="color:#dc2626;margin-top:8px"
+               onclick="tplDelete('${esc(t.name)}')">Delete</button>` : ''}
+          </div>`).join('')
+        : '<p class="sub">Nothing submitted yet.</p>'}
+      </div>`);
+}
+
+/** Keep the example boxes in step with the placeholders actually in the body. */
+function tplSyncExamples() {
+    const want = tplPlaceholders(tplDraft.body).length;
+    const had = tplDraft.example.length;
+    if (want === had) return;                       // no repaint while simply typing
+    tplDraft.example.length = want;
+    for (let i = 0; i < want; i++) if (tplDraft.example[i] == null) tplDraft.example[i] = '';
+    renderTemplates();
+}
+
+async function tplSubmit() {
+    tplBusy = true; tplMsg = 'Submitting…'; tplErr = false; renderTemplates();
+    try {
+        const created = await api('template-create', { method: 'POST', body: tplDraft });
+        tplMsg = `"${created.name}" submitted — Meta says ${created.status}. It appears below, and this page shows the verdict when you reopen it.`;
+        tplErr = false;
+        tplDraft = tplBlank();
+        await tplLoad();
+    } catch (e) {
+        // The CRM names the field when it can, and passes Meta's own words
+        // through when it cannot. Either is more useful than a generic failure.
+        tplErr = true;
+        tplMsg = e.message;
+    } finally {
+        tplBusy = false;
+        renderTemplates();
+    }
+}
+
+async function tplDelete(name) {
+    if (!confirm(`Delete "${name}"?\n\nThis frees the name so you can submit a corrected version. An approved template cannot be recovered.`)) return;
+    try {
+        await api('template-delete', { method: 'DELETE', qs: '&name=' + encodeURIComponent(name) });
+        tplMsg = `"${name}" deleted.`; tplErr = false;
+        await tplLoad();
+    } catch (e) {
+        tplMsg = e.message; tplErr = true; renderTemplates();
+    }
 }
 
 /* ── broadcast ─────────────────────────────────────────────────────────── */
