@@ -855,11 +855,23 @@ function renderBot() {
 }
 
 /**
- * How the bot compares a customer's message to a rule: case, spacing and
- * punctuation are not meaningful. Used here only to tell whether a menu option
- * already has a reply behind it.
+ * How the bot actually compares a customer's message to a rule.
+ *
+ * Copied from normalize() in the CRM's whatsappAutoReply.js, which is what
+ * decides at run time: punctuation and emoji become spaces, runs of space
+ * collapse, then lowercase. Spaces ARE significant ("price list" is not
+ * "pricelist") and letters in any script are kept, so a Hindi keyword works.
+ * Guessing at this instead of copying it made the badge below lie in both
+ * directions — claiming a reply existed when the bot would not match it, and
+ * warning about Devanagari options that were answered perfectly well.
  */
-function botNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+function botNorm(s) {
+    return String(s == null ? '' : s)
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+}
 
 /** The keyword rule that answers this menu option, if there is one. */
 function botReplyFor(title) {
