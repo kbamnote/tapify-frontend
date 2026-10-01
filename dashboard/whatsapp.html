@@ -85,6 +85,38 @@
         .bot-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
         .bot-item-head strong { font-size: .78rem; color: #6b7280; flex: 1; }
         .bot-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: .95rem; padding: 3px; }
+        .bot-warn { background: #fef3c7; color: #92400e; border-radius: 6px; padding: 2px 7px; font-size: .68rem; font-weight: 700; }
+        .bot-alert { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 9px; padding: 9px 12px; font-size: .78rem; line-height: 1.5; margin-top: 8px; }
+        .btn-link { background: none; border: none; color: #92400e; font-weight: 700; text-decoration: underline; cursor: pointer; font-size: .78rem; padding: 0; }
+        .bc-tpl { border: 1.5px solid #eef0f3; border-radius: 11px; padding: 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+        .bc-tpl.on { border-color: #25D366; background: #f0fdf4; }
+        .bc-tpl b { font-size: .86rem; color: #1a2035; }
+        .bc-tpl p { font-size: .78rem; color: #6b7280; margin: 5px 0 0; line-height: 1.5; white-space: pre-wrap; }
+        .bc-drop { border: 1.5px dashed #25D366; border-radius: 11px; padding: 16px; text-align: center; margin-bottom: 10px; }
+        .bc-drop input[type=file] { display: none; }
+        .bc-pick { display: inline-block; background: #25D366; color: #fff; font-weight: 700; font-size: .82rem; padding: 9px 16px; border-radius: 9px; cursor: pointer; }
+        .bc-note { font-size: .76rem; color: #6b7280; margin-top: 8px; line-height: 1.5; }
+        .bc-note.err { color: #dc2626; font-weight: 600; }
+        .bc-list { max-height: 320px; overflow-y: auto; border: 1px solid #eef0f3; border-radius: 11px; }
+        .bc-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid #f7f8fa; font-size: .83rem; }
+        .bc-row:last-child { border-bottom: 0; }
+        .bc-row .nm { flex: 1; color: #1a2035; font-weight: 600; }
+        .bc-row .ph { color: #9ca3af; font-size: .76rem; }
+        .bc-row .tag { background: #eef2ff; color: #4338ca; border-radius: 5px; padding: 1px 6px; font-size: .66rem; font-weight: 700; }
+        .bc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .8rem; color: #6b7280; }
+        .bc-head button { background: none; border: none; color: #25D366; font-weight: 700; cursor: pointer; font-size: .8rem; padding: 0; }
+        .bc-run { border: 1px solid #eef0f3; border-radius: 11px; padding: 12px; margin-bottom: 8px; background: #fff; }
+        .bc-bar { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; margin-top: 7px; }
+        .bc-bar i { display: block; height: 100%; background: #25D366; }
+        .tpl-item { border: 1px solid #eef0f3; border-radius: 11px; padding: 13px; margin-bottom: 9px; background: #fff; }
+        .tpl-item h4 { margin: 0; font-size: .88rem; color: #1a2035; }
+        .tpl-item pre { margin: 7px 0 0; font-size: .78rem; color: #4b5563; white-space: pre-wrap; font-family: inherit; line-height: 1.5; }
+        .tpl-badge { border-radius: 6px; padding: 2px 8px; font-size: .68rem; font-weight: 800; letter-spacing: .3px; }
+        .tpl-APPROVED { background: #dcfce7; color: #166534; }
+        .tpl-PENDING  { background: #fef3c7; color: #92400e; }
+        .tpl-REJECTED { background: #fee2e2; color: #991b1b; }
+        .tpl-why { background: #fff1f2; border: 1px solid #fecdd3; color: #991b1b; border-radius: 8px; padding: 7px 10px; font-size: .74rem; margin-top: 8px; }
+        .tpl-meta { font-size: .72rem; color: #9ca3af; margin-top: 5px; }
         .btn-add { background: #fff; border: 1.5px dashed #cbd5e1; color: #4b5563; padding: 9px 16px; border-radius: 9px; font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-add:hover { border-color: #25D366; color: #16a34a; }
         .btn-add:disabled { opacity: .45; cursor: default; }
@@ -156,6 +188,7 @@
     </div>
 
 <script src="../admin.js"></script>
+<script src="../js/leadImport.js"></script>
 <script>
 /* ── WhatsApp for the customer's own number ──────────────────────────────────
    Everything goes through api/whatsapp/proxy.php. The CRM that actually holds
@@ -320,6 +353,8 @@ function barHtml(view) {
         <div class="wa-tabs">
           <button class="wa-tab ${view === 'inbox' ? 'active' : ''}" onclick="showInbox()">Inbox</button>
           <button class="wa-tab ${view === 'bot' ? 'active' : ''}" onclick="showBot()">Auto-replies</button>
+          <button class="wa-tab ${view === 'bc' ? 'active' : ''}" onclick="showBroadcast()">Broadcast</button>
+          <button class="wa-tab ${view === 'tpl' ? 'active' : ''}" onclick="showTemplates()">Templates</button>
         </div>
         <button class="btn-ghost" onclick="disconnect()">Disconnect</button>
       </div>`;
@@ -498,6 +533,402 @@ async function sendTemplate() {
     } catch (e) { alert('Could not send: ' + e.message); }
 }
 
+/* ── templates ─────────────────────────────────────────────────────────── */
+/*
+ * Submitting a template to Meta and watching it through review.
+ *
+ * Every template a business sends outside a live 24-hour window must be
+ * approved by Meta first, and until now that could only be done in Meta's own
+ * Business Manager. This submits from here and shows the verdict.
+ *
+ * A rejection is not free — Meta keeps the NAME reserved, so a corrected
+ * version cannot be resubmitted under it until the old one is deleted. That is
+ * why the draft is checked against Meta's rules before it is sent, and why
+ * Delete sits next to a rejected template.
+ */
+let tplList = [], tplDraft = null, tplBusy = false, tplMsg = '', tplErr = false;
+
+function tplBlank() {
+    return { name: '', category: 'UTILITY', language: 'en', header: '', body: '', footer: '', example: [] };
+}
+
+async function showTemplates() {
+    clearInterval(pollTimer);
+    if (!tplDraft) tplDraft = tplBlank();
+    render(barHtml('tpl') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    await tplLoad();
+}
+
+async function tplLoad() {
+    try {
+        tplList = await api('templates-all') || [];
+    } catch (e) {
+        return render(barHtml('tpl') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    renderTemplates();
+}
+
+/** How many {{n}} the body uses — one example value is needed for each. */
+function tplPlaceholders(body) {
+    const nums = [...String(body || '').matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map(m => parseInt(m[1], 10));
+    return [...new Set(nums)].sort((a, b) => a - b);
+}
+
+function renderTemplates() {
+    const d = tplDraft, ph = tplPlaceholders(d.body);
+    const order = { REJECTED: 0, PENDING: 1, APPROVED: 2 };
+    const sorted = [...tplList].sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
+
+    render(barHtml('tpl') + `
+      <div class="bot-card">
+        <h3>Submit a template for approval</h3>
+        <p class="sub">
+          Meta reviews every template before it can be sent to someone outside a live conversation.
+          Review usually takes a few minutes. A rejected name stays reserved until you delete it, so it is
+          worth getting right first time.
+        </p>
+
+        <div class="bot-field">
+          <label>Name</label>
+          <input class="bot-input" maxlength="512" value="${esc(d.name)}" placeholder="order_update"
+                 oninput="tplDraft.name = this.value.toLowerCase(); this.value = tplDraft.name">
+          <p class="bot-hint">Lowercase letters, numbers and underscores only — Meta's rule, not ours.</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Category</label>
+          <select class="bot-input" onchange="tplDraft.category = this.value">
+            ${['UTILITY', 'MARKETING', 'AUTHENTICATION'].map(c =>
+              `<option value="${c}" ${d.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+          <p class="bot-hint">Utility = order updates and reminders. Marketing = offers. Meta can re-categorise and may reject a marketing message filed as utility.</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Language</label>
+          <input class="bot-input" maxlength="8" value="${esc(d.language)}" placeholder="en"
+                 oninput="tplDraft.language = this.value">
+          <p class="bot-hint">en, en_US, hi, mr …</p>
+        </div>
+
+        <div class="bot-field">
+          <label>Header <span style="font-weight:400;color:#9ca3af">(optional, 60 characters)</span></label>
+          <input class="bot-input" maxlength="60" value="${esc(d.header)}" oninput="tplDraft.header = this.value">
+        </div>
+
+        <div class="bot-field">
+          <label>Message</label>
+          <textarea class="bot-input" maxlength="1024" placeholder="Hi {{1}}, your order {{2}} is ready for collection."
+                    oninput="tplDraft.body = this.value; tplSyncExamples()">${esc(d.body)}</textarea>
+          <p class="bot-hint">Use {{1}}, {{2}} for anything that changes per person. They must start at 1 with none skipped.</p>
+        </div>
+
+        ${ph.length ? `
+        <div class="bot-field">
+          <label>Example values (${ph.length})</label>
+          ${ph.map((n, i) => `
+            <input class="bot-input" style="margin-bottom:7px" placeholder="What {{${n}}} might be — e.g. Abid"
+                   value="${esc(d.example[i] || '')}" oninput="tplDraft.example[${i}] = this.value">`).join('')}
+          <p class="bot-hint">Meta rejects a template with placeholders and no examples. They are only shown to the reviewer.</p>
+        </div>` : ''}
+
+        <div class="bot-field">
+          <label>Footer <span style="font-weight:400;color:#9ca3af">(optional, 60 characters)</span></label>
+          <input class="bot-input" maxlength="60" value="${esc(d.footer)}" oninput="tplDraft.footer = this.value">
+        </div>
+
+        ${tplMsg ? `<p class="bc-note ${tplErr ? 'err' : ''}">${esc(tplMsg)}</p>` : ''}
+        <button class="btn-wa" onclick="tplSubmit()" ${tplBusy ? 'disabled' : ''}>
+          <i class="fas fa-paper-plane"></i> ${tplBusy ? 'Submitting…' : 'Submit for approval'}
+        </button>
+      </div>
+
+      <div class="bot-card">
+        <h3>Your templates (${tplList.length})</h3>
+        ${sorted.length ? sorted.map(t => `
+          <div class="tpl-item">
+            <div class="bot-item-head">
+              <h4 style="flex:1">${esc(t.name)}</h4>
+              <span class="tpl-badge tpl-${esc(t.status)}">${esc(t.status)}</span>
+            </div>
+            ${t.header ? `<pre><b>${esc(t.header)}</b></pre>` : ''}
+            <pre>${esc(t.body)}</pre>
+            ${t.footer ? `<pre style="color:#9ca3af">${esc(t.footer)}</pre>` : ''}
+            <div class="tpl-meta">${esc(t.category || '')} · ${esc(t.language || '')}</div>
+            ${t.status === 'REJECTED' ? `<div class="tpl-why">
+               ${t.rejectedReason ? esc(t.rejectedReason) : 'Meta gave no reason.'}
+               Delete it to free the name, then submit a corrected version.</div>` : ''}
+            ${t.status !== 'APPROVED' ? `<button class="btn-link" style="color:#dc2626;margin-top:8px"
+               onclick="tplDelete('${esc(t.name)}')">Delete</button>` : ''}
+          </div>`).join('')
+        : '<p class="sub">Nothing submitted yet.</p>'}
+      </div>`);
+}
+
+/** Keep the example boxes in step with the placeholders actually in the body. */
+function tplSyncExamples() {
+    const want = tplPlaceholders(tplDraft.body).length;
+    const had = tplDraft.example.length;
+    if (want === had) return;                       // no repaint while simply typing
+    tplDraft.example.length = want;
+    for (let i = 0; i < want; i++) if (tplDraft.example[i] == null) tplDraft.example[i] = '';
+    renderTemplates();
+}
+
+async function tplSubmit() {
+    tplBusy = true; tplMsg = 'Submitting…'; tplErr = false; renderTemplates();
+    try {
+        const created = await api('template-create', { method: 'POST', body: tplDraft });
+        tplMsg = `"${created.name}" submitted — Meta says ${created.status}. It appears below, and this page shows the verdict when you reopen it.`;
+        tplErr = false;
+        tplDraft = tplBlank();
+        await tplLoad();
+    } catch (e) {
+        // The CRM names the field when it can, and passes Meta's own words
+        // through when it cannot. Either is more useful than a generic failure.
+        tplErr = true;
+        tplMsg = e.message;
+    } finally {
+        tplBusy = false;
+        renderTemplates();
+    }
+}
+
+async function tplDelete(name) {
+    if (!confirm(`Delete "${name}"?\n\nThis frees the name so you can submit a corrected version. An approved template cannot be recovered.`)) return;
+    try {
+        await api('template-delete', { method: 'DELETE', qs: '&name=' + encodeURIComponent(name) });
+        tplMsg = `"${name}" deleted.`; tplErr = false;
+        await tplLoad();
+    } catch (e) {
+        tplMsg = e.message; tplErr = true; renderTemplates();
+    }
+}
+
+/* ── broadcast ─────────────────────────────────────────────────────────── */
+/*
+ * Bulk template send. TEMPLATES ONLY: free text is deliverable only inside a
+ * contact's own 24-hour window, which across a campaign is almost nobody.
+ *
+ * {{1}} IS ALWAYS THE RECIPIENT'S NAME, filled per person by the server, so the
+ * inputs here start at {{2}}. Numbering them from 1 would put every value in
+ * the wrong placeholder.
+ */
+let bcTpls = [], bcTpl = '', bcExtras = [], bcPeople = [], bcPicked = {}, bcRuns = [], bcNote = '', bcErr = false, bcTimer = null;
+// Held in state for the same reason the greeting fields are: any re-render
+// would otherwise throw away what the customer had pasted but not yet added.
+let bcPasteText = '';
+const BC_MAX = 500;
+
+async function showBroadcast() {
+    clearInterval(pollTimer);
+    render(barHtml('bc') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    try {
+        const [tpl, convos] = await Promise.all([api('templates'), api('conversations')]);
+        bcTpls = Array.isArray(tpl) ? tpl : [];
+        // Keep anyone imported this session; reloading conversations must not drop them.
+        const imported = bcPeople.filter(p => p.imported);
+        bcPeople = LeadImport.mergeLeads(Array.isArray(convos) ? convos : [], imported, BC_MAX).contacts;
+    } catch (e) {
+        return render(barHtml('bc') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    await loadRuns();
+    renderBroadcast();
+}
+
+async function loadRuns() {
+    try { bcRuns = await api('broadcasts') || []; } catch (_) { /* history is not worth failing over */ }
+    clearInterval(bcTimer);
+    if (bcRuns.some(r => r.status === 'running')) bcTimer = setInterval(async () => {
+        try { bcRuns = await api('broadcasts') || []; renderBroadcast(); } catch (_) {}
+        if (!bcRuns.some(r => r.status === 'running')) clearInterval(bcTimer);
+    }, 4000);
+}
+
+function bcChosen()  { return bcTpls.find(t => t.name === bcTpl); }
+function bcNeeded()  { return Math.max(0, ((bcChosen() || {}).paramCount || 0) - 1); }
+function bcSelected(){ return bcPeople.filter(p => bcPicked[p.phone]); }
+
+function renderBroadcast() {
+    const need = bcNeeded(), sel = bcSelected();
+    render(barHtml('bc') + `
+      <div class="bot-card">
+        <h3>1. Choose a template</h3>
+        <p class="sub">Only templates WhatsApp has already approved can be sent to people outside a live conversation.</p>
+        ${bcTpls.length ? bcTpls.map(t => `
+          <div class="bc-tpl ${t.name === bcTpl ? 'on' : ''}" onclick="bcPickTpl('${esc(t.name)}')">
+            <b>${esc(t.name)}</b>
+            ${t.body ? `<p>${esc(t.body)}</p>` : ''}
+          </div>`).join('') : '<p class="sub">No approved templates yet.</p>'}
+        ${need ? `
+          <div class="bot-field" style="margin-top:12px">
+            <label>Fill the template's blanks</label>
+            ${Array.from({length: need}, (_, i) => `
+              <input class="bot-input" style="margin-bottom:7px" placeholder="Value for {{${i + 2}}}"
+                     value="${esc(bcExtras[i] || '')}" oninput="bcExtras[${i}] = this.value">`).join('')}
+            <p class="bot-hint">{{1}} is each person's own name and is filled in for you.</p>
+          </div>` : ''}
+      </div>
+
+      <div class="bot-card">
+        <h3>2. Choose who receives it</h3>
+        <p class="sub">People who have messaged you, plus anyone you add. Up to ${BC_MAX} per broadcast.</p>
+
+        <div class="bc-drop">
+          <label class="bc-pick">
+            Upload Excel or CSV
+            <input type="file" accept=".xlsx,.xls,.csv,.tsv,.txt" onchange="bcFile(this)">
+          </label>
+          <p class="bc-note">A column of numbers is enough. Headings like Name and Phone are understood in any order.</p>
+        </div>
+        <textarea class="bot-input" id="bcPaste" oninput="bcPasteText = this.value"
+                  placeholder="…or paste rows here:&#10;Name,Phone&#10;Abid Khan,9876543210">${esc(bcPasteText)}</textarea>
+        <button class="btn-add" style="margin-top:8px" onclick="bcAddPasted()"><i class="fas fa-plus"></i> Add pasted rows</button>
+        ${bcNote ? `<p class="bc-note ${bcErr ? 'err' : ''}">${esc(bcNote)}</p>` : ''}
+
+        <div class="bc-head" style="margin-top:14px">
+          <button onclick="bcToggleAll()">${sel.length === bcPeople.length && bcPeople.length ? 'Clear selection' : 'Select all'}</button>
+          <span>${sel.length} of ${bcPeople.length} selected</span>
+        </div>
+        ${bcPeople.length ? `<div class="bc-list">${bcPeople.map(p => `
+          <label class="bc-row">
+            <input type="checkbox" ${bcPicked[p.phone] ? 'checked' : ''} onchange="bcPick('${esc(p.phone)}', this.checked)">
+            <span class="nm">${esc(p.name || 'No name')}</span>
+            ${p.imported ? '<span class="tag">added</span>' : ''}
+            <span class="ph">+${esc(p.phone)}</span>
+          </label>`).join('')}</div>`
+          : '<p class="sub">Nobody here yet. Upload a list or wait for someone to message you.</p>'}
+      </div>
+
+      <div class="bot-save-bar">
+        <span class="msg" id="bcMsg"></span>
+        <button class="btn-wa" id="bcSend" onclick="bcSend()"><i class="fas fa-paper-plane"></i> Send to ${sel.length}</button>
+      </div>
+
+      ${bcRuns.length ? `<div class="bot-card" style="margin-top:16px">
+        <h3>Recent broadcasts</h3>
+        ${bcRuns.map(r => {
+          const done = (r.sent || 0) + (r.failed || 0);
+          const pct = r.total ? Math.round(done / r.total * 100) : 0;
+          return `<div class="bc-run">
+            <div class="bot-item-head"><strong>${esc(r.templateName || '')}</strong><span>${esc(r.status || '')}</span></div>
+            <div class="bc-note">${r.sent || 0} sent${r.failed ? ` · ${r.failed} failed` : ''} of ${r.total || 0}</div>
+            ${r.status === 'running' ? `<div class="bc-bar"><i style="width:${pct}%"></i></div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>` : ''}`);
+}
+
+function bcPickTpl(name) {
+    const same = name === bcTpl;
+    bcTpl = same ? '' : name;
+    bcExtras = same ? [] : new Array(bcNeeded()).fill('');
+    renderBroadcast();
+}
+function bcPick(phone, on) { if (on) bcPicked[phone] = true; else delete bcPicked[phone]; renderBroadcastMsgOnly(); }
+function bcToggleAll() {
+    if (bcSelected().length === bcPeople.length) bcPicked = {};
+    else { bcPicked = {}; bcPeople.slice(0, BC_MAX).forEach(p => { bcPicked[p.phone] = true; }); }
+    renderBroadcast();
+}
+// Ticking one box must not repaint the list, or the scroll position jumps.
+function renderBroadcastMsgOnly() {
+    const b = document.getElementById('bcSend');
+    if (b) b.innerHTML = '<i class="fas fa-paper-plane"></i> Send to ' + bcSelected().length;
+}
+
+/** Fold imported people in, tick them, and say what was dropped and why. */
+function bcTake(result) {
+    const { leads, invalid, duplicates } = result;
+    if (!leads.length) {
+        bcErr = true;
+        bcNote = invalid ? `No usable numbers in those ${invalid} row(s).` : 'Nothing to add.';
+        return renderBroadcast();
+    }
+    const { contacts, added, merged, overflow } = LeadImport.mergeLeads(bcPeople, leads, BC_MAX);
+    bcPeople = contacts;
+    leads.forEach(l => { if (contacts.some(c => c.phone === l.phone)) bcPicked[l.phone] = true; });
+    const bits = [];
+    if (added) bits.push(`${added} added`);
+    if (merged) bits.push(`${merged} already on the list`);
+    if (invalid) bits.push(`${invalid} without a usable number`);
+    if (duplicates) bits.push(`${duplicates} repeated`);
+    if (overflow) bits.push(`${overflow} over the ${BC_MAX} limit`);
+    bcErr = false;
+    bcNote = bits.join(' · ');
+    bcPasteText = '';                                  // its rows are on the list now
+    renderBroadcast();
+}
+
+function bcAddPasted() {
+    const el = document.getElementById('bcPaste');
+    bcPasteText = el ? el.value : bcPasteText;
+    bcTake(LeadImport.leadsFromText(bcPasteText));
+}
+
+/** SheetJS, fetched only when a real spreadsheet is opened. */
+function bcLoadXlsx() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = () => resolve(window.XLSX);
+        s.onerror = () => reject(new Error('could not load the spreadsheet reader'));
+        document.head.appendChild(s);
+    });
+}
+
+async function bcFile(input) {
+    const file = input.files && input.files[0];
+    input.value = '';                                  // so the same file can be re-picked
+    if (!file) return;
+    const xlsx = /\.(xlsx|xls)$/i.test(file.name);
+    try {
+        if (!xlsx) {
+            // CSV/TSV is text; no library needed.
+            return bcTake(LeadImport.leadsFromText(await file.text()));
+        }
+        const XLSX = await bcLoadXlsx();
+        const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        // Back to CSV so one parser handles every format — the same one the
+        // phone app uses, so an import behaves identically on both.
+        bcTake(LeadImport.leadsFromText(XLSX.utils.sheet_to_csv(sheet)));
+    } catch (e) {
+        bcErr = true;
+        bcNote = `Could not read ${file.name}: ${e.message}. Saving it as CSV and uploading that will work.`;
+        renderBroadcast();
+    }
+}
+
+async function bcSend() {
+    const msg = document.getElementById('bcMsg'), btn = document.getElementById('bcSend');
+    const sel = bcSelected();
+    const fail = (t) => { msg.style.color = '#dc2626'; msg.textContent = t; };
+
+    if (!bcTpl) return fail('Choose a template first.');
+    if (!sel.length) return fail('Select at least one recipient.');
+    if (bcExtras.slice(0, bcNeeded()).some(v => !String(v || '').trim())) return fail('Fill every blank in the template.');
+    if (!confirm(`Send "${bcTpl}" to ${sel.length} ${sel.length === 1 ? 'person' : 'people'}?\n\nThis cannot be undone once it starts.`)) return;
+
+    btn.disabled = true; msg.style.color = '#6b7280'; msg.textContent = 'Starting…';
+    try {
+        await api('broadcast', { method: 'POST', body: {
+            templateName: bcTpl,
+            params: bcExtras.slice(0, bcNeeded()),
+            recipients: sel.map(p => ({ phone: p.phone, name: p.name || '' })),
+        }});
+        bcPicked = {}; bcTpl = ''; bcExtras = []; bcNote = '';
+        await loadRuns();
+        renderBroadcast();
+        const m = document.getElementById('bcMsg');
+        if (m) { m.style.color = '#16a34a'; m.textContent = '✓ Sending has started'; }
+    } catch (e) {
+        fail(e.message);
+        btn.disabled = false;
+    }
+}
+
 /* ── auto-reply editor ─────────────────────────────────────────────────── */
 let bot = null;
 
@@ -526,11 +957,11 @@ function renderBot() {
         </p>
         <div class="bot-row">
           <label for="botEnabled">Auto-replies switched on</label>
-          <span class="switch"><input type="checkbox" id="botEnabled" ${bot.enabled ? 'checked' : ''}><span></span></span>
+          <span class="switch"><input type="checkbox" id="botEnabled" ${bot.enabled ? 'checked' : ''} onchange="bot.enabled = this.checked"><span></span></span>
         </div>
         <div class="bot-row">
           <label for="botGreet">Show a menu when someone says "hi"</label>
-          <span class="switch"><input type="checkbox" id="botGreet" ${bot.greetingEnabled !== false ? 'checked' : ''}><span></span></span>
+          <span class="switch"><input type="checkbox" id="botGreet" ${bot.greetingEnabled !== false ? 'checked' : ''} onchange="bot.greetingEnabled = this.checked"><span></span></span>
         </div>
       </div>
 
@@ -539,15 +970,18 @@ function renderBot() {
         <p class="sub">The tappable list a customer sees when they greet you. Leave the options empty to send no menu.</p>
         <div class="bot-field">
           <label>Title</label>
-          <input class="bot-input" id="mHeader" maxlength="60" value="${esc(m.header || '')}" placeholder="e.g. Glow Salon">
+          <input class="bot-input" id="mHeader" maxlength="60" value="${esc(m.header || '')}" placeholder="e.g. Glow Salon"
+                 oninput="bot.menu.header = this.value">
         </div>
         <div class="bot-field">
           <label>Message</label>
-          <textarea class="bot-input" id="mBody" maxlength="1024" placeholder="How can we help you today?">${esc(m.body || '')}</textarea>
+          <textarea class="bot-input" id="mBody" maxlength="1024" placeholder="How can we help you today?"
+                    oninput="bot.menu.body = this.value">${esc(m.body || '')}</textarea>
         </div>
         <div class="bot-field">
           <label>Button text</label>
-          <input class="bot-input" id="mButton" maxlength="20" value="${esc(m.button || 'Choose an option')}">
+          <input class="bot-input" id="mButton" maxlength="20" value="${esc(m.button || 'Choose an option')}"
+                 oninput="bot.menu.button = this.value">
           <p class="bot-hint">WhatsApp allows 20 characters here.</p>
         </div>
 
@@ -557,6 +991,7 @@ function renderBot() {
             <div class="bot-item">
               <div class="bot-item-head">
                 <strong>Option ${i + 1}</strong>
+                ${botReplyFor(r.title) ? '' : '<span class="bot-warn" title="Tapping this option will get no answer">no reply yet</span>'}
                 <button class="bot-del" title="Remove" onclick="botRowDel(${i})"><i class="fas fa-trash"></i></button>
               </div>
               <input class="bot-input" style="margin-bottom:7px" maxlength="24" placeholder="Title (max 24 characters)"
@@ -567,7 +1002,12 @@ function renderBot() {
           <button class="btn-add" onclick="botRowAdd()" ${m.rows.length >= 10 ? 'disabled' : ''}>
             <i class="fas fa-plus"></i> Add option${m.rows.length >= 10 ? ' (limit reached)' : ''}
           </button>
-          <p class="bot-hint">Tapping an option sends its title back to you, so give each one a matching reply below.</p>
+          <p class="bot-hint">Tapping an option sends its title back to you, so each one needs a keyword reply below
+             with the same wording — otherwise the customer taps it and hears nothing.</p>
+          ${m.rows.filter(r => (r.title || '').trim() && !botReplyFor(r.title)).length
+            ? `<p class="bot-alert">${m.rows.filter(r => (r.title || '').trim() && !botReplyFor(r.title)).length}
+                 option(s) have no reply. <button class="btn-link" onclick="botAddMissingReplies()">Create the missing replies</button></p>`
+            : ''}
         </div>
       </div>
 
@@ -594,6 +1034,43 @@ function renderBot() {
         <span class="msg" id="botMsg"></span>
         <button class="btn-wa" id="botSave" onclick="saveBot()"><i class="fas fa-save"></i> Save</button>
       </div>`);
+}
+
+/**
+ * How the bot actually compares a customer's message to a rule.
+ *
+ * Copied from normalize() in the CRM's whatsappAutoReply.js, which is what
+ * decides at run time: punctuation and emoji become spaces, runs of space
+ * collapse, then lowercase. Spaces ARE significant ("price list" is not
+ * "pricelist") and letters in any script are kept, so a Hindi keyword works.
+ * Guessing at this instead of copying it made the badge below lie in both
+ * directions — claiming a reply existed when the bot would not match it, and
+ * warning about Devanagari options that were answered perfectly well.
+ */
+function botNorm(s) {
+    return String(s == null ? '' : s)
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+}
+
+/** The keyword rule that answers this menu option, if there is one. */
+function botReplyFor(title) {
+    const want = botNorm(title);
+    if (!want) return null;
+    return (bot.replies || []).find(r => botNorm(r.match) === want) || null;
+}
+
+/** Add an empty rule for every option that has none, so none is left silent. */
+function botAddMissingReplies() {
+    (bot.menu.rows || []).forEach(r => {
+        const title = (r.title || '').trim();
+        if (title && !botReplyFor(title) && bot.replies.length < 50) {
+            bot.replies.push({ match: title, reply: '' });
+        }
+    });
+    renderBot();
 }
 
 // Edits update state only — renderBot() is NOT called on every keystroke, or the
