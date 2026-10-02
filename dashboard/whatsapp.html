@@ -547,7 +547,13 @@ function stuckHtml(pendingCount) {
         ${facts.nameStatus ? `<span class="stuck-fact">Display name: <b>${esc(facts.nameStatus)}</b></span>` : ''}
         ${facts.qualityRating ? `<span class="stuck-fact">Quality: <b>${esc(facts.qualityRating)}</b></span>` : ''}
         ${facts.messagingLimit ? `<span class="stuck-fact">Messaging limit: <b>${esc(facts.messagingLimit)}</b></span>` : ''}
-      </div>`;
+        ${facts.displayPhone ? `<span class="stuck-fact">Number: <b>${esc(facts.displayPhone)}</b></span>` : ''}
+        ${facts.wabaId ? `<span class="stuck-fact">WhatsApp account ID: <b>${esc(facts.wabaId)}</b></span>` : ''}
+      </div>
+      ${facts.wabaId ? `<p class="sub" style="margin-top:10px">
+        A business portfolio can hold several WhatsApp accounts, and every fix below is applied to one
+        of them. Match <b>${esc(facts.wabaId)}</b> when Meta asks you to pick an account.
+      </p>` : ''}`;
 
     if (health.waitingOnMetaOnly) {
         return `<div class="bot-card stuck-card">
