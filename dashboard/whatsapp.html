@@ -525,7 +525,12 @@ function otpHtml() {
  * on, instead of a PENDING badge that never changes.
  */
 function stuckHtml(pendingCount) {
-    if (!pendingCount) return '';
+    const blocked = health && health.ready && (health.blockers || []).length > 0;
+    // Shown while templates are pending OR the account is blocked. Those come
+    // apart once review finishes: every template can read APPROVED while the
+    // account still cannot send a thing, which is the worst case to leave
+    // silent — the screen looks ready and every send fails.
+    if (!pendingCount && !blocked) return '';
 
     if (!health || !health.ready) {
         return `<div class="bot-card stuck-card">
@@ -565,12 +570,20 @@ function stuckHtml(pendingCount) {
           </div>`;
     }
 
+    // Two different situations share this panel, and the heading has to match
+    // the one the customer is actually in. Templates approved but the account
+    // blocked is NOT a review problem — saying "still approving" there would
+    // send them looking in the wrong place.
+    const head = pendingCount
+        ? `Why ${pendingCount > 1 ? 'these are' : 'this is'} still approving`
+        : 'Your WhatsApp number cannot send yet';
+    const lead = pendingCount
+        ? `WhatsApp decides most templates in minutes. ${health.blockers.length === 1 ? 'This is what is' : 'These are what are'} holding yours in review:`
+        : `Your templates are approved, but ${health.blockers.length === 1 ? 'this is' : 'these are'} stopping messages going out:`;
+
     return `<div class="bot-card stuck-card">
-        <h3>Why ${pendingCount > 1 ? 'these are' : 'this is'} still approving</h3>
-        <p class="sub">
-          WhatsApp decides most templates in minutes. ${health.blockers.length === 1 ? 'This is what' : 'These are what'}
-          ${health.blockers.length === 1 ? 'is' : 'are'} holding yours in review:
-        </p>
+        <h3>${esc(head)}</h3>
+        <p class="sub">${esc(lead)}</p>
         ${health.blockers.map(b => `
           <div class="stuck-item">
             <div class="stuck-what">${esc(b.what)}</div>
@@ -1000,7 +1013,10 @@ async function tplLoad() {
         return render(barHtml('tpl') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
     }
     // Only worth two Graph calls when something is actually stuck.
-    if (!health && tplList.some(t => t.status === 'PENDING')) await loadHealth();
+    // Always read it, not only when something is pending. An account can be
+    // BLOCKED with every template approved — which is the worst case, because
+    // the templates look ready and every send fails anyway.
+    if (!health) await loadHealth();
     renderTemplates();
 }
 
