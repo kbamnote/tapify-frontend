@@ -156,6 +156,21 @@
         .pill.wait { background: #fef3c7; color: #b4762f; }
         .pill.no   { background: #f1f5f9; color: #6b7280; }
         .pill.bad  { background: #fee2e2; color: #dc2626; }
+
+        /* ── "why is this still approving?" ───────────────────────────────── */
+        .stuck-card { border-left: 4px solid #f59e0b; }
+        .stuck-item { padding: 12px 0; border-top: 1px solid #f1f5f9; }
+        .stuck-item:first-of-type { border-top: none; }
+        .stuck-what { font-size: .9rem; font-weight: 800; color: #b45309; }
+        .stuck-why  { font-size: .83rem; color: #4b5563; margin-top: 4px; line-height: 1.6; }
+        .stuck-fix  { font-size: .83rem; color: #111827; margin-top: 6px; line-height: 1.6; }
+        .stuck-fix b { font-weight: 700; }
+        .stuck-detail { font-size: .72rem; color: #9ca3af; margin-top: 5px; font-family: ui-monospace, monospace; }
+        .stuck-ok { font-size: .86rem; color: #166534; line-height: 1.6; }
+        .stuck-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .stuck-fact { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 7px;
+                      padding: 5px 10px; font-size: .74rem; color: #475569; }
+        .stuck-fact b { color: #111827; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -232,6 +247,9 @@ let status = null, convos = [], activePhone = null, templates = [], pollTimer = 
 // number. Neither is required for the inbox to work — a failure to load either
 // must never stop someone answering a customer.
 let pricing = null, library = null, libBusy = false;
+// Why templates are stuck. Loaded only when something is actually pending,
+// since it costs two Graph calls.
+let health = null;
 
 document.addEventListener('DOMContentLoaded', boot);
 window.addEventListener('beforeunload', () => clearInterval(pollTimer));
@@ -357,6 +375,74 @@ async function installStarters() {
         await loadLibrary();
         await tplLoad();                      // repaints the whole Templates tab
     }
+}
+
+async function loadHealth() {
+    try { health = await api('account-health'); } catch (_) { health = null; }
+}
+
+/**
+ * Meta decides most templates in minutes. Past a day the cause is almost never
+ * the wording — it is the account behind it, and Meta says nothing about that
+ * on the template itself. This turns what it does report into something to act
+ * on, instead of a PENDING badge that never changes.
+ */
+function stuckHtml(pendingCount) {
+    if (!pendingCount) return '';
+
+    if (!health || !health.ready) {
+        return `<div class="bot-card stuck-card">
+            <h3>Still approving?</h3>
+            <p class="sub">WhatsApp usually decides within minutes, and up to 24 hours for a business
+            that is not yet verified. We could not read your account's status to say more.</p>
+          </div>`;
+    }
+
+    const facts = health.account || {};
+    const factRow = `
+      <div class="stuck-facts">
+        ${facts.businessVerification ? `<span class="stuck-fact">Business verification: <b>${esc(facts.businessVerification)}</b></span>` : ''}
+        ${facts.nameStatus ? `<span class="stuck-fact">Display name: <b>${esc(facts.nameStatus)}</b></span>` : ''}
+        ${facts.qualityRating ? `<span class="stuck-fact">Quality: <b>${esc(facts.qualityRating)}</b></span>` : ''}
+        ${facts.messagingLimit ? `<span class="stuck-fact">Messaging limit: <b>${esc(facts.messagingLimit)}</b></span>` : ''}
+      </div>`;
+
+    if (health.waitingOnMetaOnly) {
+        return `<div class="bot-card stuck-card">
+            <h3>${pendingCount} template${pendingCount > 1 ? 's are' : ' is'} still with WhatsApp</h3>
+            <p class="stuck-ok">
+              Everything we can check on your account looks right${health.checked && health.checked.length
+                ? ` (${health.checked.map(esc).join(', ')})` : ''},
+              so these are in Meta's manual review queue. That queue is theirs, not ours — nothing on
+              this page will move it.
+            </p>
+            <p class="sub" style="margin-top:10px">
+              Templates normally clear in minutes, and within 24 hours for a newer account. Past
+              <b>48 hours</b>, raise it with Meta directly: WhatsApp Manager → Help, quoting the
+              template name. Deleting and resubmitting does not help and burns the name.
+            </p>
+            ${factRow}
+            ${(health.unreadable || []).length
+              ? `<p class="sub" style="margin-top:10px;color:#b45309">Could not check: ${health.unreadable.map(esc).join('; ')}</p>`
+              : ''}
+          </div>`;
+    }
+
+    return `<div class="bot-card stuck-card">
+        <h3>Why ${pendingCount > 1 ? 'these are' : 'this is'} still approving</h3>
+        <p class="sub">
+          WhatsApp decides most templates in minutes. ${health.blockers.length === 1 ? 'This is what' : 'These are what'}
+          ${health.blockers.length === 1 ? 'is' : 'are'} holding yours in review:
+        </p>
+        ${health.blockers.map(b => `
+          <div class="stuck-item">
+            <div class="stuck-what">${esc(b.what)}</div>
+            <div class="stuck-why">${esc(b.why)}</div>
+            <div class="stuck-fix"><b>Fix:</b> ${esc(b.fix)}</div>
+            ${b.detail ? `<div class="stuck-detail">${esc(b.detail)}</div>` : ''}
+          </div>`).join('')}
+        ${factRow}
+      </div>`;
 }
 
 /** The rate card + ready-made set, shown above the template builder. */
@@ -774,6 +860,8 @@ async function tplLoad() {
     } catch (e) {
         return render(barHtml('tpl') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
     }
+    // Only worth two Graph calls when something is actually stuck.
+    if (!health && tplList.some(t => t.status === 'PENDING')) await loadHealth();
     renderTemplates();
 }
 
@@ -788,7 +876,8 @@ function renderTemplates() {
     const order = { REJECTED: 0, PENDING: 1, APPROVED: 2 };
     const sorted = [...tplList].sort((a, b) => (order[a.status] ?? 3) - (order[b.status] ?? 3));
 
-    render(barHtml('tpl') + chargesAndStarterHtml() + `
+    const pendingCount = tplList.filter(t => t.status === 'PENDING').length;
+    render(barHtml('tpl') + stuckHtml(pendingCount) + chargesAndStarterHtml() + `
       <div class="bot-card">
         <h3>Write your own template</h3>
         <p class="sub">
