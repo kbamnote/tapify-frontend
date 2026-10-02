@@ -171,6 +171,20 @@
         .stuck-fact { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 7px;
                       padding: 5px 10px; font-size: .74rem; color: #475569; }
         .stuck-fact b { color: #111827; font-weight: 700; }
+
+        /* inline OTP verification inside a blocker */
+        .otp-box { margin-top: 10px; padding: 12px; background: #fffbeb;
+                   border: 1px solid #fde68a; border-radius: 9px; }
+        .otp-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .otp-btn { background: #153e3f; color: #fff; border: none; border-radius: 7px;
+                   padding: 8px 14px; font-family: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
+        .otp-btn.ghost { background: #fff; color: #153e3f; border: 1.5px solid #153e3f; }
+        .otp-btn:disabled { opacity: .5; cursor: default; }
+        .otp-input { width: 130px; padding: 8px 10px; border: 1.5px solid #e5e7eb; border-radius: 7px;
+                     font-family: ui-monospace, monospace; font-size: 1rem; letter-spacing: .18em; text-align: center; }
+        .otp-msg { font-size: .8rem; margin-top: 8px; line-height: 1.5; }
+        .otp-msg.ok  { color: #16a34a; font-weight: 600; }
+        .otp-msg.err { color: #dc2626; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -250,6 +264,9 @@ let pricing = null, library = null, libBusy = false;
 // Why templates are stuck. Loaded only when something is actually pending,
 // since it costs two Graph calls.
 let health = null;
+// OTP verification, inline in the blocker. `sent` flips the panel from the
+// Send-code buttons to the 6-digit box.
+let otp = { sent: false, busy: false, msg: '', err: false };
 
 document.addEventListener('DOMContentLoaded', boot);
 window.addEventListener('beforeunload', () => clearInterval(pollTimer));
@@ -381,6 +398,81 @@ async function loadHealth() {
     try { health = await api('account-health'); } catch (_) { health = null; }
 }
 
+/* ── verify the number in place ─────────────────────────────────────────────
+   The only blocker of the three Meta lets us clear for the customer. Business
+   verification needs documents Meta bars partners from uploading, and the
+   payment method sits on the customer's own WABA.                           */
+async function otpRequest(method) {
+    otp.busy = true; otp.msg = ''; otp.err = false; renderTemplates();
+    try {
+        const r = await api('verify-request-code', { method: 'POST', body: { method } });
+        if (r.alreadyVerified) {
+            otp.msg = r.message || 'This number is already verified.';
+            health = null;                       // re-read: the blocker is gone
+            await loadHealth();
+        } else {
+            otp.sent = true;
+            otp.msg = r.message || 'Code sent.';
+        }
+    } catch (e) {
+        otp.err = true; otp.msg = e.message || 'Could not send the code.';
+    } finally {
+        otp.busy = false; renderTemplates();
+    }
+}
+
+async function otpSubmit() {
+    const el = document.getElementById('otpCode');
+    const code = (el && el.value || '').replace(/\D/g, '');
+    if (code.length !== 6) {
+        otp.err = true; otp.msg = 'Enter the 6-digit code.'; renderTemplates(); return;
+    }
+    otp.busy = true; otp.msg = ''; otp.err = false; renderTemplates();
+    try {
+        const r = await api('verify-submit-code', { method: 'POST', body: { code } });
+        otp.sent = false;
+        otp.msg = r.message || 'Your number is verified.';
+        // Re-read so the blocker disappears rather than lingering as stale text.
+        health = null;
+        await loadHealth();
+    } catch (e) {
+        otp.err = true; otp.msg = e.message || 'That code was not accepted.';
+    } finally {
+        otp.busy = false; renderTemplates();
+    }
+}
+
+/** The verify-in-place control, shown only under the number-verification blocker. */
+function otpHtml() {
+    const msg = otp.msg ? `<div class="otp-msg ${otp.err ? 'err' : 'ok'}">${esc(otp.msg)}</div>` : '';
+    if (!otp.sent) {
+        return `<div class="otp-box">
+            <div class="otp-row">
+              <button class="otp-btn" onclick="otpRequest('SMS')" ${otp.busy ? 'disabled' : ''}>
+                ${otp.busy ? 'Sending…' : 'Send code by SMS'}
+              </button>
+              <button class="otp-btn ghost" onclick="otpRequest('VOICE')" ${otp.busy ? 'disabled' : ''}>
+                Call me instead
+              </button>
+            </div>
+            ${msg}
+          </div>`;
+    }
+    return `<div class="otp-box">
+        <div class="otp-row">
+          <input class="otp-input" id="otpCode" maxlength="7" inputmode="numeric"
+                 placeholder="000000" autocomplete="one-time-code">
+          <button class="otp-btn" onclick="otpSubmit()" ${otp.busy ? 'disabled' : ''}>
+            ${otp.busy ? 'Verifying…' : 'Verify'}
+          </button>
+          <button class="otp-btn ghost" onclick="otpRequest('SMS')" ${otp.busy ? 'disabled' : ''}>
+            Resend
+          </button>
+        </div>
+        ${msg}
+      </div>`;
+}
+
 /**
  * Meta decides most templates in minutes. Past a day the cause is almost never
  * the wording — it is the account behind it, and Meta says nothing about that
@@ -440,6 +532,7 @@ function stuckHtml(pendingCount) {
             <div class="stuck-why">${esc(b.why)}</div>
             <div class="stuck-fix"><b>Fix:</b> ${esc(b.fix)}</div>
             ${b.detail ? `<div class="stuck-detail">${esc(b.detail)}</div>` : ''}
+            ${/code_verification_status/.test(b.detail || '') ? otpHtml() : ''}
           </div>`).join('')}
         ${factRow}
       </div>`;
