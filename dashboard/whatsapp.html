@@ -185,6 +185,11 @@
         .otp-msg { font-size: .8rem; margin-top: 8px; line-height: 1.5; }
         .otp-msg.ok  { color: #16a34a; font-weight: 600; }
         .otp-msg.err { color: #dc2626; font-weight: 600; }
+
+        /* move a client onto Tapify's credit line */
+        .credit-box { margin-top: 10px; padding: 12px; background: #f0fdf4;
+                      border: 1px solid #bbf7d0; border-radius: 9px; }
+        .credit-note { font-size: .78rem; color: #166534; margin-top: 7px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -267,6 +272,7 @@ let health = null;
 // OTP verification, inline in the blocker. `sent` flips the panel from the
 // Send-code buttons to the 6-digit box.
 let otp = { sent: false, busy: false, msg: '', err: false };
+let credit = { busy: false, msg: '', err: false };
 
 document.addEventListener('DOMContentLoaded', boot);
 window.addEventListener('beforeunload', () => clearInterval(pollTimer));
@@ -442,6 +448,45 @@ async function otpSubmit() {
     }
 }
 
+/**
+ * Move this client onto Tapify's Meta credit line.
+ *
+ * Confirmed first, and deliberately not a quiet one-tap: Meta does not allow a
+ * credit line to be detached once attached, so this is a decision rather than
+ * something to undo later.
+ */
+async function attachCredit() {
+    if (!confirm('Switch this number to Tapify billing?\n\n'
+        + 'Your WhatsApp message charges will be billed to your Tapify wallet instead of a card '
+        + 'at Meta.\n\nThis cannot be undone — Meta does not allow it to be changed afterwards.')) return;
+
+    credit.busy = true; credit.msg = ''; credit.err = false; renderTemplates();
+    try {
+        const r = await api('attach-credit-line', { method: 'POST', body: {} });
+        credit.msg = r.message || 'Done.';
+        health = null;                           // the blocker should now be gone
+        await loadHealth();
+    } catch (e) {
+        credit.err = true; credit.msg = e.message || 'Could not switch to Tapify billing.';
+    } finally {
+        credit.busy = false; renderTemplates();
+    }
+}
+
+/** Offered under the payment-method blocker, in place of "go add a card". */
+function creditHtml() {
+    return `<div class="credit-box">
+        <button class="otp-btn" onclick="attachCredit()" ${credit.busy ? 'disabled' : ''}>
+          ${credit.busy ? 'Switching…' : 'Bill my WhatsApp charges to Tapify'}
+        </button>
+        <div class="credit-note">
+          Your messages get paid for through your Tapify wallet, so you do not need a card at Meta.
+          This cannot be undone afterwards.
+        </div>
+        ${credit.msg ? `<div class="otp-msg ${credit.err ? 'err' : 'ok'}">${esc(credit.msg)}</div>` : ''}
+      </div>`;
+}
+
 /** The verify-in-place control, shown only under the number-verification blocker. */
 function otpHtml() {
     const msg = otp.msg ? `<div class="otp-msg ${otp.err ? 'err' : 'ok'}">${esc(otp.msg)}</div>` : '';
@@ -533,6 +578,7 @@ function stuckHtml(pendingCount) {
             <div class="stuck-fix"><b>Fix:</b> ${esc(b.fix)}</div>
             ${b.detail ? `<div class="stuck-detail">${esc(b.detail)}</div>` : ''}
             ${/code_verification_status/.test(b.detail || '') ? otpHtml() : ''}
+            ${/payment method/i.test(`${b.why} ${b.fix}`) ? creditHtml() : ''}
           </div>`).join('')}
         ${factRow}
       </div>`;
