@@ -90,6 +90,7 @@
         const USER_API = 'https://app.tapify.co.in/api/admin/users/list.php';
         const RESET_PW_API = 'https://app.tapify.co.in/api/admin/users/reset-password.php';
         const SET_STATUS_API = 'https://app.tapify.co.in/api/admin/users/set-status.php';
+        const DELETE_API     = 'https://app.tapify.co.in/api/admin/users/delete.php';
 
         function showResetPasswordModal(userId, email) {
             document.getElementById('resetPwUserId').value = userId;
@@ -145,6 +146,57 @@
 
         // Activate / deactivate a user. Deactivated users (status=0) are blocked
         // at login by the backend (api/login.php).
+        /**
+         * Delete a user, after showing what goes with them.
+         *
+         * Two steps on purpose: the GET counts the rows that would be removed
+         * and writes nothing, so the confirmation can name them. A bare
+         * "are you sure?" hides the fact that an account can own a live
+         * website, its order history and a wallet balance.
+         */
+        async function deleteUser(userId, name) {
+            if (!userId) return;
+            let preview;
+            try {
+                const r = await fetch(`${DELETE_API}?user_id=${Number(userId)}`, { credentials: 'include' });
+                if (r.status === 401) { window.location.href = '/login'; return; }
+                preview = await r.json();
+                if (!preview.success) { alert(preview.message || 'Could not check this user.'); return; }
+            } catch (err) {
+                alert('Network error. Please try again.');
+                return;
+            }
+
+            const d = (preview.data && preview.data.deletes) || {};
+            const lines = Object.keys(d).map((k) => `  • ${d[k]} ${k.replace(/_/g, ' ')}`);
+            const what = lines.length
+                ? `\n\nThis also deletes:\n${lines.join('\n')}`
+                : '\n\nThis account owns no other data.';
+
+            if (!confirm(
+                `Permanently delete "${name || 'this user'}"?${what}`
+                + '\n\nThis CANNOT be undone. To block their login instead, use Deactivate.'
+            )) return;
+
+            try {
+                const response = await fetch(DELETE_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: Number(userId) })
+                });
+                if (response.status === 401) { window.location.href = '/login'; return; }
+                const result = await response.json();
+                if (result.success) {
+                    loadUsers();
+                } else {
+                    alert(result.message || 'Failed to delete user.');
+                }
+            } catch (err) {
+                alert('Network error. Please try again.');
+            }
+        }
+
         async function toggleUserStatus(userId, newStatus, name) {
             if (!userId) return;
             const verb = newStatus ? 'reactivate' : 'deactivate';
@@ -210,7 +262,7 @@
                             <button class="action-btn" title="Edit"><i class="fas fa-pen"></i></button>
                             <button class="action-btn" title="Reset Password" onclick="showResetPasswordModal(${Number(user.id) || 0}, '${emailParam}')"><i class="fas fa-key"></i></button>
                             <button class="action-btn ${isActive ? 'text-danger' : 'text-success'}" title="${isActive ? 'Deactivate user' : 'Activate user'}" onclick="toggleUserStatus(${Number(user.id) || 0}, ${isActive ? 0 : 1}, '${nameParam}')"><i class="fas fa-${isActive ? 'user-slash' : 'user-check'}"></i></button>
-                            <button class="action-btn text-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            <button class="action-btn text-danger" title="Delete" onclick="deleteUser(${Number(user.id) || 0}, '${nameParam}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
             } catch (e) {
