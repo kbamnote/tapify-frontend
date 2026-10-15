@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriptions - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        /* Status-count chips that double as filters. */
+        .sub-counts { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px }
+        .sub-count {
+            flex:1 1 120px; background:var(--white); border:1px solid var(--border);
+            border-radius:14px; padding:14px 16px; cursor:pointer; text-align:center;
+            transition:border-color .15s, background .15s;
+        }
+        .sub-count:hover { border-color:#9ca3af }
+        .sub-count.active { border-color:#8338ec; background:rgba(131,56,236,0.06) }
+        .sub-count .n { font-size:1.45rem; font-weight:800; font-family:Poppins,sans-serif; line-height:1.1 }
+        .sub-count .l { font-size:0.74rem; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:.6px; margin-top:3px }
+
+        .sub-tools { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px }
+        .sub-tools input {
+            flex:1 1 240px; padding:10px 14px; border:1px solid #d1d5db;
+            border-radius:9px; font-size:0.92rem; font-family:inherit;
+        }
+        .sub-tools button {
+            padding:10px 16px; border:1px solid #d1d5db; background:var(--white);
+            border-radius:9px; cursor:pointer; font-size:0.88rem; font-weight:600; font-family:inherit;
+        }
+        .sub-tools button.on { border-color:#dc2626; color:#dc2626; background:rgba(239,68,68,0.06) }
+
+        .badge {
+            display:inline-block; padding:3px 9px; border-radius:999px;
+            font-size:0.66rem; font-weight:800; letter-spacing:.5px;
+        }
+        .b-active  { background:rgba(37,211,102,.14);  color:#157f3c }
+        .b-grace   { background:rgba(209,154,102,.22); color:#8a5a00 }
+        .b-expired { background:rgba(239,68,68,.14);   color:#b42318 }
+        .b-none    { background:rgba(0,0,0,.06);       color:#555 }
+        .b-legacy  { background:rgba(131,56,236,.12);  color:#5b4b9a }
+
+        .plan-starter { color:#153e3f; font-weight:700 }
+        .plan-growth  { color:#b9772e; font-weight:700 }
+        .plan-pro     { color:#a8893c; font-weight:700 }
+        .plan-muted   { color:#6b7280; font-weight:600 }
+
+        .assign-btn {
+            padding:6px 12px; border:none; border-radius:7px; color:#fff;
+            font-size:0.78rem; font-weight:700; cursor:pointer; font-family:inherit;
+        }
+        .days-warn { color:#b42318; font-weight:700 }
+        .sub-note { color:#6b7280; font-size:0.85rem; margin-top:14px; text-align:center }
+        .modal-back {
+            display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
+            z-index:1000; align-items:center; justify-content:center;
+        }
+        .modal-card {
+            background:#fff; border-radius:12px; padding:24px; width:90%;
+            max-width:460px; box-shadow:0 10px 40px rgba(0,0,0,.2);
+        }
+        .modal-card h3 { margin:0 0 4px; font-family:Poppins,sans-serif }
+        .modal-card label { display:block; font-size:.78rem; font-weight:700; color:#374151; margin:14px 0 6px }
+        .modal-card input, .modal-card select {
+            width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px;
+            font-size:.95rem; box-sizing:border-box; font-family:inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="subscriptions.html" class="nav-item active"><i class="fas fa-gem nav-icon" style="color:#8338ec"></i><span>Subscriptions</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="website-showcase.html" class="nav-item"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+            <a href="careers.html" class="nav-item"><i class="fas fa-briefcase nav-icon" style="color:#f97316"></i><span>Careers</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Subscriptions</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="loadSubs()">
+                    <i class="fas fa-rotate"></i> Refresh
+                </button>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="sub-counts" id="subCounts"><!-- JS --></div>
+
+            <div class="sub-tools">
+                <input id="subSearch" type="text" placeholder="Search name, email or phone" autocomplete="off">
+                <button id="expBtn" onclick="toggleExpiring()">Expiring &le; 7 days</button>
+            </div>
+
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>Days left</th>
+                            <th>Expires</th>
+                            <th>Source</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subTableBody">
+                        <tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sub-note" id="subNote"></div>
+        </main>
+    </div>
+
+    <!-- Activate a plan after cash / UPI -->
+    <div class="modal-back" id="assignModal">
+        <div class="modal-card">
+            <h3>Activate a plan</h3>
+            <p style="margin:0;font-size:.85rem;color:#6b7280">
+                For <strong id="asName"></strong>. The term starts today.
+            </p>
+            <input type="hidden" id="asUserId">
+
+            <label for="asPlan">Plan</label>
+            <select id="asPlan"></select>
+
+            <label for="asCycle">Billing</label>
+            <select id="asCycle">
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly (one payment)</option>
+            </select>
+
+            <label for="asRef">Payment reference</label>
+            <input id="asRef" type="text" placeholder="UPI ref / receipt no. — leave blank for a free grant">
+
+            <div id="asMsg" style="font-size:.8rem;margin-top:10px;min-height:16px"></div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+                <button onclick="closeAssign()" style="padding:9px 16px;border:1px solid #d1d5db;background:#fff;border-radius:8px;cursor:pointer">Cancel</button>
+                <button id="asSubmit" onclick="submitAssign()" style="padding:9px 16px;border:none;background:#8338ec;color:#fff;border-radius:8px;cursor:pointer;font-weight:600">Activate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+        /**
+         * Admin -> Subscriptions
+         *
+         * Who is on which plan, how long they have left, and who is on legacy
+         * full access. Same two endpoints the app's Subscriptions screen uses,
+         * so the two views cannot disagree.
+         */
+        const SUBS_API   = 'https://app.tapify.co.in/api/admin/plans/users.php';
+        const PLANS_API  = 'https://app.tapify.co.in/api/plans/list.php';
+        const ASSIGN_API = 'https://app.tapify.co.in/api/admin/plans/assign.php';
+
+        const PER = 100;
+        const STATUSES = [
+            { key: 'active',  label: 'Active' },
+            { key: 'grace',   label: 'In grace' },
+            { key: 'expired', label: 'Expired' },
+            { key: 'none',    label: 'No plan' },
+            { key: 'legacy',  label: 'Legacy' }
+        ];
+
+        let filterStatus = '';
+        let filterExpiring = 0;
+        let plans = [];
+        let searchTimer = null;
+
+        // The rows currently on screen, by id.
+        //
+        // The Activate button passes ONLY the numeric id and the name is looked
+        // up here. Putting the name in the onclick attribute looks fine and is
+        // broken: esc() turns an apostrophe into &#39;, HTML decodes attribute
+        // values BEFORE the JS is parsed, and openAssign(5, 'D&#39;Souza')
+        // arrives at the parser as openAssign(5, 'D'Souza') — a syntax error,
+        // so the button does nothing at all. D'Souza is not a rare name.
+        let rowsById = {};
+
+        const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+        /* ---------------------------------------------------------- loading */
+
+        async function loadPlans() {
+            try {
+                const r = await fetch(PLANS_API, { credentials: 'include' });
+                const j = await r.json();
+                plans = (j.data && j.data.plans) || [];
+                document.getElementById('asPlan').innerHTML = plans.map(p =>
+                    `<option value="${esc(p.code)}">${esc(p.name)} — ₹${esc(p.monthly.base)}/mo · ₹${esc(p.yearly.base)}/yr</option>`
+                ).join('');
+            } catch (e) { /* the list still works without prices */ }
+        }
+
+        async function loadSubs() {
+            const body = document.getElementById('subTableBody');
+            body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
+
+            const q = new URLSearchParams();
+            if (filterStatus)   q.set('status', filterStatus);
+            if (filterExpiring) q.set('expiring', String(filterExpiring));
+            const term = document.getElementById('subSearch').value.trim();
+            if (term) q.set('q', term);
+            q.set('per', String(PER));
+
+            try {
+                const r = await fetch(SUBS_API + '?' + q.toString(), { credentials: 'include' });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Could not load subscribers.');
+
+                renderCounts((j.data && j.data.summary) || {});
+                renderRows((j.data && j.data.users) || []);
+            } catch (e) {
+                body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#dc2626">${esc(e.message)}</td></tr>`;
+            }
+        }
+
+        /* --------------------------------------------------------- rendering */
+
+        // Counts are for the WHOLE customer base, not the filtered page — the
+        // server computes them with their own GROUP BY.
+        function renderCounts(summary) {
+            document.getElementById('subCounts').innerHTML = STATUSES.map(s => `
+                <div class="sub-count ${filterStatus === s.key ? 'active' : ''}"
+                     onclick="setStatus('${s.key}')">
+                    <div class="n">${Number(summary[s.key] || 0)}</div>
+                    <div class="l">${esc(s.label)}</div>
+                </div>`).join('');
+        }
+
+        function daysText(row) {
+            if (row.plan_status === 'legacy') return 'Full access';
+            if (row.days_left === null || row.days_left === undefined) return '—';
+            if (row.days_left >= 0) {
+                const t = row.days_left + ' day' + (row.days_left === 1 ? '' : 's');
+                return row.days_left <= 7 ? `<span class="days-warn">${t}</span>` : t;
+            }
+            if (row.grace_left) return `<span class="days-warn">Grace: ${row.grace_left}d</span>`;
+            return `<span class="days-warn">Expired ${Math.abs(row.days_left)}d ago</span>`;
+        }
+
+        function planText(row) {
+            if (row.plan_status === 'legacy') return '<span class="plan-muted">Legacy (grandfathered)</span>';
+            if (!row.plan_code || row.plan_code === 'legacy') return '<span class="plan-muted">No plan</span>';
+            const cls = 'plan-' + row.plan_code;
+            const cycle = (row.billing_cycle && row.billing_cycle !== 'legacy')
+                ? ` <span class="plan-muted">· ${esc(row.billing_cycle)}</span>` : '';
+            return `<span class="${cls}">${esc(row.plan_name || row.plan_code)}</span>${cycle}`;
+        }
+
+        function renderRows(rows) {
+            const body = document.getElementById('subTableBody');
+            const note = document.getElementById('subNote');
+
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">No customers match this filter.</td></tr>';
+                note.textContent = '';
+                return;
+            }
+
+            rowsById = {};
+            rows.forEach(r => { rowsById[Number(r.id)] = r; });
+
+            body.innerHTML = rows.map(row => `
+                <tr>
+                    <td>
+                        <div style="font-weight:600">${esc(row.name || '(no name)')}</div>
+                        <div style="font-size:.78rem;color:#6b7280">${esc(row.email)}</div>
+                        ${row.phone ? `<div style="font-size:.74rem;color:#9ca3af">${esc(row.phone)}</div>` : ''}
+                    </td>
+                    <td>${planText(row)}</td>
+                    <td><span class="badge b-${esc(row.plan_status || 'none')}">${esc(String(row.plan_status || 'none').toUpperCase())}</span></td>
+                    <td>${daysText(row)}</td>
+                    <td style="font-size:.82rem;color:#6b7280">${esc(String(row.expiry_date || '—').slice(0, 10))}</td>
+                    <td style="font-size:.8rem;color:#6b7280">
+                        ${esc(row.source || '—')}
+                        ${row.manager_name ? `<div style="font-size:.72rem">mgr: ${esc(row.manager_name)}</div>` : ''}
+                    </td>
+                    <td>
+                        ${row.legacy_full_access
+                            ? '<span style="font-size:.76rem;color:#5b4b9a">Nothing to bill</span>'
+                            : `<button class="assign-btn" style="background:#8338ec"
+                                 onclick="openAssign(${Number(row.id)})">Activate plan</button>`}
+                    </td>
+                </tr>`).join('');
+
+            note.textContent = rows.length >= PER
+                ? `Showing the first ${PER}. Use search or a filter to narrow it down.`
+                : `${rows.length} customer${rows.length === 1 ? '' : 's'}.`;
+        }
+
+        /* ----------------------------------------------------------- filters */
+
+        function setStatus(key) {
+            filterStatus = (filterStatus === key) ? '' : key;
+            loadSubs();
+        }
+
+        function toggleExpiring() {
+            filterExpiring = filterExpiring ? 0 : 7;
+            document.getElementById('expBtn').classList.toggle('on', !!filterExpiring);
+            loadSubs();
+        }
+
+        document.getElementById('subSearch').addEventListener('input', () => {
+            // Debounced: every keystroke would otherwise be a query against the
+            // whole users table.
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(loadSubs, 350);
+        });
+
+        /* ------------------------------------------------------------ assign */
+
+        function openAssign(userId) {
+            const row = rowsById[Number(userId)] || {};
+            document.getElementById('asUserId').value = userId;
+            // textContent, so a name is never parsed as markup.
+            document.getElementById('asName').textContent = row.name || row.email || ('user #' + userId);
+            document.getElementById('asRef').value = '';
+            document.getElementById('asMsg').textContent = '';
+            document.getElementById('assignModal').style.display = 'flex';
+        }
+
+        function closeAssign() {
+            document.getElementById('assignModal').style.display = 'none';
+        }
+
+        async function submitAssign() {
+            const btn = document.getElementById('asSubmit');
+            const msg = document.getElementById('asMsg');
+            const ref = document.getElementById('asRef').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = 'Activating…';
+            try {
+                const r = await fetch(ASSIGN_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        user_id: Number(document.getElementById('asUserId').value),
+                        plan:    document.getElementById('asPlan').value,
+                        cycle:   document.getElementById('asCycle').value,
+                        // 'offline' when money was collected against a
+                        // reference, 'admin' when it is a free grant. The two
+                        // must not look the same in the books later.
+                        source:  ref ? 'offline' : 'admin',
+                        payment_ref: ref || null
+                    })
+                });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Could not activate the plan.');
+                msg.style.color = '#16a34a';
+                msg.textContent = j.message || 'Plan activated.';
+                setTimeout(() => { closeAssign(); loadSubs(); }, 900);
+            } catch (e) {
+                msg.style.color = '#dc2626';
+                msg.textContent = e.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Activate';
+            }
+        }
+
+        loadPlans();
+        loadSubs();
+    </script>
+</body>
+</html>
