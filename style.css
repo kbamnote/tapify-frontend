@@ -327,6 +327,20 @@ img {
     display: block;
 }
 
+.hero-headline-band {
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%);
+    color: var(--cream);
+    text-align: center;
+    padding: 48px 24px 56px;
+}
+.hero-headline-band .hero-title { margin-bottom: 14px; }
+.hero-headline-band .hero-subtitle { max-width: 620px; margin: 0 auto 30px; }
+.hero-headline-band .hero-cta { justify-content: center; margin-bottom: 0; }
+
+@media (max-width: 576px) {
+    .hero-headline-band { padding: 32px 18px 40px; }
+}
+
 .hero-bg-pattern {
     position: absolute;
     top: 0;
@@ -1156,7 +1170,7 @@ img {
     border-color: var(--teal);
 }
 
-.feature-card h4 {
+.feature-card h3 {
     font-size: 1.08rem;
     font-weight: 700;
     margin-bottom: 12px;
@@ -1262,7 +1276,7 @@ img {
     transform: rotate(360deg);
 }
 
-.step-card h4 {
+.step-card h3 {
     font-family: 'Outfit', sans-serif;
     font-size: 1.35rem;
     font-weight: 700;
@@ -1747,7 +1761,7 @@ img {
     box-shadow: 0 8px 20px rgba(201, 147, 58, 0.35);
 }
 
-.footer-section h5 {
+.footer-section .footer-col-label {
     font-family: 'Outfit', sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
@@ -1757,7 +1771,7 @@ img {
     padding-bottom: 12px;
 }
 
-.footer-section h5::after {
+.footer-section .footer-col-label::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -4251,8 +4265,8 @@ body.dark-mode .faq-card {
     background: #1a2828;
     border-color: rgba(246,238,230,0.08);
 }
-body.dark-mode .feature-card h4,
-body.dark-mode .step-card h4,
+body.dark-mode .feature-card h3,
+body.dark-mode .step-card h3,
 body.dark-mode h2,
 body.dark-mode h3 {
     color: #f0e6da;
@@ -4305,7 +4319,7 @@ body.dark-mode .btn-darkmode i::before { content: '\f185'; } /* fa-sun */
     background: #0d2829;
 }
 .story-card figcaption { padding: 16px 18px 18px; }
-.story-card figcaption h5 { font-size: 1rem; font-weight: 800; color: #153e3f; margin: 0 0 4px; }
+.story-card figcaption h3 { font-size: 1rem; font-weight: 800; color: #153e3f; margin: 0 0 4px; }
 .story-card figcaption p { font-size: 0.84rem; color: #7a9e9f; margin: 0; line-height: 1.5; }
 
 @media (max-width: 576px) {

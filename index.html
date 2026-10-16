@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tapify - India's #1 Digital Profile & NFC Business Card Maker Platform. Share your contact details and social profiles with one tap or scan.">
-    <meta name="keywords" content="NFC business card, digital business card, smart card, tapify, networking">
-    <title>Tapify - The Future of Business Networking | India's #1 NFC Card Platform</title>
+    <meta name="description" content="Tapify makes NFC smart business cards and digital visiting cards for Indian businesses. Share your contact details and social profiles with one tap or scan.">
+    <title>Tapify - NFC Smart Business Cards & Digital Visiting Cards</title>
 
     <!-- Canonical & robots -->
     <link rel="canonical" href="https://www.tapify.co.in/">
@@ -16,8 +15,8 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Tapify">
     <meta property="og:url" content="https://www.tapify.co.in/">
-    <meta property="og:title" content="Tapify - India's #1 NFC Smart Business Card">
-    <meta property="og:description" content="Share your contact details and social profiles with one tap or scan. Tapify is India's #1 Digital Profile & NFC Business Card platform.">
+    <meta property="og:title" content="Tapify - NFC Smart Business Cards & Digital Visiting Cards">
+    <meta property="og:description" content="Share your contact details and social profiles with one tap or scan. NFC smart business cards and digital visiting cards for Indian businesses.">
     <meta property="og:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1600">
@@ -25,8 +24,8 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Tapify - India's #1 NFC Smart Business Card">
-    <meta name="twitter:description" content="Share your contact details and social profiles with one tap or scan. India's #1 Digital Profile & NFC Business Card platform.">
+    <meta name="twitter:title" content="Tapify - NFC Smart Business Cards & Digital Visiting Cards">
+    <meta name="twitter:description" content="Share your contact details and social profiles with one tap or scan. NFC smart business cards and digital visiting cards for Indian businesses.">
     <meta name="twitter:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
 
     <!-- Favicon -->
@@ -35,6 +34,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 -->
@@ -58,7 +59,21 @@
           "legalName": "MRPRINT WORLD PRIVATE LIMITED",
           "url": "https://www.tapify.co.in/",
           "logo": "https://www.tapify.co.in/images/tapify-logo-gold.png",
-          "description": "Tapify is India's #1 Digital Profile & NFC Smart Business Card platform. Share your contact details and social profiles with one tap or scan.",
+          "description": "Tapify makes NFC smart business cards and digital visiting cards for Indian businesses — hardware and software from one company, cards printed in-house in Nagpur.",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Shailesh Nagar, Behind Kohinoor Lawn, Wathoda",
+            "addressLocality": "Nagpur",
+            "addressRegion": "Maharashtra",
+            "postalCode": "440008",
+            "addressCountry": "IN"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-7378633764",
+            "contactType": "customer service",
+            "areaServed": "IN"
+          },
           "sameAs": [
             "https://www.instagram.com/tapifyofficial",
             "https://www.facebook.com/profile.php?id=61585821500682",
@@ -73,18 +88,14 @@
           "publisher": { "@id": "https://www.tapify.co.in/#organization" }
         },
         {
-          "@type": "Product",
+          "@type": "Service",
+          "@id": "https://www.tapify.co.in/#service",
           "name": "Tapify NFC Smart Business Card",
+          "serviceType": "NFC Business Card & Digital Profile Platform",
+          "provider": { "@id": "https://www.tapify.co.in/#organization" },
+          "areaServed": "IN",
           "image": "https://www.tapify.co.in/images/tapify_card.jpeg",
-          "description": "Premium waterproof NFC smart business card that shares your entire digital identity — contact details, social profiles and links — with one tap or QR scan. No app required.",
-          "brand": { "@type": "Brand", "name": "Tapify" },
-          "category": "NFC Business Card",
-          "offers": {
-            "@type": "Offer",
-            "priceCurrency": "INR",
-            "availability": "https://schema.org/InStock",
-            "url": "https://www.tapify.co.in/"
-          }
+          "description": "Premium waterproof NFC smart business card that shares your entire digital identity — contact details, social profiles and links — with one tap or QR scan. No app required."
         },
         {
           "@type": "FAQPage",
@@ -113,10 +124,10 @@
     <!-- =============== NAVBAR =============== -->
     <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
+            <a class="navbar-brand" href="/">
+                <img src="images/tapify-logo-white-removebg-preview.png" width="400" height="238" alt="Tapify" class="logo-img">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="hamburger-icon">
                     <span></span>
                     <span></span>
@@ -126,15 +137,15 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="website-demos.html">Website Demo</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li> -->
-                    <!-- <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="businesses.html">Our Network</a></li>
-                    <li class="nav-item"><a class="nav-link" href="careers.html">Careers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/website-demos">Website Demo</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="/vcard-templates">V-Card Demo</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="/webstore-templates">Web Store Demo</a></li> -->
+                    <li class="nav-item"><a class="nav-link" href="/businesses">Our Network</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/careers">Careers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                 </ul>
-                <a href="login.html" class="btn btn-signin">
+                <a href="/login" class="btn btn-signin">
                     <i class="fas fa-user me-2"></i>Sign In
                 </a>
             </div>
@@ -143,15 +154,31 @@
 
     <!-- =============== HERO SECTION =============== -->
     <section class="hero-section hero-video-section" id="home">
-        <h1 class="visually-hidden">India's #1 NFC Smart Business Card — Share Your Digital Profile With One Tap | Tapify</h1>
         <video
             class="hero-video"
-            src="images/Slow Version Tapify.mp4"
+            src="images/hero-tapify-compressed.mp4"
+            poster="images/hero-tapify-poster.jpg"
+            preload="auto"
+            fetchpriority="high"
             autoplay
             muted
             loop
             playsinline
         ></video>
+        <div class="hero-headline-band">
+            <div class="container">
+                <h1 class="hero-title">Your Digital Visiting Card — Shared With One Tap</h1>
+                <p class="hero-subtitle">Tapify NFC smart cards share your contact details, socials and links instantly — no app needed, no reprinting ever.</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary-cta" onclick="openLeadModal('hero_overlay')">
+                        <i class="fas fa-bolt"></i> Get Your Card
+                    </button>
+                    <a href="#nfc-demo" class="btn btn-outline-cta">
+                        <i class="fas fa-play"></i> See How It Works
+                    </a>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- =============== NFC TAP DEMO =============== -->
@@ -182,7 +209,7 @@
                         <div class="nfc-i3d-card-scene" id="nfcCardScene">
                             <div class="nfc-i3d-card" id="nfcI3dCard">
                                 <div class="nfc-shine" id="nfcShine"></div>
-                                <img src="images/tapify_card.jpeg" alt="Tapify NFC Smart Business Card" class="nfc-i3d-card-img">
+                                <img src="images/tapify_card.jpeg" width="1024" height="1600" alt="Tapify NFC Smart Business Card" class="nfc-i3d-card-img">
                             </div>
                             <div class="nfc-i3d-card-shadow" id="nfcCardShadow"></div>
                         </div>
@@ -338,7 +365,7 @@
                         <div class="sb-card-inner">
                             <!-- Front -->
                             <div class="sb-card-face sb-card-front">
-                                <img src="images/tapify_card.jpeg" alt="Tapify NFC Smart Business Card" class="sb-card-img">
+                                <img src="images/tapify_card.jpeg" width="1024" height="1600" alt="Tapify NFC Smart Business Card" class="sb-card-img">
                             </div>
                             <!-- Back -->
                             <div class="sb-card-face sb-card-back">
@@ -453,132 +480,57 @@
         </div>
         <div class="logo-slider">
             <div class="logo-track">
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.30.59 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM.jpeg" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.30.59 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
                 <!-- Duplicated for infinite scroll -->
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.30.59 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM.jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (1).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (2).jpeg" alt="Trusted Customer" /></div>
-                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM.jpeg" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.10 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.11 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.12 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.13 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.14 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.15 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.21.16 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.30.59 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.00 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (1).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM (2).jpeg" width="200" height="200" alt="Trusted Customer" /></div>
+                <div class="logo-item"><img src="images/WhatsApp Image 2026-06-01 at 6.31.01 PM.jpeg" width="200" height="200" alt="Trusted Customer" /></div>
             </div>
         </div>
     </section>
 
-    <!-- =============== TESTIMONIALS / WATCH CUSTOMERS =============== -->
-    <!-- COMMENTED OUT TEMPORARILY
-    <section class="testimonials-section">
-        <div class="container">
-            <p class="section-tag">TESTIMONIALS</p>
-            <h2 class="section-heading text-center">Watch What Our Customers Say</h2>
-            <p class="section-subheading text-center">Real stories from real Tapify users</p>
-
-            <div class="testimonials-slider">
-                <button class="slider-arrow arrow-left" onclick="slideTestimonials(-1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <div class="testimonials-track" id="testimonialsTrack">
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Girish Parpillewar</h5>
-                        <p>Vice President at SBM Bank</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Anshuman Singh</h5>
-                        <p>Founder of Scaler</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Aditya Kulkarni</h5>
-                        <p>Founder of Stoa</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Imtiaz Ahamed</h5>
-                        <p>Founder at Company</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #fa709a, #fee140);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Priya Sharma</h5>
-                        <p>Marketing Director</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="video-thumb-wrap">
-                            <div class="video-placeholder" style="background: linear-gradient(135deg, #30cfd0, #330867);">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h5>Rahul Verma</h5>
-                        <p>Tech Entrepreneur</p>
-                    </div>
-                </div>
-                <button class="slider-arrow arrow-right" onclick="slideTestimonials(1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-    </section>
-    END COMMENT -->
 
     <!-- =============== CLIENT STORIES (real customer videos) =============== -->
     <!-- Served from images/clients/ as compressed web versions, NOT the original
@@ -597,7 +549,7 @@
                         <source src="images/clients/dental-clinic.mp4" type="video/mp4">
                     </video>
                     <figcaption>
-                        <h5>Dental Clinic</h5>
+                        <h3>Dental Clinic</h3>
                         <p>Google reviews from the reception desk</p>
                     </figcaption>
                 </figure>
@@ -607,7 +559,7 @@
                         <source src="images/clients/surya-multi-solar.mp4" type="video/mp4">
                     </video>
                     <figcaption>
-                        <h5>Surya Multi Solar</h5>
+                        <h3>Surya Multi Solar</h3>
                         <p>Sharing the full catalogue on every site visit</p>
                     </figcaption>
                 </figure>
@@ -617,7 +569,7 @@
                         <source src="images/clients/protein-basket.mp4" type="video/mp4">
                     </video>
                     <figcaption>
-                        <h5>Protein Basket</h5>
+                        <h3>Protein Basket</h3>
                         <p>Orders and reviews from one countertop tap</p>
                     </figcaption>
                 </figure>
@@ -627,7 +579,7 @@
                         <source src="images/clients/shree-sai.mp4" type="video/mp4">
                     </video>
                     <figcaption>
-                        <h5>Shree Sai</h5>
+                        <h3>Shree Sai</h3>
                         <p>One tap to contact, catalogue and payment</p>
                     </figcaption>
                 </figure>
@@ -676,23 +628,23 @@
                 <!-- Input Form -->
                 <div class="demo-gen-form">
                     <div class="demo-field">
-                        <label><i class="fas fa-user"></i> Your Name</label>
+                        <label for="demoName"><i class="fas fa-user"></i> Your Name</label>
                         <input type="text" id="demoName" placeholder="e.g. Priya Sharma" maxlength="40">
                     </div>
                     <div class="demo-field">
-                        <label><i class="fas fa-briefcase"></i> Job Title</label>
+                        <label for="demoTitle"><i class="fas fa-briefcase"></i> Job Title</label>
                         <input type="text" id="demoTitle" placeholder="e.g. Marketing Manager" maxlength="50">
                     </div>
                     <div class="demo-field">
-                        <label><i class="fas fa-building"></i> Company</label>
+                        <label for="demoCompany"><i class="fas fa-building"></i> Company</label>
                         <input type="text" id="demoCompany" placeholder="e.g. TechVentures India" maxlength="50">
                     </div>
                     <div class="demo-field">
-                        <label><i class="fas fa-phone"></i> Phone</label>
+                        <label for="demoPhone"><i class="fas fa-phone"></i> Phone</label>
                         <input type="text" id="demoPhone" placeholder="e.g. +91 98765 43210" maxlength="20">
                     </div>
                     <div class="demo-field">
-                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <label for="demoEmail"><i class="fas fa-envelope"></i> Email</label>
                         <input type="text" id="demoEmail" placeholder="e.g. priya@company.com" maxlength="50">
                     </div>
                     <button class="btn-get-real" onclick="openLeadModal('demo_generator')">
@@ -741,7 +693,7 @@
                 <!-- LEFT: Product Image -->
                 <div class="kit-img-col">
                     <div class="kit-img-wrap">
-                        <img src="images/TAPIFY KIT.jpeg" alt="Tapify NFC Kit" class="kit-img">
+                        <img src="images/TAPIFY KIT.jpeg" width="1122" height="1402" alt="Tapify NFC Kit" class="kit-img">
                         <div class="kit-img-glow"></div>
                         <div class="kit-float top-l">
                             <i class="fas fa-wifi"></i> NFC Ready
@@ -820,7 +772,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-id-card"></i>
                         </div>
-                        <h4>All Contact Details In One Place</h4>
+                        <h3>All Contact Details In One Place</h3>
                         <p>Store and share contact details, phone numbers, social media in one NFC Smart Business Card.</p>
                     </div>
                 </div>
@@ -829,7 +781,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <h4>Safe &amp; Secure Contact Transfer</h4>
+                        <h3>Safe &amp; Secure Contact Transfer</h3>
                         <p>Worry-free contact sharing with secure and private transfer technology.</p>
                     </div>
                 </div>
@@ -838,7 +790,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-print"></i>
                         </div>
-                        <h4>Free From Printing Pain</h4>
+                        <h3>Free From Printing Pain</h3>
                         <p>Sustainable networking with no printing costs. Update your details anytime.</p>
                     </div>
                 </div>
@@ -847,7 +799,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-qrcode"></i>
                         </div>
-                        <h4>QR Code For Non NFC Phone</h4>
+                        <h3>QR Code For Non NFC Phone</h3>
                         <p>Includes QR code option for phones without NFC capability. Universal compatibility.</p>
                     </div>
                 </div>
@@ -856,7 +808,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-leaf"></i>
                         </div>
-                        <h4>Durable &amp; Sustainable Card</h4>
+                        <h3>Durable &amp; Sustainable Card</h3>
                         <p>Eco-conscious, long-lasting design. Built to last for years of professional use.</p>
                     </div>
                 </div>
@@ -865,7 +817,7 @@
                         <div class="feature-icon">
                             <i class="fas fa-rupee-sign"></i>
                         </div>
-                        <h4>Pocket Friendly &amp; Cost Effective</h4>
+                        <h3>Pocket Friendly &amp; Cost Effective</h3>
                         <p>Affordable pricing for professionals. One-time investment, lifetime networking.</p>
                     </div>
                 </div>
@@ -887,7 +839,7 @@
                         <div class="step-icon">
                             <i class="fas fa-hand-point-up"></i>
                         </div>
-                        <h4>Tap to Connect</h4>
+                        <h3>Tap to Connect</h3>
                         <p>Hold your NFC card near the back of an Android phone or top edge of an Apple phone.</p>
                     </div>
                 </div>
@@ -897,7 +849,7 @@
                         <div class="step-icon">
                             <i class="fas fa-bell"></i>
                         </div>
-                        <h4>Instant Notification</h4>
+                        <h3>Instant Notification</h3>
                         <p>The phone shows an instant notification. Accept it to open your digital profile page.</p>
                     </div>
                 </div>
@@ -907,7 +859,7 @@
                         <div class="step-icon">
                             <i class="fas fa-user-check"></i>
                         </div>
-                        <h4>Share &amp; Save Contact</h4>
+                        <h3>Share &amp; Save Contact</h3>
                         <p>Interactive display shows your contacts with option to save directly to mobile.</p>
                     </div>
                 </div>
@@ -974,11 +926,11 @@
 
             <div class="accordion mt-5" id="faqAccordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
                             How does Tapify work?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Tapify uses NFC (Near Field Communication). Tap your Tapify card, standee or keychain on any NFC-enabled smartphone and your digital profile opens straight away — your customer does not need to install anything. Phones without NFC can scan the QR code printed on the same card.
@@ -987,11 +939,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                             What NFC products do you make?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Three: NFC smart cards in PVC, metal and wood; countertop standees in acrylic and wood for shops, reception desks and showrooms; and compact keychains for people on the move. All of them are printed with your branding and point at a profile you control.
@@ -1000,11 +952,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
                             Can I change my details after the card is printed?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes, and this is the point of it. Your card points at your Tapify profile, not at fixed text, so you can change your number, photos, services, catalogue or even where a tap lands — from your phone, any time. The printed card never needs reprinting.
@@ -1013,11 +965,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
                             Can Tapify manage my Google Business Profile?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes. Connect your Google Business Profile once and you can edit your business name, description, phone and website, list your services, set attributes, publish Google Posts and upload photos — all from the Tapify app. You can manage more than one business from a single login.
@@ -1026,11 +978,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
                             How does Tapify help me get more Google reviews?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             A tap on a card or standee opens your Google review page directly, so a happy customer does not have to search for you. You can also send a review request over WhatsApp, and every request is logged so nobody is asked twice. Replies can be drafted by AI in four tones, and you choose which one to post.
@@ -1039,11 +991,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
                             Do you build websites and online stores?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes. We build professional business websites and full e-commerce stores, set up by our team and then editable from your own dashboard. Orders, appointment bookings, enquiries and customer feedback all arrive in one place, on your phone. You can use your own domain or a free address on tapify.co.in.
@@ -1052,11 +1004,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
                             Can I run ads and social posts from Tapify?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes. You can publish and schedule posts to your connected Facebook and Instagram pages, and boost a post as a Meta ad from the same dashboard, with reach and clicks reported back in the app.
@@ -1065,11 +1017,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
                             I received my card — how do I set it up?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Sign in to your Tapify dashboard with the credentials we send you, open the vCards section and fill in your details. It is live within minutes. If you would rather not do it yourself, our team will set the profile up with you, in your language.
@@ -1078,11 +1030,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
                             What is the card made of?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Premium PVC as standard, in glossy white or matt black, plus metal and wooden finishes. All of them are waterproof and built to survive a wallet for years.
@@ -1091,11 +1043,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq10">
                             What if I lose my card?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Block it from your dashboard straight away — the profile behind it stays safe and stays yours. Contact us and we will arrange a replacement printed with the same details.
@@ -1104,11 +1056,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq11">
                             Do you make custom designed cards?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes. Our design team works with your logo, brand colours and layout, whether it is one card or cards for a whole team. Team cards are managed from one company login.
@@ -1117,11 +1069,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq12">
                             Is Tapify hiring?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes — we are hiring across 24 districts of Maharashtra, in the Nagpur, Amravati, Nashik and Chhatrapati Sambhajinagar divisions, for two roles: Field Sales Executive and Team Leader / Area Sales. You work in the district you already know, with a fixed salary plus incentive and full training. Pick your district on the Careers page and apply in about two minutes — Pune and Konkan divisions open later.
@@ -1130,11 +1082,11 @@
                 </div>
 
                 <div class="accordion-item">
-                    <h2 class="accordion-header">
+                    <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq13">
                             Can I become a Tapify channel partner?
                         </button>
-                    </h2>
+                    </h3>
                     <div id="faq13" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             Yes. If you already sell to local businesses — printing, IT, marketing, insurance, mobile retail — Tapify is something your existing customers need. You sell and service in your city while we handle the product, the platform and the support. Apply through the Channel Partners tab on the Careers page.
@@ -1150,7 +1102,7 @@
         <div class="container">
             <div class="cta-box">
                 <h2>Ready to Transform Your Networking?</h2>
-                <p>Join 10,000+ professionals who've already upgraded to smart networking with Tapify.</p>
+                <p>Join 100+ businesses already using Tapify to network smarter.</p>
                 <button class="btn btn-primary-cta" onclick="openLeadModal('hero_cta')">
                     Get Your Tapify Card <i class="fas fa-arrow-right ms-2"></i>
                 </button>
@@ -1164,37 +1116,37 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand">
-                        <img src="images/tapify-logo-green.png" alt="Tapify" class="footer-logo">
+                        <img src="images/tapify-logo-green.png" width="800" height="476" alt="Tapify" class="footer-logo">
                         <p>Your Smart NFC Card Solution! Upgrade your networking game with modern, tap-to-share NFC business cards. Future of professional networking is here.</p>
                         <div class="social-links">
-                            <a href="https://www.facebook.com/share/1FRsXAmSSt/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.facebook.com/profile.php?id=61585821500682" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                             <a href="https://www.instagram.com/tapifyofficial" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                             <a href="https://www.youtube.com/@Tapifyofficial-p7b" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <h5>Explore Tapify</h5>
+                    <p class="footer-col-label">Explore Tapify</p>
                     <ul class="footer-links">
-                        <li><a href="features.html">Features</a></li>
-                        <li><a href="website-demos.html">Website Demo</a></li>
-                        <li><a href="businesses.html">Our Network</a></li>
+                        <li><a href="/features">Features</a></li>
+                        <li><a href="/website-demos">Website Demo</a></li>
+                        <li><a href="/businesses">Our Network</a></li>
                         <li><a href="#kit-showcase">Shop NFC</a></li>
-                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="/careers">Careers</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <h5>Useful Links</h5>
+                    <p class="footer-col-label">Useful Links</p>
                     <ul class="footer-links">
-                        <li><a href="login.html">My Account</a></li>
+                        <li><a href="/login">My Account</a></li>
                         <li><a href="#how-it-works">How NFC Works?</a></li>
                         <li><a href="#faq">FAQs</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <h5>Available Payment Methods</h5>
+                    <p class="footer-col-label">Available Payment Methods</p>
                     <div class="payment-methods">
                         <span class="payment-badge">UPI</span>
                         <span class="payment-badge">Visa</span>
@@ -1216,21 +1168,14 @@
             <hr class="footer-divider">
 
             <div class="footer-bottom">
-                <div class="row">
-                    <div class="col-md-12">
-                        <p class="popular-services-title">Popular Services:</p>
-                        <p class="popular-services-list">
-                            NFC Card Nagpur | NFC Card Wardha | NFC Card Bhandara | NFC Card Gondia | NFC Card Chandrapur | NFC Card Gadchiroli | NFC Card Amravati | NFC Card Akola | NFC Card Washim | NFC Card Buldhana | NFC Card Yavatmal | Digital Visiting Card | Smart Business Card Vidarbha
-                        </p>
-                    </div>
-                </div>
-                <div class="row mt-3 align-items-center">
+
+            <div class="row mt-3 align-items-center">
                     <div class="col-md-6">
                         <p class="copyright">© 2026 Tapify. All Rights Reserved. An Innovative Product from MRPRINT WORLD PRIVATE LIMITED.</p>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <a href="terms.html" class="footer-policy">Terms of Service</a>
-                        <a href="privacy-policy.html" class="footer-policy">Privacy Policy</a>
+                        <a href="/terms" class="footer-policy">Terms of Service</a>
+                        <a href="/privacy-policy" class="footer-policy">Privacy Policy</a>
                     </div>
                 </div>
             </div>
@@ -1262,19 +1207,19 @@
 
                 <form id="leadForm" novalidate>
                     <div class="lead-field">
-                        <label><i class="fas fa-user"></i> Full Name <span class="req">*</span></label>
+                        <label for="leadName"><i class="fas fa-user"></i> Full Name <span class="req">*</span></label>
                         <input type="text" id="leadName" placeholder="e.g. Priya Sharma" maxlength="80" required>
                     </div>
                     <div class="lead-field">
-                        <label><i class="fas fa-phone"></i> Phone Number <span class="req">*</span></label>
+                        <label for="leadPhone"><i class="fas fa-phone"></i> Phone Number <span class="req">*</span></label>
                         <input type="tel" id="leadPhone" placeholder="+91 98765 43210" maxlength="20" required>
                     </div>
                     <div class="lead-field">
-                        <label><i class="fas fa-envelope"></i> Email <span class="optional">(optional)</span></label>
+                        <label for="leadEmail"><i class="fas fa-envelope"></i> Email <span class="optional">(optional)</span></label>
                         <input type="email" id="leadEmail" placeholder="you@company.com" maxlength="100">
                     </div>
                     <div class="lead-field">
-                        <label><i class="fas fa-map-marker-alt"></i> City <span class="optional">(optional)</span></label>
+                        <label for="leadCity"><i class="fas fa-map-marker-alt"></i> City <span class="optional">(optional)</span></label>
                         <input type="text" id="leadCity" placeholder="e.g. Mumbai" maxlength="80">
                     </div>
                     <input type="hidden" id="leadSource" value="website">
@@ -1305,7 +1250,7 @@
     </div>
 
     <!-- =============== FLOATING WHATSAPP BUTTON =============== -->
-    <a href="https://wa.me/917841840840" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+    <a href="https://wa.me/917378633764" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
         <span class="whatsapp-pulse"></span>
     </a>

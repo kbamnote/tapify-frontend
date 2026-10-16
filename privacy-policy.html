@@ -6,7 +6,31 @@
     <title>Privacy Policy - Tapify</title>
     <meta name="description" content="Privacy Policy for Tapify and Tapify Sales CRM applications.">
 
+    <!-- Canonical & robots -->
+    <link rel="canonical" href="https://www.tapify.co.in/privacy-policy">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="MRPRINT WORLD PRIVATE LIMITED">
+
+    <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tapify">
+    <meta property="og:url" content="https://www.tapify.co.in/privacy-policy">
+    <meta property="og:title" content="Privacy Policy - Tapify">
+    <meta property="og:description" content="Privacy Policy for Tapify and Tapify Sales CRM applications.">
+    <meta property="og:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
+    <meta property="og:locale" content="en_IN">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Privacy Policy - Tapify">
+    <meta name="twitter:description" content="Privacy Policy for Tapify and Tapify Sales CRM applications.">
+    <meta name="twitter:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
+
     <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -114,6 +138,30 @@
             border-radius: 50px;
         }
 
+        .policy-summary-box {
+            background: rgba(201, 147, 58, 0.08);
+            border: 1.5px solid rgba(201, 147, 58, 0.3);
+            border-radius: 16px;
+            padding: 26px 30px;
+            margin-bottom: 36px;
+        }
+
+        .policy-summary-box h2 {
+            margin-top: 0 !important;
+            font-size: 1.15rem !important;
+            color: #153e3f;
+        }
+
+        .policy-summary-box ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+        .policy-summary-box li {
+            margin-bottom: 8px;
+            color: #3a5556;
+        }
+
         /* === NAVBAR OVERRIDE === */
         .main-navbar {
             background: rgba(13,40,41,0.97) !important;
@@ -160,33 +208,57 @@
         }
         .templates-footer strong { color: #dba84f; }
     </style>
+
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://www.tapify.co.in/privacy-policy#webpage",
+          "url": "https://www.tapify.co.in/privacy-policy",
+          "name": "Privacy Policy | Tapify",
+          "isPartOf": { "@id": "https://www.tapify.co.in/#website" },
+          "about": { "@id": "https://www.tapify.co.in/#organization" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.tapify.co.in/" },
+            { "@type": "ListItem", "position": 2, "name": "Privacy Policy", "item": "https://www.tapify.co.in/privacy-policy" }
+          ]
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 
     <!-- NAVIGATION -->
     <nav class="navbar navbar-expand-lg main-navbar">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="/">
                 <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
                 <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
                 <span class="toggler-icon" style="background:#fff; width:25px; height:3px; display:block; margin:5px 0;"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="website-demos.html">Website Demo</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="vcard-templates.html">V-Card Demo</a></li> -->
-                    <!-- <li class="nav-item"><a class="nav-link" href="webstore-templates.html">Web Store Demo</a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="businesses.html">Our Network</a></li>
-                    <li class="nav-item"><a class="nav-link" href="careers.html">Careers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/website-demos">Website Demo</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="/vcard-templates">V-Card Demo</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="/webstore-templates">Web Store Demo</a></li> -->
+                    <li class="nav-item"><a class="nav-link" href="/businesses">Our Network</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/careers">Careers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                 </ul>
                 <div class="nav-cta">
-                    <a href="login.html" class="btn-signin">
+                    <a href="/login" class="btn-signin">
                         <i class="fas fa-user"></i> Sign In
                     </a>
                 </div>
@@ -209,6 +281,19 @@
                 <div class="col-lg-10">
                     <div class="policy-card">
                         <span class="last-updated">Last Updated: July 2026</span>
+
+                        <div class="policy-summary-box">
+                            <h2>What we collect, in short</h2>
+                            <ul>
+                                <li>We collect the basics you give us when you sign up — name, email, phone — plus camera, microphone and location access if you use the Tapify Sales CRM app, strictly for check-ins and verification.</li>
+                                <li>We use this only to run your account, verify field activity, and improve the app. We never use it for anything you haven't asked for.</li>
+                                <li>We don't sell or rent your data. We only share it with the service providers who help us run Tapify (hosting, email) or when the law requires it.</li>
+                                <li>If you connect Google Sign-In or your Google Business Profile, we only use that access for the specific features you turn on — never for ads, never sold.</li>
+                                <li>We take reasonable security precautions, though no system is ever 100% unbreakable.</li>
+                                <li>We keep your data only as long as we need it, and you can ask us to delete your account and data at any time.</li>
+                                <li>Questions? Reach us by phone or WhatsApp — the number is in Section 7 below.</li>
+                            </ul>
+                        </div>
 
                         <p>MRPRINT WORLD PRIVATE LIMITED ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website (Tapify) and use our mobile application (Tapify Sales CRM). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site or the application.</p>
 
@@ -279,7 +364,7 @@
                         <p>
                             <strong>MRPRINT WORLD PRIVATE LIMITED</strong><br>
                             Nagpur, Maharashtra, India<br>
-                            Phone/WhatsApp: +91 7841840840
+                            Phone/WhatsApp: +91 7378633764
                         </p>
                     </div>
                 </div>
@@ -304,28 +389,28 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <h5>Explore Tapify</h5>
+                    <p class="footer-col-label">Explore Tapify</p>
                     <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="features.html">Features</a></li>
-                        <li><a href="website-demos.html">Website Demo</a></li>
-                        <li><a href="businesses.html">Our Network</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/features">Features</a></li>
+                        <li><a href="/website-demos">Website Demo</a></li>
+                        <li><a href="/businesses">Our Network</a></li>
                         <li><a href="index.html#kit-showcase">Shop NFC</a></li>
-                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="/careers">Careers</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <h5>Useful Links</h5>
+                    <p class="footer-col-label">Useful Links</p>
                     <ul class="footer-links">
-                        <li><a href="login.html">My Account</a></li>
+                        <li><a href="/login">My Account</a></li>
                         <li><a href="index.html#how-it-works">How NFC Works?</a></li>
                         <li><a href="index.html#faq">FAQs</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <h5>Available Payment Methods</h5>
+                    <p class="footer-col-label">Available Payment Methods</p>
                     <div class="payment-methods">
                         <span class="payment-badge">UPI</span>
                         <span class="payment-badge">Visa</span>
@@ -347,21 +432,14 @@
             <hr class="footer-divider">
 
             <div class="footer-bottom">
-                <div class="row">
-                    <div class="col-md-12">
-                        <p class="popular-services-title">Popular Services:</p>
-                        <p class="popular-services-list">
-                            NFC Card Nagpur | NFC Card Wardha | NFC Card Bhandara | NFC Card Gondia | NFC Card Chandrapur | NFC Card Gadchiroli | NFC Card Amravati | NFC Card Akola | NFC Card Washim | NFC Card Buldhana | NFC Card Yavatmal | Digital Visiting Card | Smart Business Card Vidarbha
-                        </p>
-                    </div>
-                </div>
-                <div class="row mt-3 align-items-center">
+
+            <div class="row mt-3 align-items-center">
                     <div class="col-md-6">
                         <p class="copyright">© 2026 Tapify. All Rights Reserved. An Innovative Product from MRPRINT WORLD PRIVATE LIMITED.</p>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <a href="terms.html" class="footer-policy">Terms of Service</a>
-                        <a href="privacy-policy.html" class="footer-policy">Privacy Policy</a>
+                        <a href="/terms" class="footer-policy">Terms of Service</a>
+                        <a href="/privacy-policy" class="footer-policy">Privacy Policy</a>
                     </div>
                 </div>
             </div>

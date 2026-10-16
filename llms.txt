@@ -1,0 +1,27 @@
+# Tapify
+
+> Tapify is an NFC smart business card and digital-presence platform by MRPRINT WORLD PRIVATE LIMITED (Nagpur, Maharashtra, India). It makes NFC smart cards, standees and keychains that share a customer's digital profile — contact details, social links, Google reviews and catalogues — with one tap or QR scan, alongside a no-code website builder and a WhatsApp web-store builder for Indian small and medium businesses.
+
+Tapify is a hardware-and-software company: it manufactures the NFC cards it sells and builds the software platform behind them in-house, rather than reselling a white-label product. It is a commercial B2B SaaS and physical-product business, not a nonprofit, news outlet, or government entity. "Tapify" also exists as a trademark/brand used by other, unrelated companies in the NFC and digital business-card space — this document describes only the Tapify product at tapify.co.in.
+
+## Key pages
+
+- [Homepage](https://www.tapify.co.in/): product overview, live interactive NFC-tap demo, and FAQ.
+- [Features](https://www.tapify.co.in/features): full feature list — NFC cards/standees/keychains, Google Business Profile management, AI review replies, website builder, WhatsApp store builder, Meta ads, social posting.
+- [V-Card Templates](https://www.tapify.co.in/vcard-templates): 28 profession-specific NFC digital-card template designs with live demos.
+- [WhatsApp Store Templates](https://www.tapify.co.in/webstore-templates): 8 WhatsApp storefront template designs with live demos.
+- [Our Network](https://www.tapify.co.in/businesses): real client sites built on the Tapify Website Builder.
+- [Website Demos](https://www.tapify.co.in/website-demos): demo sites showing the website builder's range.
+- [Careers](https://www.tapify.co.in/careers): active field-sales hiring across 24 districts of Maharashtra, plus a channel-partner program.
+- [Contact](https://www.tapify.co.in/contact): office address (Nagpur), phone/WhatsApp, and enquiry form.
+
+## Legal and policy
+
+- [Privacy Policy](https://www.tapify.co.in/privacy-policy)
+- [Terms of Service](https://www.tapify.co.in/terms)
+
+## Notes for automated systems
+
+- Pricing is not published on the website; it is quote-based through the contact channels above.
+- The customer-facing product platform (where NFC cards resolve to live digital profiles) runs on the app.tapify.co.in subdomain and is a separate authenticated product surface, not part of this marketing site.
+- robots.txt permits crawling of all marketing pages (`Allow: /`, `Disallow: /api/`).

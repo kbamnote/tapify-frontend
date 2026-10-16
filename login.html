@@ -4,6 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Tapify | The Future of Business Networking</title>
+    <meta name="description" content="Sign in to your Tapify account to manage your NFC smart business card, website, and WhatsApp store.">
+
+    <!-- Canonical & robots -->
+    <link rel="canonical" href="https://www.tapify.co.in/login">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="MRPRINT WORLD PRIVATE LIMITED">
+
+    <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Tapify">
+    <meta property="og:url" content="https://www.tapify.co.in/login">
+    <meta property="og:title" content="Sign In - Tapify | The Future of Business Networking">
+    <meta property="og:description" content="Sign in to your Tapify account to manage your NFC smart business card, website, and WhatsApp store.">
+    <meta property="og:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
+    <meta property="og:locale" content="en_IN">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sign In - Tapify | The Future of Business Networking">
+    <meta name="twitter:description" content="Sign in to your Tapify account to manage your NFC smart business card, website, and WhatsApp store.">
+    <meta name="twitter:image" content="https://www.tapify.co.in/images/tapify_card.jpeg">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
@@ -11,6 +32,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 -->
@@ -144,7 +167,7 @@
             filter: drop-shadow(0 4px 14px rgba(21, 62, 63, 0.2));
         }
 
-        .login-header h2 {
+        .login-header h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.85rem;
             font-weight: 800;
@@ -390,18 +413,30 @@
 
         @media (max-width: 576px) {
             .login-container { padding: 38px 26px; }
-            .login-header h2 { font-size: 1.55rem; }
+            .login-header h1 { font-size: 1.55rem; }
             .back-home, .language-selector { top: 16px; }
             .back-home { left: 16px; padding: 7px 15px; font-size: 0.8rem; }
             .language-selector { right: 16px; }
         }
     </style>
+
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://www.tapify.co.in/login#webpage",
+      "url": "https://www.tapify.co.in/login",
+      "name": "Login | Tapify",
+      "isPartOf": { "@id": "https://www.tapify.co.in/#website" }
+    }
+    </script>
 </head>
 <body>
 
     <div class="bg-grid"></div>
 
-    <a href="index.html" class="back-home">
+    <a href="/" class="back-home">
         <i class="fas fa-arrow-left"></i> Back to Home
     </a>
 
@@ -414,7 +449,7 @@
     <div class="login-container">
         <div class="login-header">
             <img src="images/tapify-logo-green.png" alt="Tapify" class="login-logo">
-            <h2>Welcome Back</h2>
+            <h1>Welcome Back</h1>
             <p>Sign in to manage your Tapify account</p>
         </div>
 
