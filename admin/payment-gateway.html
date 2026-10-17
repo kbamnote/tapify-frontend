@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        .pg-counts { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px }
+        .pg-count {
+            flex:1 1 130px; background:var(--white); border:1px solid var(--border);
+            border-radius:14px; padding:14px 16px; cursor:pointer; text-align:center;
+        }
+        .pg-count.active { border-color:#8338ec; background:rgba(131,56,236,0.06) }
+        .pg-count .n { font-size:1.45rem; font-weight:800; font-family:Poppins,sans-serif; line-height:1.1 }
+        .pg-count .l { font-size:.74rem; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:.6px; margin-top:3px }
+        .pg-tools { display:flex; gap:10px; margin-bottom:18px }
+        .pg-tools input { flex:1 1 240px; padding:10px 14px; border:1px solid #d1d5db; border-radius:9px; font-size:.92rem; font-family:inherit }
+        .badge { display:inline-block; padding:3px 9px; border-radius:999px; font-size:.66rem; font-weight:800; letter-spacing:.5px }
+        .b-completed   { background:rgba(37,211,102,.14);  color:#157f3c }
+        .b-applied     { background:rgba(209,154,102,.22); color:#8a5a00 }
+        .b-rejected    { background:rgba(239,68,68,.14);   color:#b42318 }
+        .b-not_started { background:rgba(0,0,0,.06);       color:#555 }
+        .pg-act { padding:5px 10px; border:1px solid #d1d5db; background:#fff; border-radius:7px;
+                  font-size:.76rem; font-weight:700; cursor:pointer; font-family:inherit; margin-right:5px }
+        .pg-act.ok { border-color:#16a34a; color:#16a34a }
+        .pg-act.no { border-color:#dc2626; color:#dc2626 }
+        .key { font-family:ui-monospace,Menlo,monospace; font-size:.72rem; color:#6b7280; word-break:break-all }
+        .pg-note { color:#6b7280; font-size:.85rem; margin-top:14px; text-align:center }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="subscriptions.html" class="nav-item"><i class="fas fa-gem nav-icon" style="color:#8338ec"></i><span>Subscriptions</span></a>
+            <a href="payment-gateway.html" class="nav-item active"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="website-showcase.html" class="nav-item"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+            <a href="careers.html" class="nav-item"><i class="fas fa-briefcase nav-icon" style="color:#f97316"></i><span>Careers</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Payment Gateway</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="loadPg()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="pg-counts" id="pgCounts"></div>
+
+            <div class="pg-tools">
+                <input id="pgSearch" type="text" placeholder="Search name, email or phone" autocomplete="off">
+            </div>
+
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Applied</th>
+                            <th>Merchant key</th>
+                            <th>Confirmed by</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pgBody">
+                        <tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pg-note">
+                Easebuzz does not notify us when a signup finishes, so
+                <strong>Applied</strong> means started, not completed. A customer who enters
+                their merchant key in the app is marked Completed automatically; otherwise
+                confirm it here.
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+        const PG_LIST = 'https://app.tapify.co.in/api/admin/payment-gateway/list.php';
+        const PG_SET  = 'https://app.tapify.co.in/api/admin/payment-gateway/set-status.php';
+
+        const STATES = [
+            { key: 'not_started', label: 'Not started' },
+            { key: 'applied',     label: 'Applied' },
+            { key: 'completed',   label: 'Completed' },
+            { key: 'rejected',    label: 'Rejected' }
+        ];
+
+        let filter = '';
+        let timer = null;
+
+        const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+        async function loadPg() {
+            const body = document.getElementById('pgBody');
+            body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
+
+            const q = new URLSearchParams();
+            if (filter) q.set('status', filter);
+            const term = document.getElementById('pgSearch').value.trim();
+            if (term) q.set('q', term);
+
+            try {
+                const r = await fetch(PG_LIST + '?' + q.toString(), { credentials: 'include' });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Could not load.');
+                renderCounts((j.data && j.data.summary) || {});
+                renderRows((j.data && j.data.users) || []);
+            } catch (e) {
+                body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#dc2626">${esc(e.message)}</td></tr>`;
+            }
+        }
+
+        function renderCounts(sum) {
+            document.getElementById('pgCounts').innerHTML = STATES.map(s => `
+                <div class="pg-count ${filter === s.key ? 'active' : ''}" onclick="setFilter('${s.key}')">
+                    <div class="n">${Number(sum[s.key] || 0)}</div>
+                    <div class="l">${esc(s.label)}</div>
+                </div>`).join('');
+        }
+
+        function renderRows(rows) {
+            const body = document.getElementById('pgBody');
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">No customers match.</td></tr>';
+                return;
+            }
+            body.innerHTML = rows.map(u => `
+                <tr>
+                    <td>
+                        <div style="font-weight:600">${esc(u.name || '(no name)')}</div>
+                        <div style="font-size:.78rem;color:#6b7280">${esc(u.email)}</div>
+                        ${u.phone ? `<div style="font-size:.74rem;color:#9ca3af">${esc(u.phone)}</div>` : ''}
+                    </td>
+                    <td><span class="badge b-${esc(u.pg_status)}">${esc(String(u.pg_status).replace('_',' ').toUpperCase())}</span></td>
+                    <td style="font-size:.82rem;color:#6b7280">${esc(String(u.applied_at || '—').slice(0,10))}</td>
+                    <td class="key">${u.merchant_key ? esc(u.merchant_key) : '—'}</td>
+                    <td style="font-size:.8rem;color:#6b7280">${esc(u.updated_by_name || '—')}</td>
+                    <td style="white-space:nowrap">
+                        <button class="pg-act ok" onclick="setStatus(${Number(u.id)},'completed')">Completed</button>
+                        <button class="pg-act"    onclick="setStatus(${Number(u.id)},'applied')">Applied</button>
+                        <button class="pg-act no" onclick="setStatus(${Number(u.id)},'rejected')">Rejected</button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function setFilter(k) { filter = (filter === k) ? '' : k; loadPg(); }
+
+        async function setStatus(userId, status) {
+            let key = '';
+            if (status === 'completed') {
+                // Optional, but it is the only hard evidence the account is
+                // really live, so it is worth asking for while they are here.
+                key = prompt('Merchant key from Easebuzz (optional — leave blank if you do not have it):') || '';
+            }
+            try {
+                const r = await fetch(PG_SET, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: userId, status: status, merchant_key: key.trim() })
+                });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Could not update.');
+                loadPg();
+            } catch (e) {
+                alert(e.message);
+            }
+        }
+
+        document.getElementById('pgSearch').addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(loadPg, 350);
+        });
+
+        loadPg();
+    </script>
+</body>
+</html>
