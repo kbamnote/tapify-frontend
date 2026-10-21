@@ -45,9 +45,20 @@
         var name  = esc(s.name || 'Website');
         var ind   = s.industry ? esc(titleCase(s.industry)) : 'Business Website';
         var host  = esc(hostOf(s.url));
+        // The fallback is rendered BEHIND the image, and the image removes
+        // itself if it fails to load.
+        //
+        // A missing `image` was already handled, but an image that is present
+        // and unloadable was not — and that is the common case: a hero backed
+        // by a Pexels video, a stock URL that has since died, a Cloudinary
+        // asset someone deleted. The card then showed the browser's broken-
+        // image icon with the business's name beside it, which looks worse
+        // than having no picture at all.
+        var fallback = '<div class="site-cover-fallback">' + esc(initials(s.name)) + '</div>';
         var cover = s.image
-            ? '<img src="' + esc(s.image) + '" alt="' + name + '" loading="lazy">'
-            : '<div class="site-cover-fallback">' + esc(initials(s.name)) + '</div>';
+            ? fallback + '<img src="' + esc(s.image) + '" alt="' + name + '" loading="lazy"' +
+              ' onerror="this.remove()">'
+            : fallback;
         var logo  = s.logo
             ? '<div class="site-logo"><img src="' + esc(s.logo) + '" alt="" loading="lazy"></div>'
             : '';

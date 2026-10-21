@@ -411,10 +411,17 @@
         }
         .site-browser-url i { color: #2ecc71; font-size: .62rem; margin-right: 6px; }
         .site-cover { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 10px 10px 0 0; background: #e4d6c8; }
-        .site-cover img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform .6s ease; }
+        /* The initials block is always present, underneath the photo; the photo
+           deletes itself on an error, uncovering it. Both are absolute so they
+           occupy the same box, and the photo wins because it comes later. */
+        .site-cover img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform .6s ease;
+        }
         .site-card:hover .site-cover img { transform: scale(1.05); }
         .site-cover-fallback {
-            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, #153e3f, #27706e); color: #f6eee6; font-size: 2.6rem; font-weight: 800;
         }
         .site-cover-hover {
