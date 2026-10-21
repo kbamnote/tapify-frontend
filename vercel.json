@@ -3,7 +3,7 @@
     "trailingSlash": false,
     "headers": [
         {
-            "source": "/(features|businesses|careers|contact|login|plans|privacy-policy|terms|vcard-templates|website-demos|webstore-templates)?",
+            "source": "/(features|businesses|careers|contact|login|plans|privacy-policy|terms|vcard-templates|webinar-registration|website-demos|webstore-templates)?",
             "headers": [
                 { "key": "X-Content-Type-Options", "value": "nosniff" },
                 { "key": "X-Frame-Options", "value": "SAMEORIGIN" },

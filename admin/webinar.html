@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webinar Registrations - Tapify Admin</title>
+<link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../admin-style.css">
+<link rel="stylesheet" href="../vcards-style.css">
+<style>
+.wb-counts{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.wb-count{flex:1 1 130px;background:var(--white);border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;text-align:center}
+.wb-count .n{font-size:1.5rem;font-weight:800;font-family:Poppins,sans-serif;line-height:1.1}
+.wb-count .l{font-size:.74rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.6px;margin-top:3px}
+.wb-tools{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center}
+.wb-tools input,.wb-tools select{padding:10px 14px;border:1px solid #d1d5db;border-radius:9px;font-size:.92rem;font-family:inherit}
+.wb-tools input{flex:1 1 220px}
+.wb-tools a.exp{padding:10px 16px;border:1px solid #16a34a;color:#16a34a;border-radius:9px;
+  text-decoration:none;font-size:.88rem;font-weight:700}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.66rem;font-weight:800;letter-spacing:.5px}
+.b-yes{background:rgba(37,211,102,.14);color:#157f3c}
+.b-no{background:rgba(0,0,0,.06);color:#555}
+.wb-note{color:#6b7280;font-size:.85rem;margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-header">
+    <a href="dashboard.html" class="sidebar-logo"><img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span></a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+    <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+    <a href="subscriptions.html" class="nav-item"><i class="fas fa-gem nav-icon" style="color:#8338ec"></i><span>Subscriptions</span></a>
+    <a href="payment-gateway.html" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+    <a href="webinar.html" class="nav-item active"><i class="fas fa-chalkboard-user nav-icon" style="color:#e11d48"></i><span>Webinar</span></a>
+    <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+    <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+    <a href="website-showcase.html" class="nav-item"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+    <a href="careers.html" class="nav-item"><i class="fas fa-briefcase nav-icon" style="color:#f97316"></i><span>Careers</span></a>
+    <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+    <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+    <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+    <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+    <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+    <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+    <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+  </nav>
+</aside>
+
+<div class="admin-main" id="adminMain">
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <h1 class="page-title">Webinar Registrations</h1>
+    </div>
+    <div class="header-right">
+      <button class="btn-new-vcard" onclick="loadWb()"><i class="fas fa-rotate"></i> Refresh</button>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <div class="wb-counts" id="wbCounts"></div>
+
+    <div class="wb-tools">
+      <select id="wbSlug" onchange="loadWb()"><option value="">All webinars</option></select>
+      <select id="wbAtt" onchange="loadWb()">
+        <option value="">Everyone</option>
+        <option value="1">Attended</option>
+        <option value="0">Did not attend</option>
+      </select>
+      <input id="wbSearch" type="text" placeholder="Search name, phone, email, business or city" autocomplete="off">
+      <a class="exp" id="wbExport" href="#"><i class="fas fa-file-csv"></i> Export CSV</a>
+    </div>
+
+    <div class="vcards-table-wrapper">
+      <table class="vcards-table">
+        <thead><tr>
+          <th>Name</th><th>WhatsApp</th><th>Business</th><th>City</th>
+          <th>Source</th><th>Confirmed</th><th>Registered</th><th>Attended</th>
+        </tr></thead>
+        <tbody id="wbBody">
+          <tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="wb-note">
+      <strong>Confirmed</strong> means the WhatsApp joining message was accepted for sending.
+      Tick <strong>Attended</strong> after the session to keep the follow-up list clean.
+    </div>
+  </main>
+</div>
+
+<script src="../admin.js"></script>
+<script>
+const WB_API = 'https://app.tapify.co.in/api/admin/webinar/list.php';
+let timer = null;
+
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function params() {
+  const q = new URLSearchParams();
+  const s = document.getElementById('wbSlug').value;
+  const a = document.getElementById('wbAtt').value;
+  const t = document.getElementById('wbSearch').value.trim();
+  if (s) q.set('webinar', s);
+  if (a !== '') q.set('attended', a);
+  if (t) q.set('q', t);
+  return q;
+}
+
+async function loadWb() {
+  const body = document.getElementById('wbBody');
+  body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
+
+  const q = params();
+  document.getElementById('wbExport').href = WB_API + '?' + q.toString() + '&export=csv';
+
+  try {
+    const r = await fetch(WB_API + '?' + q.toString(), { credentials: 'include' });
+    const j = await r.json();
+    if (!j.success) throw new Error(j.message || 'Could not load.');
+    renderCounts((j.data && j.data.summary) || {});
+    renderSlugs((j.data && j.data.webinars) || []);
+    renderRows((j.data && j.data.registrations) || []);
+  } catch (e) {
+    body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#dc2626">${esc(e.message)}</td></tr>`;
+  }
+}
+
+function renderCounts(s) {
+  const cells = [
+    ['Registered', s.total || 0],
+    ['Last 24 hours', s.today || 0],
+    ['Attended', s.attended || 0],
+    ['WhatsApp sent', s.whatsapp || 0]
+  ];
+  document.getElementById('wbCounts').innerHTML = cells.map(
+    ([l, n]) => `<div class="wb-count"><div class="n">${Number(n)}</div><div class="l">${esc(l)}</div></div>`
+  ).join('');
+}
+
+// Rebuilt only when the option set changes, so selecting one does not reset it.
+function renderSlugs(list) {
+  const sel = document.getElementById('wbSlug');
+  const want = ['<option value="">All webinars</option>'].concat(
+    list.map(w => `<option value="${esc(w.webinar_slug)}">${esc(w.webinar_slug)} (${Number(w.n)})</option>`)
+  ).join('');
+  if (sel.innerHTML !== want) {
+    const cur = sel.value;
+    sel.innerHTML = want;
+    sel.value = cur;
+  }
+}
+
+function renderRows(rows) {
+  const body = document.getElementById('wbBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No registrations yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>
+        <div style="font-weight:600">${esc(r.name)}</div>
+        ${r.email ? `<div style="font-size:.76rem;color:#6b7280">${esc(r.email)}</div>` : ''}
+      </td>
+      <td><a href="https://wa.me/91${esc(r.phone)}" target="_blank" rel="noopener"
+             style="color:#16a34a;font-weight:600;text-decoration:none">${esc(r.phone)}</a></td>
+      <td style="font-size:.86rem">${esc(r.business_name || '—')}</td>
+      <td style="font-size:.86rem">${esc(r.city || '—')}</td>
+      <td style="font-size:.8rem;color:#6b7280">${esc(r.utm_source || 'direct')}</td>
+      <td><span class="badge ${Number(r.whatsapp_sent) ? 'b-yes' : 'b-no'}">${Number(r.whatsapp_sent) ? 'SENT' : 'NO'}</span></td>
+      <td style="font-size:.8rem;color:#6b7280">${esc(String(r.created_at || '').slice(0, 16))}</td>
+      <td><input type="checkbox" ${Number(r.attended) ? 'checked' : ''}
+                 onchange="setAttended(${Number(r.id)}, this.checked)" style="width:17px;height:17px;cursor:pointer"></td>
+    </tr>`).join('');
+}
+
+async function setAttended(id, attended) {
+  try {
+    const r = await fetch(WB_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ id: id, attended: attended ? 1 : 0 })
+    });
+    const j = await r.json();
+    if (!j.success) throw new Error(j.message || 'Could not update.');
+    loadWb();
+  } catch (e) { alert(e.message); }
+}
+
+document.getElementById('wbSearch').addEventListener('input', () => {
+  clearTimeout(timer);
+  timer = setTimeout(loadWb, 350);
+});
+
+loadWb();
+</script>
+</body>
+</html>
