@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Videos - Tapify Admin</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <link rel="stylesheet" href="../vcards-style.css">
+    <style>
+        .hv-note {
+            background:#fff; border:1px solid var(--border); border-left:4px solid #8338ec;
+            border-radius:10px; padding:13px 16px; margin-bottom:18px;
+            font-size:.84rem; line-height:1.55; color:#4b5563;
+        }
+        .hv-note code { background:#f3f4f6; padding:1px 6px; border-radius:4px; font-size:.82em }
+        .hv-form {
+            background:#fff; border:1px solid var(--border); border-radius:14px;
+            padding:16px; margin-bottom:18px; display:grid; gap:12px;
+            grid-template-columns:1fr 1fr 2fr 90px auto;
+            align-items:end;
+        }
+        @media(max-width:900px){ .hv-form{ grid-template-columns:1fr } }
+        .hv-form label { display:block; font-size:.72rem; font-weight:700; color:#6b7280;
+            text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px }
+        .hv-form input, .hv-form select {
+            width:100%; padding:9px 11px; border:1px solid var(--border);
+            border-radius:9px; font-family:inherit; font-size:.9rem;
+        }
+        .hv-save {
+            background:#8338ec; color:#fff; border:0; border-radius:9px;
+            padding:10px 18px; font-weight:700; cursor:pointer; font-family:inherit;
+        }
+        .hv-cancel { background:none; border:0; color:#6b7280; cursor:pointer; font-size:.82rem;
+            font-family:inherit; text-decoration:underline; padding:4px }
+        .hv-off { opacity:.45 }
+        .hv-link { color:#8338ec; font-size:.82rem; word-break:break-all }
+        .hv-act { background:none; border:0; cursor:pointer; color:#6b7280; padding:5px 7px; font-size:.95rem }
+        .hv-act.del:hover { color:#ef4444 }
+        .hv-screen { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.82rem; color:#111827 }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="users.html" class="nav-item"><i class="fas fa-users nav-icon"></i><span>Users</span></a>
+            <a href="subscriptions.html" class="nav-item"><i class="fas fa-gem nav-icon" style="color:#8338ec"></i><span>Subscriptions</span></a>
+            <a href="payment-gateway.html" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+            <a href="help-videos.html" class="nav-item active"><i class="fas fa-circle-play nav-icon" style="color:#8338ec"></i><span>Help Videos</span></a>
+            <a href="webinar.html" class="nav-item"><i class="fas fa-chalkboard-user nav-icon" style="color:#e11d48"></i><span>Webinar</span></a>
+            <a href="vcards.html" class="nav-item"><i class="fas fa-id-card nav-icon"></i><span>vCards</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon" style="color:#3b82f6"></i><span>Website Builder</span></a>
+            <a href="website-showcase.html" class="nav-item"><i class="fas fa-store nav-icon" style="color:#0ea5e9"></i><span>Website Showcase</span></a>
+            <a href="careers.html" class="nav-item"><i class="fas fa-briefcase nav-icon" style="color:#f97316"></i><span>Careers</span></a>
+            <a href="whatsapp-accounts.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp Accounts</span></a>
+            <a href="dynamic-qr.html" class="nav-item"><i class="fas fa-qrcode nav-icon"></i><span>Dynamic QR</span></a>
+            <a href="settings.html" class="nav-item"><i class="fas fa-cog nav-icon"></i><span>Settings</span></a>
+            <a href="notifications.html" class="nav-item"><i class="fas fa-bell nav-icon icon-notifications"></i><span>Push Notifications</span></a>
+            <a href="titanium.html" class="nav-item"><i class="fas fa-crown nav-icon" style="color:#c1a046"></i><span>Titanium Members</span></a>
+            <a href="leads.html" class="nav-item"><i class="fas fa-users nav-icon" style="color:#2ecc71"></i><span>Leads</span></a>
+            <a href="review-funnel.html" class="nav-item"><i class="fas fa-star nav-icon" style="color:#f59e0b"></i><span>Reviews Funnel</span></a>
+        </nav>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Help Videos</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="loadVideos()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            <div class="hv-note">
+                These are the walkthroughs behind the floating <strong>How to</strong> button in the
+                mobile app. A video shows on the screen whose <strong>screen key</strong> it carries;
+                give two videos the same key and the app offers a short list instead.
+                Changes appear the next time a customer opens the app — no update needed.
+            </div>
+
+            <form class="hv-form" id="hvForm" onsubmit="saveVideo(event)">
+                <div>
+                    <label for="hvScreen">Screen key</label>
+                    <select id="hvScreen" required></select>
+                </div>
+                <div>
+                    <label for="hvTitle">Title</label>
+                    <input id="hvTitle" type="text" placeholder="Connect Facebook &amp; Instagram" required>
+                </div>
+                <div>
+                    <label for="hvUrl">YouTube link</label>
+                    <input id="hvUrl" type="url" placeholder="https://youtube.com/shorts/..." required>
+                </div>
+                <div>
+                    <label for="hvOrder">Order</label>
+                    <input id="hvOrder" type="number" value="1" min="0">
+                </div>
+                <div>
+                    <button type="submit" class="hv-save" id="hvSubmit">Add video</button>
+                    <button type="button" class="hv-cancel" id="hvCancel" style="display:none" onclick="resetForm()">cancel</button>
+                </div>
+            </form>
+
+            <div class="vcards-table-wrapper">
+                <table class="vcards-table">
+                    <thead>
+                        <tr>
+                            <th>Screen</th>
+                            <th>Title</th>
+                            <th>Link</th>
+                            <th>Order</th>
+                            <th>Shown</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hvBody">
+                        <tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+        const HV_API = 'https://app.tapify.co.in/api/admin/help-videos.php';
+
+        /**
+         * The app screens a video can be attached to.
+         *
+         * These are the ids from the app's own navigation switch in App.js —
+         * NOT titles, which get reworded. A dropdown rather than a free text
+         * box because a typo here produces a video that simply never appears,
+         * with nothing anywhere to say why.
+         */
+        const SCREENS = [
+            ['social',               'Social Media'],
+            ['whatsapp',             'WhatsApp'],
+            ['google-business',      'Google Business Profile'],
+            ['google-reviews',       'Google Reviews'],
+            ['reviews-funnel',       'Reviews Funnel'],
+            ['request-review',       'Request a Review'],
+            ['appointments',         'Appointments'],
+            ['website-appointments', 'Website Appointments'],
+            ['my-designs',           'My Designs'],
+            ['design-customize',     'Customize Design'],
+            ['website-builder',      'Website Builder'],
+            ['link-pages',           'Link Page'],
+            ['ai-growth',            'AI Growth Center'],
+            ['dashboard',            'Dashboard'],
+            ['businesses',           'Businesses'],
+            ['website-inquiries',    'Website Inquiries'],
+            ['website-orders',       'Website Orders'],
+            ['wallet',               'Wallet'],
+            ['payment-gateway',      'Payment Gateway'],
+            ['profile',              'Profile'],
+            ['settings',             'Settings']
+        ];
+
+        let editingId = 0;
+
+        const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+        const screenLabel = (key) => {
+            const hit = SCREENS.find(s => s[0] === key);
+            return hit ? hit[1] : key;
+        };
+
+        function fillScreens() {
+            document.getElementById('hvScreen').innerHTML =
+                SCREENS.map(([k, l]) => `<option value="${esc(k)}">${esc(l)}</option>`).join('');
+        }
+
+        async function loadVideos() {
+            const body = document.getElementById('hvBody');
+            body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
+            try {
+                const r = await fetch(HV_API, { credentials: 'include' });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Could not load');
+                const rows = j.data || [];
+
+                if (!rows.length) {
+                    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">'
+                        + 'No videos yet. Add one above.</td></tr>';
+                    return;
+                }
+
+                body.innerHTML = rows.map(v => `
+                    <tr class="${v.status ? '' : 'hv-off'}">
+                        <td><span class="hv-screen">${esc(v.screen_key)}</span><br>
+                            <small style="color:#6b7280">${esc(screenLabel(v.screen_key))}</small></td>
+                        <td>${esc(v.title)}</td>
+                        <td><a class="hv-link" href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.url)}</a></td>
+                        <td>${v.sort_order}</td>
+                        <td>${v.status ? 'Yes' : 'No'}</td>
+                        <td style="white-space:nowrap">
+                            <button class="hv-act" title="Edit" onclick="editVideo(${v.id})"><i class="fas fa-pen"></i></button>
+                            <button class="hv-act" title="${v.status ? 'Hide' : 'Show'}" onclick="toggleVideo(${v.id})">
+                                <i class="fas fa-${v.status ? 'eye' : 'eye-slash'}"></i></button>
+                            <button class="hv-act del" title="Delete" onclick="deleteVideo(${v.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`).join('');
+
+                window.__hv = rows;
+            } catch (e) {
+                body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#ef4444">'
+                    + esc(e.message) + '</td></tr>';
+            }
+        }
+
+        async function post(payload) {
+            const r = await fetch(HV_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(payload)
+            });
+            const j = await r.json();
+            if (!j.success) throw new Error(j.message || 'Request failed');
+            return j;
+        }
+
+        async function saveVideo(ev) {
+            ev.preventDefault();
+            const btn = document.getElementById('hvSubmit');
+            btn.disabled = true;
+            try {
+                await post({
+                    action: 'save',
+                    id: editingId,
+                    screen_key: document.getElementById('hvScreen').value,
+                    title: document.getElementById('hvTitle').value.trim(),
+                    url: document.getElementById('hvUrl').value.trim(),
+                    sort_order: parseInt(document.getElementById('hvOrder').value, 10) || 1,
+                    status: 1
+                });
+                resetForm();
+                loadVideos();
+            } catch (e) {
+                alert(e.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function editVideo(id) {
+            const v = (window.__hv || []).find(x => x.id === id);
+            if (!v) return;
+            editingId = id;
+            document.getElementById('hvScreen').value = v.screen_key;
+            document.getElementById('hvTitle').value  = v.title;
+            document.getElementById('hvUrl').value    = v.url;
+            document.getElementById('hvOrder').value  = v.sort_order;
+            document.getElementById('hvSubmit').textContent = 'Save changes';
+            document.getElementById('hvCancel').style.display = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            editingId = 0;
+            document.getElementById('hvForm').reset();
+            document.getElementById('hvOrder').value = 1;
+            document.getElementById('hvSubmit').textContent = 'Add video';
+            document.getElementById('hvCancel').style.display = 'none';
+        }
+
+        async function toggleVideo(id) {
+            const v = (window.__hv || []).find(x => x.id === id);
+            if (!v) return;
+            try {
+                await post({
+                    action: 'save', id: v.id, screen_key: v.screen_key, title: v.title,
+                    url: v.url, sort_order: v.sort_order, status: v.status ? 0 : 1
+                });
+                loadVideos();
+            } catch (e) { alert(e.message); }
+        }
+
+        async function deleteVideo(id) {
+            if (!confirm('Remove this video? The button disappears from that screen.')) return;
+            try {
+                await post({ action: 'delete', id: id });
+                loadVideos();
+            } catch (e) { alert(e.message); }
+        }
+
+        fillScreens();
+        loadVideos();
+    </script>
+</body>
+</html>
