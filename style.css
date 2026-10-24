@@ -1720,6 +1720,88 @@ img {
 
 .footer-section .container { position: relative; z-index: 1; }
 
+/* ===== APP STORE BADGES =====
+   The two official badges are not drawn to the same scale: Google bakes a
+   margin into its artwork (646x250) while Apple's is trimmed (960x285). Given
+   the same CSS height the Play button therefore looks noticeably smaller, so
+   it is rendered ~22% taller to make the two read as equals. Both keep their
+   own proportions — neither badge may be stretched under the brand rules. */
+.app-badges-section {
+    background: var(--cream, #f6eee6);
+    padding: 56px 0;
+}
+
+.app-badges-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 28px;
+    background: linear-gradient(135deg, #153e3f, #27706e);
+    border-radius: 22px;
+    padding: 38px 44px;
+}
+
+.app-badges-copy h2 {
+    color: #f6eee6;
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin: 0 0 8px;
+    line-height: 1.25;
+}
+
+.app-badges-copy p {
+    color: rgba(246, 238, 230, 0.78);
+    font-size: 0.96rem;
+    margin: 0;
+    max-width: 420px;
+}
+
+.app-badges {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.app-badge { display: inline-block; position: relative; line-height: 0; }
+.app-badge img { display: block; width: auto; }
+
+.app-badge[href]:hover { transform: translateY(-2px); }
+.app-badge[href] { transition: transform .18s ease; }
+
+.app-badges .app-badge img { height: 52px; }
+.app-badges .app-badge:first-child img { height: 64px; }   /* Play: padded artwork */
+
+/* A badge that is not yet a link. Dimmed so it does not look broken when
+   tapping it does nothing. */
+.app-badge.is-soon { opacity: 0.55; cursor: default; }
+.app-badge.is-soon em {
+    position: absolute;
+    right: 6px;
+    bottom: -16px;
+    font-size: 0.64rem;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: rgba(246, 238, 230, 0.75);
+    line-height: 1;
+}
+
+/* ── the small pair in the footer ── */
+.footer-badges { margin-top: 20px; }
+.footer-badges .app-badge img { height: 34px; }
+.footer-badges .app-badge:first-child img { height: 42px; }
+.footer-badges .app-badge.is-soon em { bottom: -13px; right: 4px; font-size: 0.58rem; }
+
+@media (max-width: 768px) {
+    .app-badges-box { padding: 30px 24px; justify-content: center; text-align: center; }
+    .app-badges-copy p { max-width: none; }
+    .app-badges { justify-content: center; }
+    .app-badges-copy h2 { font-size: 1.4rem; }
+}
+
 .footer-brand .footer-logo {
     height: 52px;
     /* Width is stated as well as height. With height alone the displayed
