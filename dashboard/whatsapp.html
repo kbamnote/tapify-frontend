@@ -97,6 +97,9 @@
         .bc-pick { display: inline-block; background: #25D366; color: #fff; font-weight: 700; font-size: .82rem; padding: 9px 16px; border-radius: 9px; cursor: pointer; }
         .bc-note { font-size: .76rem; color: #6b7280; margin-top: 8px; line-height: 1.5; }
         .bc-note.err { color: #dc2626; font-weight: 600; }
+        /* What Meta actually did with the messages, as opposed to how many it
+           accepted. Shown only when the run was tracked. */
+        .bc-note.bc-delivery { color: #153e3f; font-weight: 600; margin-top: 3px; }
         .bc-list { max-height: 320px; overflow-y: auto; border: 1px solid #eef0f3; border-radius: 11px; }
         .bc-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid #f7f8fa; font-size: .83rem; }
         .bc-row:last-child { border-bottom: 0; }
@@ -1272,6 +1275,8 @@ function renderBroadcast() {
           return `<div class="bc-run">
             <div class="bot-item-head"><strong>${esc(r.templateName || '')}</strong><span>${esc(r.status || '')}</span></div>
             <div class="bc-note">${r.sent || 0} sent${r.failed ? ` · ${r.failed} failed` : ''} of ${r.total || 0}</div>
+            ${r.tracked ? `<div class="bc-note bc-delivery">${r.delivered || 0} delivered · ${r.read || 0} read${
+              r.undelivered ? ` · ${r.undelivered} not delivered` : ''}</div>` : ''}
             ${r.status === 'running' ? `<div class="bc-bar"><i style="width:${pct}%"></i></div>` : ''}
           </div>`;
         }).join('')}
