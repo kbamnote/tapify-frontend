@@ -1722,6 +1722,14 @@ img {
 
 .footer-brand .footer-logo {
     height: 52px;
+    /* Width is stated as well as height. With height alone the displayed
+       width comes from the file's own proportions, so the logo is only ever
+       as small as this rule reaching the page — and if the stylesheet is slow,
+       blocked or cached stale, the img falls back to its 800px attribute and
+       fills the column. Capping the width means the worst case is a slightly
+       squat logo rather than one five times too big. */
+    width: auto;
+    max-width: 88px;
     margin-bottom: 22px;
     filter: brightness(10);
 }
