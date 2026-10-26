@@ -1185,6 +1185,8 @@ async function tplDelete(name) {
  * the wrong placeholder.
  */
 let bcTpls = [], bcTpl = '', bcExtras = [], bcPeople = [], bcPicked = {}, bcRuns = [], bcNote = '', bcErr = false, bcTimer = null;
+// The header file for a media template: { id, kind, filename } once uploaded.
+let bcMedia = null, bcMediaNote = '', bcMediaErr = false;
 // Held in state for the same reason the greeting fields are: any re-render
 // would otherwise throw away what the customer had pasted but not yet added.
 let bcPasteText = '';
@@ -1216,6 +1218,51 @@ async function loadRuns() {
 }
 
 function bcChosen()  { return bcTpls.find(t => t.name === bcTpl); }
+/** 'document' | 'image' when the chosen template needs a file, else null. */
+function bcMediaKind() { return (bcChosen() || {}).mediaHeader || null; }
+
+function bcDropMedia() { bcMedia = null; bcMediaNote = ''; bcMediaErr = false; renderBroadcast(); }
+
+/**
+ * Upload the header file once, before the run.
+ *
+ * Meta wants it per WhatsApp number, so it goes through the proxy as base64
+ * rather than multipart — the PHP bridge forwards JSON. Uploading here and
+ * reusing the id for every recipient is the only sane option: doing it per
+ * message would be hundreds of round trips and would hit Meta's rate limit.
+ */
+async function bcMediaFile(input) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    const kind = bcMediaKind();
+    const cap = kind === 'image' ? 5 * 1024 * 1024 : 16 * 1024 * 1024;
+    if (f.size > cap) {
+        bcMediaErr = true;
+        bcMediaNote = kind === 'image' ? 'That image is over 5MB.' : 'That PDF is over 16MB.';
+        input.value = '';
+        return renderBroadcast();
+    }
+
+    bcMediaErr = false; bcMediaNote = 'Uploading…'; renderBroadcast();
+    try {
+        const data = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            // readAsDataURL gives "data:<mime>;base64,xxxx" — only the tail is wanted.
+            r.onload = () => resolve(String(r.result).split(',')[1] || '');
+            r.onerror = () => reject(new Error('Could not read that file.'));
+            r.readAsDataURL(f);
+        });
+        const res = await api('media', { method: 'POST', body: {
+            data, mime: f.type, filename: f.name,
+        }});
+        bcMedia = { id: res.id, kind: res.kind, filename: res.filename };
+        bcMediaNote = '';
+    } catch (e) {
+        bcMediaErr = true;
+        bcMediaNote = e.message;
+    }
+    renderBroadcast();
+}
 function bcNeeded()  { return Math.max(0, ((bcChosen() || {}).paramCount || 0) - 1); }
 function bcSelected(){ return bcPeople.filter(p => bcPicked[p.phone]); }
 
@@ -1227,9 +1274,26 @@ function renderBroadcast() {
         <p class="sub">Only templates WhatsApp has already approved can be sent to people outside a live conversation.</p>
         ${bcTpls.length ? bcTpls.map(t => `
           <div class="bc-tpl ${t.name === bcTpl ? 'on' : ''}" onclick="bcPickTpl('${esc(t.name)}')">
-            <b>${esc(t.name)}</b>
+            <b>${esc(t.name)}</b>${t.mediaHeader
+              ? ` <span class="bc-note" style="font-weight:700;color:#0f766e">needs a ${esc(t.mediaHeader)}</span>` : ''}
             ${t.body ? `<p>${esc(t.body)}</p>` : ''}
           </div>`).join('') : '<p class="sub">No approved templates yet.</p>'}
+        ${bcMediaKind() ? `
+          <div class="bot-field" style="margin-top:12px">
+            <label>Attach the ${esc(bcMediaKind())}</label>
+            ${bcMedia
+              ? `<p class="bc-note">Attached: <b>${esc(bcMedia.filename)}</b>
+                   <button class="btn-add" style="margin-left:8px" onclick="bcDropMedia()">Remove</button></p>`
+              : `<label class="bc-pick">
+                   Choose ${bcMediaKind() === 'image' ? 'an image' : 'a PDF'}
+                   <input type="file" accept="${bcMediaKind() === 'image' ? 'image/jpeg,image/png' : 'application/pdf'}"
+                          onchange="bcMediaFile(this)">
+                 </label>
+                 <p class="bot-hint">${bcMediaKind() === 'image'
+                    ? 'JPG or PNG, under 5MB. The same picture goes to everyone.'
+                    : 'PDF under 16MB. The same file goes to everyone.'}</p>`}
+            ${bcMediaNote ? `<p class="bc-note ${bcMediaErr ? 'err' : ''}">${esc(bcMediaNote)}</p>` : ''}
+          </div>` : ''}
         ${need ? `
           <div class="bot-field" style="margin-top:12px">
             <label>Fill the template's blanks</label>
@@ -1298,6 +1362,9 @@ function bcPickTpl(name) {
     const same = name === bcTpl;
     bcTpl = same ? '' : name;
     bcExtras = same ? [] : new Array(bcNeeded()).fill('');
+    // A file uploaded for a DOCUMENT header is rejected on an IMAGE template,
+    // so switching template always drops it rather than carrying it over.
+    bcMedia = null; bcMediaNote = ''; bcMediaErr = false;
     renderBroadcast();
 }
 function bcPick(phone, on) { if (on) bcPicked[phone] = true; else delete bcPicked[phone]; renderBroadcastMsgOnly(); }
@@ -1433,6 +1500,7 @@ async function bcSend() {
     if (!bcTpl) return fail('Choose a template first.');
     if (!sel.length) return fail('Select at least one recipient.');
     if (bcExtras.slice(0, bcNeeded()).some(v => !String(v || '').trim())) return fail('Fill every blank in the template.');
+    if (bcMediaKind() && !bcMedia) return fail('Attach the ' + bcMediaKind() + ' this template needs.');
     if (!confirm(`Send "${bcTpl}" to ${sel.length} ${sel.length === 1 ? 'person' : 'people'}?\n\nThis cannot be undone once it starts.`)) return;
 
     btn.disabled = true; msg.style.color = '#6b7280'; msg.textContent = 'Starting…';
@@ -1441,8 +1509,10 @@ async function bcSend() {
             templateName: bcTpl,
             params: bcExtras.slice(0, bcNeeded()),
             recipients: sel.map(p => ({ phone: p.phone, name: p.name || '' })),
+            media: bcMedia || undefined,
         }});
         bcPicked = {}; bcTpl = ''; bcExtras = []; bcNote = '';
+        bcMedia = null; bcMediaNote = '';
         await loadRuns();
         renderBroadcast();
         const m = document.getElementById('bcMsg');
