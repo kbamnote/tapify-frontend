@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Extractor - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .lx { max-width: 1150px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background:#fff; border:1px solid #e9e3dc; border-radius:15px; padding:18px; margin-bottom:14px; }
+        .card h3 { margin:0 0 4px; font-size:.95rem; font-weight:800; color:#153e3f; }
+        .card .hint { margin:0 0 12px; font-size:.8rem; color:#6b7280; line-height:1.5; }
+
+        .tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+        .tab { border:1px solid #e9e3dc; background:#fff; color:#6b7280; cursor:pointer;
+               padding:8px 15px; border-radius:20px; font:inherit; font-size:.82rem; font-weight:700; }
+        .tab.on { background:#153e3f; border-color:#153e3f; color:#fff; }
+
+        .inp, .sel { border:1px solid #e9e3dc; border-radius:10px; padding:10px 12px; font:inherit;
+                     font-size:.87rem; background:#fff; }
+        .btn { background:#153e3f; color:#fff; border:0; border-radius:10px; padding:10px 18px;
+               font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; text-decoration:none;
+               display:inline-block; }
+        .btn:disabled { opacity:.5; cursor:default; }
+        .btn-ghost { background:none; color:#153e3f; border:1px solid #153e3f; }
+        .btn-sm { padding:6px 12px; font-size:.77rem; }
+        .btn-red { color:#b91c1c; border-color:#b91c1c; }
+
+        table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        th { text-align:left; font-size:.7rem; text-transform:uppercase; letter-spacing:.5px;
+             color:#6b7280; padding:8px 6px; border-bottom:1px solid #e9e3dc; }
+        td { padding:9px 6px; border-bottom:1px solid #f0ece6; vertical-align:top; }
+        tr.kept td { opacity:.5; }
+        .nm { font-weight:700; color:#153e3f; }
+        .sub { font-size:.74rem; color:#9ca3af; }
+        .ph { font-variant-numeric:tabular-nums; }
+        .pill { font-size:.68rem; font-weight:800; border-radius:20px; padding:3px 9px; }
+        .p-new{background:#eef2ff;color:#3730a3} .p-contacted{background:#fdf6e7;color:#92670a}
+        .p-interested{background:#e8f6ed;color:#15803d} .p-not_interested{background:#f3f4f6;color:#6b7280}
+        .p-converted{background:#153e3f;color:#fff}
+
+        .bar { position:sticky; bottom:0; background:#fff; border:1px solid #e9e3dc; border-radius:14px;
+               padding:12px 16px; margin-top:14px; display:flex; gap:10px; align-items:center;
+               flex-wrap:wrap; box-shadow:0 -4px 18px rgba(21,62,63,.07); }
+        .warn { background:#fdf6e7; border:1px solid #e3c178; border-radius:11px; padding:12px 14px;
+                font-size:.82rem; color:#6b5420; line-height:1.55; margin-bottom:14px; }
+        .err { background:#fdecec; border:1px solid #e9a0a0; border-radius:11px; padding:12px 14px;
+               font-size:.83rem; color:#8a2a2a; }
+        .muted { color:#9ca3af; font-size:.85rem; }
+        .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .grow { flex:1; min-width:150px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="lead-extractor.html" class="nav-item active"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Lead Extractor</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="openTab(tab)"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="lx">
+                <div class="tabs" id="tabs"></div>
+                <div id="panel"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, body) {
+        const r = await fetch(API + '/api/leads/' + path, {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    const TABS = [['find', 'Find businesses'], ['saved', 'My leads']];
+    let tab = 'find';
+    let results = [], picked = {}, nextToken = null, lastTerm = '';
+    let saved = [], savedPicked = {};
+
+    function renderTabs() {
+        document.getElementById('tabs').innerHTML = TABS.map(([k, l]) =>
+            `<button class="tab ${k === tab ? 'on' : ''}" onclick="openTab('${k}')">${esc(l)}</button>`).join('');
+    }
+    function openTab(k) {
+        tab = k; renderTabs();
+        ({ find: tabFind, saved: tabSaved }[k])();
+    }
+
+    /* ── find ─────────────────────────────────────────────────────────── */
+    function tabFind() {
+        document.getElementById('panel').innerHTML = `
+          <div class="card">
+            <h3>Find businesses on Google</h3>
+            <p class="hint">Search Google's business listings and keep the ones worth contacting.
+               Results come from the official Google Places API, so the phone numbers are the ones
+               each business has published itself.</p>
+            <div class="row">
+              <input class="inp grow" id="qWhat" placeholder="What? e.g. electronics shop"
+                     onkeydown="if(event.key==='Enter')doSearch(null)">
+              <input class="inp grow" id="qWhere" placeholder="Where? e.g. Nagpur"
+                     onkeydown="if(event.key==='Enter')doSearch(null)">
+              <button class="btn" id="goBtn" onclick="doSearch(null)">Search</button>
+            </div>
+            <p class="hint" id="quota" style="margin-top:9px"></p>
+          </div>
+          <div id="res"></div>`;
+    }
+
+    async function doSearch(token) {
+        const what = (document.getElementById('qWhat').value || '').trim();
+        const where = (document.getElementById('qWhere').value || '').trim();
+        if (!what && !token) { alert('Type what kind of business to look for.'); return; }
+        if (!token) { results = []; picked = {}; lastTerm = where ? (what + ' in ' + where) : what; }
+
+        const btn = document.getElementById('goBtn');
+        btn.disabled = true;
+        document.getElementById('res').innerHTML = '<div class="card"><p class="muted">Searching…</p></div>';
+        try {
+            const d = await api('search.php', { what, where, page_token: token });
+            results = results.concat(d.leads || []);
+            nextToken = d.next || null;
+            document.getElementById('quota').textContent =
+                d.quota_left !== undefined ? (d.quota_left + ' searches left today') : '';
+            renderResults();
+        } catch (e) {
+            document.getElementById('res').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+        } finally { btn.disabled = false; }
+    }
+
+    function renderResults() {
+        if (!results.length) {
+            document.getElementById('res').innerHTML = '<div class="card"><p class="muted">No businesses found. Try a broader search.</p></div>';
+            return;
+        }
+        const withPhone = results.filter(r => r.phone_e164).length;
+        document.getElementById('res').innerHTML = `
+          <div class="card">
+            <div class="row" style="justify-content:space-between">
+              <h3 style="margin:0">${results.length} found &middot; ${withPhone} with a phone number</h3>
+              <button class="btn btn-ghost btn-sm" onclick="pickAll()">Select all with a number</button>
+            </div>
+            <table>
+              <thead><tr><th style="width:28px"></th><th>Business</th><th>Phone</th><th>Rating</th><th>Address</th></tr></thead>
+              <tbody>
+                ${results.map((r, i) => `
+                  <tr class="${r.saved ? 'kept' : ''}">
+                    <td>${r.phone_e164 && !r.saved
+                        ? `<input type="checkbox" ${picked[i] ? 'checked' : ''} onchange="pick(${i},this.checked)">`
+                        : ''}</td>
+                    <td><span class="nm">${esc(r.name)}</span>
+                        <div class="sub">${esc(r.category || '')}${r.saved ? ' &middot; already saved' : ''}</div></td>
+                    <td class="ph">${r.phone_e164 ? esc(r.phone) : '<span class="muted">none listed</span>'}</td>
+                    <td>${r.rating ? esc(r.rating) + ' <span class="sub">(' + esc(r.reviews) + ')</span>' : '<span class="muted">&mdash;</span>'}</td>
+                    <td class="sub">${esc(r.address || '')}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+            ${nextToken ? '<div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="doSearch(nextToken)">Load more</button></div>' : ''}
+          </div>
+          <div class="bar">
+            <b style="font-size:.86rem;color:#153e3f">${Object.keys(picked).length} selected</b>
+            <span class="grow"></span>
+            <button class="btn" onclick="savePicked()">Save to my leads</button>
+          </div>`;
+    }
+    function pick(i, on) { if (on) picked[i] = true; else delete picked[i]; renderResults(); }
+    function pickAll() {
+        results.forEach((r, i) => { if (r.phone_e164 && !r.saved) picked[i] = true; });
+        renderResults();
+    }
+
+    async function savePicked() {
+        const chosen = Object.keys(picked).map(i => results[i]).filter(Boolean);
+        if (!chosen.length) { alert('Select at least one business.'); return; }
+        try {
+            const d = await api('save.php', { leads: chosen, search_term: lastTerm });
+            alert(`${d.saved} saved${d.duplicates ? ', ' + d.duplicates + ' already there' : ''}${
+                d.skipped ? ', ' + d.skipped + ' had no phone number' : ''}.`);
+            picked = {};
+            // Re-run so the newly kept rows show as saved rather than offering
+            // to add them twice.
+            results.forEach(r => { if (chosen.includes(r)) r.saved = true; });
+            renderResults();
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ── saved ────────────────────────────────────────────────────────── */
+    async function tabSaved() {
+        document.getElementById('panel').innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        try {
+            const d = await api('list.php?limit=1000');
+            saved = d.leads || []; savedPicked = {};
+            renderSaved();
+        } catch (e) {
+            document.getElementById('panel').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+        }
+    }
+
+    function renderSaved() {
+        const n = Object.keys(savedPicked).length;
+        document.getElementById('panel').innerHTML = `
+          <div class="warn">
+            <b>Before you message these:</b> nobody on this list has contacted you &mdash; the numbers came
+            from public Google listings. WhatsApp requires people to opt in before a business messages
+            them, and sending to a list like this is the most common reason a number gets banned.
+            A ban hits <b>your</b> WhatsApp number, and it is not reversible. Exporting and calling them,
+            or messaging only those who reply to you first, carries no such risk.
+          </div>
+          <div class="card">
+            <div class="row" style="justify-content:space-between;margin-bottom:12px">
+              <h3 style="margin:0">${saved.length} saved leads</h3>
+              <div class="row">
+                <a class="btn btn-ghost btn-sm" href="${API}/api/leads/export.php" target="_blank" rel="noopener">Download CSV</a>
+              </div>
+            </div>
+            ${saved.length ? `
+            <table>
+              <thead><tr><th style="width:28px"></th><th>Business</th><th>Phone</th><th>Status</th><th>Found via</th></tr></thead>
+              <tbody>
+                ${saved.map(l => `
+                  <tr>
+                    <td><input type="checkbox" ${savedPicked[l.id] ? 'checked' : ''} onchange="pickSaved(${l.id},this.checked)"></td>
+                    <td><span class="nm">${esc(l.name)}</span><div class="sub">${esc(l.address || '')}</div></td>
+                    <td class="ph">${esc(l.phone || '')}</td>
+                    <td><span class="pill p-${esc(l.status)}">${esc(l.status.replace('_',' '))}</span></td>
+                    <td class="sub">${esc(l.search_term || '')}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>` : '<p class="muted">Nothing saved yet. Find some businesses first.</p>'}
+          </div>
+          ${saved.length ? `
+          <div class="bar">
+            <b style="font-size:.86rem;color:#153e3f">${n} selected</b>
+            <select class="sel" id="stSel">
+              <option value="contacted">Mark contacted</option>
+              <option value="interested">Mark interested</option>
+              <option value="not_interested">Mark not interested</option>
+              <option value="converted">Mark converted</option>
+              <option value="new">Mark new</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="applyStatus()">Apply</button>
+            <span class="grow"></span>
+            <button class="btn btn-ghost btn-sm" onclick="toBroadcast()">Message on WhatsApp</button>
+            <button class="btn btn-ghost btn-sm btn-red" onclick="removeSel()">Delete</button>
+          </div>` : ''}`;
+    }
+    function pickSaved(id, on) { if (on) savedPicked[id] = true; else delete savedPicked[id]; renderSaved(); }
+
+    const selIds = () => Object.keys(savedPicked).map(Number);
+
+    async function applyStatus() {
+        const ids = selIds();
+        if (!ids.length) { alert('Select some leads first.'); return; }
+        try { await api('update.php', { ids, status: document.getElementById('stSel').value }); tabSaved(); }
+        catch (e) { alert(e.message); }
+    }
+    async function removeSel() {
+        const ids = selIds();
+        if (!ids.length) { alert('Select some leads first.'); return; }
+        if (!confirm('Delete ' + ids.length + ' lead(s)? This cannot be undone.')) return;
+        try { await api('update.php', { ids, delete: true }); tabSaved(); }
+        catch (e) { alert(e.message); }
+    }
+
+    /**
+     * Hand the selected numbers to the WhatsApp broadcast.
+     *
+     * They go via the clipboard rather than a direct wire-up: the broadcast
+     * screen already accepts a pasted list, and coupling the two pages would
+     * mean a second recipient path to keep correct. The confirm is not
+     * decoration — this is the action that gets numbers banned.
+     */
+    function toBroadcast() {
+        const ids = selIds();
+        if (!ids.length) { alert('Select some leads first.'); return; }
+        const phones = saved.filter(l => savedPicked[l.id] && l.phone).map(l => l.phone);
+        if (!phones.length) { alert('None of the selected leads has a phone number.'); return; }
+
+        if (!confirm(
+            phones.length + ' numbers will be copied.\n\n'
+            + 'These businesses have not contacted you and have not opted in. '
+            + 'Messaging them breaches WhatsApp policy and can get your number permanently banned.\n\n'
+            + 'Continue?')) return;
+
+        if (navigator.clipboard) navigator.clipboard.writeText(phones.join('\n'));
+        window.open('whatsapp.html', '_blank');
+        alert('Numbers copied. In WhatsApp, open Broadcast and paste them into "Add from contacts or a pasted list".');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { renderTabs(); openTab('find'); });
+    </script>
+</body>
+</html>
