@@ -269,6 +269,7 @@
 const WA_API      = 'https://app.tapify.co.in/api/whatsapp/proxy.php';
 const WA_CONNECT  = 'https://app.tapify.co.in/api/whatsapp/connect.php';
 const WA_PRICING  = 'https://app.tapify.co.in/api/whatsapp/pricing.php';
+const WA_LEADS    = 'https://app.tapify.co.in/api/leads/list.php';
 const POLL_MS     = 15000;   // no websocket through the proxy, so poll
 
 let status = null, convos = [], activePhone = null, templates = [], pollTimer = null;
@@ -1250,6 +1251,9 @@ function renderBroadcast() {
           </label>
           <p class="bc-note">A column of numbers is enough. Headings like Name and Phone are understood in any order.</p>
         </div>
+        <button class="btn-add" style="margin-top:10px" onclick="bcFromLeads()">
+          <i class="fas fa-magnifying-glass-location"></i> Import from my leads
+        </button>
         <textarea class="bot-input" id="bcPaste" oninput="bcPasteText = this.value"
                   placeholder="…or paste rows here:&#10;Name,Phone&#10;Abid Khan,9876543210">${esc(bcPasteText)}</textarea>
         <button class="btn-add" style="margin-top:8px" onclick="bcAddPasted()"><i class="fas fa-plus"></i> Add pasted rows</button>
@@ -1335,6 +1339,55 @@ function bcAddPasted() {
     const el = document.getElementById('bcPaste');
     bcPasteText = el ? el.value : bcPasteText;
     bcTake(LeadImport.leadsFromText(bcPasteText));
+}
+
+/**
+ * Pull in everything saved in the Lead Extractor.
+ *
+ * The confirm is not a formality. These businesses never contacted the
+ * customer — the numbers came off public Google listings — so WhatsApp treats
+ * messaging them as unsolicited, and a ban lands on the customer's own number
+ * and cannot be undone. They are entitled to send it; they are not entitled to
+ * be surprised by it.
+ */
+async function bcFromLeads() {
+    bcNote = 'Loading your saved leads…';
+    bcErr = false;
+    renderBroadcast();
+    try {
+        const r = await fetch(WA_LEADS + '?limit=1000', { credentials: 'include' });
+        const j = await r.json();
+        if (!j.success) throw new Error(j.message || 'Could not load your leads');
+
+        const rows = (j.data && j.data.leads) || [];
+        if (!rows.length) {
+            bcErr = true;
+            bcNote = 'No saved leads yet. Find some in the Lead Extractor first.';
+            return renderBroadcast();
+        }
+
+        const parsed = LeadImport.leadsFromExtracted(rows);
+        if (!parsed.leads.length) {
+            bcErr = true;
+            bcNote = 'None of your saved leads has a number WhatsApp can deliver to.';
+            return renderBroadcast();
+        }
+
+        if (!confirm(
+            parsed.leads.length + ' saved leads will be added.\n\n'
+            + 'These businesses have not contacted you and have not opted in. '
+            + 'Messaging them breaches WhatsApp policy and can get your number '
+            + 'permanently banned.\n\nAdd them anyway?')) {
+            bcNote = '';
+            return renderBroadcast();
+        }
+
+        bcTake(parsed);
+    } catch (e) {
+        bcErr = true;
+        bcNote = e.message;
+        renderBroadcast();
+    }
 }
 
 /** SheetJS, fetched only when a real spreadsheet is opened. */

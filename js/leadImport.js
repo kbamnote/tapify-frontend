@@ -193,6 +193,31 @@ function leadsFromContacts(contacts) {
 }
 
 /**
+ * Saved rows from the Lead Extractor → recipients.
+ *
+ * Their phones are already stored normalised (91 + 10 digits), but they go
+ * through normalisePhone anyway: it is the one place that decides what
+ * WhatsApp can deliver to, and a second opinion here is how the two drift.
+ *
+ * @param {Array<{name?:string, phone?:string}>} rows
+ */
+function leadsFromExtracted(rows) {
+  const seen = new Set();
+  const leads = [];
+  let invalid = 0, duplicates = 0;
+
+  (rows || []).forEach((r) => {
+    const phone = normalisePhone(r && r.phone);
+    if (!phone) { invalid++; return; }
+    if (seen.has(phone)) { duplicates++; return; }
+    seen.add(phone);
+    leads.push({ phone: phone, name: cleanLeadName(r && r.name) });
+  });
+
+  return { leads: leads, invalid: invalid, duplicates: duplicates };
+}
+
+/**
  * Fold new recipients into the list already on screen.
  *
  * Someone already in the inbox keeps their existing entry — their name there
@@ -229,6 +254,7 @@ global.LeadImport = {
   detectColumns: detectColumns,
   leadsFromText: leadsFromText,
   leadsFromContacts: leadsFromContacts,
+  leadsFromExtracted: leadsFromExtracted,
   mergeLeads: mergeLeads,
 };
 })(typeof window !== 'undefined' ? window : this);
