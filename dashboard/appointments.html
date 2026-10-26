@@ -107,6 +107,11 @@
                 <i class="fas fa-user nav-icon"></i>
                 <span>My Profile</span>
             </a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
             <a href="reviews.html" class="nav-item">
                 <i class="fas fa-star nav-icon"></i>
                 <span>Reviews Funnel</span>
@@ -138,6 +143,7 @@
         </nav>
         <div class="sidebar-footer">
             <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
         </div>
     </aside>
 
@@ -507,7 +513,7 @@ async function loadAvailability() {
     weeklyData = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 0: [] };
     
     try {
-        const response = await fetch(\`\${APT_API}slots_manage.php?vcard_id=\${vcardId}\`, { credentials: 'include' });
+        const response = await fetch(`${APT_API}slots_manage.php?vcard_id=${vcardId}`, { credentials: 'include' });
         const result = await response.json();
         
         if (result.success && result.data) {
@@ -532,33 +538,33 @@ function renderWeeklySchedule() {
         const slots = weeklyData[day];
         const isChecked = slots.length > 0;
         
-        let slotsHtml = slots.map((s, index) => \`
+        let slotsHtml = slots.map((s, index) => `
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <input type="time" value="\${s.start}" onchange="updateSlot(\${day}, \${index}, 'start', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                <input type="time" value="${s.start}" onchange="updateSlot(${day}, ${index}, 'start', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
                 <span style="color:#6b7280; font-size: 0.9rem;">To</span>
-                <input type="time" value="\${s.end}" onchange="updateSlot(\${day}, \${index}, 'end', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
-                <button title="Delete slot" onclick="deleteSlot(\${day}, \${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:5px;"><i class="fas fa-trash"></i></button>
+                <input type="time" value="${s.end}" onchange="updateSlot(${day}, ${index}, 'end', this.value)" style="padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                <button title="Delete slot" onclick="deleteSlot(${day}, ${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:5px;"><i class="fas fa-trash"></i></button>
             </div>
-        \`).join('');
+        `).join('');
         
         if (slots.length === 0) {
-            slotsHtml = \`<div style="color:#9ca3af; font-size: 0.9rem; margin-bottom: 8px; font-style: italic;">Unavailable</div>\`;
+            slotsHtml = `<div style="color:#9ca3af; font-size: 0.9rem; margin-bottom: 8px; font-style: italic;">Unavailable</div>`;
         }
 
-        html += \`
+        html += `
             <div style="display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid #f3f4f6;">
                 <div style="width: 130px; display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                    <input type="checkbox" \${isChecked ? 'checked' : ''} onchange="toggleDay(\${day}, this.checked)" style="width:18px; height:18px; accent-color: #8338ec; cursor: pointer;">
-                    <strong style="font-size: 0.85rem; color: #4b5563;">\${dayNames[day]}</strong>
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleDay(${day}, this.checked)" style="width:18px; height:18px; accent-color: #8338ec; cursor: pointer;">
+                    <strong style="font-size: 0.85rem; color: #4b5563;">${dayNames[day]}</strong>
                 </div>
                 <div style="flex-grow: 1;">
-                    \${slotsHtml}
+                    ${slotsHtml}
                 </div>
                 <div style="width: 40px; text-align: right; margin-top: 5px;">
-                    <button title="Add slot" onclick="addSlot(\${day})" style="background:none; border:none; color:#8338ec; cursor:pointer; padding:5px; font-size: 1.1rem;"><i class="fas fa-plus"></i></button>
+                    <button title="Add slot" onclick="addSlot(${day})" style="background:none; border:none; color:#8338ec; cursor:pointer; padding:5px; font-size: 1.1rem;"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
-        \`;
+        `;
     });
     
     container.innerHTML = html;
@@ -606,7 +612,7 @@ async function saveWeeklySchedule() {
     btn.disabled = true;
     
     try {
-        const response = await fetch(\`\${APT_API}slots_manage.php\`, {
+        const response = await fetch(`${APT_API}slots_manage.php`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
             body: JSON.stringify({ action: 'save_week', vcard_id: vcardId, schedule: flatSchedule })
         });

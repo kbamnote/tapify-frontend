@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Designs - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .dz { max-width: 1150px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 10px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+        .inp, .sel { border: 1px solid #e9e3dc; border-radius: 10px; padding: 9px 12px; font: inherit;
+                     font-size: .86rem; background: #fff; }
+        .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .chip { border: 1px solid #e9e3dc; background: #fff; border-radius: 20px; padding: 7px 14px;
+                font-size: .8rem; font-weight: 700; color: #6b7280; cursor: pointer; }
+        .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 15px; }
+        .tile { background: #fff; border: 1px solid #e9e3dc; border-radius: 14px; overflow: hidden; }
+        .tile-img { position: relative; aspect-ratio: 4/5; background: #faf7f4; }
+        .tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .fav { position: absolute; top: 8px; right: 8px; border: 0; width: 30px; height: 30px; border-radius: 50%;
+               background: rgba(255,255,255,.92); cursor: pointer; color: #9ca3af; font-size: .82rem; }
+        .fav.on { color: #e11d48; }
+        .tile-b { padding: 10px 12px 12px; }
+        .tile-b b { font-size: .83rem; color: #153e3f; display: block; line-height: 1.3; }
+        .tile-b span { font-size: .7rem; color: #9ca3af; }
+        .tile-act { display: flex; gap: 6px; margin-top: 9px; }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 9px; padding: 7px 13px;
+               font: inherit; font-size: .76rem; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-lg { padding: 11px 20px; font-size: .86rem; border-radius: 10px; }
+
+        /* ── customiser ───────────────────────────────────────────────── */
+        .back { position: fixed; inset: 0; background: rgba(12,22,23,.62); z-index: 900;
+                display: flex; align-items: center; justify-content: center; padding: 18px; }
+        .sheet { background: #fff; border-radius: 18px; width: 100%; max-width: 900px; max-height: 94vh;
+                 overflow: auto; padding: 20px; }
+        .ed { display: grid; grid-template-columns: 1fr 260px; gap: 18px; }
+        @media (max-width: 760px) { .ed { grid-template-columns: 1fr } }
+        #stage { width: 100%; border: 1px solid #e9e3dc; border-radius: 12px; cursor: grab; touch-action: none;
+                 background: #faf7f4; display: block; }
+        .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
+               text-transform: uppercase; letter-spacing: .5px; margin: 12px 0 5px; }
+        .layers { border: 1px solid #f0ece6; border-radius: 10px; }
+        .layer { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #f0ece6;
+                 cursor: pointer; font-size: .8rem; }
+        .layer:last-child { border-bottom: 0; }
+        .layer.on { background: #f3f8f7; }
+        .layer span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .layer button { border: 0; background: none; color: #b91c1c; cursor: pointer; font-size: .78rem; }
+        .swatches { display: flex; flex-wrap: wrap; gap: 7px; }
+        .sw { width: 26px; height: 26px; border-radius: 7px; border: 2px solid transparent; cursor: pointer; }
+        .sw.on { border-color: #d19a66; }
+
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .err { background: #fdecec; border: 1px solid #e9a0a0; border-radius: 11px; padding: 12px 14px;
+               font-size: .83rem; color: #8a2a2a; }
+        .warn { background: #fdf6e7; border: 1px solid #e3c178; border-radius: 10px; padding: 10px 12px;
+                font-size: .78rem; color: #6b5420; margin-top: 10px; line-height: 1.5; }
+        .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item active"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">My Designs</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="load()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="dz">
+                <div class="filters">
+                    <input class="inp" id="q" placeholder="Search designs…" oninput="debounced()">
+                    <select class="sel" id="mode" onchange="load()">
+                        <option value="all">All designs</option>
+                        <option value="saved">Saved only</option>
+                    </select>
+                </div>
+                <div class="chips" id="cats"></div>
+                <div id="out"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="editor"></div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, body) {
+        const r = await fetch(API + '/api/designs/' + path, {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    let cats = [], cat = 0, designs = [], savedIds = new Set(), timer = null;
+    const debounced = () => { clearTimeout(timer); timer = setTimeout(load, 300); };
+
+    async function boot() {
+        try {
+            const d = await api('categories.php');
+            cats = d.categories || [];
+            document.getElementById('cats').innerHTML =
+                `<button class="chip on" data-id="0" onclick="pickCat(0)">All</button>` +
+                cats.map(c => `<button class="chip" data-id="${Number(c.id)}" onclick="pickCat(${Number(c.id)})">${esc(c.name)}</button>`).join('');
+        } catch (_) { /* categories are a filter, not the content */ }
+        load();
+    }
+    function pickCat(id) {
+        cat = id;
+        document.querySelectorAll('#cats .chip').forEach(b =>
+            b.classList.toggle('on', Number(b.getAttribute('data-id')) === id));
+        load();
+    }
+
+    async function load() {
+        const out = document.getElementById('out');
+        out.innerHTML = '<div class="card"><p class="muted">Loading designs…</p></div>';
+        const q = new URLSearchParams({ limit: '50' });
+        if (cat) q.set('category_id', String(cat));
+        if (document.getElementById('mode').value === 'saved') q.set('saved', '1');
+        const term = (document.getElementById('q').value || '').trim();
+        if (term) q.set('search', term);
+        try {
+            const d = await api('list.php?' + q.toString());
+            designs = d.designs || [];
+            savedIds = new Set((d.saved_ids || []).map(Number));
+            render();
+        } catch (e) { out.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    function render() {
+        const out = document.getElementById('out');
+        if (!designs.length) { out.innerHTML = '<div class="card"><p class="muted">No designs found.</p></div>'; return; }
+        out.innerHTML = '<div class="grid">' + designs.map((d, i) => `
+            <div class="tile">
+              <div class="tile-img">
+                <img src="${esc(d.image_url)}" alt="${esc(d.title || '')}" loading="lazy">
+                <button class="fav ${savedIds.has(Number(d.id)) ? 'on' : ''}" title="Save"
+                        onclick="toggleSave(${Number(d.id)},this)"><i class="fa-solid fa-heart"></i></button>
+              </div>
+              <div class="tile-b">
+                <b>${esc(d.title || 'Design')}</b>
+                <span>${esc(d.category_name || '')}</span>
+                <div class="tile-act">
+                  <button class="btn" onclick="openEditor(${i})">Customise</button>
+                  <a class="btn btn-ghost" href="${esc(d.image_url)}" target="_blank" rel="noopener">Open</a>
+                </div>
+              </div>
+            </div>`).join('') + '</div>';
+    }
+
+    async function toggleSave(id, btn) {
+        try {
+            const d = await api('save.php', { design_id: id });
+            if (d.saved) { savedIds.add(id); btn.classList.add('on'); }
+            else { savedIds.delete(id); btn.classList.remove('on'); }
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ────────────────────────── customiser ──────────────────────────── */
+    /**
+     * Put the business's own words on a ready-made design, then download it.
+     *
+     * Drawn on a canvas rather than with positioned DOM elements because the
+     * end product is a single image file the customer sends to a printer or
+     * posts — the canvas IS the export, so what they drag is exactly what
+     * they get.
+     */
+    const PALETTE = ['#ffffff','#000000','#153E3F','#D19A66','#B91C1C','#1E3A8A','#065F46','#9D174D'];
+    let layers = [], sel = -1, img = null, drag = null, tainted = false;
+
+    function openEditor(i) {
+        const d = designs[i];
+        layers = []; sel = -1; tainted = false;
+        document.getElementById('editor').innerHTML = `
+          <div class="back" onclick="if(event.target===this)closeEditor()">
+            <div class="sheet">
+              <div class="row" style="justify-content:space-between;margin-bottom:12px">
+                <h3 style="margin:0;font-size:1rem;color:#153e3f">${esc(d.title || 'Customise')}</h3>
+                <button class="btn btn-ghost" onclick="closeEditor()">Close</button>
+              </div>
+              <div class="ed">
+                <div><canvas id="stage"></canvas><div id="taint"></div></div>
+                <div>
+                  <button class="btn btn-lg" style="width:100%" onclick="addLayer()">+ Add text</button>
+                  <label class="lbl">Text layers</label>
+                  <div class="layers" id="layers"><p class="muted" style="padding:10px">None yet.</p></div>
+                  <div id="props"></div>
+                  <button class="btn btn-lg" style="width:100%;margin-top:16px" onclick="downloadImg()">Download image</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+
+        const cv = document.getElementById('stage');
+        img = new Image();
+        // Must be set BEFORE src, or the browser caches the image without CORS
+        // headers and every later toDataURL() throws a security error.
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            cv.width = img.naturalWidth;
+            cv.height = img.naturalHeight;
+            draw();
+        };
+        img.onerror = () => {
+            // Without CORS we can still show it, but exporting will fail — so
+            // say so now rather than after they have done the work.
+            tainted = true;
+            document.getElementById('taint').innerHTML =
+              '<div class="warn">This design cannot be edited here. Use <b>Open</b> to download the original.</div>';
+        };
+        img.src = d.image_url;
+        bindDrag(cv);
+    }
+    function closeEditor() { document.getElementById('editor').innerHTML = ''; img = null; layers = []; }
+
+    function addLayer() {
+        if (!img) return;
+        layers.push({
+            text: 'Your text', x: img.naturalWidth / 2, y: img.naturalHeight / 2,
+            size: Math.round(img.naturalHeight / 14), color: '#ffffff', bold: true,
+        });
+        sel = layers.length - 1;
+        renderSide(); draw();
+    }
+
+    function renderSide() {
+        document.getElementById('layers').innerHTML = layers.length ? layers.map((l, i) => `
+            <div class="layer ${i === sel ? 'on' : ''}" onclick="selectLayer(${i})">
+              <span>${esc(l.text)}</span>
+              <button onclick="event.stopPropagation();removeLayer(${i})">remove</button>
+            </div>`).join('') : '<p class="muted" style="padding:10px">None yet.</p>';
+
+        const p = document.getElementById('props');
+        if (sel < 0 || !layers[sel]) { p.innerHTML = ''; return; }
+        const l = layers[sel];
+        p.innerHTML = `
+          <label class="lbl">Text</label>
+          <input class="inp" style="width:100%" value="${esc(l.text)}" oninput="setText(this.value)">
+          <label class="lbl">Size</label>
+          <input type="range" min="10" max="${Math.round(img.naturalHeight / 3)}" value="${l.size}"
+                 style="width:100%" oninput="setSize(this.value)">
+          <label class="lbl">Colour</label>
+          <div class="swatches">${PALETTE.map(c =>
+            `<div class="sw ${l.color === c ? 'on' : ''}" style="background:${c}" onclick="setColor('${c}')"></div>`).join('')}</div>
+          <label class="row" style="gap:7px;font-size:.8rem;margin-top:12px">
+            <input type="checkbox" ${l.bold ? 'checked' : ''} onchange="setBold(this.checked)"> Bold
+          </label>
+          <p class="muted" style="margin-top:10px;font-size:.76rem">Drag the text on the image to move it.</p>`;
+    }
+    function selectLayer(i) { sel = i; renderSide(); draw(); }
+    function removeLayer(i) { layers.splice(i, 1); if (sel >= layers.length) sel = layers.length - 1; renderSide(); draw(); }
+    function setText(v) { layers[sel].text = v; renderSide(); draw(); }
+    function setSize(v) { layers[sel].size = Number(v); draw(); }
+    function setColor(c) { layers[sel].color = c; renderSide(); draw(); }
+    function setBold(b) { layers[sel].bold = b; draw(); }
+
+    function draw() {
+        const cv = document.getElementById('stage');
+        if (!cv || !img) return;
+        const ctx = cv.getContext('2d');
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        try { ctx.drawImage(img, 0, 0, cv.width, cv.height); } catch (_) {}
+        layers.forEach((l, i) => {
+            ctx.font = (l.bold ? '700 ' : '') + l.size + 'px Poppins, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            // A dark halo so light text stays readable on a light photo.
+            ctx.lineWidth = Math.max(2, l.size / 12);
+            ctx.strokeStyle = 'rgba(0,0,0,.45)';
+            ctx.strokeText(l.text, l.x, l.y);
+            ctx.fillStyle = l.color;
+            ctx.fillText(l.text, l.x, l.y);
+            if (i === sel) {
+                const w = ctx.measureText(l.text).width;
+                ctx.strokeStyle = '#d19a66';
+                ctx.lineWidth = Math.max(1, l.size / 22);
+                ctx.setLineDash([8, 6]);
+                ctx.strokeRect(l.x - w / 2 - 8, l.y - l.size / 1.5, w + 16, l.size * 1.4);
+                ctx.setLineDash([]);
+            }
+        });
+    }
+
+    /** Canvas pixels are not CSS pixels — scale the pointer by the ratio. */
+    function toCanvas(cv, ev) {
+        const r = cv.getBoundingClientRect();
+        return { x: (ev.clientX - r.left) * (cv.width / r.width),
+                 y: (ev.clientY - r.top) * (cv.height / r.height) };
+    }
+    function bindDrag(cv) {
+        cv.addEventListener('pointerdown', (ev) => {
+            const p = toCanvas(cv, ev);
+            // Topmost layer first, so a label drawn over another picks up.
+            for (let i = layers.length - 1; i >= 0; i--) {
+                const l = layers[i];
+                const ctx = cv.getContext('2d');
+                ctx.font = (l.bold ? '700 ' : '') + l.size + 'px Poppins, sans-serif';
+                const w = ctx.measureText(l.text).width;
+                if (Math.abs(p.x - l.x) <= w / 2 + 10 && Math.abs(p.y - l.y) <= l.size) {
+                    sel = i; drag = { dx: p.x - l.x, dy: p.y - l.y };
+                    cv.setPointerCapture(ev.pointerId);
+                    renderSide(); draw();
+                    return;
+                }
+            }
+        });
+        cv.addEventListener('pointermove', (ev) => {
+            if (!drag || sel < 0) return;
+            const p = toCanvas(cv, ev);
+            layers[sel].x = p.x - drag.dx;
+            layers[sel].y = p.y - drag.dy;
+            draw();
+        });
+        cv.addEventListener('pointerup', () => { drag = null; });
+        cv.addEventListener('pointercancel', () => { drag = null; });
+    }
+
+    function downloadImg() {
+        const cv = document.getElementById('stage');
+        if (!cv || !img) return;
+        const keep = sel; sel = -1; draw();      // hide the selection outline from the export
+        try {
+            const a = document.createElement('a');
+            a.href = cv.toDataURL('image/png');
+            a.download = 'tapify-design.png';
+            a.click();
+        } catch (e) {
+            document.getElementById('taint').innerHTML =
+              '<div class="warn">The image could not be exported from this browser. '
+              + 'Use <b>Open</b> on the design to download the original instead.</div>';
+        }
+        sel = keep; draw();
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+</body>
+</html>

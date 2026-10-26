@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Growth Center - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .ai { max-width: 1100px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 4px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+        .card .hint { margin: 0 0 12px; font-size: .8rem; color: #6b7280; }
+
+        .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .tool {
+            background: #fff; border: 1px solid #e9e3dc; border-radius: 13px; padding: 14px;
+            cursor: pointer; text-align: left; font: inherit;
+        }
+        .tool.on { background: #153e3f; border-color: #153e3f; }
+        .tool i { font-size: 1rem; color: #27706e; }
+        .tool.on i, .tool.on b, .tool.on span { color: #f6eee6; }
+        .tool b { display: block; font-size: .85rem; color: #153e3f; margin-top: 8px; font-weight: 700; }
+        .tool span { font-size: .72rem; color: #6b7280; }
+
+        .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
+               text-transform: uppercase; letter-spacing: .5px; margin: 12px 0 5px; }
+        .inp, .ta { width: 100%; border: 1px solid #e9e3dc; border-radius: 10px; padding: 10px 12px;
+                    font: inherit; font-size: .88rem; background: #fff; }
+        .ta { min-height: 70px; resize: vertical; }
+        .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 680px) { .two { grid-template-columns: 1fr } }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 10px; padding: 11px 20px;
+               font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer; }
+        .btn:disabled { opacity: .55; cursor: default; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-sm { padding: 6px 12px; font-size: .76rem; }
+
+        .out { border-top: 1px solid #f0ece6; margin-top: 16px; padding-top: 14px; }
+        .res {
+            background: #faf7f4; border: 1px solid #efe9e1; border-radius: 12px;
+            padding: 13px 15px; margin-bottom: 10px; font-size: .88rem; line-height: 1.6; color: #22333b;
+            white-space: pre-wrap;
+        }
+        .res-act { display: flex; gap: 8px; margin-top: 10px; }
+        .pill { display: inline-block; background: #eaf3f1; color: #27706e; border-radius: 20px;
+                padding: 4px 11px; font-size: .74rem; font-weight: 700; margin: 0 6px 6px 0; }
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .err { background: #fdecec; border: 1px solid #e9a0a0; border-radius: 11px;
+               padding: 12px 14px; font-size: .83rem; color: #8a2a2a; }
+        .checks { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }
+        .checks label { font-size: .82rem; color: #374151; display: flex; align-items: center; gap: 6px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item active"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">AI Growth Center</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="showSaved()"><i class="fas fa-bookmark"></i> Saved</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="ai">
+                <div class="tools" id="tools"></div>
+
+                <div class="card">
+                    <h3 id="toolTitle">Your business</h3>
+                    <p class="hint" id="toolHint"></p>
+
+                    <div class="two">
+                        <div>
+                            <label class="lbl" for="bName">Business name</label>
+                            <input class="inp" id="bName" placeholder="Sharma Electronics">
+                        </div>
+                        <div>
+                            <label class="lbl" for="bCat">Category</label>
+                            <input class="inp" id="bCat" placeholder="Electronics shop">
+                        </div>
+                    </div>
+                    <div class="two">
+                        <div>
+                            <label class="lbl" for="bCity">City</label>
+                            <input class="inp" id="bCity" placeholder="Nagpur">
+                        </div>
+                        <div>
+                            <label class="lbl" for="bWho">Who are your customers?</label>
+                            <input class="inp" id="bWho" placeholder="Families, local shops">
+                        </div>
+                    </div>
+                    <label class="lbl" for="bSvc">Services you offer</label>
+                    <textarea class="ta" id="bSvc" placeholder="Appliance repair, spare parts, installation"></textarea>
+
+                    <div id="extra"></div>
+
+                    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn" id="goBtn" onclick="generate(false)">Generate</button>
+                        <button class="btn btn-ghost" id="againBtn" onclick="generate(true)" style="display:none">Try again</button>
+                    </div>
+
+                    <div class="out" id="out" style="display:none"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, body) {
+        const r = await fetch(API + '/api/ai/' + path, {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    /** Each tool maps to one endpoint. `extra` adds the fields only it needs. */
+    const TOOLS = [
+        { k: 'taglines',  ep: 'taglines.php',  ico: 'fa-quote-left',
+          name: 'Taglines', blurb: 'Short lines for your card and website',
+          hint: 'A handful of taglines you can use on your website, card or shopfront.' },
+        { k: 'description', ep: 'business-description.php', ico: 'fa-align-left',
+          name: 'Description', blurb: 'About-us text',
+          hint: 'A description for your Google listing, website or social bio.' },
+        { k: 'keywords',  ep: 'keywords.php',  ico: 'fa-magnifying-glass',
+          name: 'Keywords', blurb: 'What customers search for',
+          hint: 'The words customers type into Google when looking for a business like yours.' },
+        { k: 'faq',       ep: 'faq.php',       ico: 'fa-circle-question',
+          name: 'FAQs', blurb: 'Common questions answered',
+          hint: 'Questions customers usually ask, with answers you can publish.' },
+        { k: 'improve',   ep: 'improvement-suggestions.php', ico: 'fa-lightbulb',
+          name: 'What to fix', blurb: 'Suggestions for your listing',
+          hint: 'Tick what you already have, and we will suggest what to do next.', extra: 'checks' },
+    ];
+    let tool = TOOLS[0];
+
+    function renderTools() {
+        document.getElementById('tools').innerHTML = TOOLS.map(t => `
+            <button class="tool ${t.k === tool.k ? 'on' : ''}" onclick="pick('${t.k}')">
+                <i class="fa-solid ${t.ico}"></i>
+                <b>${esc(t.name)}</b>
+                <span>${esc(t.blurb)}</span>
+            </button>`).join('');
+        document.getElementById('toolTitle').textContent = tool.name;
+        document.getElementById('toolHint').textContent = tool.hint;
+        document.getElementById('extra').innerHTML = tool.extra === 'checks' ? CHECKS_HTML : '';
+        document.getElementById('out').style.display = 'none';
+        document.getElementById('againBtn').style.display = 'none';
+    }
+
+    const CHECK_FIELDS = [
+        ['has_description', 'Description written'],
+        ['has_logo', 'Logo uploaded'],
+        ['has_cover_image', 'Cover photo'],
+        ['has_contact', 'Phone number'],
+        ['has_website', 'Website link'],
+        ['has_business_hours', 'Opening hours'],
+        ['has_keywords', 'Keywords added'],
+    ];
+    const CHECKS_HTML = '<label class="lbl">What does your listing already have?</label><div class="checks">'
+        + CHECK_FIELDS.map(([k, l]) => `<label><input type="checkbox" id="ck_${k}"> ${esc(l)}</label>`).join('')
+        + '</div>';
+
+    function pick(k) { tool = TOOLS.find(t => t.k === k) || TOOLS[0]; renderTools(); }
+
+    function payload(regenerate) {
+        const v = (id) => (document.getElementById(id).value || '').trim();
+        const b = {
+            business_name: v('bName'),
+            category: v('bCat'),
+            city: v('bCity'),
+            services: v('bSvc'),
+            target_customers: v('bWho'),
+            regenerate: !!regenerate,
+        };
+        if (tool.extra === 'checks') {
+            CHECK_FIELDS.forEach(([k]) => { b[k] = !!document.getElementById('ck_' + k).checked; });
+        }
+        return b;
+    }
+
+    async function generate(regenerate) {
+        const b = payload(regenerate);
+        if (!b.business_name) { alert('Enter your business name.'); return; }
+        if (!b.category)      { alert('Enter your category, e.g. Electronics shop.'); return; }
+
+        const out = document.getElementById('out');
+        const btn = document.getElementById('goBtn');
+        btn.disabled = true;
+        out.style.display = '';
+        out.innerHTML = '<p class="muted">Writing… this takes a few seconds.</p>';
+        try {
+            const d = await api(tool.ep, b);
+            renderOut(d);
+            document.getElementById('againBtn').style.display = '';
+        } catch (e) {
+            out.innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    /**
+     * The five endpoints return different shapes — a list of lines, one block
+     * of prose, keyword strings, question/answer pairs. Rather than branch per
+     * tool, anything array-like is listed and anything else is shown whole.
+     */
+    function renderOut(d) {
+        const id = d.history_id || d.id || null;
+        let body = '';
+
+        const items = d.taglines || d.keywords || d.faqs || d.suggestions || d.items || null;
+
+        if (Array.isArray(items) && items.length) {
+            if (items[0] && typeof items[0] === 'object' && (items[0].question || items[0].title)) {
+                body = items.map(x => `<div class="res"><b>${esc(x.question || x.title)}</b><br>${esc(x.answer || x.detail || '')}</div>`).join('');
+            } else if (tool.k === 'keywords') {
+                body = '<div class="res">' + items.map(x => `<span class="pill">${esc(typeof x === 'string' ? x : (x.keyword || x.name || ''))}</span>`).join('') + '</div>';
+            } else {
+                body = items.map(x => `<div class="res">${esc(typeof x === 'string' ? x : (x.text || JSON.stringify(x)))}</div>`).join('');
+            }
+        } else {
+            const text = d.description || d.text || d.result || d.content || '';
+            body = text ? `<div class="res">${esc(text)}</div>` : '<p class="muted">Nothing came back. Try again.</p>';
+        }
+
+        document.getElementById('out').innerHTML = body + (id ? `
+            <div class="res-act">
+                <button class="btn btn-ghost btn-sm" onclick="save(${Number(id)})">Save this</button>
+                <button class="btn btn-ghost btn-sm" onclick="copyOut(this)">Copy</button>
+            </div>` : '');
+    }
+
+    async function save(historyId) {
+        try { await api('save.php', { history_id: historyId, saved: true }); alert('Saved. Find it under Saved.'); }
+        catch (e) { alert(e.message); }
+    }
+
+    function copyOut(btn) {
+        const text = [...document.querySelectorAll('#out .res')].map(n => n.innerText).join('\n\n');
+        if (navigator.clipboard) navigator.clipboard.writeText(text);
+        const old = btn.textContent; btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = old; }, 1600);
+    }
+
+    async function showSaved() {
+        const out = document.getElementById('out');
+        out.style.display = '';
+        out.innerHTML = '<p class="muted">Loading saved items…</p>';
+        try {
+            const d = await api('history.php?saved=1&limit=30');
+            const rows = d.history || d.items || [];
+            out.innerHTML = rows.length
+                ? rows.map(r => `<div class="res"><b style="font-size:.76rem;color:#27706e">${esc(r.feature || '')}</b><br>${esc(r.output || r.result || '')}</div>`).join('')
+                : '<p class="muted">Nothing saved yet. Generate something and press Save.</p>';
+        } catch (e) { out.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    /** Pre-fill the business fields from the customer's own profile. */
+    async function prefill() {
+        try {
+            const r = await fetch(API + '/api/me.php', { credentials: 'include' });
+            const j = await r.json();
+            const u = (j.data || {}).user || {};
+            const v = (j.data || {}).vcard || {};
+            if (!document.getElementById('bName').value) {
+                document.getElementById('bName').value = v.vcard_name || u.business_name || u.name || '';
+            }
+        } catch (_) { /* prefill is a convenience, never a blocker */ }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { renderTools(); prefill(); });
+    </script>
+</body>
+</html>

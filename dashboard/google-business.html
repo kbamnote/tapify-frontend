@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Business Profile - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .gb { max-width: 1100px; margin: 20px auto; padding: 0 20px 48px; }
+
+        .gb-bar {
+            background: #fff; border: 1px solid #e9e3dc; border-radius: 15px;
+            padding: 15px 18px; display: flex; align-items: center; gap: 14px;
+            flex-wrap: wrap; margin-bottom: 16px;
+        }
+        .gb-dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; flex: 0 0 auto; }
+        .gb-dot.on { background: #16a34a; }
+        .gb-where { flex: 1; min-width: 200px; }
+        .gb-where b { color: #153e3f; font-size: .95rem; }
+        .gb-where p { margin: 2px 0 0; font-size: .78rem; color: #6b7280; }
+
+        .gb-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+        .gb-tab {
+            border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
+            padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700;
+        }
+        .gb-tab.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 12px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 10px; padding: 10px 18px;
+               font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; text-decoration: none;
+               display: inline-block; }
+        .btn:disabled { opacity: .5; cursor: default; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-sm { padding: 7px 13px; font-size: .78rem; }
+
+        .inp, .ta, .sel {
+            width: 100%; border: 1px solid #e9e3dc; border-radius: 10px; padding: 10px 12px;
+            font: inherit; font-size: .88rem; background: #fff;
+        }
+        .ta { min-height: 92px; resize: vertical; }
+        .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
+               text-transform: uppercase; letter-spacing: .5px; margin: 12px 0 5px; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .stat { background: #faf7f4; border-radius: 12px; padding: 14px; text-align: center; }
+        .stat b { display: block; font-size: 1.5rem; color: #153e3f; }
+        .stat span { font-size: .72rem; color: #6b7280; font-weight: 600; }
+
+        .rev { border-bottom: 1px solid #f0ece6; padding: 14px 0; }
+        .rev:last-child { border-bottom: 0; }
+        .rev-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+        .rev-who { font-weight: 700; color: #153e3f; font-size: .88rem; }
+        .rev-when { font-size: .72rem; color: #9ca3af; }
+        .rev-stars { color: #f59e0b; font-size: .82rem; letter-spacing: 1px; }
+        .rev-txt { font-size: .85rem; color: #374151; line-height: 1.5; margin: 6px 0 0; }
+        .rev-reply { background: #f6f9f8; border-left: 3px solid #27706e; padding: 9px 12px;
+                     border-radius: 0 8px 8px 0; margin-top: 9px; font-size: .82rem; color: #374151; }
+        .rev-reply b { color: #153e3f; display: block; font-size: .72rem; margin-bottom: 2px; }
+
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { border: 1px solid #e9e3dc; background: #fff; border-radius: 20px; padding: 7px 13px;
+                font-size: .8rem; cursor: pointer; font-weight: 600; color: #374151; }
+        .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .grow { flex: 1; min-width: 150px; }
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .warn { background: #fdf6e7; border: 1px solid #e3c178; border-radius: 11px;
+                padding: 12px 14px; font-size: .83rem; color: #6b5420; line-height: 1.5; }
+        .err  { background: #fdecec; border: 1px solid #e9a0a0; border-radius: 11px;
+                padding: 12px 14px; font-size: .83rem; color: #8a2a2a; line-height: 1.5; }
+        .hide { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item active"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Google Business Profile</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="boot()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="gb">
+                <div id="flash"></div>
+                <div id="bar"></div>
+                <div class="gb-tabs hide" id="tabs"></div>
+                <div id="panel"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, opts) {
+        const r = await fetch(API + '/api/google/gbp/' + path, Object.assign({
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+        }, opts || {}));
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    const TABS = [
+        ['reviews',    'Reviews'],
+        ['posts',      'Posts'],
+        ['insights',   'Insights'],
+        ['services',   'Services'],
+        ['attributes', 'Attributes'],
+        ['ask',        'Get reviews'],
+    ];
+    let tab = 'reviews';
+    let status = null;
+
+    /* ───────────────────────────── connection bar ───────────────────── */
+
+    async function boot() {
+        // A ?status= on the URL means we have just come back from Google's
+        // consent screen (see callback.php), so say what happened before the
+        // page quietly reloads the connection underneath.
+        const q = new URLSearchParams(location.search);
+        if (q.get('status')) {
+            document.getElementById('flash').innerHTML = q.get('status') === 'success'
+                ? '<div class="card" style="border-color:#9ccfae;background:#f1faf4">Google Business Profile connected.</div>'
+                : '<div class="err">Could not connect to Google (' + esc(q.get('reason') || 'unknown') + '). Please try again.</div>';
+            history.replaceState({}, '', location.pathname);
+        }
+
+        try {
+            status = await api('status.php');
+        } catch (e) {
+            document.getElementById('bar').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+            return;
+        }
+        renderBar();
+
+        if (status.connected && status.location) {
+            document.getElementById('tabs').classList.remove('hide');
+            renderTabs();
+            openTab(tab);
+        } else {
+            document.getElementById('tabs').classList.add('hide');
+            document.getElementById('panel').innerHTML = status.connected
+                ? ''                       // connected but no location → picker is in the bar
+                : '<div class="card"><p class="muted">Connect your Google Business Profile to manage '
+                  + 'reviews, posts, services and insights from here.</p></div>';
+            if (status.connected && !status.location) loadLocations();
+        }
+    }
+
+    function renderBar() {
+        if (!status.configured) {
+            document.getElementById('bar').innerHTML =
+                '<div class="warn">Google Business Profile is not switched on for this account yet. '
+                + 'Please contact Tapify support.</div>';
+            return;
+        }
+        if (!status.connected) {
+            document.getElementById('bar').innerHTML = `
+                <div class="gb-bar">
+                    <span class="gb-dot"></span>
+                    <div class="gb-where"><b>Not connected</b>
+                        <p>Sign in with the Google account that owns your business listing.</p></div>
+                    <button class="btn" onclick="connect()"><i class="fab fa-google"></i> Connect Google</button>
+                </div>`;
+            return;
+        }
+        const loc = status.location;
+        document.getElementById('bar').innerHTML = `
+            <div class="gb-bar">
+                <span class="gb-dot on"></span>
+                <div class="gb-where">
+                    <b>${esc(loc ? loc.title : 'Connected')}</b>
+                    <p>${loc ? 'Connected to Google' : 'Choose which business listing to manage'}</p>
+                </div>
+                ${loc ? '<button class="btn btn-ghost btn-sm" onclick="loadLocations()">Change listing</button>' : ''}
+                <button class="btn btn-ghost btn-sm" onclick="disconnect()">Disconnect</button>
+            </div>
+            <div id="picker"></div>`;
+    }
+
+    async function connect() {
+        try {
+            // origin=web matters: without it the callback hands off to the
+            // tapifapp:// deep link, which does nothing in a desktop browser.
+            const d = await api('connect-url.php?origin=web');
+            location.href = d.auth_url;
+        } catch (e) { alert(e.message); }
+    }
+
+    async function disconnect() {
+        if (!confirm('Disconnect Google Business Profile? Reviews and posts will stop syncing.')) return;
+        try { await api('disconnect.php', { method: 'POST', body: '{}' }); boot(); }
+        catch (e) { alert(e.message); }
+    }
+
+    async function loadLocations() {
+        const slot = document.getElementById('picker') || document.getElementById('panel');
+        slot.innerHTML = '<div class="card"><p class="muted">Loading your listings…</p></div>';
+        try {
+            const d = await api('locations.php');
+            const list = d.locations || [];
+            if (!list.length) {
+                slot.innerHTML = '<div class="warn">No business listings found on this Google account.</div>';
+                return;
+            }
+            slot.innerHTML = `<div class="card"><h3>Choose the listing to manage</h3>
+                ${list.map(l => `
+                    <div class="row" style="padding:9px 0;border-bottom:1px solid #f0ece6">
+                        <div class="grow">
+                            <b style="font-size:.88rem;color:#153e3f">${esc(l.title || l.id)}</b>
+                            ${l.address ? `<div class="muted" style="font-size:.76rem">${esc(l.address)}</div>` : ''}
+                        </div>
+                        <button class="btn btn-sm" onclick="pickLocation('${esc(l.id)}')">Use this</button>
+                    </div>`).join('')}
+            </div>`;
+        } catch (e) { slot.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    async function pickLocation(id) {
+        try {
+            await api('select-location.php', { method: 'POST', body: JSON.stringify({ location_id: id }) });
+            boot();
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ───────────────────────────────── tabs ─────────────────────────── */
+
+    function renderTabs() {
+        document.getElementById('tabs').innerHTML = TABS.map(([k, l]) =>
+            `<button class="gb-tab ${k === tab ? 'on' : ''}" onclick="openTab('${k}')">${esc(l)}</button>`).join('');
+    }
+
+    function openTab(k) {
+        tab = k;
+        renderTabs();
+        const p = document.getElementById('panel');
+        p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        ({ reviews: tabReviews, posts: tabPosts, insights: tabInsights,
+           services: tabServices, attributes: tabAttrs, ask: tabAsk }[k])(p);
+    }
+
+    const fail = (p) => (e) => { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; };
+    const stars = (n) => '★★★★★'.slice(0, Math.max(0, Math.round(n || 0))).padEnd(5, '☆');
+
+    /* ── reviews ──────────────────────────────────────────────────────── */
+    async function tabReviews(p) {
+        try {
+            const d = await api('reviews.php?limit=50');
+            const ar = d.auto_reply || {};
+            p.innerHTML = `
+              <div class="card">
+                <div class="stat-row">
+                  <div class="stat"><b>${esc(d.total || 0)}</b><span>Reviews</span></div>
+                  <div class="stat"><b>${esc((d.average || 0).toFixed ? d.average.toFixed(1) : d.average || 0)}</b><span>Average</span></div>
+                  <div class="stat"><b>${esc(d.unanswered || 0)}</b><span>Unanswered</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3>Automatic replies</h3>
+                <div class="row">
+                  <label class="row" style="gap:7px;font-size:.85rem">
+                    <input type="checkbox" id="arOn" ${ar.enabled ? 'checked' : ''}> Reply automatically
+                  </label>
+                  <span class="muted">to reviews of</span>
+                  <select class="sel" id="arMin" style="width:auto">
+                    ${[5,4,3,2,1].map(n => `<option value="${n}" ${Number(ar.min_stars) === n ? 'selected' : ''}>${n} stars and above</option>`).join('')}
+                  </select>
+                  <button class="btn btn-sm" onclick="saveAuto()">Save</button>
+                </div>
+                <p class="muted" style="margin-top:9px">Complaints are left for you to answer yourself.</p>
+              </div>
+              <div class="card">
+                <h3>Recent reviews</h3>
+                ${(d.reviews || []).length ? (d.reviews || []).map(renderReview).join('')
+                    : '<p class="muted">No reviews yet.</p>'}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+
+    function renderReview(r) {
+        const id = esc(r.id || r.review_id || '');
+        return `<div class="rev">
+            <div class="rev-top">
+              <span class="rev-who">${esc(r.reviewer || r.author || 'Someone')}</span>
+              <span class="rev-when">${esc(r.created_at || r.time || '')}</span>
+            </div>
+            <div class="rev-stars">${stars(r.rating || r.stars)}</div>
+            ${r.comment ? `<p class="rev-txt">${esc(r.comment)}</p>` : '<p class="rev-txt muted">No comment left.</p>'}
+            ${r.reply
+                ? `<div class="rev-reply"><b>Your reply</b>${esc(r.reply)}</div>`
+                : `<div class="row" style="margin-top:9px">
+                     <input class="inp grow" id="rp_${id}" placeholder="Write a reply…">
+                     <button class="btn btn-sm" onclick="reply('${id}')">Reply</button>
+                   </div>`}
+        </div>`;
+    }
+
+    async function reply(id) {
+        const box = document.getElementById('rp_' + id);
+        const comment = (box.value || '').trim();
+        if (!comment) return;
+        box.disabled = true;
+        try {
+            await api('reply.php', { method: 'POST', body: JSON.stringify({ review_id: id, comment }) });
+            openTab('reviews');
+        } catch (e) { alert(e.message); box.disabled = false; }
+    }
+
+    async function saveAuto() {
+        try {
+            await api('auto-reply.php', { method: 'POST', body: JSON.stringify({
+                enabled: document.getElementById('arOn').checked,
+                min_stars: parseInt(document.getElementById('arMin').value, 10),
+            }) });
+            openTab('reviews');
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ── posts ────────────────────────────────────────────────────────── */
+    async function tabPosts(p) {
+        try {
+            const d = await api('posts.php');
+            p.innerHTML = `
+              <div class="card">
+                <h3>Write a post</h3>
+                <textarea class="ta" id="poBody" placeholder="What would you like to tell customers?"></textarea>
+                <label class="lbl" for="poAction">Button (optional)</label>
+                <div class="row">
+                  <select class="sel grow" id="poAction">
+                    <option value="">No button</option>
+                    ${(d.actions || []).map(a => `<option value="${esc(a)}">${esc(a.replace(/_/g, ' '))}</option>`).join('')}
+                  </select>
+                  <input class="inp grow" id="poUrl" placeholder="Link for the button">
+                </div>
+                <div style="margin-top:14px"><button class="btn" onclick="addPost()">Publish to Google</button></div>
+              </div>
+              <div class="card">
+                <h3>Published posts (${esc(d.total || 0)})</h3>
+                ${(d.posts || []).length ? (d.posts || []).map(x => `
+                    <div class="rev">
+                      <div class="rev-top"><span class="rev-who">${esc(x.state || 'Live')}</span>
+                        <span class="rev-when">${esc(x.created_at || '')}</span></div>
+                      <p class="rev-txt">${esc(x.summary || '')}</p>
+                    </div>`).join('') : '<p class="muted">Nothing posted yet.</p>'}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+
+    async function addPost() {
+        const summary = (document.getElementById('poBody').value || '').trim();
+        if (!summary) { alert('Write something first.'); return; }
+        const action = document.getElementById('poAction').value;
+        const url = (document.getElementById('poUrl').value || '').trim();
+        if (action && !url) { alert('A button needs a link.'); return; }
+        try {
+            await api('posts.php', { method: 'POST', body: JSON.stringify({
+                summary, action: action || undefined, action_url: url || undefined }) });
+            openTab('posts');
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ── insights ─────────────────────────────────────────────────────── */
+    async function tabInsights(p) {
+        try {
+            const d = await api('insights.php?days=30');
+            p.innerHTML = `
+              <div class="card">
+                <h3>Last ${esc(d.days || 30)} days</h3>
+                <div class="stat-row">
+                  ${(d.cards || []).map(c => `
+                    <div class="stat"><b>${esc(c.value)}</b><span>${esc(c.label || c.title || '')}</span></div>`).join('')
+                    || '<p class="muted">No performance data yet.</p>'}
+                </div>
+                ${d.lag_days ? `<p class="muted" style="margin-top:12px">Google reports performance with a
+                    ${esc(d.lag_days)}-day delay, so the most recent days are not included.</p>` : ''}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+
+    /* ── services ─────────────────────────────────────────────────────── */
+    let services = [];
+    async function tabServices(p) {
+        try {
+            const d = await api('services.php');
+            services = (d.services || []).slice();
+            p.innerHTML = `
+              <div class="card">
+                <h3>Your services${d.category ? ' &middot; ' + esc(d.category) : ''}</h3>
+                <div id="svcList"></div>
+                <div class="row" style="margin-top:12px">
+                  <input class="inp grow" id="svcNew" placeholder="Add a service, e.g. Oil change">
+                  <button class="btn btn-sm" onclick="svcAdd()">Add</button>
+                </div>
+                ${(d.suggested || []).length ? `<p class="lbl">Suggestions</p><div class="chips">
+                    ${(d.suggested || []).map(s => `<button class="chip" onclick="svcAddName('${esc(s.name || s)}')">${esc(s.name || s)}</button>`).join('')}
+                  </div>` : ''}
+                <div style="margin-top:16px"><button class="btn" onclick="svcSave()">Save to Google</button></div>
+                <p class="muted" style="margin-top:9px">Saving replaces the whole list on your Google listing.</p>
+              </div>`;
+            svcRender();
+        } catch (e) { fail(p)(e); }
+    }
+    function svcRender() {
+        document.getElementById('svcList').innerHTML = services.length ? services.map((s, i) => `
+            <div class="row" style="padding:8px 0;border-bottom:1px solid #f0ece6">
+              <span class="grow" style="font-size:.88rem">${esc(s.name || s.service_type_id || '')}</span>
+              <button class="btn btn-ghost btn-sm" onclick="svcDel(${i})">Remove</button>
+            </div>`).join('') : '<p class="muted">No services listed yet.</p>';
+    }
+    function svcAdd() {
+        const el = document.getElementById('svcNew');
+        svcAddName((el.value || '').trim());
+        el.value = '';
+    }
+    function svcAddName(name) {
+        if (!name) return;
+        if (services.some(s => (s.name || '') === name)) return;
+        services.push({ name });
+        svcRender();
+    }
+    function svcDel(i) { services.splice(i, 1); svcRender(); }
+    async function svcSave() {
+        try { await api('services.php', { method: 'POST', body: JSON.stringify({ services }) }); openTab('services'); }
+        catch (e) { alert(e.message); }
+    }
+
+    /* ── attributes ───────────────────────────────────────────────────── */
+    let attrChanges = {};
+    async function tabAttrs(p) {
+        try {
+            const d = await api('attributes.php');
+            attrChanges = {};
+            const groups = d.groups || [];
+            p.innerHTML = `
+              <div class="card">
+                <h3>What your business offers</h3>
+                ${groups.length ? groups.map(g => `
+                    <p class="lbl">${esc(g.group || '')}</p>
+                    <div class="chips">
+                      ${(g.items || []).map(it => `
+                        <button class="chip ${it.value ? 'on' : ''}" data-id="${esc(it.id)}"
+                                onclick="attrToggle(this)">${esc(it.label)}</button>`).join('')}
+                    </div>`).join('') : '<p class="muted">No attributes available for this business type.</p>'}
+                ${groups.length ? '<div style="margin-top:16px"><button class="btn" onclick="attrSave()">Save to Google</button></div>' : ''}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+    function attrToggle(el) {
+        const on = !el.classList.contains('on');
+        el.classList.toggle('on', on);
+        // Only what actually changed is sent — the endpoint leaves anything
+        // absent from `changes` untouched on Google.
+        attrChanges[el.getAttribute('data-id')] = on;
+    }
+    async function attrSave() {
+        if (!Object.keys(attrChanges).length) { alert('Nothing changed yet.'); return; }
+        try { await api('attributes.php', { method: 'POST', body: JSON.stringify({ changes: attrChanges }) }); openTab('attributes'); }
+        catch (e) { alert(e.message); }
+    }
+
+    /* ── get reviews ──────────────────────────────────────────────────── */
+    async function tabAsk(p) {
+        try {
+            const d = await api('review-requests.php');
+            const link = d.review_link || '';
+            p.innerHTML = `
+              <div class="card">
+                <h3>Your review link</h3>
+                <div class="row">
+                  <input class="inp grow" id="revLink" value="${esc(link)}" readonly>
+                  <button class="btn btn-sm" onclick="copyLink()">Copy</button>
+                </div>
+                <p class="muted" style="margin-top:9px">Send this to a happy customer and it opens Google's review box.</p>
+              </div>
+              <div class="card">
+                <h3>Ask a customer</h3>
+                <div class="row">
+                  <input class="inp grow" id="askName" placeholder="Name (optional)">
+                  <input class="inp grow" id="askPhone" placeholder="Phone, e.g. 9876543210">
+                  <button class="btn btn-sm" onclick="askSend()">Open WhatsApp</button>
+                </div>
+                <p class="muted" style="margin-top:9px">This opens WhatsApp on your own device with the message
+                  ready. Tapify does not send it for you &mdash; Google treats mass review requests as abuse.</p>
+              </div>
+              <div class="card">
+                <h3>Already asked (${esc((d.requests || []).length)})</h3>
+                ${(d.requests || []).length ? (d.requests || []).map(r => `
+                    <div class="row" style="padding:8px 0;border-bottom:1px solid #f0ece6">
+                      <span class="grow" style="font-size:.86rem">${esc(r.customer_name || r.phone)}</span>
+                      <span class="muted">${esc(r.channel || '')} &middot; ${esc(r.created_at || '')}</span>
+                    </div>`).join('') : '<p class="muted">Nobody asked yet.</p>'}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+    function copyLink() {
+        const el = document.getElementById('revLink');
+        el.select();
+        navigator.clipboard ? navigator.clipboard.writeText(el.value) : document.execCommand('copy');
+    }
+    async function askSend() {
+        const phone = (document.getElementById('askPhone').value || '').replace(/\D/g, '');
+        const name = (document.getElementById('askName').value || '').trim();
+        if (phone.length < 10) { alert('Enter a valid phone number.'); return; }
+        const link = document.getElementById('revLink').value;
+        const text = `Hi${name ? ' ' + name : ''}, thanks for choosing us! Could you leave us a quick Google review? ${link}`;
+        // Recorded first, then the owner's own WhatsApp opens with the message.
+        try { await api('review-requests.php', { method: 'POST', body: JSON.stringify({ name, phone, channel: 'whatsapp' }) }); }
+        catch (e) { /* logging the ask must not stop them asking */ }
+        window.open('https://wa.me/' + (phone.length === 10 ? '91' + phone : phone)
+            + '?text=' + encodeURIComponent(text), '_blank');
+        openTab('ask');
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .so { max-width: 1100px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 4px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+        .card .hint { margin: 0 0 12px; font-size: .8rem; color: #6b7280; }
+
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+        .tab { border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
+               padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700; }
+        .tab.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .accts { display: flex; flex-wrap: wrap; gap: 10px; }
+        .acct {
+            display: flex; align-items: center; gap: 10px; border: 1.5px solid #e9e3dc;
+            border-radius: 12px; padding: 10px 14px; cursor: pointer; background: #fff;
+        }
+        .acct.on { border-color: #153e3f; background: #f3f8f7; }
+        .acct i { font-size: 1.1rem; }
+        .acct b { font-size: .85rem; color: #153e3f; }
+        .acct span { font-size: .72rem; color: #6b7280; display: block; }
+        .fb { color: #1877F2 } .ig { color: #E1306C } .li { color: #0A66C2 }
+
+        .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
+               text-transform: uppercase; letter-spacing: .5px; margin: 14px 0 5px; }
+        .ta { width: 100%; border: 1px solid #e9e3dc; border-radius: 10px; padding: 11px 13px;
+              font: inherit; font-size: .9rem; min-height: 110px; resize: vertical; }
+        .inp { border: 1px solid #e9e3dc; border-radius: 10px; padding: 9px 12px; font: inherit; font-size: .86rem; }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 10px; padding: 11px 20px;
+               font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer; }
+        .btn:disabled { opacity: .55; cursor: default; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-sm { padding: 6px 12px; font-size: .76rem; }
+
+        .media { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .thumb { position: relative; width: 84px; height: 84px; border-radius: 10px; overflow: hidden;
+                 border: 1px solid #e9e3dc; background: #faf7f4; }
+        .thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .thumb button { position: absolute; top: 3px; right: 3px; border: 0; border-radius: 50%;
+                        width: 20px; height: 20px; background: rgba(0,0,0,.6); color: #fff; cursor: pointer;
+                        font-size: .7rem; line-height: 1; }
+
+        .post { border-bottom: 1px solid #f0ece6; padding: 13px 0; }
+        .post:last-child { border-bottom: 0; }
+        .post-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+        .post-cap { font-size: .87rem; color: #22333b; line-height: 1.5; margin: 5px 0 0; }
+        .badge { font-size: .68rem; font-weight: 800; border-radius: 20px; padding: 3px 9px; }
+        .b-ok { background: #e8f6ed; color: #15803d } .b-wait { background: #fdf6e7; color: #92670a }
+        .b-bad { background: #fdecec; color: #b91c1c }
+
+        .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 12px; }
+        .stat { background: #faf7f4; border-radius: 12px; padding: 14px; text-align: center; }
+        .stat b { display: block; font-size: 1.5rem; color: #153e3f; }
+        .stat span { font-size: .72rem; color: #6b7280; font-weight: 600; }
+
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .err { background: #fdecec; border: 1px solid #e9a0a0; border-radius: 11px; padding: 12px 14px;
+               font-size: .83rem; color: #8a2a2a; }
+        .ok  { background: #f1faf4; border: 1px solid #9ccfae; border-radius: 11px; padding: 12px 14px;
+               font-size: .83rem; color: #1a6b3a; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item active"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Social Media</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="boot()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="so">
+                <div id="flash"></div>
+                <div class="tabs" id="tabs"></div>
+                <div id="panel"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, opts) {
+        const r = await fetch(API + '/api/social/' + path, Object.assign({
+            credentials: 'include',
+        }, opts || {}));
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+    const post = (path, body) => api(path, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+
+    const TABS = [['compose', 'Compose'], ['history', 'History'], ['accounts', 'Accounts'], ['stats', 'Engagement']];
+    let tab = 'compose';
+    let conns = [];          // connected accounts
+    let available = [];      // platforms that can be connected
+    let picked = {};         // connection_id -> true
+    let media = [];          // [{type,url}]
+
+    const ICON = { facebook: 'fa-brands fa-facebook fb', instagram: 'fa-brands fa-instagram ig',
+                   linkedin: 'fa-brands fa-linkedin li' };
+
+    async function boot() {
+        const q = new URLSearchParams(location.search);
+        if (q.get('status')) {
+            document.getElementById('flash').innerHTML = q.get('status') === 'success'
+                ? '<div class="ok" style="margin-bottom:14px">Account connected.</div>'
+                : '<div class="err" style="margin-bottom:14px">Could not connect ('
+                  + esc(q.get('reason') || 'unknown') + '). Please try again.</div>';
+            history.replaceState({}, '', location.pathname);
+        }
+        try {
+            const d = await api('connections.php');
+            conns = d.connections || [];
+            available = d.available || [];
+        } catch (e) {
+            document.getElementById('panel').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+            return;
+        }
+        renderTabs();
+        openTab(tab);
+    }
+
+    function renderTabs() {
+        document.getElementById('tabs').innerHTML = TABS.map(([k, l]) =>
+            `<button class="tab ${k === tab ? 'on' : ''}" onclick="openTab('${k}')">${esc(l)}</button>`).join('');
+    }
+    function openTab(k) {
+        tab = k; renderTabs();
+        const p = document.getElementById('panel');
+        p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        ({ compose: tabCompose, history: tabHistory, accounts: tabAccounts, stats: tabStats }[k])(p);
+    }
+
+    /* ── accounts ─────────────────────────────────────────────────────── */
+    function tabAccounts(p) {
+        p.innerHTML = `
+          <div class="card">
+            <h3>Connected accounts</h3>
+            <p class="hint">Posts you write here go out to whichever of these you tick.</p>
+            ${conns.length ? `<div class="accts">${conns.map(c => `
+                <div class="acct">
+                  <i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'}"></i>
+                  <div><b>${esc(c.name || c.platform)}</b><span>${esc(c.platform)}</span></div>
+                  <button class="btn btn-ghost btn-sm" onclick="disconnect(${Number(c.id)})">Remove</button>
+                </div>`).join('')}</div>` : '<p class="muted">Nothing connected yet.</p>'}
+          </div>
+          <div class="card">
+            <h3>Add an account</h3>
+            <p class="hint">You will be sent to the platform to sign in, then brought back here.</p>
+            ${available.length ? `<div class="accts">${available.map(pl => `
+                <button class="acct" onclick="connect('${esc(pl)}')">
+                  <i class="${ICON[pl] || 'fa-solid fa-plus'}"></i>
+                  <div><b>Connect ${esc(pl)}</b></div>
+                </button>`).join('')}</div>`
+              : '<p class="muted">No platforms are configured on the server yet.</p>'}
+          </div>`;
+    }
+
+    async function connect(platform) {
+        try {
+            // origin:'web' matters — otherwise the callback hands off to the
+            // tapifapp:// deep link, which does nothing in a desktop browser.
+            const d = await post('connect-url.php', { platform, origin: 'web' });
+            location.href = d.auth_url;
+        } catch (e) { alert(e.message); }
+    }
+    async function disconnect(id) {
+        if (!confirm('Remove this account? Scheduled posts to it will not go out.')) return;
+        try { await post('disconnect.php', { connection_id: id }); boot(); }
+        catch (e) { alert(e.message); }
+    }
+
+    /* ── compose ──────────────────────────────────────────────────────── */
+    function tabCompose(p) {
+        if (!conns.length) {
+            p.innerHTML = `<div class="card"><h3>Connect an account first</h3>
+                <p class="hint">You need at least one Facebook or Instagram account before you can post.</p>
+                <button class="btn" onclick="openTab('accounts')">Go to Accounts</button></div>`;
+            return;
+        }
+        p.innerHTML = `
+          <div class="card">
+            <h3>Post to</h3>
+            <div class="accts">${conns.map(c => `
+                <div class="acct ${picked[c.id] ? 'on' : ''}" onclick="togglePick(${Number(c.id)},this)">
+                  <i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'}"></i>
+                  <div><b>${esc(c.name || c.platform)}</b><span>${esc(c.platform)}</span></div>
+                </div>`).join('')}</div>
+
+            <label class="lbl" for="cap">Caption</label>
+            <textarea class="ta" id="cap" placeholder="What would you like to share?"></textarea>
+
+            <label class="lbl">Photos or video</label>
+            <input type="file" id="file" accept="image/*,video/*" onchange="upload(this)">
+            <div class="media" id="mediaList"></div>
+            <p class="hint" id="igNote" style="margin-top:8px"></p>
+
+            <label class="lbl" for="when">Schedule (optional)</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <input class="inp" type="datetime-local" id="when">
+              <span class="muted">Leave empty to post now.</span>
+            </div>
+
+            <div style="margin-top:18px">
+              <button class="btn" id="pubBtn" onclick="publish()">Publish</button>
+            </div>
+            <div id="pubOut" style="margin-top:12px"></div>
+          </div>`;
+        renderMedia();
+    }
+
+    function togglePick(id, el) {
+        if (picked[id]) delete picked[id]; else picked[id] = true;
+        el.classList.toggle('on');
+        renderIgNote();
+    }
+
+    function renderMedia() {
+        document.getElementById('mediaList').innerHTML = media.map((m, i) => `
+            <div class="thumb">
+              ${m.type === 'video' ? `<video src="${esc(m.url)}" muted></video>` : `<img src="${esc(m.url)}" alt="">`}
+              <button onclick="dropMedia(${i})" title="Remove">&times;</button>
+            </div>`).join('');
+        renderIgNote();
+    }
+    function dropMedia(i) { media.splice(i, 1); renderMedia(); }
+
+    /** Instagram will not accept a text-only post; say so before they try. */
+    function renderIgNote() {
+        const note = document.getElementById('igNote');
+        if (!note) return;
+        const igPicked = conns.some(c => picked[c.id] && c.platform === 'instagram');
+        note.textContent = igPicked && !media.length
+            ? 'Instagram needs at least one photo or video — a text-only post will be rejected.'
+            : '';
+        note.style.color = '#b45309';
+    }
+
+    async function upload(input) {
+        const f = input.files && input.files[0];
+        if (!f) return;
+        input.disabled = true;
+        try {
+            const form = new FormData();
+            form.append('file', f);
+            // No Content-Type header: the browser must set the multipart boundary.
+            const d = await api('media.php', { method: 'POST', body: form });
+            media.push({ type: d.type || (f.type.startsWith('video') ? 'video' : 'image'), url: d.url });
+            renderMedia();
+        } catch (e) { alert(e.message); }
+        finally { input.disabled = false; input.value = ''; }
+    }
+
+    async function publish() {
+        const caption = (document.getElementById('cap').value || '').trim();
+        const ids = Object.keys(picked).map(Number);
+        if (!ids.length) { alert('Choose at least one account.'); return; }
+        if (!caption && !media.length) { alert('Write a caption or add a photo.'); return; }
+
+        const whenLocal = document.getElementById('when').value;
+        // datetime-local gives "YYYY-MM-DDTHH:MM"; the endpoint wants a space
+        // and seconds.
+        const scheduled_at = whenLocal ? whenLocal.replace('T', ' ') + ':00' : null;
+
+        const btn = document.getElementById('pubBtn');
+        btn.disabled = true;
+        document.getElementById('pubOut').innerHTML = '<p class="muted">Sending…</p>';
+        try {
+            await post('publish.php', { caption, media, connection_ids: ids, scheduled_at });
+            document.getElementById('pubOut').innerHTML = '<div class="ok">' +
+                (scheduled_at ? 'Scheduled.' : 'Published.') + ' Check History for the result on each account.</div>';
+            document.getElementById('cap').value = '';
+            media = []; renderMedia();
+        } catch (e) {
+            document.getElementById('pubOut').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+        } finally { btn.disabled = false; }
+    }
+
+    /* ── history ──────────────────────────────────────────────────────── */
+    async function tabHistory(p) {
+        try {
+            const d = await api('posts.php?limit=30');
+            const rows = d.posts || [];
+            p.innerHTML = `<div class="card"><h3>Your posts</h3>
+                ${rows.length ? rows.map(r => `
+                  <div class="post">
+                    <div class="post-top">
+                      <span style="font-size:.8rem;color:#6b7280">${esc(r.scheduled_at || r.created_at || '')}</span>
+                      <span>${(r.targets || []).map(t => badge(t)).join(' ')}</span>
+                    </div>
+                    <p class="post-cap">${esc(r.caption || '')}</p>
+                  </div>`).join('') : '<p class="muted">Nothing posted yet.</p>'}
+            </div>`;
+        } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+    function badge(t) {
+        const s = (t.status || '').toLowerCase();
+        const cls = s === 'published' || s === 'sent' ? 'b-ok' : (s === 'failed' ? 'b-bad' : 'b-wait');
+        return `<span class="badge ${cls}">${esc(t.platform || '')} ${esc(s || 'pending')}</span>`;
+    }
+
+    /* ── engagement ───────────────────────────────────────────────────── */
+    async function tabStats(p) {
+        try {
+            const d = await api('engagement.php');
+            const t = d.totals || d.total || {};
+            p.innerHTML = `<div class="card"><h3>Likes, comments and shares</h3>
+                <div class="stat-row">
+                  <div class="stat"><b>${esc(t.likes || 0)}</b><span>Likes</span></div>
+                  <div class="stat"><b>${esc(t.comments || 0)}</b><span>Comments</span></div>
+                  <div class="stat"><b>${esc(t.shares || 0)}</b><span>Shares</span></div>
+                </div>
+                <p class="hint" style="margin-top:12px">Counted only for posts published through Tapify.</p>
+            </div>`;
+        } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+</body>
+</html>

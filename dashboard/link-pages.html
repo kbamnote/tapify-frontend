@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Page - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        .lp { max-width: 1100px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 4px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+        .card .hint { margin: 0 0 12px; font-size: .8rem; color: #6b7280; line-height: 1.5; }
+
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+        .tab { border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
+               padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700; }
+        .tab.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
+               text-transform: uppercase; letter-spacing: .5px; margin: 13px 0 5px; }
+        .inp, .ta, .sel { width: 100%; border: 1px solid #e9e3dc; border-radius: 10px; padding: 10px 12px;
+                          font: inherit; font-size: .88rem; background: #fff; }
+        .ta { min-height: 64px; resize: vertical; }
+        .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 680px) { .two { grid-template-columns: 1fr } }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 10px; padding: 11px 20px;
+               font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer; text-decoration: none;
+               display: inline-block; }
+        .btn:disabled { opacity: .55; cursor: default; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-sm { padding: 6px 12px; font-size: .76rem; }
+        .btn-red { color: #b91c1c; border-color: #b91c1c; }
+
+        .pg { display: flex; align-items: center; gap: 13px; padding: 13px 0; border-bottom: 1px solid #f0ece6; }
+        .pg:last-child { border-bottom: 0; }
+        .pg-av { width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center;
+                 justify-content: center; color: #fff; font-weight: 800; overflow: hidden; flex: 0 0 auto; }
+        .pg-av img { width: 100%; height: 100%; object-fit: cover; }
+        .pg-b { flex: 1; min-width: 0; }
+        .pg-b b { font-size: .92rem; color: #153e3f; }
+        .pg-url { font-size: .76rem; color: #27706e; font-weight: 600; }
+        .pg-st { font-size: .74rem; color: #6b7280; margin-top: 2px; }
+
+        .swatches { display: flex; flex-wrap: wrap; gap: 9px; }
+        .sw { width: 34px; height: 34px; border-radius: 10px; border: 3px solid transparent; cursor: pointer; }
+        .sw.on { border-color: #d19a66; }
+        .seg { display: flex; gap: 8px; }
+        .seg button { flex: 1; padding: 9px; border-radius: 9px; border: 1px solid #e9e3dc; background: #fff;
+                      font: inherit; font-size: .8rem; font-weight: 700; color: #6b7280; cursor: pointer; }
+        .seg button.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .item { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #f0ece6; }
+        .item:last-child { border-bottom: 0; }
+        .item-b { flex: 1; min-width: 0; }
+        .item-b b { font-size: .87rem; color: #153e3f; display: block; }
+        .item-b span { font-size: .74rem; color: #6b7280; word-break: break-all; }
+
+        .imgbox { width: 76px; height: 76px; border: 1px dashed #d9d2c9; border-radius: 14px; background: #fff;
+                  display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        .imgbox img { width: 100%; height: 100%; object-fit: cover; }
+        .coverbox { height: 76px; border: 1px dashed #d9d2c9; border-radius: 12px; background: #fff;
+                    display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        .coverbox img { width: 100%; height: 100%; object-fit: cover; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 12px; }
+        .stat { background: #faf7f4; border-radius: 12px; padding: 14px; text-align: center; }
+        .stat b { display: block; font-size: 1.5rem; color: #153e3f; }
+        .stat span { font-size: .72rem; color: #6b7280; font-weight: 600; }
+
+        #qrBox { display: inline-block; background: #fff; padding: 16px; border-radius: 12px; }
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .err { background: #fdecec; border: 1px solid #e9a0a0; border-radius: 11px; padding: 12px 14px;
+               font-size: .83rem; color: #8a2a2a; }
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .grow { flex: 1; min-width: 150px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item active"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title" id="pTitle">Link Page</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" id="topBtn" onclick="goList()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="lp"><div id="view"></div></div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, body, form) {
+        const opt = { credentials: 'include' };
+        if (form) { opt.method = 'POST'; opt.body = form; }
+        else if (body) { opt.method = 'POST'; opt.headers = { 'Content-Type': 'application/json' }; opt.body = JSON.stringify(body); }
+        const r = await fetch(API + '/api/link-pages/' + path, opt);
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j;
+    }
+
+    const SWATCHES = ['#153E3F','#1E3A8A','#7C2D12','#065F46','#4C1D95','#9D174D','#B45309','#0F172A','#B91C1C','#115E59'];
+    const ICONS = [
+        ['fa-whatsapp','WhatsApp'],['fa-phone','Call'],['fa-location-dot','Location'],['fa-star','Reviews'],
+        ['fa-cart-shopping','Shop'],['fa-book-open','Catalogue'],['fa-utensils','Menu'],['fa-instagram','Instagram'],
+        ['fa-facebook','Facebook'],['fa-youtube','YouTube'],['fa-globe','Website'],['fa-envelope','Email'],
+        ['fa-indian-rupee-sign','Pay'],['fa-calendar-check','Book'],['fa-link','Other'],
+    ];
+    // Brand icons live in a different Font Awesome font; the wrong prefix
+    // renders an empty square rather than falling back to anything.
+    const BRANDS = new Set(['fa-whatsapp','fa-instagram','fa-facebook','fa-youtube']);
+    const faCls = (i) => (BRANDS.has(i) ? 'fa-brands ' : 'fa-solid ') + i;
+
+    let page = null, items = [], tab = 'page';
+
+    /* ─────────────────────────────── list ───────────────────────────── */
+    async function goList() {
+        page = null;
+        document.getElementById('pTitle').textContent = 'Link Page';
+        const v = document.getElementById('view');
+        v.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        try {
+            const j = await api('list.php');
+            const rows = j.data || [];
+            v.innerHTML = `
+              <div class="card">
+                <h3>Your link pages</h3>
+                <p class="hint">One QR, every link. Put it on a signboard, a menu or a bill and customers
+                   reach your WhatsApp, catalogue and reviews from one page.</p>
+                <div class="row">
+                  <input class="inp grow" id="newName" placeholder="Business name, e.g. Sharma Electronics">
+                  <button class="btn" onclick="create()">Create</button>
+                </div>
+              </div>
+              <div class="card">
+                ${rows.length ? rows.map(p => `
+                  <div class="pg">
+                    <div class="pg-av" style="background:${esc(p.theme_color || '#153E3F')}">
+                      ${p.logo_url ? `<img src="${esc(p.logo_url)}" alt="">` : esc(initials(p.brand_name))}
+                    </div>
+                    <div class="pg-b">
+                      <b>${esc(p.brand_name)}</b>${p.status ? '' : ' <span class="muted">(off)</span>'}
+                      <div class="pg-url">/l/${esc(p.slug)}</div>
+                      <div class="pg-st">${esc(p.item_count || 0)} links &middot; ${esc(p.total_views || 0)} views
+                        &middot; ${esc(p.total_clicks || 0)} taps</div>
+                    </div>
+                    <a class="btn btn-ghost btn-sm" href="${esc(p.url)}" target="_blank" rel="noopener">Open</a>
+                    <button class="btn btn-sm" onclick="edit(${Number(p.id)})">Edit</button>
+                    <button class="btn btn-ghost btn-sm btn-red" onclick="del(${Number(p.id)},'${esc(p.brand_name)}')">Delete</button>
+                  </div>`).join('') : '<p class="muted">No link pages yet. Create one above.</p>'}
+              </div>`;
+        } catch (e) { v.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    const initials = (n) => {
+        const p = String(n || 'T').trim().split(/\s+/);
+        return ((p[0] || '')[0] + ((p[1] || '')[0] || '')).toUpperCase();
+    };
+
+    async function create() {
+        const brand_name = (document.getElementById('newName').value || '').trim();
+        if (!brand_name) { alert('Enter your business name.'); return; }
+        try { const j = await api('save.php', { brand_name }); edit(j.data.id); }
+        catch (e) { alert(e.message); }
+    }
+
+    async function del(id, name) {
+        if (!confirm('Delete "' + name + '"? Any printed QR for it will stop working.')) return;
+        try { await api('delete.php', { id }); goList(); } catch (e) { alert(e.message); }
+    }
+
+    /* ─────────────────────────────── editor ─────────────────────────── */
+    async function edit(id) {
+        try {
+            const j = await api('list.php?id=' + encodeURIComponent(id));
+            page = j.data; items = page.items || [];
+            document.getElementById('pTitle').textContent = page.brand_name;
+            tab = 'page';
+            renderEditor();
+        } catch (e) { alert(e.message); }
+    }
+
+    function renderEditor() {
+        document.getElementById('view').innerHTML = `
+            <div class="row" style="margin-bottom:14px">
+              <button class="btn btn-ghost btn-sm" onclick="goList()">&larr; All pages</button>
+              <a class="btn btn-ghost btn-sm" href="${esc(page.url)}" target="_blank" rel="noopener">Open page</a>
+            </div>
+            <div class="tabs">
+              ${[['page','Page'],['links','Links'],['qr','QR'],['stats','Stats']].map(([k,l]) =>
+                `<button class="tab ${k===tab?'on':''}" onclick="setTab('${k}')">${l}</button>`).join('')}
+            </div>
+            <div id="panel"></div>`;
+        ({ page: panelPage, links: panelLinks, qr: panelQr, stats: panelStats }[tab])();
+    }
+    function setTab(k) { tab = k; renderEditor(); }
+
+    /* ── page tab ─────────────────────────────────────────────────────── */
+    function panelPage() {
+        document.getElementById('panel').innerHTML = `
+          <div class="card">
+            <h3>Your brand</h3>
+            <div class="two">
+              <div><label class="lbl">Business name</label>
+                   <input class="inp" id="fName" value="${esc(page.brand_name)}"></div>
+              <div><label class="lbl">Web address</label>
+                   <div class="row" style="gap:5px"><span class="muted">/l/</span>
+                     <input class="inp grow" id="fSlug" value="${esc(page.slug)}"></div></div>
+            </div>
+            <label class="lbl">One line about you</label>
+            <textarea class="ta" id="fTag">${esc(page.tagline || '')}</textarea>
+            <p class="hint">Changing the web address breaks any QR already printed with the old one.</p>
+          </div>
+
+          <div class="card">
+            <h3>Logo &amp; cover</h3>
+            <div class="row" style="align-items:flex-start;gap:16px">
+              <div><label class="lbl">Logo</label>
+                <div class="imgbox" onclick="document.getElementById('upLogo').click()">
+                  ${page.logo_url ? `<img src="${esc(page.logo_url)}">` : '<span class="muted">Add</span>'}
+                </div>
+                <input type="file" id="upLogo" accept="image/*" hidden onchange="upload(this,'logo_url')">
+              </div>
+              <div class="grow"><label class="lbl">Cover photo</label>
+                <div class="coverbox" onclick="document.getElementById('upCover').click()">
+                  ${page.cover_url ? `<img src="${esc(page.cover_url)}">` : '<span class="muted">Add</span>'}
+                </div>
+                <input type="file" id="upCover" accept="image/*" hidden onchange="upload(this,'cover_url')">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Colour &amp; style</h3>
+            <label class="lbl">Theme colour</label>
+            <div class="swatches">${SWATCHES.map(c =>
+              `<div class="sw ${(page.theme_color||'').toUpperCase()===c?'on':''}" style="background:${c}"
+                    onclick="pickColor('${c}')"></div>`).join('')}</div>
+            <label class="lbl">Background</label>
+            <div class="seg">${[['light','Light'],['dark','Dark']].map(([v,l]) =>
+              `<button class="${page.theme_mode===v?'on':''}" onclick="setField('theme_mode','${v}')">${l}</button>`).join('')}</div>
+            <label class="lbl">Button shape</label>
+            <div class="seg">${[['rounded','Rounded'],['pill','Pill'],['square','Square']].map(([v,l]) =>
+              `<button class="${page.button_style===v?'on':''}" onclick="setField('button_style','${v}')">${l}</button>`).join('')}</div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <label class="row" style="gap:7px;font-size:.87rem"><input type="checkbox" id="fLive"
+                 ${page.status ? 'checked' : ''}> Page is live</label>
+              <span class="grow"></span>
+              <button class="btn" onclick="savePage()">Save changes</button>
+            </div>
+          </div>`;
+    }
+    function pickColor(c) { page.theme_color = c; panelPage(); }
+    function setField(k, v) { page[k] = v; panelPage(); }
+
+    async function savePage() {
+        const body = {
+            id: page.id,
+            brand_name: (document.getElementById('fName').value || '').trim(),
+            slug: (document.getElementById('fSlug').value || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, ''),
+            tagline: document.getElementById('fTag').value,
+            logo_url: page.logo_url || '', cover_url: page.cover_url || '',
+            theme_color: page.theme_color, theme_mode: page.theme_mode,
+            button_style: page.button_style, qr_color: page.qr_color, qr_bg_color: page.qr_bg_color,
+            status: document.getElementById('fLive').checked ? 1 : 0,
+        };
+        if (!body.brand_name) { alert('Business name is required.'); return; }
+        try {
+            const j = await api('save.php', body);
+            page = Object.assign(j.data, { items });   // server may de-duplicate the slug
+            document.getElementById('pTitle').textContent = page.brand_name;
+            renderEditor();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function upload(input, field) {
+        const f = input.files && input.files[0];
+        if (!f) return;
+        try {
+            const form = new FormData();
+            form.append('file', f);              // no Content-Type: the browser sets the boundary
+            const j = await api('upload.php', null, form);
+            page[field] = j.url;
+            await api('save.php', Object.assign({ id: page.id, brand_name: page.brand_name }, { [field]: j.url }));
+            panelPage();
+        } catch (e) { alert(e.message); }
+        finally { input.value = ''; }
+    }
+
+    /* ── links tab ────────────────────────────────────────────────────── */
+    function panelLinks() {
+        document.getElementById('panel').innerHTML = `
+          <div class="card">
+            <h3>Add a link</h3>
+            <div class="two">
+              <div><label class="lbl">Button text</label><input class="inp" id="iLabel" placeholder="Order on WhatsApp"></div>
+              <div><label class="lbl">Link</label><input class="inp" id="iUrl" placeholder="wa.me/919876543210"></div>
+            </div>
+            <label class="lbl">Icon</label>
+            <select class="sel" id="iIcon">${ICONS.map(([v,l]) => `<option value="${v}">${l}</option>`).join('')}</select>
+            <div style="margin-top:14px"><button class="btn" onclick="addItem()">Add link</button></div>
+            <p class="hint">https:// is added for you if you leave it out.</p>
+          </div>
+          <div class="card">
+            <h3>On your page (${items.length})</h3>
+            ${items.length ? items.map((it, i) => `
+              <div class="item">
+                <i class="${faCls(it.icon || 'fa-link')}" style="color:${esc(page.theme_color)};width:20px"></i>
+                <div class="item-b"><b>${esc(it.label)}${it.status ? '' : ' (hidden)'}</b>
+                  <span>${esc(it.url)} &middot; ${esc(it.total_clicks || 0)} taps</span></div>
+                <button class="btn btn-ghost btn-sm" onclick="move(${i},-1)" ${i===0?'disabled':''}>&uarr;</button>
+                <button class="btn btn-ghost btn-sm" onclick="move(${i},1)" ${i===items.length-1?'disabled':''}>&darr;</button>
+                <button class="btn btn-ghost btn-sm btn-red" onclick="delItem(${Number(it.id)})">Remove</button>
+              </div>`).join('') : '<p class="muted">No links yet.</p>'}
+          </div>`;
+    }
+
+    async function addItem() {
+        const label = (document.getElementById('iLabel').value || '').trim();
+        const url = (document.getElementById('iUrl').value || '').trim();
+        if (!label || !url) { alert('Button text and link are both needed.'); return; }
+        try {
+            const j = await api('item-save.php', { page_id: page.id, label, url, icon: document.getElementById('iIcon').value });
+            items = j.data.items || []; panelLinks();
+        } catch (e) { alert(e.message); }
+    }
+    async function delItem(id) {
+        try { const j = await api('item-delete.php', { page_id: page.id, id }); items = j.data.items || []; panelLinks(); }
+        catch (e) { alert(e.message); }
+    }
+    async function move(i, d) {
+        const n = i + d;
+        if (n < 0 || n >= items.length) return;
+        const next = items.slice();
+        next.splice(n, 0, next.splice(i, 1)[0]);
+        const before = items;
+        items = next; panelLinks();                      // optimistic
+        try { await api('reorder.php', { page_id: page.id, order: next.map(x => x.id) }); }
+        catch (e) { items = before; panelLinks(); alert('Could not reorder.'); }
+    }
+
+    /* ── QR tab ───────────────────────────────────────────────────────── */
+    function panelQr() {
+        document.getElementById('panel').innerHTML = `
+          <div class="card" style="text-align:center">
+            <h3>Your QR code</h3>
+            <p class="hint">Print this on a signboard, visiting card or bill. It always opens the page below,
+               so you can change the links any time without reprinting.</p>
+            <div id="qrBox"></div>
+            <p style="font-size:.82rem;color:#27706e;font-weight:600;margin:14px 0">${esc(page.url)}</p>
+            <div class="row" style="justify-content:center">
+              <button class="btn" onclick="downloadQr()">Download QR</button>
+              <button class="btn btn-ghost" onclick="copyUrl()">Copy link</button>
+            </div>
+          </div>`;
+        // qrcodejs draws into the element; it has no "clear" so the node is
+        // rebuilt above each time rather than appending a second code.
+        new QRCode(document.getElementById('qrBox'), {
+            text: page.url, width: 220, height: 220,
+            colorDark: page.qr_color || '#000000',
+            colorLight: page.qr_bg_color || '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M,
+        });
+    }
+    function downloadQr() {
+        const cv = document.querySelector('#qrBox canvas');
+        if (!cv) { alert('QR not ready yet.'); return; }
+        const a = document.createElement('a');
+        a.href = cv.toDataURL('image/png');
+        a.download = (page.slug || 'tapify') + '-qr.png';
+        a.click();
+    }
+    function copyUrl() {
+        if (navigator.clipboard) navigator.clipboard.writeText(page.url);
+    }
+
+    /* ── stats tab ────────────────────────────────────────────────────── */
+    async function panelStats() {
+        const p = document.getElementById('panel');
+        p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        try {
+            const j = await api('analytics.php?id=' + page.id + '&days=30');
+            const d = j.data;
+            p.innerHTML = `
+              <div class="card">
+                <h3>Last 30 days</h3>
+                <div class="stat-row">
+                  <div class="stat"><b>${esc(d.views)}</b><span>Views</span></div>
+                  <div class="stat"><b>${esc(d.unique_views)}</b><span>People</span></div>
+                  <div class="stat"><b>${esc(d.clicks)}</b><span>Taps</span></div>
+                  <div class="stat"><b>${esc(d.click_rate)}%</b><span>Tapped</span></div>
+                </div>
+                <p class="hint" style="margin-top:12px">${
+                  d.views === 0 ? 'Nobody has scanned this QR yet.'
+                  : d.clicks === 0 ? 'People are scanning but not tapping anything. Try fewer, clearer links.'
+                  : esc(d.click_rate) + '% of visitors pressed at least one link.'}</p>
+              </div>
+              <div class="card">
+                <h3>Which links get used</h3>
+                ${(d.per_link || []).length ? (d.per_link || []).map(l => `
+                  <div class="item"><div class="item-b"><b>${esc(l.label)}</b></div>
+                    <b style="color:#153e3f">${esc(l.clicks)}</b></div>`).join('')
+                  : '<p class="muted">No links on this page yet.</p>'}
+              </div>`;
+        } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    document.addEventListener('DOMContentLoaded', goList);
+    </script>
+</body>
+</html>

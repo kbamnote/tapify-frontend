@@ -3,29 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Tapify User</title>
+    <title>Dashboard - Tapify</title>
     <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../admin-style.css">
     <style>
-        .dash-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-        .welcome-card { background: linear-gradient(135deg, #25D366, #128C7E); color: white; border-radius: 16px; padding: 25px 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(37,211,102,0.2); }
-        .vcard-preview-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-        .vcard-avatar { width: 80px; height: 80px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #8338ec; }
-        .vcard-info { flex: 1; }
-        .vcard-info h3 { margin: 0; font-size: 1.2rem; }
-        .vcard-info p { margin: 5px 0 0; color: #6b7280; font-size: 0.9rem; }
-        .vcard-actions { display: flex; gap: 10px; }
-        .btn-edit { background: #8338ec; color: white; border: none; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; }
-        .btn-preview { background: #f3f4f6; color: #1a2035; border: none; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-card { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: #8338ec; }
-        .stat-label { font-size: 0.8rem; color: #6b7280; text-transform: uppercase; margin-top: 5px; }
+        .dash { max-width: 1200px; margin: 20px auto; padding: 0 20px 40px; }
+
+        .welcome {
+            background: linear-gradient(135deg, #153e3f, #27706e);
+            color: #f6eee6; border-radius: 18px; padding: 26px 30px; margin-bottom: 20px;
+        }
+        .welcome h2 { margin: 0 0 6px; font-size: 1.45rem; font-weight: 800; }
+        .welcome p  { margin: 0; opacity: .8; font-size: .92rem; }
+
+        /* ── the cross-product tiles ─────────────────────────────────── */
+        .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+        .tile {
+            background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 17px 18px;
+            text-decoration: none; color: inherit; display: block;
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        }
+        .tile:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(21,62,63,.11); border-color: #cfe0dc; }
+        .tile-top { display: flex; align-items: center; justify-content: space-between; }
+        .tile-ico { font-size: 1.05rem; color: #153e3f; opacity: .85; }
+        .tile-sub { font-size: .7rem; font-weight: 700; color: #27706e; background: #eaf3f1;
+                    padding: 3px 8px; border-radius: 20px; }
+        .tile-val { font-size: 1.85rem; font-weight: 800; color: #153e3f; margin-top: 10px; line-height: 1; }
+        .tile-lab { font-size: .78rem; color: #6b7280; margin-top: 5px; font-weight: 600; }
+
+        .sec-title { font-size: 1rem; font-weight: 800; color: #153e3f; margin: 26px 0 12px; }
+
+        /* ── 7-day views ─────────────────────────────────────────────── */
+        .chart { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 20px; }
+        .chart-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+        .chart-head h3 { margin: 0; font-size: .92rem; font-weight: 700; color: #153e3f; }
+        .chart-head span { font-size: .8rem; color: #6b7280; }
+        .bars { display: flex; align-items: flex-end; gap: 10px; height: 130px; }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+        .bar { width: 100%; max-width: 44px; background: linear-gradient(180deg, #27706e, #153e3f);
+               border-radius: 6px 6px 0 0; min-height: 3px; }
+        .bar-n { font-size: .7rem; font-weight: 700; color: #153e3f; }
+        .bar-d { font-size: .68rem; color: #9ca3af; font-weight: 600; }
+
+        /* ── legacy vCard, corner card ───────────────────────────────── */
+        .legacy {
+            margin-top: 26px; background: #faf7f4; border: 1px dashed #d9d2c9;
+            border-radius: 15px; padding: 15px 18px;
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+        }
+        .legacy-ico { width: 40px; height: 40px; border-radius: 11px; background: #153e3f; color: #f6eee6;
+                      display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .legacy-body { flex: 1; min-width: 190px; }
+        .legacy-tag { font-size: .62rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
+                      color: #9a8f80; }
+        .legacy-name { font-size: .95rem; font-weight: 700; color: #153e3f; margin-top: 1px; }
+        .legacy-meta { font-size: .76rem; color: #6b7280; margin-top: 2px; }
+        .legacy a { font-size: .78rem; font-weight: 700; color: #153e3f; text-decoration: none;
+                    border: 1px solid #153e3f; padding: 7px 14px; border-radius: 9px; }
+        .legacy a:hover { background: #153e3f; color: #fff; }
+
+        .muted { color: #9ca3af; }
     </style>
 </head>
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
@@ -42,6 +85,11 @@
                 <i class="fas fa-user nav-icon"></i>
                 <span>My Profile</span>
             </a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
             <a href="reviews.html" class="nav-item">
                 <i class="fas fa-star nav-icon"></i>
                 <span>Reviews Funnel</span>
@@ -72,6 +120,7 @@
             </a>
         </nav>
         <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
             <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
         </div>
     </aside>
@@ -80,7 +129,7 @@
         <header class="admin-header">
             <div class="header-left">
                 <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <h1 class="page-title">User Dashboard</h1>
+                <h1 class="page-title">Dashboard</h1>
             </div>
             <div class="header-right">
                 <div class="header-dropdown profile-dropdown">
@@ -93,73 +142,173 @@
         </header>
 
         <main class="page-content">
-            <div class="dash-container">
-                <div class="welcome-card">
-                    <h2>Hello, <span id="greetUser">User</span>!</h2>
-                    <p>Welcome to your digital vCard manager.</p>
+            <div class="dash">
+                <div class="welcome">
+                    <h2>Hello, <span id="greetUser">there</span></h2>
+                    <p>Here is how your business is doing across Tapify.</p>
                 </div>
 
-                <div id="vcardSection">
-                    <div class="vcard-preview-card">
-                        <div class="vcard-avatar" id="vcardInitials">U</div>
-                        <div class="vcard-info">
-                            <h3 id="vcardName">Loading vCard...</h3>
-                            <p id="vcardSlug">tapify.world/...</p>
-                        </div>
-                        <div class="vcard-actions">
-                            <a href="#" id="editLink" class="btn-edit">Edit Card</a>
-                            <a href="#" id="viewLink" target="_blank" class="btn-preview">View Card</a>
-                        </div>
-                    </div>
+                <div class="tiles" id="tiles"></div>
 
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="viewCount">0</div>
-                            <div class="stat-label">Total Views</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="appointmentCount">0</div>
-                            <div class="stat-label">Appointments</div>
-                        </div>
+                <h3 class="sec-title">Website views, last 7 days</h3>
+                <div class="chart">
+                    <div class="chart-head">
+                        <h3>Daily visitors</h3>
+                        <span id="viewsTotal">&mdash;</span>
                     </div>
+                    <div class="bars" id="bars"></div>
                 </div>
+
+                <!-- Only rendered for customers who still have a vCard. -->
+                <div id="legacySlot"></div>
             </div>
         </main>
     </div>
 
     <script src="../admin.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem('tapify_user') || '{}');
-            document.getElementById('userName').textContent = user.name || 'User';
-            document.getElementById('greetUser').textContent = user.name || 'User';
-            
-            loadUserData();
-        });
+        const API = 'https://app.tapify.co.in';
 
-        async function loadUserData() {
-            try {
-                const response = await fetch('https://app.tapify.co.in/api/me.php', { credentials: 'include' });
-                const result = await response.json();
-                
-                if (result.success) {
-                    const vcard = result.data.vcard;
-                    if (vcard) {
-                        document.getElementById('vcardName').textContent = vcard.vcard_name;
-                        document.getElementById('vcardSlug').textContent = 'app.tapify.co.in/' + vcard.url_alias;
-                        document.getElementById('vcardInitials').textContent = vcard.vcard_name.charAt(0);
-                        document.getElementById('viewCount').textContent = vcard.view_count;
-                        document.getElementById('editLink').href = 'vcards-edit.html?id=' + vcard.id;
-                        document.getElementById('viewLink').href = 'https://app.tapify.co.in/' + vcard.url_alias;
-                    } else {
-                        document.getElementById('vcardSection').innerHTML = '<div class="stat-card"><p>No vCard assigned yet.</p></div>';
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-            }
+        const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+        async function get(path) {
+            const r = await fetch(API + path, { credentials: 'include' });
+            return r.json();
         }
+
+        /**
+         * Every tile has its own source, and one dead endpoint must not blank
+         * the page — so each is settled independently and a failed one shows a
+         * dash rather than a zero. A zero would read as "you have no orders"
+         * when the truth is "we could not ask".
+         */
+        async function load() {
+            const [me, sites, orders, inq, appt, views] = await Promise.allSettled([
+                get('/api/me.php'),
+                get('/api/sites/list.php'),
+                get('/api/sites/orders.php'),
+                get('/api/sites/inquiries.php'),
+                get('/api/sites/appointments.php'),
+                get('/api/sites/views.php'),
+            ]);
+
+            const d = (r) => (r.status === 'fulfilled' && r.value && r.value.success ? (r.value.data || {}) : null);
+
+            const meD     = d(me);
+            const sitesD  = d(sites);
+            const ordersD = d(orders);
+            const inqD    = d(inq);
+            const apptD   = d(appt);
+            const viewsD  = d(views);
+
+            if (meD && meD.user) {
+                const n = meD.user.name || 'there';
+                document.getElementById('greetUser').textContent = n;
+                document.getElementById('userName').textContent = n;
+            }
+
+            renderTiles({ sitesD, ordersD, inqD, apptD, viewsD });
+            renderChart(viewsD);
+            renderLegacy(meD);
+        }
+
+        function renderTiles({ sitesD, ordersD, inqD, apptD, viewsD }) {
+            const siteList = (sitesD && sitesD.sites) || null;
+            const o = (ordersD && ordersD.counts) || null;
+            const i = (inqD && inqD.counts) || null;
+            const a = (apptD && (apptD.stats || apptD.counts)) || null;
+
+            const n = (v) => (v === null || v === undefined ? '&mdash;' : v);
+
+            // `ico` carries the FULL Font Awesome class. WhatsApp lives in the
+            // Brands font and the rest in Solid; putting both prefixes on one
+            // element renders an empty square, so the family is stated per tile
+            // rather than guessed from the icon name.
+            const tiles = [
+                { href: 'website-builder.html',   ico: 'fa-solid fa-globe',
+                  val: siteList ? siteList.length : null,
+                  sub: siteList ? siteList.filter(s => s.published_at).length + ' live' : '',
+                  lab: 'My websites' },
+                { href: 'site-orders.html',       ico: 'fa-solid fa-receipt',
+                  val: o ? (o.all || 0) : null,
+                  sub: o && o.new ? o.new + ' new' : '',
+                  lab: 'Orders' },
+                { href: 'site-inquiries.html',    ico: 'fa-solid fa-envelope-open-text',
+                  val: i ? (i.all || 0) : null,
+                  sub: i && i.unread ? i.unread + ' unread' : '',
+                  lab: 'Enquiries' },
+                { href: 'site-appointments.html', ico: 'fa-solid fa-calendar-day',
+                  val: a ? (a.total !== undefined ? a.total : (a.all || 0)) : null,
+                  sub: a && (a.pending || 0) ? (a.pending + ' pending') : '',
+                  lab: 'Appointments' },
+                { href: 'whatsapp.html',          ico: 'fa-brands fa-whatsapp',
+                  lab: 'WhatsApp inbox', plain: true },
+                { href: 'reviews.html',           ico: 'fa-solid fa-star',
+                  lab: 'Reviews funnel', plain: true },
+            ];
+
+            document.getElementById('tiles').innerHTML = tiles.map(t => `
+                <a class="tile" href="${t.href}">
+                    <div class="tile-top">
+                        <i class="${t.ico} tile-ico"></i>
+                        ${t.sub ? `<span class="tile-sub">${esc(t.sub)}</span>` : ''}
+                    </div>
+                    ${t.plain
+                        ? `<div class="tile-val" style="font-size:1.1rem;margin-top:14px">Open</div>`
+                        : `<div class="tile-val">${n(t.val)}</div>`}
+                    <div class="tile-lab">${esc(t.lab)}</div>
+                </a>`).join('');
+        }
+
+        function renderChart(viewsD) {
+            const daily = viewsD && Array.isArray(viewsD.daily) ? viewsD.daily : [];
+            document.getElementById('viewsTotal').textContent =
+                viewsD ? ((viewsD.total || 0) + ' total views') : 'unavailable';
+
+            if (!daily.length) {
+                document.getElementById('bars').innerHTML =
+                    '<p class="muted" style="font-size:.85rem">No visits recorded yet.</p>';
+                return;
+            }
+            // Scale against the busiest day so the shape is readable even when
+            // the numbers are small; a fixed scale would flatten every bar.
+            const max = Math.max(...daily.map(x => x.views || 0), 1);
+            document.getElementById('bars').innerHTML = daily.map(x => `
+                <div class="bar-col">
+                    <div class="bar-n">${x.views || 0}</div>
+                    <div class="bar" style="height:${Math.round(((x.views || 0) / max) * 100)}%"></div>
+                    <div class="bar-d">${esc(x.day || '')}</div>
+                </div>`).join('');
+        }
+
+        /**
+         * The vCard is legacy: NFC cards now point at the customer's builder
+         * website, not at a vCard. It is shown only to customers who already
+         * have one, tucked at the bottom, so nobody loses access to something
+         * they still hand out — and no new customer is shown a product we have
+         * stopped putting on the cards.
+         */
+        function renderLegacy(meD) {
+            const v = meD && meD.vcard;
+            if (!v) return;
+            const alias = v.url_alias || '';
+            document.getElementById('legacySlot').innerHTML = `
+                <div class="legacy">
+                    <div class="legacy-ico">${esc((v.vcard_name || 'C').charAt(0).toUpperCase())}</div>
+                    <div class="legacy-body">
+                        <div class="legacy-tag">Your older digital card</div>
+                        <div class="legacy-name">${esc(v.vcard_name || 'Digital card')}</div>
+                        <div class="legacy-meta">
+                            ${esc(v.view_count || 0)} views &middot; app.tapify.co.in/${esc(alias)}
+                        </div>
+                    </div>
+                    <a href="vcards-edit.html?id=${encodeURIComponent(v.id)}">Edit</a>
+                    <a href="${API}/${encodeURIComponent(alias)}" target="_blank" rel="noopener">View</a>
+                </div>`;
+        }
+
+        document.addEventListener('DOMContentLoaded', load);
     </script>
 </body>
 </html>
-

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription &amp; Billing - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .ms { max-width: 1100px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 18px; margin-bottom: 14px; }
+        .card h3 { margin: 0 0 4px; font-size: .95rem; font-weight: 800; color: #153e3f; }
+        .card .hint { margin: 0 0 12px; font-size: .8rem; color: #6b7280; line-height: 1.5; }
+
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+        .tab { border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
+               padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700; }
+        .tab.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+
+        .now { background: linear-gradient(135deg,#153e3f,#27706e); color: #f6eee6; border-radius: 16px;
+               padding: 22px 24px; margin-bottom: 14px; }
+        .now b { font-size: 1.3rem; font-weight: 800; display: block; }
+        .now p { margin: 5px 0 0; font-size: .86rem; opacity: .82; }
+        .now .days { font-size: .8rem; background: rgba(246,238,230,.16); border-radius: 20px;
+                     padding: 4px 11px; display: inline-block; margin-top: 10px; font-weight: 700; }
+
+        .cycle { display: inline-flex; border: 1px solid #e9e3dc; border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
+        .cycle button { border: 0; background: #fff; color: #6b7280; padding: 9px 18px; font: inherit;
+                        font-size: .82rem; font-weight: 700; cursor: pointer; }
+        .cycle button.on { background: #153e3f; color: #fff; }
+
+        .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px; }
+        .plan { background: #fff; border: 1.5px solid #e9e3dc; border-radius: 16px; padding: 20px; display: flex;
+                flex-direction: column; }
+        .plan.cur { border-color: #153e3f; }
+        .plan h4 { margin: 0; font-size: 1.05rem; font-weight: 800; color: #153e3f; }
+        .plan .blurb { font-size: .8rem; color: #6b7280; margin: 5px 0 14px; line-height: 1.5; min-height: 34px; }
+        .price { font-size: 1.9rem; font-weight: 800; color: #153e3f; line-height: 1; }
+        .price small { font-size: .78rem; color: #9ca3af; font-weight: 600; }
+        .save { font-size: .72rem; font-weight: 800; color: #15803d; background: #e8f6ed; border-radius: 20px;
+                padding: 3px 9px; display: inline-block; margin-top: 7px; }
+        .feat { list-style: none; padding: 0; margin: 15px 0 18px; font-size: .82rem; color: #374151; }
+        .feat li { padding: 4px 0 4px 20px; position: relative; line-height: 1.45; }
+        .feat li:before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+                          position: absolute; left: 0; color: #27706e; font-size: .72rem; top: 7px; }
+        .plan .btn { margin-top: auto; }
+
+        .btn { background: #153e3f; color: #fff; border: 0; border-radius: 10px; padding: 11px 18px;
+               font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; text-decoration: none;
+               display: inline-block; text-align: center; }
+        .btn:disabled { opacity: .5; cursor: default; }
+        .btn-ghost { background: none; color: #153e3f; border: 1px solid #153e3f; }
+        .btn-sm { padding: 7px 13px; font-size: .77rem; }
+        .btn-full { width: 100%; }
+
+        .bal { display: flex; align-items: baseline; gap: 10px; }
+        .bal b { font-size: 2.1rem; font-weight: 800; color: #153e3f; }
+        .amts { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+        .amt { border: 1px solid #e9e3dc; background: #fff; border-radius: 10px; padding: 9px 15px;
+               font: inherit; font-size: .83rem; font-weight: 700; color: #153e3f; cursor: pointer; }
+        .amt.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+        .inp { border: 1px solid #e9e3dc; border-radius: 10px; padding: 10px 12px; font: inherit; font-size: .87rem; }
+
+        .tx { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0;
+              border-bottom: 1px solid #f0ece6; font-size: .84rem; }
+        .tx:last-child { border-bottom: 0; }
+        .tx-d { color: #6b7280; font-size: .76rem; }
+        .cr { color: #15803d; font-weight: 700; } .dr { color: #b91c1c; font-weight: 700; }
+
+        .step { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f0ece6; }
+        .step:last-child { border-bottom: 0; }
+        .step-n { width: 24px; height: 24px; border-radius: 50%; background: #153e3f; color: #fff;
+                  display: flex; align-items: center; justify-content: center; font-size: .75rem;
+                  font-weight: 800; flex: 0 0 auto; }
+        .step p { margin: 0; font-size: .85rem; color: #374151; line-height: 1.5; }
+
+        .badge { font-size: .7rem; font-weight: 800; border-radius: 20px; padding: 4px 11px; }
+        .b-ok { background:#e8f6ed; color:#15803d } .b-wait { background:#fdf6e7; color:#92670a }
+        .b-no { background:#f3f4f6; color:#6b7280 } .b-bad { background:#fdecec; color:#b91c1c }
+
+        .muted { color: #9ca3af; font-size: .85rem; }
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .grow { flex: 1; min-width: 140px; }
+        .err { background:#fdecec; border:1px solid #e9a0a0; border-radius:11px; padding:12px 14px;
+               font-size:.83rem; color:#8a2a2a; }
+        .ok { background:#f1faf4; border:1px solid #9ccfae; border-radius:11px; padding:12px 14px;
+              font-size:.83rem; color:#1a6b3a; }
+        .warn { background:#fdf6e7; border:1px solid #e3c178; border-radius:11px; padding:12px 14px;
+                font-size:.83rem; color:#6b5420; line-height:1.5; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
+            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews.html" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
+            <a href="website-builder.html" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp.html" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="site-orders.html" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries.html" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments.html" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Subscription &amp; Billing</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="boot()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="ms">
+                <div id="flash"></div>
+                <div class="tabs" id="tabs"></div>
+                <div id="panel"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function call(path, body) {
+        const r = await fetch(API + path, {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    const TABS = [['plan', 'My plan'], ['wallet', 'Wallet'], ['gateway', 'Payment gateway']];
+    let tab = 'plan', cycle = 'monthly', mine = null;
+
+    function boot() {
+        const q = new URLSearchParams(location.search);
+        if (q.get('tab')) tab = q.get('tab');
+        if (q.get('paid')) {
+            const s = q.get('paid');
+            document.getElementById('flash').innerHTML = s === 'success'
+                ? '<div class="ok" style="margin-bottom:14px">Payment received. It may take a few seconds to show below.</div>'
+                : s === 'pending'
+                  ? '<div class="warn" style="margin-bottom:14px">Your bank has not confirmed the payment yet. Check back in a few minutes.</div>'
+                  : '<div class="err" style="margin-bottom:14px">Payment was not completed. Nothing has been deducted.</div>';
+            history.replaceState({}, '', location.pathname);
+        }
+        renderTabs();
+        openTab(tab);
+    }
+    function renderTabs() {
+        document.getElementById('tabs').innerHTML = TABS.map(([k, l]) =>
+            `<button class="tab ${k === tab ? 'on' : ''}" onclick="openTab('${k}')">${esc(l)}</button>`).join('');
+    }
+    function openTab(k) {
+        tab = k; renderTabs();
+        const p = document.getElementById('panel');
+        p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        ({ plan: tabPlan, wallet: tabWallet, gateway: tabGateway }[k])(p);
+    }
+    const fail = (p) => (e) => { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; };
+
+    /* ── my plan ──────────────────────────────────────────────────────── */
+    async function tabPlan(p) {
+        try {
+            const [me, cat] = await Promise.all([
+                call('/api/plans/my.php'),
+                call('/api/plans/list.php'),
+            ]);
+            mine = me;
+            const plans = cat.plans || [];
+            const cur = (me.plan && me.plan.code) || me.plan_code || 'free';
+            const legacy = !!(me.legacy_full_access || me.legacy);
+
+            p.innerHTML = `
+              <div class="now">
+                <b>${esc((me.plan && me.plan.name) || 'Free')}</b>
+                <p>${legacy
+                    ? 'You have full access to everything, at no charge, as an early Tapify customer.'
+                    : (me.expires_at ? 'Renews or ends on ' + esc(me.expires_at) : 'No paid plan yet.')}</p>
+                ${!legacy && me.days_left !== undefined && me.days_left !== null
+                    ? `<span class="days">${esc(me.days_left)} days left</span>` : ''}
+              </div>
+              ${legacy ? `<div class="ok" style="margin-bottom:14px">You are on a grandfathered account.
+                  Nothing below is needed &mdash; your access does not expire.</div>` : ''}
+              <div class="cycle">
+                <button class="${cycle === 'monthly' ? 'on' : ''}" onclick="setCycle('monthly')">Monthly</button>
+                <button class="${cycle === 'yearly' ? 'on' : ''}" onclick="setCycle('yearly')">Yearly</button>
+              </div>
+              <div class="plans">
+                ${plans.map(pl => planCard(pl, cur, legacy)).join('')}
+              </div>
+              <p class="muted" style="margin-top:14px">Prices exclude GST, which is added at checkout.</p>`;
+        } catch (e) { fail(p)(e); }
+    }
+    function setCycle(c) { cycle = c; openTab('plan'); }
+
+    function planCard(pl, cur, legacy) {
+        const isCur = pl.code === cur;
+        const price = cycle === 'yearly' ? pl.price_yearly : pl.price_monthly;
+        const disc = cycle === 'yearly' ? (pl.yearly_discount_pct || 0) : 0;
+        const feats = pl.highlights || pl.features || [];
+        return `
+          <div class="plan ${isCur ? 'cur' : ''}">
+            <h4>${esc(pl.name)}</h4>
+            <p class="blurb">${esc(pl.blurb || '')}</p>
+            <div class="price">${esc(price)} <small>/ ${cycle === 'yearly' ? 'year' : 'month'}</small></div>
+            ${disc ? `<span class="save">Save ${esc(disc)}%</span>` : ''}
+            ${feats.length ? `<ul class="feat">${feats.slice(0, 6).map(f =>
+                `<li>${esc(typeof f === 'string' ? f : (f.label || f.name || ''))}</li>`).join('')}</ul>` : '<div style="height:10px"></div>'}
+            ${legacy
+                ? '<span class="btn btn-ghost btn-full" style="opacity:.5">Not needed</span>'
+                : isCur
+                  ? '<span class="btn btn-ghost btn-full">Current plan</span>'
+                  : `<button class="btn btn-full" onclick="buy('${esc(pl.code)}')">Choose ${esc(pl.name)}</button>`}
+          </div>`;
+    }
+
+    async function buy(code) {
+        try {
+            // web:true keeps the Easebuzz return out of the tapifapp:// deep
+            // link, which does nothing in a desktop browser.
+            const d = await call('/api/plans/checkout.php', { plan: code, cycle, web: true });
+            if (!d.payment_url) throw new Error('No payment page was returned.');
+            location.href = d.payment_url;
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ── wallet ───────────────────────────────────────────────────────── */
+    let topupAmount = 500;
+    async function tabWallet(p) {
+        try {
+            const [bal, tx] = await Promise.all([
+                call('/api/wallet/balance.php'),
+                call('/api/wallet/transactions.php?limit=25').catch(() => ({ transactions: [] })),
+            ]);
+            const rate = bal.points_per_inr || 1;
+            const rows = tx.transactions || tx.items || [];
+            p.innerHTML = `
+              <div class="card">
+                <h3>Wallet balance</h3>
+                <div class="bal"><b>${esc(fmtPoints(bal.balance, rate))}</b>
+                  <span class="muted">${esc(bal.balance || 0)} points</span></div>
+                ${bal.payments_enabled === false
+                  ? '<div class="warn" style="margin-top:14px">Online top-ups are not switched on yet. '
+                    + 'Please contact Tapify support to add balance.</div>'
+                  : `<div class="amts">
+                       ${[100,500,1000,2000,5000].map(a =>
+                         `<button class="amt ${a === topupAmount ? 'on' : ''}" onclick="setAmt(${a})">&#8377;${a}</button>`).join('')}
+                     </div>
+                     <div class="row">
+                       <input class="inp grow" id="amtOther" type="number" min="1" placeholder="Other amount"
+                              value="${esc(topupAmount)}" oninput="topupAmount=Number(this.value)||0">
+                       <button class="btn" onclick="topup()">Add money</button>
+                     </div>`}
+              </div>
+              <div class="card">
+                <h3>Recent activity</h3>
+                ${rows.length ? rows.map(t => `
+                  <div class="tx">
+                    <div><div>${esc(t.description || t.type || 'Transaction')}</div>
+                      <div class="tx-d">${esc(t.created_at || '')}</div></div>
+                    <div class="${Number(t.points) >= 0 ? 'cr' : 'dr'}">
+                      ${Number(t.points) >= 0 ? '+' : ''}${esc(t.points)} pts</div>
+                  </div>`).join('') : '<p class="muted">Nothing yet.</p>'}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+    function setAmt(a) { topupAmount = a; openTab('wallet'); }
+    /** Points are integers; how many make a rupee is server-configured. */
+    function fmtPoints(points, rate) {
+        const inr = (Number(points) || 0) / (Number(rate) || 1);
+        return '₹' + inr.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    }
+    async function topup() {
+        const amt = Number(topupAmount) || 0;
+        if (amt < 1) { alert('Enter an amount of at least ₹1.'); return; }
+        try {
+            const d = await call('/api/wallet/topup-create-order.php', { amount_inr: amt, web: true });
+            if (d.mode === 'hosted' && d.payment_url) { location.href = d.payment_url; return; }
+            // The SDK path is a native-app checkout with no browser equivalent.
+            alert('Top-ups from the browser are not available with the current payment setup. '
+                + 'Please use the Tapify app.');
+        } catch (e) { alert(e.message); }
+    }
+
+    /* ── payment gateway ──────────────────────────────────────────────── */
+    const SIGNUP = 'https://auth.easebuzz.in/easebuzz/signup/MrprintAER';
+    async function tabGateway(p) {
+        try {
+            const d = await call('/api/payment-gateway/status.php');
+            const st = (d.status || 'not_started').toLowerCase();
+            const badge = { completed: ['b-ok', 'Completed'], applied: ['b-wait', 'Applied'],
+                            rejected: ['b-bad', 'Rejected'], not_started: ['b-no', 'Not started'] }[st]
+                          || ['b-no', st];
+            p.innerHTML = `
+              <div class="card">
+                <div class="row"><h3 style="margin:0">Your payment gateway</h3>
+                  <span class="badge ${badge[0]}">${esc(badge[1])}</span></div>
+                <p class="hint" style="margin-top:8px">Take card, UPI and net-banking payments on your own
+                   website and WhatsApp store. The account is yours &mdash; money reaches your bank directly,
+                   not through Tapify.</p>
+                ${st === 'completed' ? `<div class="ok">Your gateway is live${
+                    d.merchant_key ? ' (key ending ' + esc(String(d.merchant_key).slice(-4)) + ')' : ''}.</div>` : `
+                  <div class="step"><div class="step-n">1</div><p>Open the Easebuzz signup and fill in your
+                    business and bank details.</p></div>
+                  <div class="step"><div class="step-n">2</div><p>Easebuzz verifies your documents. This usually
+                    takes a couple of working days.</p></div>
+                  <div class="step"><div class="step-n">3</div><p>They issue a <b>merchant key</b>. Paste it below
+                    and your gateway is switched on.</p></div>
+                  <div class="row" style="margin-top:16px">
+                    <button class="btn" onclick="applyPg()">Open Easebuzz signup</button>
+                  </div>`}
+              </div>
+              ${st !== 'completed' ? `
+              <div class="card">
+                <h3>Already have your merchant key?</h3>
+                <p class="hint">Paste it here to finish. We cannot see your Easebuzz account, so this is the
+                   only way we know you are done.</p>
+                <div class="row">
+                  <input class="inp grow" id="mk" placeholder="Merchant key from Easebuzz">
+                  <button class="btn" onclick="saveKey()">Save key</button>
+                </div>
+              </div>` : ''}`;
+        } catch (e) { fail(p)(e); }
+    }
+    async function applyPg() {
+        // Recorded first so the admin list shows they started, then the signup
+        // opens. Easebuzz never calls back, so this is all we can know.
+        // An empty body is what marks "applied" — the endpoint switches on
+        // whether merchant_key is present, and must never downgrade a
+        // completed application back to applied.
+        try { await call('/api/payment-gateway/status.php', {}); } catch (_) {}
+        window.open(SIGNUP, '_blank', 'noopener');
+        openTab('gateway');
+    }
+    async function saveKey() {
+        const key = (document.getElementById('mk').value || '').trim();
+        if (!key) { alert('Paste the merchant key first.'); return; }
+        try { await call('/api/payment-gateway/status.php', { merchant_key: key }); openTab('gateway'); }
+        catch (e) { alert(e.message); }
+    }
+
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+</body>
+</html>
