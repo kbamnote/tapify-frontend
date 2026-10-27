@@ -16,10 +16,42 @@
         .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
         .inp, .sel { border: 1px solid #e9e3dc; border-radius: 10px; padding: 9px 12px; font: inherit;
                      font-size: .86rem; background: #fff; }
-        .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-        .chip { border: 1px solid #e9e3dc; background: #fff; border-radius: 20px; padding: 7px 14px;
+        /* ── category strip ───────────────────────────────────────────
+           There are ~200 categories. Wrapping them all built a wall of
+           chips that pushed the designs off the first screen, so this is
+           ONE scrollable row with its own search box.
+
+           Phone performance: the chips are built once, and searching only
+           flips .hide on chips already in the DOM. No innerHTML rebuild per
+           keystroke, no new listeners (one delegated click on the strip),
+           so typing stays smooth on a mid-range phone. */
+        .catbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+        .catsearch { position: relative; flex: 1 1 230px; max-width: 330px; }
+        .catsearch > i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+                         font-size: .74rem; color: #b6ada3; pointer-events: none; }
+        .catsearch input { width: 100%; border: 1px solid #e9e3dc; border-radius: 10px;
+                           padding: 9px 30px; font: inherit; font-size: .84rem; background: #fff; }
+        .catsearch button { position: absolute; right: 3px; top: 50%; transform: translateY(-50%);
+                            border: 0; background: none; color: #9ca3af; cursor: pointer;
+                            font-size: 1rem; line-height: 1; padding: 5px 8px; }
+        .catcount { font-size: .73rem; font-weight: 700; color: #9ca3af; white-space: nowrap; }
+
+        .chipwrap { position: relative; margin-bottom: 16px; }
+        /* Fade on the right edge so it reads as "there is more sideways". */
+        .chipwrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 7px; width: 30px;
+                           pointer-events: none;
+                           background: linear-gradient(to right, rgba(250,247,244,0), var(--bg-main, #faf7f4)); }
+        .chips { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden;
+                 overscroll-behavior-x: contain;        /* no accidental back-swipe */
+                 -webkit-overflow-scrolling: touch;
+                 padding: 1px 34px 7px 1px; scrollbar-width: thin; }
+        .chips::-webkit-scrollbar { height: 5px; }
+        .chips::-webkit-scrollbar-thumb { background: #ded6cd; border-radius: 3px; }
+        .chip { flex: 0 0 auto; white-space: nowrap;
+                border: 1px solid #e9e3dc; background: #fff; border-radius: 20px; padding: 7px 14px;
                 font-size: .8rem; font-weight: 700; color: #6b7280; cursor: pointer; }
         .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+        .chip.hide { display: none; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 15px; }
         .tile { background: #fff; border: 1px solid #e9e3dc; border-radius: 14px; overflow: hidden; }
@@ -121,7 +153,16 @@
                         <option value="saved">Saved only</option>
                     </select>
                 </div>
-                <div class="chips" id="cats"></div>
+                <div class="catbar">
+                    <div class="catsearch">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input id="catq" placeholder="Find a category…" autocomplete="off"
+                               aria-label="Find a category">
+                        <button type="button" id="catclear" title="Clear" hidden>&times;</button>
+                    </div>
+                    <span class="catcount" id="catcount"></span>
+                </div>
+                <div class="chipwrap"><div class="chips" id="cats"></div></div>
                 <div id="out"></div>
             </div>
         </main>
@@ -153,6 +194,12 @@
     // instant and needs no round trip.
     const debounced = () => { clearTimeout(timer); timer = setTimeout(render, 200); };
 
+    // Chips are cached as plain objects at build time: the element, its id and
+    // a pre-lowercased haystack. Searching then costs one pass over this array
+    // with no DOM reads and no string work, which is what keeps it responsive
+    // with ~200 chips on a phone.
+    let chips = [], catTimer = null, lastTerm = null;
+
     async function boot() {
         try {
             const d = await api('categories.php');
@@ -162,9 +209,7 @@
             // mode — so the first category is selected instead of asking for
             // one that would 400.
             cat = cats.length ? Number(cats[0].id) : 0;
-            document.getElementById('cats').innerHTML = cats.map((c, i) =>
-                `<button class="chip ${i === 0 ? 'on' : ''}" data-id="${Number(c.id)}"
-                         onclick="pickCat(${Number(c.id)})">${esc(c.name)}</button>`).join('');
+            buildChips();
         } catch (_) { /* categories are the only way in; load() reports it */ }
         // The first category is often empty, and opening on an empty grid
         // reads as a broken page rather than an empty shelf. autoAdvance lets
@@ -172,11 +217,62 @@
         load(true);
     }
 
+    function buildChips() {
+        const box = document.getElementById('cats');
+        // One parse for the whole strip. Clicks are handled by a single
+        // delegated listener below rather than ~200 inline handlers.
+        box.innerHTML = cats.map((c, i) =>
+            `<button type="button" class="chip${i === 0 ? ' on' : ''}" data-id="${Number(c.id)}"
+            >${esc(c.name)}</button>`).join('');
+        chips = Array.prototype.map.call(box.children, el => ({
+            el,
+            id: Number(el.getAttribute('data-id')),
+            hay: (el.textContent || '').trim().toLowerCase(),
+        }));
+        document.getElementById('catcount').textContent =
+            cats.length > 12 ? cats.length + ' categories' : '';
+    }
+
+    /** Narrow the strip to categories matching the box. Display-only — the
+     *  chips stay in the DOM, so nothing is rebuilt and nothing re-binds. */
+    function filterCats() {
+        const term = (document.getElementById('catq').value || '').trim().toLowerCase();
+        if (term === lastTerm) return;
+        lastTerm = term;
+
+        let shown = 0;
+        for (let i = 0; i < chips.length; i++) {
+            const hit = !term || chips[i].hay.indexOf(term) !== -1;
+            chips[i].el.classList.toggle('hide', !hit);
+            if (hit) shown++;
+        }
+        document.getElementById('catclear').hidden = !term;
+        document.getElementById('catcount').textContent =
+            !term ? (cats.length > 12 ? cats.length + ' categories' : '')
+                  : (shown ? shown + ' of ' + cats.length : 'No category matches');
+        document.getElementById('cats').scrollLeft = 0;
+    }
+    const catDebounced = () => { clearTimeout(catTimer); catTimer = setTimeout(filterCats, 120); };
+
+    function clearCatSearch() {
+        const box = document.getElementById('catq');
+        box.value = '';
+        filterCats();
+        box.focus();
+    }
+
     /** Select a category in the UI without triggering a load. */
     function markCat(id) {
         cat = id;
-        document.querySelectorAll('#cats .chip').forEach(b =>
-            b.classList.toggle('on', Number(b.getAttribute('data-id')) === id));
+        let on = null;
+        for (let i = 0; i < chips.length; i++) {
+            const hit = chips[i].id === id;
+            chips[i].el.classList.toggle('on', hit);
+            if (hit) on = chips[i].el;
+        }
+        // Keep the active chip visible — the auto-advance below can move the
+        // selection well off-screen in a 200-wide strip.
+        if (on) on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     }
     function pickCat(id) {
         document.getElementById('mode').value = 'all';   // a category means browsing
@@ -453,7 +549,28 @@
         sel = keep; draw();
     }
 
-    document.addEventListener('DOMContentLoaded', boot);
+    document.addEventListener('DOMContentLoaded', () => {
+        // One listener for the whole strip, bound before the chips exist.
+        document.getElementById('cats').addEventListener('click', (e) => {
+            const chip = e.target.closest('.chip');
+            if (chip) pickCat(Number(chip.getAttribute('data-id')));
+        });
+
+        const catq = document.getElementById('catq');
+        catq.addEventListener('input', catDebounced);
+        catq.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            // Enter picks the first match, so a phone user can type three
+            // letters and go without hunting for the chip.
+            clearTimeout(catTimer); filterCats();
+            const first = chips.find(c => !c.el.classList.contains('hide'));
+            if (first) { catq.blur(); pickCat(first.id); }
+        });
+        document.getElementById('catclear').addEventListener('click', clearCatSearch);
+
+        boot();
+    });
     </script>
 </body>
 </html>
