@@ -135,7 +135,6 @@
             <a href="link-pages" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
             <a href="my-designs" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
             <a href="google-business" class="nav-item active"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
-            <a href="reviews" class="nav-item"><i class="fas fa-star nav-icon"></i><span>Reviews Funnel</span></a>
             <a href="website-builder" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
             <a href="whatsapp" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
             <a href="site-orders" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
@@ -198,6 +197,11 @@
         ['services',   'Services'],
         ['attributes', 'Attributes'],
         ['ask',        'Get reviews'],
+        // The review funnel used to be its own sidebar page. It belongs here:
+        // a negative review and the listing it would have landed on are the
+        // same job, and bouncing between two pages to handle one complaint is
+        // how they get missed. reviews.html still works for old bookmarks.
+        ['funnel',     'Review funnel'],
     ];
     let tab = 'score';
     let status = null;
@@ -328,7 +332,7 @@
         p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
         ({ score: tabScore, info: tabInfo, reviews: tabReviews, posts: tabPosts,
            photos: tabPhotos, insights: tabInsights, services: tabServices,
-           attributes: tabAttrs, ask: tabAsk }[k])(p);
+           attributes: tabAttrs, ask: tabAsk, funnel: tabFunnel }[k])(p);
     }
 
     const fail = (p) => (e) => { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; };
@@ -802,6 +806,13 @@
         try {
             const d = await api('review-requests.php');
             const link = d.review_link || '';
+            // Normalised the same way as the queue, so a number logged as
+            // 919876543210 still matches one pasted as 9876543210.
+            askedBefore = {};
+            (d.requests || []).forEach(r => {
+                const n = normalisePhone(r.phone);
+                if (n) askedBefore[n] = true;
+            });
             p.innerHTML = `
               <div class="card">
                 <h3>Your review link</h3>
@@ -813,6 +824,11 @@
               </div>
               <div class="card">
                 <h3>Ask a customer</h3>
+                <label class="lbl">Message</label>
+                <textarea class="ta" id="askMsg" style="min-height:70px"
+                  >${esc(DEFAULT_ASK_MSG)}</textarea>
+                <p class="muted" style="margin-top:6px">Their name and your review link are added automatically.</p>
+                <label class="lbl">One customer</label>
                 <div class="row">
                   <input class="inp grow" id="askName" placeholder="Name (optional)">
                   <input class="inp grow" id="askPhone" placeholder="Phone, e.g. 9876543210">
@@ -820,6 +836,20 @@
                 </div>
                 <p class="muted" style="margin-top:9px">This opens WhatsApp on your own device with the message
                   ready. Tapify does not send it for you &mdash; Google treats mass review requests as abuse.</p>
+              </div>
+
+              <div class="card">
+                <h3>Ask several</h3>
+                <p class="muted" style="margin-bottom:10px">Paste your list below &mdash; one per line, or separated
+                  by commas. "Ramesh 9876543210" works, so does a bare number. They queue up, and you send them
+                  one at a time from your own WhatsApp.</p>
+                <textarea class="ta" id="bulkPaste" style="min-height:90px"
+                  placeholder="Ramesh 9876543210&#10;Sunita, 9123456780&#10;9988776655"></textarea>
+                <div class="row" style="margin-top:10px">
+                  <button class="btn btn-sm" onclick="bulkAdd()">Add to queue</button>
+                  <span class="muted" id="bulkMsg"></span>
+                </div>
+                <div id="queueBox" style="margin-top:14px"></div>
               </div>
               <div class="card">
                 <h3>Already asked (${esc((d.requests || []).length)})</h3>
@@ -829,6 +859,8 @@
                       <span class="muted">${esc(r.channel || '')} &middot; ${esc(r.created_at || '')}</span>
                     </div>`).join('') : '<p class="muted">Nobody asked yet.</p>'}
               </div>`;
+            // The queue survives a tab switch, so repaint whatever is still in it.
+            renderQueue();
         } catch (e) { fail(p)(e); }
     }
     function copyLink() {
@@ -836,18 +868,260 @@
         el.select();
         navigator.clipboard ? navigator.clipboard.writeText(el.value) : document.execCommand('copy');
     }
+    const DEFAULT_ASK_MSG = 'thanks for choosing us! Could you leave us a quick Google review?';
+
+    /**
+     * The mirror of the app's normalisePhone (src/utils/phone.js), which is
+     * itself the mirror of GoogleBusinessService::normalisePhone. All three
+     * have to agree or the "already asked" check quietly stops matching:
+     * the same customer saved as 9876543210 here and 919876543210 there is
+     * two different people as far as the log is concerned.
+     */
+    function normalisePhone(raw) {
+        let d = String(raw || '').replace(/\D+/g, '');
+        if (!d) return '';
+        if (d.length > 12 && d.indexOf('00') === 0) d = d.slice(2);
+        if (d.length === 11 && d[0] === '0') d = d.slice(1);
+        if (d.length === 10) d = '91' + d;
+        return (d.length >= 11 && d.length <= 15) ? d : '';
+    }
+
+    function askText(name) {
+        const box = document.getElementById('askMsg');
+        const body = ((box && box.value) || DEFAULT_ASK_MSG).trim();
+        const link = (document.getElementById('revLink') || {}).value || '';
+        return (name ? 'Hi ' + name + ', ' : '') + body + (link ? ' ' + link : '');
+    }
+
+    /** Open the owner's own WhatsApp with the message ready, and log the ask. */
+    async function openAsk(name, phone) {
+        // Logged first, then handed off: if the popup is blocked we still know
+        // it was attempted, and a failed log must never stop them asking.
+        try {
+            await api('review-requests.php', {
+                method: 'POST',
+                body: JSON.stringify({ name: name, phone: phone, channel: 'whatsapp' }),
+            });
+        } catch (e) { /* logging the ask must not stop them asking */ }
+        window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(askText(name)),
+            '_blank', 'noopener');
+    }
+
     async function askSend() {
-        const phone = (document.getElementById('askPhone').value || '').replace(/\D/g, '');
+        const phone = normalisePhone(document.getElementById('askPhone').value);
         const name = (document.getElementById('askName').value || '').trim();
-        if (phone.length < 10) { alert('Enter a valid phone number.'); return; }
-        const link = document.getElementById('revLink').value;
-        const text = `Hi${name ? ' ' + name : ''}, thanks for choosing us! Could you leave us a quick Google review? ${link}`;
-        // Recorded first, then the owner's own WhatsApp opens with the message.
-        try { await api('review-requests.php', { method: 'POST', body: JSON.stringify({ name, phone, channel: 'whatsapp' }) }); }
-        catch (e) { /* logging the ask must not stop them asking */ }
-        window.open('https://wa.me/' + (phone.length === 10 ? '91' + phone : phone)
-            + '?text=' + encodeURIComponent(text), '_blank');
+        if (!phone) { alert('Enter a valid mobile number, with the country code if it is not Indian.'); return; }
+        await openAsk(name, phone);
         openTab('ask');
+    }
+
+    /* ── asking several ───────────────────────────────────────────────────
+       The same shape as the app's Request a Review screen: a queue you build,
+       then send one at a time from your OWN WhatsApp. Nothing is sent from
+       Tapify's servers — that is what keeps this clear of bulk-messaging rules
+       and of Google's prohibition on soliciting reviews at scale, and it is
+       why there is no "send all" button. */
+    let askQueue = [];
+
+    function bulkAdd() {
+        const box = document.getElementById('bulkPaste');
+        const seen = {};
+        askQueue.forEach(q => { seen[q.phone] = true; });
+        let added = 0, dupes = 0, bad = 0;
+
+        (box.value || '').split(/[\n,;]+/).forEach(line => {
+            const raw = line.trim();
+            if (!raw) return;
+            const phone = normalisePhone(raw);
+            if (!phone) { bad++; return; }
+            if (seen[phone]) { dupes++; return; }
+            seen[phone] = true;
+            // Whatever is left once the digits are stripped out is the name:
+            // people paste "Ramesh 98765 43210" as readily as a bare number.
+            const name = raw.replace(/[0-9+()\-\s]+$/, '').replace(/^[^A-Za-z]+/, '').trim();
+            askQueue.push({ name: name, phone: phone });
+            added++;
+        });
+
+        box.value = '';
+        const bits = [];
+        if (added) bits.push(added + ' added');
+        if (dupes) bits.push(dupes + ' already queued');
+        if (bad) bits.push(bad + ' not a valid number');
+        document.getElementById('bulkMsg').textContent = bits.length ? bits.join(' · ') : 'Nothing to add.';
+        renderQueue();
+    }
+
+    function renderQueue() {
+        const box = document.getElementById('queueBox');
+        if (!box) return;
+        if (!askQueue.length) { box.innerHTML = ''; return; }
+        const asked = askedBefore;
+        box.innerHTML = `
+          <div class="row" style="justify-content:space-between;margin-bottom:8px">
+            <b style="font-size:.86rem;color:#153e3f">Queue (${askQueue.length})</b>
+            <button class="btn btn-ghost btn-sm" onclick="askQueue=[];renderQueue()">Clear all</button>
+          </div>
+          ${askQueue.map((q, i) => `
+            <div class="row" style="padding:8px 0;border-bottom:1px solid #f0ece6">
+              <span class="grow" style="font-size:.86rem">
+                ${esc(q.name || '—')} <span class="muted">+${esc(q.phone)}</span>
+                ${asked[q.phone] ? '<span class="muted" style="color:#b45309"> · asked before</span>' : ''}
+              </span>
+              <button class="btn btn-sm" onclick="queueSend(${i})">Open WhatsApp</button>
+              <button class="btn btn-ghost btn-sm" onclick="queueDrop(${i})">Remove</button>
+            </div>`).join('')}
+          <p class="muted" style="margin-top:10px">Each one opens a WhatsApp tab with the message ready.
+            Send it, come back, and do the next — a human between each is what keeps this personal
+            outreach rather than a blast.</p>`;
+    }
+
+    function queueDrop(i) { askQueue.splice(i, 1); renderQueue(); }
+
+    async function queueSend(i) {
+        const q = askQueue[i];
+        if (!q) return;
+        await openAsk(q.name, q.phone);
+        askQueue.splice(i, 1);
+        askedBefore[q.phone] = true;
+        renderQueue();
+    }
+
+    /** Numbers already in the log, so the queue can flag a repeat ask. */
+    let askedBefore = {};
+
+    /* ── review funnel ────────────────────────────────────────────────────
+       The smart link: 4-5 stars go on to Google, 1-3 stars land in a private
+       form that only you see. Those private ones are the whole point — a
+       complaint you can answer before it becomes a public one-star — so they
+       lead here rather than sitting under a separate sidebar page.
+
+       Different API family from the rest of this screen (/api/reviews/, not
+       /api/google/gbp/), so it does not use the api() helper above. */
+    const REV_API = API + '/api/reviews/';
+
+    async function revApi(path, opts) {
+        const r = await fetch(REV_API + path, Object.assign({
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+        }, opts || {}));
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j;
+    }
+
+    const FUNNEL_BASE = 'https://review-google.vercel.app';
+
+    async function tabFunnel(p) {
+        p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
+        // Settled independently: a funnel that has never been set up 404s, and
+        // that must not blank the private reviews alongside it.
+        const [cfg, stats, list] = await Promise.allSettled([
+            revApi('manage_funnel.php'),
+            revApi('get_analytics.php'),
+            revApi('get_reviews.php'),
+        ]);
+        const ok = (r) => (r.status === 'fulfilled' ? r.value : null);
+        const fd = ok(cfg) && ok(cfg).data;
+        const an = (ok(stats) && ok(stats).data) || {};
+        const rows = (ok(list) && ok(list).data) || [];
+        const slug = fd && fd.slug ? fd.slug : '';
+
+        p.innerHTML = `
+          <div class="card">
+            <h3>Your smart review link</h3>
+            <p class="muted" style="margin-bottom:10px">Happy customers go straight to Google.
+              Anyone giving 1&ndash;3 stars is shown a private form instead, and lands in the table below
+              rather than on your public listing.</p>
+            <label class="lbl">Your Google review URL</label>
+            <div class="row">
+              <input class="inp grow" id="fnUrl" placeholder="https://g.page/r/..."
+                     value="${esc((fd && fd.google_review_url) || '')}">
+              <button class="btn btn-sm" onclick="funnelSave()">Save</button>
+            </div>
+            <p class="muted" id="fnMsg" style="margin-top:8px"></p>
+            ${slug ? `
+            <div class="row" style="margin-top:14px;align-items:flex-start;gap:18px">
+              <div id="fnQr"></div>
+              <div class="grow">
+                <label class="lbl" style="margin-top:0">Share this link</label>
+                <div class="row">
+                  <input class="inp grow" id="fnLink" readonly value="${esc(FUNNEL_BASE + '/' + slug)}">
+                  <button class="btn btn-sm" onclick="funnelCopy()">Copy</button>
+                </div>
+                <p class="muted" style="margin-top:8px">Print the QR for the counter, or send the link
+                  after a job. Use this instead of the raw Google link above.</p>
+              </div>
+            </div>` : ''}
+          </div>
+
+          <div class="card">
+            <div class="stat-row">
+              <div class="stat"><b>${esc(an.scans || 0)}</b><span>Scans</span></div>
+              <div class="stat"><b>${esc(an.redirects || 0)}</b><span>Sent to Google</span></div>
+              <div class="stat"><b>${esc(rows.length)}</b><span>Private feedback</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Private feedback (1&ndash;3 stars)</h3>
+            <p class="muted" style="margin-bottom:10px">These never reached Google. Call them back &mdash;
+              a complaint answered privately is the one that does not become a public review.</p>
+            ${rows.length ? rows.map(r => `
+              <div class="rev">
+                <div class="rev-top">
+                  <span class="rev-who">${esc(r.customer_name || 'Anonymous')}</span>
+                  <span class="rev-when">${esc(r.created_at || '')}</span>
+                </div>
+                <div class="rev-stars">${stars(r.rating)}</div>
+                <p class="rev-txt">${r.feedback_text ? esc(r.feedback_text) : '<span class="muted">No text left.</span>'}</p>
+                <div class="row" style="margin-top:9px">
+                  ${r.customer_phone ? `<a class="btn btn-sm" href="tel:${esc(r.customer_phone)}">Call ${esc(r.customer_phone)}</a>
+                     <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener"
+                        href="https://wa.me/${esc(normalisePhone(r.customer_phone))}">WhatsApp</a>` : ''}
+                  ${r.media_url ? `<a class="btn btn-ghost btn-sm" href="${esc(r.media_url)}" target="_blank" rel="noopener">View photo</a>` : ''}
+                </div>
+              </div>`).join('') : '<p class="muted">No private feedback yet.</p>'}
+          </div>`;
+
+        if (slug) drawFunnelQr(FUNNEL_BASE + '/' + slug);
+    }
+
+    async function funnelSave() {
+        const url = (document.getElementById('fnUrl').value || '').trim();
+        const msg = document.getElementById('fnMsg');
+        if (!url) { msg.textContent = 'Paste your Google review URL first.'; return; }
+        msg.textContent = 'Saving…';
+        try {
+            await revApi('manage_funnel.php', { method: 'POST', body: JSON.stringify({ google_review_url: url }) });
+            openTab('funnel');
+        } catch (e) { msg.textContent = e.message; }
+    }
+
+    function funnelCopy() {
+        const el = document.getElementById('fnLink');
+        navigator.clipboard.writeText(el.value)
+            .then(() => { document.getElementById('fnMsg').textContent = 'Link copied.'; })
+            .catch(() => { el.select(); document.execCommand('copy'); });
+    }
+
+    /**
+     * The QR library is fetched only when this tab is opened — it is a third
+     * script on a page that already loads two, and nobody on the Score or
+     * Reviews tab ever needs it.
+     */
+    function drawFunnelQr(link) {
+        const draw = () => {
+            const box = document.getElementById('fnQr');
+            if (!box || !window.QRCode) return;
+            box.innerHTML = '';
+            new QRCode(box, { text: link, width: 150, height: 150 });
+        };
+        if (window.QRCode) return draw();
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        s.onload = draw;
+        document.head.appendChild(s);
     }
 
     document.addEventListener('DOMContentLoaded', boot);

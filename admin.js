@@ -538,6 +538,10 @@ const NAV_ALIASES = {
     // The vCard editor is opened from the Dashboard's card list and has no
     // sidebar entry of its own.
     'vcards-edit': 'dashboard',
+    // The review funnel moved into Google Business as a tab, next to the
+    // listing the reviews are about. reviews.html still works for anyone with
+    // a bookmark, so point its highlight at where the feature now lives.
+    'reviews': 'google-business',
 };
 // settings.html and ai-growth.html are deliberately absent: nothing links to
 // either any more, so there is no sidebar item they could honestly light up.
