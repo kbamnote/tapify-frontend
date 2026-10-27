@@ -23,15 +23,24 @@
                padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700; }
         .tab.on { background: #153e3f; border-color: #153e3f; color: #fff; }
 
-        .accts { display: flex; flex-wrap: wrap; gap: 10px; }
+        /* A grid, not a wrapping flex row: with ten accounts of the same
+           platform the names are what you read, and ragged card widths made
+           them impossible to scan down. */
+        .accts { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
         .acct {
             display: flex; align-items: center; gap: 10px; border: 1.5px solid #e9e3dc;
-            border-radius: 12px; padding: 10px 14px; cursor: pointer; background: #fff;
+            border-radius: 12px; padding: 10px 12px; cursor: pointer; background: #fff;
+            min-width: 0;
         }
         .acct.on { border-color: #153e3f; background: #f3f8f7; }
-        .acct i { font-size: 1.1rem; }
-        .acct b { font-size: .85rem; color: #153e3f; }
-        .acct span { font-size: .72rem; color: #6b7280; display: block; }
+        .acct-pic { width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
+                    flex: 0 0 auto; background: #f0ece6; }
+        .acct-ico { width: 34px; flex: 0 0 auto; text-align: center; font-size: 1.25rem; }
+        .acct-txt { flex: 1; min-width: 0; }
+        .acct b { font-size: .85rem; color: #153e3f; display: block;
+                  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .acct span { font-size: .72rem; color: #6b7280; display: flex; align-items: center; gap: 5px; }
+        .acct span i { font-size: .78rem; }
         .fb { color: #1877F2 } .ig { color: #E1306C } .li { color: #0A66C2 }
 
         .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
@@ -186,18 +195,46 @@
         ({ compose: tabCompose, history: tabHistory, accounts: tabAccounts, stats: tabStats }[k])(p);
     }
 
+    /**
+     * One connected account, as a card.
+     *
+     * The API field is `account_name` — "Prime Motors", "@tapify.world" — and
+     * this page was reading `c.name`, which does not exist in the payload. Every
+     * card therefore fell through to the platform string, so ten Facebook pages
+     * all rendered as "facebook / facebook" with no way to tell them apart. The
+     * app reads account_name and has always shown them correctly.
+     *
+     * The avatar comes back from the same endpoint and was simply unused; with
+     * ten accounts of the same platform the picture is what you actually
+     * recognise, so it leads and the platform icon becomes a small badge.
+     */
+    function acctCard(c, opts) {
+        opts = opts || {};
+        const name = c.account_name || c.name || ('Unnamed ' + c.platform);
+        const face = c.avatar
+            ? `<img class="acct-pic" src="${esc(c.avatar)}" alt="" loading="lazy"
+                    onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'${esc(ICON[c.platform] || 'fa-solid fa-share-nodes')} acct-ico'}))">`
+            : `<i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'} acct-ico"></i>`;
+        return `
+            <div class="acct ${opts.on ? 'on' : ''}"${opts.onclick ? ` onclick="${opts.onclick}"` : ''}>
+              ${face}
+              <div class="acct-txt">
+                <b title="${esc(name)}">${esc(name)}</b>
+                <span><i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'}"></i> ${esc(c.platform)}</span>
+              </div>
+              ${opts.extra || ''}
+            </div>`;
+    }
+
     /* ── accounts ─────────────────────────────────────────────────────── */
     function tabAccounts(p) {
         p.innerHTML = `
           <div class="card">
             <h3>Connected accounts</h3>
             <p class="hint">Posts you write here go out to whichever of these you tick.</p>
-            ${conns.length ? `<div class="accts">${conns.map(c => `
-                <div class="acct">
-                  <i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'}"></i>
-                  <div><b>${esc(c.name || c.platform)}</b><span>${esc(c.platform)}</span></div>
-                  <button class="btn btn-ghost btn-sm" onclick="disconnect(${Number(c.id)})">Remove</button>
-                </div>`).join('')}</div>` : '<p class="muted">Nothing connected yet.</p>'}
+            ${conns.length ? `<div class="accts">${conns.map(c => acctCard(c, {
+                extra: `<button class="btn btn-ghost btn-sm" onclick="disconnect(${Number(c.id)})">Remove</button>`,
+            })).join('')}</div>` : '<p class="muted">Nothing connected yet.</p>'}
           </div>
           <div class="card">
             <h3>Add an account</h3>
@@ -236,17 +273,18 @@
         p.innerHTML = `
           <div class="card">
             <h3>Post to</h3>
-            <div class="accts">${conns.map(c => `
-                <div class="acct ${picked[c.id] ? 'on' : ''}" onclick="togglePick(${Number(c.id)},this)">
-                  <i class="${ICON[c.platform] || 'fa-solid fa-share-nodes'}"></i>
-                  <div><b>${esc(c.name || c.platform)}</b><span>${esc(c.platform)}</span></div>
-                </div>`).join('')}</div>
+            <div class="accts">${conns.map(c => acctCard(c, {
+                on: !!picked[c.id],
+                onclick: `togglePick(${Number(c.id)},this)`,
+            })).join('')}</div>
 
             <label class="lbl" for="cap">Caption</label>
             <textarea class="ta" id="cap" placeholder="What would you like to share?"></textarea>
 
-            <label class="lbl">Photos or video</label>
-            <input type="file" id="file" accept="image/*,video/*" onchange="upload(this)">
+            <label class="lbl">Photos, video or a reel</label>
+            <input type="file" id="file" accept="image/*,video/*" multiple onchange="upload(this)">
+            <p class="hint">Pick a video to post a <b>Reel</b> on Instagram or a video post on Facebook.
+               Several photos go out as one album.</p>
             <div class="media" id="mediaList"></div>
             <p class="hint" id="igNote" style="margin-top:8px"></p>
 
@@ -280,30 +318,56 @@
     }
     function dropMedia(i) { media.splice(i, 1); renderMedia(); }
 
-    /** Instagram will not accept a text-only post; say so before they try. */
+    /**
+     * Say what will actually happen before they press Publish.
+     *
+     * Instagram rejects a text-only post outright, and a video goes out as a
+     * Reel rather than a feed post — both are worth knowing in advance rather
+     * than discovering in History.
+     */
     function renderIgNote() {
         const note = document.getElementById('igNote');
         if (!note) return;
         const igPicked = conns.some(c => picked[c.id] && c.platform === 'instagram');
-        note.textContent = igPicked && !media.length
-            ? 'Instagram needs at least one photo or video — a text-only post will be rejected.'
-            : '';
-        note.style.color = '#b45309';
+        const videos = media.filter(m => m.type === 'video').length;
+
+        let msg = '', warn = true;
+        if (igPicked && !media.length) {
+            msg = 'Instagram needs at least one photo or video — a text-only post will be rejected.';
+        } else if (videos > 1) {
+            msg = 'Only the first video is posted; Facebook and Instagram both take one video per post.';
+        } else if (videos === 1) {
+            msg = igPicked
+                ? 'This will go out as a Reel on Instagram and as a video post on Facebook.'
+                : 'This will go out as a video post.';
+            warn = false;
+        }
+        note.textContent = msg;
+        note.style.color = warn ? '#b45309' : '#15803d';
     }
 
     async function upload(input) {
-        const f = input.files && input.files[0];
-        if (!f) return;
+        const files = Array.from(input.files || []);
+        if (!files.length) return;
         input.disabled = true;
-        try {
-            const form = new FormData();
-            form.append('file', f);
-            // No Content-Type header: the browser must set the multipart boundary.
-            const d = await api('media.php', { method: 'POST', body: form });
-            media.push({ type: d.type || (f.type.startsWith('video') ? 'video' : 'image'), url: d.url });
-            renderMedia();
-        } catch (e) { alert(e.message); }
-        finally { input.disabled = false; input.value = ''; }
+        // media.php takes one file per request, so several are sent in turn
+        // rather than as one batch. Videos can be large and the endpoint allows
+        // 120s for them, so this is deliberately sequential — firing five big
+        // uploads at once is how you get a timeout instead of five posts.
+        for (const f of files) {
+            try {
+                const form = new FormData();
+                form.append('file', f);
+                // No Content-Type header: the browser must set the multipart boundary.
+                const d = await api('media.php', { method: 'POST', body: form });
+                media.push({ type: d.type || (f.type.startsWith('video') ? 'video' : 'image'), url: d.url });
+                renderMedia();
+            } catch (e) {
+                alert(f.name + ': ' + e.message);
+            }
+        }
+        input.disabled = false;
+        input.value = '';
     }
 
     async function publish() {
@@ -348,10 +412,18 @@
             </div>`;
         } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
     }
+    /**
+     * The badge names the ACCOUNT, not just the platform. With a dozen Facebook
+     * pages connected, "facebook failed" tells the customer nothing about which
+     * one to go and look at — and account_name is already in the payload.
+     */
     function badge(t) {
         const s = (t.status || '').toLowerCase();
         const cls = s === 'published' || s === 'sent' ? 'b-ok' : (s === 'failed' ? 'b-bad' : 'b-wait');
-        return `<span class="badge ${cls}">${esc(t.platform || '')} ${esc(s || 'pending')}</span>`;
+        const who = t.account_name || t.platform || '';
+        return `<span class="badge ${cls}" title="${esc(t.error || who)}">`
+             + `<i class="${ICON[t.platform] || 'fa-solid fa-share-nodes'}"></i> `
+             + `${esc(who)} &middot; ${esc(s || 'pending')}</span>`;
     }
 
     /* ── engagement ───────────────────────────────────────────────────── */
