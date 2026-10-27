@@ -116,7 +116,7 @@
                 <div class="filters">
                     <input class="inp" id="q" placeholder="Search designs…" oninput="debounced()">
                     <select class="sel" id="mode" onchange="load()">
-                        <option value="all">All designs</option>
+                        <option value="all">Browse by category</option>
                         <option value="saved">Saved only</option>
                     </select>
                 </div>
@@ -147,20 +147,29 @@
     }
 
     let cats = [], cat = 0, designs = [], savedIds = new Set(), timer = null;
-    const debounced = () => { clearTimeout(timer); timer = setTimeout(load, 300); };
+    // Search is client-side: list.php has no search parameter, and one
+    // category is at most 50 designs, already loaded. Filtering here is
+    // instant and needs no round trip.
+    const debounced = () => { clearTimeout(timer); timer = setTimeout(render, 200); };
 
     async function boot() {
         try {
             const d = await api('categories.php');
             cats = d.categories || [];
-            document.getElementById('cats').innerHTML =
-                `<button class="chip on" data-id="0" onclick="pickCat(0)">All</button>` +
-                cats.map(c => `<button class="chip" data-id="${Number(c.id)}" onclick="pickCat(${Number(c.id)})">${esc(c.name)}</button>`).join('');
-        } catch (_) { /* categories are a filter, not the content */ }
+            // NO "All" chip. list.php requires a category_id, a
+            // content_category_id or saved=1 — there is no browse-everything
+            // mode — so the first category is selected instead of asking for
+            // one that would 400.
+            cat = cats.length ? Number(cats[0].id) : 0;
+            document.getElementById('cats').innerHTML = cats.map((c, i) =>
+                `<button class="chip ${i === 0 ? 'on' : ''}" data-id="${Number(c.id)}"
+                         onclick="pickCat(${Number(c.id)})">${esc(c.name)}</button>`).join('');
+        } catch (_) { /* categories are the only way in; load() reports it */ }
         load();
     }
     function pickCat(id) {
         cat = id;
+        document.getElementById('mode').value = 'all';   // a category means browsing
         document.querySelectorAll('#cats .chip').forEach(b =>
             b.classList.toggle('on', Number(b.getAttribute('data-id')) === id));
         load();
@@ -168,12 +177,18 @@
 
     async function load() {
         const out = document.getElementById('out');
+        const saved = document.getElementById('mode').value === 'saved';
+
+        if (!saved && !cat) {
+            out.innerHTML = '<div class="card"><p class="muted">No design categories are set up yet. '
+                + 'Please contact Tapify support.</p></div>';
+            return;
+        }
+
         out.innerHTML = '<div class="card"><p class="muted">Loading designs…</p></div>';
         const q = new URLSearchParams({ limit: '50' });
-        if (cat) q.set('category_id', String(cat));
-        if (document.getElementById('mode').value === 'saved') q.set('saved', '1');
-        const term = (document.getElementById('q').value || '').trim();
-        if (term) q.set('search', term);
+        if (saved) q.set('saved', '1'); else q.set('category_id', String(cat));
+
         try {
             const d = await api('list.php?' + q.toString());
             designs = d.designs || [];
@@ -182,10 +197,26 @@
         } catch (e) { out.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
     }
 
+    /** Only the loaded set, narrowed by the search box. */
+    function visible() {
+        const t = (document.getElementById('q').value || '').trim().toLowerCase();
+        if (!t) return designs;
+        return designs.filter(d =>
+            String(d.title || '').toLowerCase().includes(t) ||
+            String(d.category_name || '').toLowerCase().includes(t) ||
+            String(d.description || '').toLowerCase().includes(t));
+    }
+
     function render() {
         const out = document.getElementById('out');
-        if (!designs.length) { out.innerHTML = '<div class="card"><p class="muted">No designs found.</p></div>'; return; }
-        out.innerHTML = '<div class="grid">' + designs.map((d, i) => `
+        const list = visible();
+        if (!list.length) {
+            out.innerHTML = '<div class="card"><p class="muted">'
+                + (designs.length ? 'Nothing matches that search.' : 'No designs in this category yet.')
+                + '</p></div>';
+            return;
+        }
+        out.innerHTML = '<div class="grid">' + list.map((d, i) => `
             <div class="tile">
               <div class="tile-img">
                 <img src="${esc(d.image_url)}" alt="${esc(d.title || '')}" loading="lazy">
@@ -196,7 +227,7 @@
                 <b>${esc(d.title || 'Design')}</b>
                 <span>${esc(d.category_name || '')}</span>
                 <div class="tile-act">
-                  <button class="btn" onclick="openEditor(${i})">Customise</button>
+                  <button class="btn" onclick="openEditor(${Number(d.id)})">Customise</button>
                   <a class="btn btn-ghost" href="${esc(d.image_url)}" target="_blank" rel="noopener">Open</a>
                 </div>
               </div>
@@ -223,8 +254,12 @@
     const PALETTE = ['#ffffff','#000000','#153E3F','#D19A66','#B91C1C','#1E3A8A','#065F46','#9D174D'];
     let layers = [], sel = -1, img = null, drag = null, tainted = false;
 
-    function openEditor(i) {
-        const d = designs[i];
+    // Takes a design id, not a grid index: the grid is filtered by the
+    // search box, so an index would open the wrong design the moment
+    // anything is typed.
+    function openEditor(id) {
+        const d = designs.find(x => Number(x.id) === Number(id));
+        if (!d) return;
         layers = []; sel = -1; tainted = false;
         document.getElementById('editor').innerHTML = `
           <div class="back" onclick="if(event.target===this)closeEditor()">
