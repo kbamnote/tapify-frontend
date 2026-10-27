@@ -41,15 +41,29 @@
 
         /* ── 7-day views ─────────────────────────────────────────────── */
         .chart { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px; padding: 20px; }
-        .chart-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+        .chart-head { display: flex; align-items: center; justify-content: space-between;
+                      gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
         .chart-head h3 { margin: 0; font-size: .92rem; font-weight: 700; color: #153e3f; }
-        .chart-head span { font-size: .8rem; color: #6b7280; }
+        .range-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .range-row > span { font-size: .8rem; color: #6b7280; }
+        .ranges { display: flex; gap: 3px; background: #f3f0ec; border-radius: 9px; padding: 3px; }
+        .range { border: 0; background: none; border-radius: 7px; padding: 6px 13px; font: inherit;
+                 font-size: .76rem; font-weight: 700; color: #6b7280; cursor: pointer; white-space: nowrap; }
+        .range.on { background: #fff; color: #153e3f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .range:disabled { opacity: .55; cursor: default; }
+
         .bars { display: flex; align-items: flex-end; gap: 10px; height: 130px; }
-        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+        /* A month is 30 columns and a year 12, so the gap and the label have to
+           shrink or the row either overflows or turns into a grey smear. */
+        .bars.dense { gap: 3px; }
+        .bars.dense .bar-n { display: none; }
+        .bars.dense .bar-d { font-size: .6rem; }
+        .bar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center;
+                   gap: 6px; height: 100%; justify-content: flex-end; }
         .bar { width: 100%; max-width: 44px; background: linear-gradient(180deg, #27706e, #153e3f);
-               border-radius: 6px 6px 0 0; min-height: 3px; }
+               border-radius: 6px 6px 0 0; min-height: 3px; transition: height .25s ease; }
         .bar-n { font-size: .7rem; font-weight: 700; color: #153e3f; }
-        .bar-d { font-size: .68rem; color: #9ca3af; font-weight: 600; }
+        .bar-d { font-size: .68rem; color: #9ca3af; font-weight: 600; white-space: nowrap; }
 
         /* ── legacy vCard, corner card ───────────────────────────────── */
         .legacy {
@@ -77,7 +91,7 @@
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
             <a href="dashboard" class="sidebar-logo">
-                <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
+                <img src="../images/tapify-logo-green.png" alt="Tapify">
             </a>
         </div>
         <nav class="sidebar-nav">
@@ -155,11 +169,18 @@
 
                 <div class="tiles" id="tiles"></div>
 
-                <h3 class="sec-title">Website views, last 7 days</h3>
+                <h3 class="sec-title">Website views</h3>
                 <div class="chart">
                     <div class="chart-head">
-                        <h3>Daily visitors</h3>
-                        <span id="viewsTotal">&mdash;</span>
+                        <h3 id="viewsTitle">Daily visitors</h3>
+                        <div class="range-row">
+                            <div class="ranges" id="ranges">
+                                <button class="range on" data-range="week">Weekly</button>
+                                <button class="range" data-range="month">Monthly</button>
+                                <button class="range" data-range="year">Yearly</button>
+                            </div>
+                            <span id="viewsTotal">&mdash;</span>
+                        </div>
                     </div>
                     <div class="bars" id="bars"></div>
                 </div>
@@ -214,7 +235,7 @@
             }
 
             renderTiles({ sitesD, ordersD, inqD, apptD, viewsD });
-            renderChart(viewsD);
+            renderChart(viewsD, 'week');
             renderLegacy(meD);
         }
 
@@ -230,27 +251,29 @@
             // Brands font and the rest in Solid; putting both prefixes on one
             // element renders an empty square, so the family is stated per tile
             // rather than guessed from the icon name.
+            // No .html on these: cleanUrls is on, so /dashboard/orders.html
+            // answers a 308 to /dashboard/orders and costs a whole extra
+            // round-trip before the page starts loading.
             const tiles = [
-                { href: 'website-builder.html',   ico: 'fa-solid fa-globe',
+                { href: 'website-builder',   ico: 'fa-solid fa-globe',
                   val: siteList ? siteList.length : null,
                   sub: siteList ? siteList.filter(s => s.published_at).length + ' live' : '',
                   lab: 'My websites' },
-                { href: 'site-orders.html',       ico: 'fa-solid fa-receipt',
+                { href: 'site-orders',       ico: 'fa-solid fa-receipt',
                   val: o ? (o.all || 0) : null,
                   sub: o && o.new ? o.new + ' new' : '',
                   lab: 'Orders' },
-                { href: 'site-inquiries.html',    ico: 'fa-solid fa-envelope-open-text',
+                { href: 'site-inquiries',    ico: 'fa-solid fa-envelope-open-text',
                   val: i ? (i.all || 0) : null,
                   sub: i && i.unread ? i.unread + ' unread' : '',
                   lab: 'Enquiries' },
-                { href: 'site-appointments.html', ico: 'fa-solid fa-calendar-day',
+                { href: 'site-appointments', ico: 'fa-solid fa-calendar-day',
                   val: a ? (a.total !== undefined ? a.total : (a.all || 0)) : null,
                   sub: a && (a.pending || 0) ? (a.pending + ' pending') : '',
                   lab: 'Appointments' },
-                { href: 'whatsapp.html',          ico: 'fa-brands fa-whatsapp',
-                  lab: 'WhatsApp inbox', plain: true },
-                { href: 'reviews.html',           ico: 'fa-solid fa-star',
-                  lab: 'Reviews funnel', plain: true },
+                // WhatsApp inbox and Reviews funnel were here as "Open" tiles.
+                // Neither carried a number, so they were a second copy of their
+                // own sidebar links occupying a whole row of the grid.
             ];
 
             document.getElementById('tiles').innerHTML = tiles.map(t => `
@@ -266,26 +289,72 @@
                 </a>`).join('');
         }
 
-        function renderChart(viewsD) {
+        /* ── website views, by range ──────────────────────────────────────
+           The server does the bucketing (views.php?range=), because only it
+           knows which sites belong to this customer. Week is still the default
+           and is the one range already loaded by the page's first request, so
+           switching to it afterwards costs nothing. */
+        const RANGE_LABEL = {
+            week:  { title: 'Daily visitors',   unit: 'views in the last 7 days' },
+            month: { title: 'Daily visitors',   unit: 'views in the last 30 days' },
+            year:  { title: 'Monthly visitors', unit: 'views in the last 12 months' },
+        };
+        let currentRange = 'week';
+
+        function renderChart(viewsD, range) {
+            range = range || 'week';
+            const meta = RANGE_LABEL[range] || RANGE_LABEL.week;
             const daily = viewsD && Array.isArray(viewsD.daily) ? viewsD.daily : [];
+
+            document.getElementById('viewsTitle').textContent = meta.title;
+            // range_total is the figure for the window on screen. Older
+            // responses only carry the all-time `total`, so fall back to it
+            // rather than showing nothing.
+            const t = viewsD
+                ? (viewsD.range_total !== undefined ? viewsD.range_total : (viewsD.total || 0))
+                : null;
             document.getElementById('viewsTotal').textContent =
-                viewsD ? ((viewsD.total || 0) + ' total views') : 'unavailable';
+                t === null ? 'unavailable' : (t + ' ' + meta.unit);
+
+            const bars = document.getElementById('bars');
+            bars.classList.toggle('dense', daily.length > 12);
 
             if (!daily.length) {
-                document.getElementById('bars').innerHTML =
-                    '<p class="muted" style="font-size:.85rem">No visits recorded yet.</p>';
+                bars.innerHTML = '<p class="muted" style="font-size:.85rem">No visits recorded yet.</p>';
                 return;
             }
-            // Scale against the busiest day so the shape is readable even when
+            // Scale against the busiest bucket so the shape is readable even when
             // the numbers are small; a fixed scale would flatten every bar.
             const max = Math.max(...daily.map(x => x.views || 0), 1);
-            document.getElementById('bars').innerHTML = daily.map(x => `
-                <div class="bar-col">
+            bars.innerHTML = daily.map(x => `
+                <div class="bar-col" title="${esc(x.day || '')}: ${x.views || 0} views">
                     <div class="bar-n">${x.views || 0}</div>
                     <div class="bar" style="height:${Math.round(((x.views || 0) / max) * 100)}%"></div>
                     <div class="bar-d">${esc(x.day || '')}</div>
                 </div>`).join('');
         }
+
+        async function setRange(range) {
+            if (range === currentRange) return;
+            const btns = [...document.querySelectorAll('#ranges .range')];
+            btns.forEach(b => {
+                b.classList.toggle('on', b.dataset.range === range);
+                b.disabled = true;
+            });
+            currentRange = range;
+            try {
+                const r = await get('/api/sites/views.php?range=' + encodeURIComponent(range));
+                renderChart(r && r.success ? (r.data || {}) : null, range);
+            } catch (e) {
+                renderChart(null, range);
+            }
+            btns.forEach(b => { b.disabled = false; });
+        }
+
+        document.getElementById('ranges').addEventListener('click', (e) => {
+            const b = e.target.closest('.range');
+            if (b) setRange(b.dataset.range);
+        });
 
         /**
          * The vCard is legacy: NFC cards now point at the customer's builder

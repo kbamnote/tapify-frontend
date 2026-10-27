@@ -93,6 +93,15 @@ ul { list-style: none; }
     filter: drop-shadow(0 2px 4px rgba(255,215,0,0.3));
 }
 
+/* The customer dashboard shows the logo on its own — the image already
+   contains the wordmark, so the text beside it was saying "Tapify" twice.
+   With the span gone there is room to set it slightly larger. Scoped with
+   :has() so the admin panel, which still shows the text and shares this
+   stylesheet, keeps its 40px. Browsers without :has() simply keep 40px too. */
+.sidebar-logo:not(:has(span)) img {
+    height: 48px;
+}
+
 .sidebar-logo span {
     font-size: 1.3rem;
     font-weight: 700;
@@ -195,6 +204,41 @@ ul { list-style: none; }
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: #f6eee6;
     box-shadow: 0 5px 16px rgba(21, 62, 63, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   CROSS-DOCUMENT VIEW TRANSITIONS
+
+   The dashboard is 23 separate HTML pages, so a sidebar click replaces the
+   whole document — sidebar included. Naming the sidebar and the content area
+   lets the browser match them across the two documents: the sidebar is treated
+   as the SAME element and simply stays put, while only the content on the
+   right cross-fades. The result reads as "the panel stayed, the page changed",
+   which is what it should have looked like all along.
+
+   Progressive enhancement. Browsers without @view-transition (and anyone who
+   asks for reduced motion) get an ordinary navigation, unchanged.
+   -------------------------------------------------------------------------- */
+@view-transition { navigation: auto; }
+
+.admin-sidebar { view-transition-name: tf-sidebar; }
+.admin-main    { view-transition-name: tf-content; }
+
+/* The sidebar is the same thing on both pages — it must not fade or slide,
+   or the illusion breaks and it flickers once per click. */
+::view-transition-old(tf-sidebar),
+::view-transition-new(tf-sidebar) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+::view-transition-old(tf-content) { animation: tf-fade-out 90ms ease-out both; }
+::view-transition-new(tf-content) { animation: tf-fade-in 140ms ease-out both; }
+
+@keyframes tf-fade-out { to   { opacity: 0; } }
+@keyframes tf-fade-in  { from { opacity: 0; transform: translateY(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
 }
 
 /* A full page load follows every sidebar click. This is the only thing on

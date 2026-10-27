@@ -473,6 +473,61 @@ function animateCounters() {
       progress bar immediately, and warm the next page before the click lands.
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   SIDEBAR SCROLL — survive the page load
+   --------------------------------------------------------------------------
+   .admin-sidebar is position:fixed and .sidebar-nav scrolls inside it. Because
+   every dashboard page is a separate document, that inner scroll started at 0
+   every single time: click Appointments or Payment Gateway near the bottom of
+   the list, and the next page opened with the sidebar scrolled back to the top
+   and the item you had just chosen pushed off-screen.
+
+   The position is kept in sessionStorage and restored below, which runs while
+   admin.js is parsed at the end of <body> — before first paint, so there is no
+   visible jump.
+   -------------------------------------------------------------------------- */
+const SIDEBAR_SCROLL_KEY = 'tapify_sidebar_scroll';
+
+function setupSidebarScroll() {
+    const nav = document.querySelector('.sidebar-nav');
+    if (!nav) return false;
+
+    let y = 0;
+    try { y = parseInt(sessionStorage.getItem(SIDEBAR_SCROLL_KEY) || '0', 10) || 0; } catch (e) {}
+    if (y > 0) nav.scrollTop = y;
+
+    const save = () => {
+        try { sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(nav.scrollTop)); } catch (e) {}
+    };
+    nav.addEventListener('scroll', save, { passive: true });
+    // pagehide rather than unload: it fires for bfcache navigations too, which
+    // unload does not.
+    window.addEventListener('pagehide', save);
+    return true;
+}
+
+/**
+ * Keep the highlighted item on screen.
+ *
+ * The restored scroll is where the customer left the list, which is usually
+ * right — but a page reached from somewhere other than the sidebar (a button,
+ * a bookmark) can land with its own item outside the visible strip. Only the
+ * nav's own scrollTop is touched, never the page's.
+ */
+function ensureActiveVisible() {
+    const nav = document.querySelector('.sidebar-nav');
+    const a = nav && nav.querySelector('.nav-item.active');
+    if (!nav || !a) return;
+    const top = a.offsetTop;
+    const bottom = top + a.offsetHeight;
+    if (top < nav.scrollTop) nav.scrollTop = Math.max(0, top - 10);
+    else if (bottom > nav.scrollTop + nav.clientHeight) nav.scrollTop = bottom - nav.clientHeight + 10;
+}
+
+// As early as possible: admin.js sits at the end of <body>, so the sidebar is
+// already parsed and this lands before the first paint.
+if (!setupSidebarScroll()) document.addEventListener('DOMContentLoaded', setupSidebarScroll);
+
 /** Pages with no sidebar entry of their own, mapped to the one they belong under. */
 const NAV_ALIASES = {
     'whatsapp-stores': 'whatsapp',
@@ -605,6 +660,7 @@ function setupNavPrefetch() {
 document.addEventListener('DOMContentLoaded', () => {
     applySavedTheme();
     markActiveNav();
+    ensureActiveVisible();
     setupInstantNav();
     setupNavPrefetch();
     initAnalyticsChart();
