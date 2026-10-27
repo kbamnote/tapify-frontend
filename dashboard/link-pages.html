@@ -161,6 +161,130 @@
 
     let page = null, items = [], tab = 'page';
 
+    /* ─────────────────── bring in what we already know ───────────────────
+       Everything a link page normally holds — WhatsApp, the website, the
+       Google review link, Instagram, Facebook — is already stored somewhere
+       in Tapify because the customer set it up on another screen. Retyping it
+       here is both a chore and a chance to get a digit wrong, so it is fetched
+       and offered as a tick-list. Nothing is added without being confirmed,
+       and every suggestion stays editable before and after it is added.
+
+       YouTube is NOT in this list on purpose: nothing in Tapify connects a
+       YouTube channel, so there is no truthful source for it. It is added by
+       hand like any other link. */
+
+    /** Mirror of the app's normalisePhone, so wa.me links are built the same. */
+    function normalisePhone(raw) {
+        let d = String(raw || '').replace(/\D+/g, '');
+        if (!d) return '';
+        if (d.length > 12 && d.indexOf('00') === 0) d = d.slice(2);
+        if (d.length === 11 && d[0] === '0') d = d.slice(1);
+        if (d.length === 10) d = '91' + d;
+        return (d.length >= 11 && d.length <= 15) ? d : '';
+    }
+
+    /** A plain GET against any Tapify endpoint (api() above is link-pages only). */
+    async function getJson(path) {
+        const r = await fetch(API + path, { credentials: 'include' });
+        const j = await r.json().catch(() => ({}));
+        return j && j.success ? (j.data || {}) : null;
+    }
+
+    let suggestions = [], fetched = false;
+
+    async function fetchSuggestions() {
+        const btn = document.getElementById('impBtn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Looking…'; }
+
+        // Settled independently: a customer with no Google connection must
+        // still get their website and WhatsApp, not an error instead of both.
+        const [me, gbpLoc, gbpRev, sites, social] = await Promise.allSettled([
+            getJson('/api/me.php'),
+            getJson('/api/google/gbp/location.php'),
+            getJson('/api/google/gbp/review-requests.php'),
+            getJson('/api/sites/list.php'),
+            getJson('/api/social/connections.php'),
+        ]);
+        const v = (r) => (r.status === 'fulfilled' ? r.value : null);
+        const user  = (v(me) && v(me).user) || {};
+        const gf    = (v(gbpLoc) && v(gbpLoc).fields) || {};
+        const rev   = v(gbpRev) || {};
+        const site  = ((v(sites) && v(sites).sites) || []).find(s => s.published_at);
+        const conns = (v(social) && v(social).connections) || [];
+
+        const out = [];
+        const add = (icon, label, url, source) => {
+            if (!url) return;
+            out.push({ icon, label, url, source, use: true });
+        };
+
+        const phone = normalisePhone(user.phone || gf.phone);
+        add('fa-whatsapp', 'WhatsApp us', phone ? 'https://wa.me/' + phone : '', 'your profile');
+        add('fa-phone', 'Call us', phone ? 'tel:+' + phone : '', 'your profile');
+        add('fa-globe', 'Our website',
+            site ? 'https://' + site.slug + '.tapify.co.in' : (gf.website || ''),
+            site ? 'your Tapify website' : 'Google Business');
+        add('fa-star', 'Leave us a review', rev.review_link || '', 'Google Business');
+        if (gf.address) {
+            add('fa-location-dot', 'Find us',
+                'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(gf.address),
+                'Google Business');
+        }
+        add('fa-envelope', 'Email us', user.email ? 'mailto:' + user.email : '', 'your profile');
+
+        conns.forEach(c => {
+            const name = String(c.account_name || '').trim();
+            if (c.platform === 'instagram') {
+                // account_name is stored as "@handle" by the Instagram provider.
+                const handle = name.replace(/^@/, '');
+                if (handle) add('fa-instagram', 'Instagram', 'https://instagram.com/' + handle, 'connected account');
+            } else if (c.platform === 'facebook' && c.account_id) {
+                add('fa-facebook', name || 'Facebook', 'https://facebook.com/' + c.account_id, 'connected account');
+            }
+        });
+
+        if (user.vcard && user.vcard.url_alias) {
+            add('fa-link', 'My digital card', API + '/' + user.vcard.url_alias, 'your vCard');
+        }
+
+        // Anything already on the page is not a suggestion. Compared loosely —
+        // trailing slashes and http/https should not produce a duplicate.
+        const key = (u) => String(u || '').replace(/^https?:\/\//, '').replace(/\/+$/, '').toLowerCase();
+        const have = new Set(items.map(it => key(it.url)));
+        suggestions = out.filter(s => !have.has(key(s.url)));
+
+        fetched = true;
+        panelLinks();
+    }
+
+    function suggestSet(i, field, value) {
+        if (suggestions[i]) suggestions[i][field] = value;
+    }
+    function suggestToggle(i, on) {
+        if (suggestions[i]) suggestions[i].use = on;
+    }
+
+    async function addSuggested() {
+        const picked = suggestions.filter(s => s.use && s.label.trim() && s.url.trim());
+        if (!picked.length) { alert('Tick at least one, or edit the ones you want.'); return; }
+        const btn = document.getElementById('impAdd');
+        btn.disabled = true; btn.textContent = 'Adding…';
+        const done = new Set();
+        for (const s of picked) {
+            try {
+                const j = await api('item-save.php', {
+                    page_id: page.id, label: s.label.trim(), url: s.url.trim(), icon: s.icon,
+                });
+                items = j.data.items || items;
+                done.add(s);
+            } catch (e) { alert(s.label + ': ' + e.message); }
+        }
+        // Only the ones that actually saved leave the list, so a failure stays
+        // on screen to be retried rather than disappearing silently.
+        suggestions = suggestions.filter(s => !done.has(s));
+        panelLinks();
+    }
+
     /* ─────────────────────────────── list ───────────────────────────── */
     async function goList() {
         page = null;
@@ -222,6 +346,10 @@
         try {
             const j = await api('list.php?id=' + encodeURIComponent(id));
             page = j.data; items = page.items || [];
+            // Per-page state: suggestions are deduped against THIS page's
+            // links, so carrying them across from another page would offer
+            // links that are already on it.
+            suggestions = []; fetched = false; editingId = 0;
             document.getElementById('pTitle').textContent = page.brand_name;
             tab = 'page';
             renderEditor();
@@ -339,8 +467,62 @@
     }
 
     /* ── links tab ────────────────────────────────────────────────────── */
+    const iconOptions = (sel) => ICONS.map(([v, l]) =>
+        `<option value="${v}"${v === sel ? ' selected' : ''}>${l}</option>`).join('');
+
+    /** Which row, if any, is open for editing. */
+    let editingId = 0;
+    function startEdit(id) { editingId = Number(id); panelLinks(); }
+    function cancelEdit() { editingId = 0; panelLinks(); }
+
+    async function saveEdit(id) {
+        const label = (document.getElementById('eLabel' + id).value || '').trim();
+        const url = (document.getElementById('eUrl' + id).value || '').trim();
+        const icon = document.getElementById('eIcon' + id).value;
+        if (!label || !url) { alert('Button text and link are both needed.'); return; }
+        try {
+            // item-save.php updates in place when an id is sent — the whole
+            // edit path already existed server-side and was simply never used.
+            const j = await api('item-save.php', { page_id: page.id, id: Number(id), label, url, icon });
+            items = j.data.items || items;
+            editingId = 0;
+            panelLinks();
+        } catch (e) { alert(e.message); }
+    }
+
     function panelLinks() {
         document.getElementById('panel').innerHTML = `
+          <div class="card">
+            <h3>Bring in your details</h3>
+            <p class="hint" style="margin-top:0">Your WhatsApp number, website, Google review link and
+              connected Instagram or Facebook are already saved elsewhere in Tapify. Pull them in rather
+              than typing them again &mdash; you can change the wording or the link before adding, and
+              afterwards.</p>
+            ${!fetched ? `
+              <button class="btn" id="impBtn" onclick="fetchSuggestions()">Find my details</button>`
+            : suggestions.length ? `
+              <div style="margin-top:6px">
+                ${suggestions.map((s, i) => `
+                  <div class="item" style="align-items:flex-start;flex-wrap:wrap">
+                    <input type="checkbox" ${s.use ? 'checked' : ''} style="margin-top:12px"
+                           onchange="suggestToggle(${i}, this.checked)">
+                    <i class="${faCls(s.icon)}" style="color:${esc(page.theme_color)};width:20px;margin-top:12px"></i>
+                    <div class="item-b" style="min-width:220px">
+                      <input class="inp" style="width:100%" value="${esc(s.label)}"
+                             oninput="suggestSet(${i},'label',this.value)">
+                      <input class="inp" style="width:100%;margin-top:6px;font-size:.78rem" value="${esc(s.url)}"
+                             oninput="suggestSet(${i},'url',this.value)">
+                      <span style="display:block;margin-top:4px">from ${esc(s.source)}</span>
+                    </div>
+                  </div>`).join('')}
+                <div class="row" style="margin-top:14px">
+                  <button class="btn" id="impAdd" onclick="addSuggested()">Add ticked links</button>
+                  <button class="btn btn-ghost" onclick="suggestions=[];panelLinks()">Not now</button>
+                </div>
+              </div>`
+            : `<p class="muted">Nothing new to bring in &mdash; everything we hold is already on your page.
+                 <button class="btn btn-ghost btn-sm" onclick="fetched=false;panelLinks()">Check again</button></p>`}
+          </div>
           <div class="card">
             <h3>Add a link</h3>
             <div class="two">
@@ -354,11 +536,26 @@
           </div>
           <div class="card">
             <h3>On your page (${items.length})</h3>
-            ${items.length ? items.map((it, i) => `
+            ${items.length ? items.map((it, i) => Number(it.id) === editingId ? `
+              <div class="item" style="align-items:flex-start;flex-wrap:wrap">
+                <div class="item-b" style="min-width:240px">
+                  <label class="lbl" style="margin-top:0">Button text</label>
+                  <input class="inp" style="width:100%" id="eLabel${Number(it.id)}" value="${esc(it.label)}">
+                  <label class="lbl">Link</label>
+                  <input class="inp" style="width:100%" id="eUrl${Number(it.id)}" value="${esc(it.url)}">
+                  <label class="lbl">Icon</label>
+                  <select class="sel" id="eIcon${Number(it.id)}">${iconOptions(it.icon || 'fa-link')}</select>
+                  <div class="row" style="margin-top:12px">
+                    <button class="btn btn-sm" onclick="saveEdit(${Number(it.id)})">Save</button>
+                    <button class="btn btn-ghost btn-sm" onclick="cancelEdit()">Cancel</button>
+                  </div>
+                </div>
+              </div>` : `
               <div class="item">
                 <i class="${faCls(it.icon || 'fa-link')}" style="color:${esc(page.theme_color)};width:20px"></i>
                 <div class="item-b"><b>${esc(it.label)}${it.status ? '' : ' (hidden)'}</b>
                   <span>${esc(it.url)} &middot; ${esc(it.total_clicks || 0)} taps</span></div>
+                <button class="btn btn-ghost btn-sm" onclick="startEdit(${Number(it.id)})">Edit</button>
                 <button class="btn btn-ghost btn-sm" onclick="move(${i},-1)" ${i===0?'disabled':''}>&uarr;</button>
                 <button class="btn btn-ghost btn-sm" onclick="move(${i},1)" ${i===items.length-1?'disabled':''}>&darr;</button>
                 <button class="btn btn-ghost btn-sm btn-red" onclick="delItem(${Number(it.id)})">Remove</button>
