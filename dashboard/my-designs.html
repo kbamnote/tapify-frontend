@@ -165,17 +165,27 @@
                 `<button class="chip ${i === 0 ? 'on' : ''}" data-id="${Number(c.id)}"
                          onclick="pickCat(${Number(c.id)})">${esc(c.name)}</button>`).join('');
         } catch (_) { /* categories are the only way in; load() reports it */ }
-        load();
-    }
-    function pickCat(id) {
-        cat = id;
-        document.getElementById('mode').value = 'all';   // a category means browsing
-        document.querySelectorAll('#cats .chip').forEach(b =>
-            b.classList.toggle('on', Number(b.getAttribute('data-id')) === id));
-        load();
+        // The first category is often empty, and opening on an empty grid
+        // reads as a broken page rather than an empty shelf. autoAdvance lets
+        // the initial load walk on to the first category that has something.
+        load(true);
     }
 
-    async function load() {
+    /** Select a category in the UI without triggering a load. */
+    function markCat(id) {
+        cat = id;
+        document.querySelectorAll('#cats .chip').forEach(b =>
+            b.classList.toggle('on', Number(b.getAttribute('data-id')) === id));
+    }
+    function pickCat(id) {
+        document.getElementById('mode').value = 'all';   // a category means browsing
+        markCat(id);
+        // No auto-advance here. Someone who taps a category wants THAT one,
+        // and silently moving them elsewhere would be worse than empty.
+        load(false);
+    }
+
+    async function load(autoAdvance, tried) {
         const out = document.getElementById('out');
         const saved = document.getElementById('mode').value === 'saved';
 
@@ -193,8 +203,26 @@
             const d = await api('list.php?' + q.toString());
             designs = d.designs || [];
             savedIds = new Set((d.saved_ids || []).map(Number));
+
+            // Empty on the FIRST load only: step to the next category rather
+            // than greeting the customer with nothing. Capped so a library
+            // that is empty everywhere does not walk every category.
+            if (autoAdvance && !saved && !designs.length && cats.length > 1) {
+                const seen = (tried || 0) + 1;
+                const at = cats.findIndex(c => Number(c.id) === cat);
+                const next = cats[at + 1];
+                if (next && seen < 6) {
+                    markCat(Number(next.id));
+                    return load(true, seen);
+                }
+            }
             render();
         } catch (e) { out.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    function catName() {
+        const c = cats.find(x => Number(x.id) === cat);
+        return c ? c.name : 'this category';
     }
 
     /** Only the loaded set, narrowed by the search box. */
@@ -212,7 +240,9 @@
         const list = visible();
         if (!list.length) {
             out.innerHTML = '<div class="card"><p class="muted">'
-                + (designs.length ? 'Nothing matches that search.' : 'No designs in this category yet.')
+                + (designs.length
+                    ? 'Nothing matches that search.'
+                    : 'No designs in ' + esc(catName()) + ' yet. Try another category above.')
                 + '</p></div>';
             return;
         }
