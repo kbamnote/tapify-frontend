@@ -14,6 +14,10 @@
         .card h3 { margin: 0 0 10px; font-size: .95rem; font-weight: 800; color: #153e3f; }
 
         .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+        .modes { display: flex; gap: 4px; background: #f6f2ee; border-radius: 10px; padding: 4px; }
+        .mode { border: 0; background: none; border-radius: 8px; padding: 8px 16px; font: inherit;
+                font-size: .8rem; font-weight: 700; color: #6b7280; cursor: pointer; white-space: nowrap; }
+        .mode.on { background: #fff; color: #153e3f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
         .inp, .sel { border: 1px solid #e9e3dc; border-radius: 10px; padding: 9px 12px; font: inherit;
                      font-size: .86rem; background: #fff; }
         /* ── category strip ───────────────────────────────────────────
@@ -57,13 +61,15 @@
         .tile { background: #fff; border: 1px solid #e9e3dc; border-radius: 14px; overflow: hidden; }
         .tile-img { position: relative; aspect-ratio: 4/5; background: #faf7f4; }
         .tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .fav { position: absolute; top: 8px; right: 8px; border: 0; width: 30px; height: 30px; border-radius: 50%;
-               background: rgba(255,255,255,.92); cursor: pointer; color: #9ca3af; font-size: .82rem; }
-        .fav.on { color: #e11d48; }
         .tile-b { padding: 10px 12px 12px; }
         .tile-b b { font-size: .83rem; color: #153e3f; display: block; line-height: 1.3; }
         .tile-b span { font-size: .7rem; color: #9ca3af; }
-        .tile-act { display: flex; gap: 6px; margin-top: 9px; }
+        .tile-act { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+        /* Save reads the way it does in the app: a worded button, not a bare
+           heart floating on the artwork that nobody noticed was a control. */
+        .btn-save { background: #fff; color: #6b7280; border: 1px solid #e9e3dc; }
+        .btn-save.on { background: #fff1f2; border-color: #fecdd3; color: #e11d48; }
+        .btn-ico { padding: 7px 10px; }
 
         .btn { background: #153e3f; color: #fff; border: 0; border-radius: 9px; padding: 7px 13px;
                font: inherit; font-size: .76rem; font-weight: 700; cursor: pointer; text-decoration: none; }
@@ -73,10 +79,30 @@
         /* ── customiser ───────────────────────────────────────────────── */
         .back { position: fixed; inset: 0; background: rgba(12,22,23,.62); z-index: 900;
                 display: flex; align-items: center; justify-content: center; padding: 18px; }
-        .sheet { background: #fff; border-radius: 18px; width: 100%; max-width: 900px; max-height: 94vh;
+        .sheet { background: #fff; border-radius: 18px; width: 100%; max-width: 1000px; max-height: 94vh;
                  overflow: auto; padding: 20px; }
-        .ed { display: grid; grid-template-columns: 1fr 260px; gap: 18px; }
+        .ed { display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
         @media (max-width: 760px) { .ed { grid-template-columns: 1fr } }
+
+        /* Tool panel — the same three tabs as the app's Design Customiser. */
+        .tabs { display: flex; gap: 5px; background: #f6f2ee; border-radius: 10px; padding: 4px; margin-bottom: 4px; }
+        .tab { flex: 1; border: 0; background: none; border-radius: 8px; padding: 8px 4px; font: inherit;
+               font-size: .76rem; font-weight: 700; color: #6b7280; cursor: pointer; }
+        .tab.on { background: #fff; color: #153e3f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .rowb { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .tgl { border: 1px solid #e9e3dc; background: #fff; border-radius: 999px; padding: 5px 13px;
+               font: inherit; font-size: .73rem; font-weight: 700; color: #9ca3af; cursor: pointer; }
+        .tgl.on { background: #eafaf1; border-color: #8fd3b0; color: #15803d; }
+        .seg { display: flex; gap: 5px; }
+        .seg button { flex: 1; border: 1px solid #e9e3dc; background: #fff; border-radius: 8px; padding: 7px 3px;
+                      font: inherit; font-size: .73rem; font-weight: 700; color: #6b7280; cursor: pointer; }
+        .seg button.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+        .acts { border-top: 1px solid #f0ece6; margin-top: 16px; padding-top: 13px; }
+        .linkrow { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+                   font-size: .77rem; color: #6b7280; margin-bottom: 10px; cursor: pointer; }
+        .fallback { background: #f8f6f3; border: 1px solid #ece6df; border-radius: 10px;
+                    padding: 11px 12px; margin-top: 10px; }
+        .fallback p { margin: 0 0 9px; font-size: .76rem; color: #6b7280; line-height: 1.5; }
         #stage { width: 100%; border: 1px solid #e9e3dc; border-radius: 12px; cursor: grab; touch-action: none;
                  background: #faf7f4; display: block; }
         .lbl { display: block; font-size: .72rem; font-weight: 700; color: #6b7280;
@@ -147,11 +173,14 @@
         <main class="page-content">
             <div class="dz">
                 <div class="filters">
+                    <!-- Visible tabs, not a dropdown: the app has a Browse /
+                         Saved tab pair with a count, and "Saved only" buried in
+                         a select read as if there were no saved shelf at all. -->
+                    <div class="modes">
+                        <button class="mode on" id="mBrowse" onclick="setMode('all')">Browse</button>
+                        <button class="mode" id="mSaved" onclick="setMode('saved')">Saved</button>
+                    </div>
                     <input class="inp" id="q" placeholder="Search designs…" oninput="debounced()">
-                    <select class="sel" id="mode" onchange="load()">
-                        <option value="all">Browse by category</option>
-                        <option value="saved">Saved only</option>
-                    </select>
                 </div>
                 <div class="catbar">
                     <div class="catsearch">
@@ -188,7 +217,7 @@
         return j.data || {};
     }
 
-    let cats = [], cat = 0, designs = [], savedIds = new Set(), timer = null;
+    let cats = [], cat = 0, designs = [], savedIds = new Set(), timer = null, mode = 'all';
     // Search is client-side: list.php has no search parameter, and one
     // category is at most 50 designs, already loaded. Filtering here is
     // instant and needs no round trip.
@@ -274,8 +303,20 @@
         // selection well off-screen in a 200-wide strip.
         if (on) on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     }
+    /** Browse / Saved, with the saved count on the tab as the app shows it. */
+    function syncModes() {
+        document.getElementById('mBrowse').classList.toggle('on', mode === 'all');
+        const s = document.getElementById('mSaved');
+        s.classList.toggle('on', mode === 'saved');
+        s.textContent = savedIds.size ? 'Saved (' + savedIds.size + ')' : 'Saved';
+    }
+    function setMode(m) {
+        if (mode === m) return;
+        mode = m; syncModes(); load();
+    }
+
     function pickCat(id) {
-        document.getElementById('mode').value = 'all';   // a category means browsing
+        mode = 'all'; syncModes();      // a category means browsing
         markCat(id);
         // No auto-advance here. Someone who taps a category wants THAT one,
         // and silently moving them elsewhere would be worse than empty.
@@ -284,7 +325,7 @@
 
     async function load(autoAdvance, tried) {
         const out = document.getElementById('out');
-        const saved = document.getElementById('mode').value === 'saved';
+        const saved = mode === 'saved';
 
         if (!saved && !cat) {
             out.innerHTML = '<div class="card"><p class="muted">No design categories are set up yet. '
@@ -299,7 +340,10 @@
         try {
             const d = await api('list.php?' + q.toString());
             designs = d.designs || [];
+            // saved_ids is the user's WHOLE saved set, not just this page, so
+            // the tab count is right whichever category is open.
             savedIds = new Set((d.saved_ids || []).map(Number));
+            syncModes();
 
             // Empty on the FIRST load only: step to the next category rather
             // than greeting the customer with nothing. Capped so a library
@@ -337,41 +381,92 @@
         const list = visible();
         if (!list.length) {
             out.innerHTML = '<div class="card"><p class="muted">'
-                + (designs.length
-                    ? 'Nothing matches that search.'
-                    : 'No designs in ' + esc(catName()) + ' yet. Try another category above.')
+                + (designs.length ? 'Nothing matches that search.'
+                   : mode === 'saved'
+                     ? 'No saved designs yet. Press <b>Save</b> on any design to keep it here.'
+                     : 'No designs in ' + esc(catName()) + ' yet. Try another category above.')
                 + '</p></div>';
             return;
         }
-        out.innerHTML = '<div class="grid">' + list.map((d, i) => `
+        out.innerHTML = '<div class="grid">' + list.map((d) => {
+            const id = Number(d.id), on = savedIds.has(id);
+            return `
             <div class="tile">
               <div class="tile-img">
                 <img src="${esc(d.image_url)}" alt="${esc(d.title || '')}" loading="lazy">
-                <button class="fav ${savedIds.has(Number(d.id)) ? 'on' : ''}" title="Save"
-                        onclick="toggleSave(${Number(d.id)},this)"><i class="fa-solid fa-heart"></i></button>
               </div>
               <div class="tile-b">
                 <b>${esc(d.title || 'Design')}</b>
                 <span>${esc(d.category_name || '')}</span>
                 <div class="tile-act">
-                  <button class="btn" onclick="openEditor(${Number(d.id)})">Customise</button>
-                  <a class="btn btn-ghost" href="${esc(d.image_url)}" target="_blank" rel="noopener">Open</a>
+                  <button class="btn" onclick="openEditor(${id})">Customise</button>
+                  <button class="btn btn-save ${on ? 'on' : ''}" data-save="${id}"
+                          onclick="toggleSave(${id})"><i class="fa-solid fa-heart"></i> ${on ? 'Saved' : 'Save'}</button>
+                  <button class="btn btn-ghost btn-ico" title="Share this design"
+                          onclick="shareTile(${id})"><i class="fa-solid fa-share-nodes"></i></button>
+                  <a class="btn btn-ghost btn-ico" title="Open the original" href="${esc(d.image_url)}"
+                     target="_blank" rel="noopener"><i class="fa-solid fa-up-right-from-square"></i></a>
                 </div>
               </div>
-            </div>`).join('') + '</div>';
+            </div>`; }).join('') + '</div>';
     }
 
-    async function toggleSave(id, btn) {
+    async function toggleSave(id) {
+        id = Number(id);
+        const btns = document.querySelectorAll('[data-save="' + id + '"]');
+        btns.forEach(b => { b.disabled = true; });
         try {
             const d = await api('save.php', { design_id: id });
-            if (d.saved) { savedIds.add(id); btn.classList.add('on'); }
-            else { savedIds.delete(id); btn.classList.remove('on'); }
+            if (d.saved) savedIds.add(id); else savedIds.delete(id);
+            btns.forEach(b => {
+                b.classList.toggle('on', !!d.saved);
+                b.innerHTML = '<i class="fa-solid fa-heart"></i> ' + (d.saved ? 'Saved' : 'Save');
+            });
+            syncModes();
+            // Un-saving while the Saved tab is open: the design no longer
+            // belongs in the list, so drop it rather than leaving a tile that
+            // would vanish on the next refresh.
+            if (mode === 'saved' && !d.saved) {
+                designs = designs.filter(x => Number(x.id) !== id);
+                render();
+                return;
+            }
         } catch (e) { alert(e.message); }
+        btns.forEach(b => { b.disabled = false; });
+    }
+
+    /**
+     * Shares the design as it ships, which is what the app's grid Share does.
+     * The customised version is shared from inside the editor instead — it
+     * only exists on that canvas.
+     */
+    async function shareTile(id) {
+        const d = designs.find(x => Number(x.id) === Number(id));
+        if (!d) return;
+        const text = 'Check out this design on Tapify: ' + (d.title || '')
+            + (d.description ? '\n' + d.description : '')
+            + '\nPreview: ' + d.image_url;
+        if (navigator.share) {
+            try { await navigator.share({ title: d.title || 'Tapify design', text: text }); return; }
+            catch (e) { if (e && (e.name === 'AbortError' || /abort|cancel/i.test(e.message || ''))) return; }
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            alert('Copied — paste it into WhatsApp or anywhere else.');
+        } catch (e) {
+            window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+        }
     }
 
     /* ────────────────────────── customiser ──────────────────────────── */
     /**
-     * Put the business's own words on a ready-made design, then download it.
+     * Put the business's own branding on a ready-made design, then download
+     * or share it.
+     *
+     * This deliberately mirrors the app's Design Customiser (logo + details
+     * bar + text layers, then Download / Share), because a customer who
+     * builds a post on their laptop and one who builds it on their phone
+     * should end up with the same artwork and the same controls.
      *
      * Drawn on a canvas rather than with positioned DOM elements because the
      * end product is a single image file the customer sends to a printer or
@@ -379,15 +474,71 @@
      * they get.
      */
     const PALETTE = ['#ffffff','#000000','#153E3F','#D19A66','#B91C1C','#1E3A8A','#065F46','#9D174D'];
-    let layers = [], sel = -1, img = null, drag = null, tainted = false;
+    const BARPAL  = ['rgba(0,0,0,0.7)','rgba(255,255,255,0.75)','#000000','#ffffff','#153E3F','#D19A66','#B91C1C','#1E3A8A'];
+
+    // sel is null, { t:'text', i:<index> } or { t:'logo' } — the logo is
+    // draggable too, so a single selection covers both kinds of layer.
+    let layers = [], sel = null, img = null, drag = null, tainted = false;
+    let logo = null, bar = null, tab = 'logo', shareOpen = false;
+    let profile = null, websiteLink = null, linkChecked = false, includeLink = false;
+
+    const isSel = (t, i) => !!sel && sel.t === t && (t !== 'text' || sel.i === i);
+    const q = (s) => "'" + String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+    const sw = (c, on, call) =>
+        `<div class="sw ${on ? 'on' : ''}" style="background:${c}" onclick="${call}"></div>`;
+
+    function cachedUser() {
+        try {
+            return JSON.parse(localStorage.getItem('tapify_user')
+                || sessionStorage.getItem('tapify_user') || 'null');
+        } catch (_) { return null; }
+    }
+    /** Profile prefills the logo and the details bar, exactly as the app does. */
+    async function loadProfile() {
+        if (!profile) profile = cachedUser();
+        try {
+            const r = await fetch(API + '/api/me.php', { credentials: 'include' });
+            const j = await r.json();
+            if (j && j.success && j.data && j.data.user) profile = j.data.user;
+        } catch (_) { /* the cached copy, or empty fields, will do */ }
+        return profile;
+    }
+    /** Published builder site first, vCard second — same order as the app. */
+    async function loadWebsiteLink() {
+        if (linkChecked) return websiteLink;
+        linkChecked = true;
+        try {
+            const r = await fetch(API + '/api/sites/list.php', { credentials: 'include' });
+            const j = await r.json();
+            const sites = (j && j.data && j.data.sites) || [];
+            const site = sites.find(s => s.published_at);      // list is newest-first
+            if (site && site.slug) {
+                websiteLink = 'https://' + site.slug + '.tapify.co.in';
+                return websiteLink;
+            }
+        } catch (_) {}
+        const u = profile || cachedUser();
+        if (u && u.vcard && u.vcard.url_alias) websiteLink = API + '/' + u.vcard.url_alias;
+        return websiteLink;
+    }
+    function avatarUrl(u) {
+        if (!u || !u.avatar) return null;
+        return String(u.avatar).indexOf('http') === 0 ? u.avatar : API + u.avatar;
+    }
+    function initial() {
+        const u = profile || cachedUser();
+        return String((u && u.name) || 'T').trim().charAt(0).toUpperCase() || 'T';
+    }
 
     // Takes a design id, not a grid index: the grid is filtered by the
     // search box, so an index would open the wrong design the moment
     // anything is typed.
-    function openEditor(id) {
+    async function openEditor(id) {
         const d = designs.find(x => Number(x.id) === Number(id));
         if (!d) return;
-        layers = []; sel = -1; tainted = false;
+        layers = []; sel = null; tainted = false; tab = 'logo'; shareOpen = false; includeLink = false;
+        revokeLogo();
+
         document.getElementById('editor').innerHTML = `
           <div class="back" onclick="if(event.target===this)closeEditor()">
             <div class="sheet">
@@ -397,26 +548,41 @@
               </div>
               <div class="ed">
                 <div><canvas id="stage"></canvas><div id="taint"></div></div>
-                <div>
-                  <button class="btn btn-lg" style="width:100%" onclick="addLayer()">+ Add text</button>
-                  <label class="lbl">Text layers</label>
-                  <div class="layers" id="layers"><p class="muted" style="padding:10px">None yet.</p></div>
-                  <div id="props"></div>
-                  <button class="btn btn-lg" style="width:100%;margin-top:16px" onclick="downloadImg()">Download image</button>
-                </div>
+                <div><div id="tools"></div><div class="acts" id="acts"></div></div>
               </div>
             </div>
           </div>`;
 
+        // admin.js already caches the profile on every page load, so the usual
+        // path opens the editor with no round trip at all. Only a cold session
+        // waits; the refresh then runs in the background for next time.
+        let u = profile || cachedUser();
+        if (u) loadProfile(); else u = await loadProfile();
+        if (!document.getElementById('stage')) return;   // closed while we waited
+        logo = { url: avatarUrl(u), img: null, shape: 'circle', visible: true,
+                 size: 0, x: 0, y: 0, failed: false, local: false };
+        bar  = { phone: (u && u.phone) || '', website: (u && u.email) || '',
+                 bgColor: 'rgba(0,0,0,0.7)', textColor: '#ffffff', size: 0,
+                 visible: true };
+
         const cv = document.getElementById('stage');
         img = new Image();
         // Must be set BEFORE src, or the browser caches the image without CORS
-        // headers and every later toDataURL() throws a security error.
+        // headers and every later export throws a security error.
         img.crossOrigin = 'anonymous';
         img.onload = () => {
             cv.width = img.naturalWidth;
             cv.height = img.naturalHeight;
-            draw();
+            // Every default is a fraction of the image, not a pixel count: the
+            // library mixes 800px and 2000px artwork, and a fixed 60px logo
+            // would be a thumbprint on one and a billboard on the other.
+            const H = img.naturalHeight;
+            logo.size = Math.round(H * 0.14);
+            logo.x = cv.width - logo.size / 2 - H * 0.045;
+            logo.y = logo.size / 2 + H * 0.045;
+            bar.size = Math.max(10, Math.round(H * 0.032));
+            if (logo.url) loadLogoImage(logo.url, false);
+            renderSide(); draw();
         };
         img.onerror = () => {
             // Without CORS we can still show it, but exporting will fail — so
@@ -427,30 +593,147 @@
         };
         img.src = d.image_url;
         bindDrag(cv);
+
+        loadWebsiteLink().then(() => renderActions());
     }
-    function closeEditor() { document.getElementById('editor').innerHTML = ''; img = null; layers = []; }
+
+    function revokeLogo() {
+        if (logo && logo.local && logo.url) { try { URL.revokeObjectURL(logo.url); } catch (_) {} }
+    }
+    function closeEditor() {
+        revokeLogo();
+        document.getElementById('editor').innerHTML = '';
+        img = null; layers = []; logo = null; bar = null; sel = null;
+    }
+
+    function loadLogoImage(src, local) {
+        const im = new Image();
+        // A blob: URL from the file picker is same-origin and must NOT be
+        // requested in CORS mode; a remote avatar must be, or it taints the
+        // canvas and kills the export.
+        if (!local) im.crossOrigin = 'anonymous';
+        im.onload  = () => { logo.img = im; logo.failed = false; draw(); renderSide(); };
+        im.onerror = () => {
+            // The avatar could not be read cross-origin. Fall back to the
+            // initial — the same placeholder the app draws with no logo set.
+            logo.img = null; logo.failed = true; draw(); renderSide();
+        };
+        im.src = src;
+    }
+    function pickLogo(input) {
+        const f = input.files && input.files[0];
+        if (!f) return;
+        revokeLogo();
+        logo.url = URL.createObjectURL(f);
+        logo.local = true;
+        logo.visible = true;
+        loadLogoImage(logo.url, true);
+    }
 
     function addLayer() {
         if (!img) return;
         layers.push({
             text: 'Your text', x: img.naturalWidth / 2, y: img.naturalHeight / 2,
             size: Math.round(img.naturalHeight / 14), color: '#ffffff', bold: true,
+            style: 'none', borderColor: '#ffffff',
         });
-        sel = layers.length - 1;
+        sel = { t: 'text', i: layers.length - 1 };
+        tab = 'text';
         renderSide(); draw();
     }
 
     function renderSide() {
-        document.getElementById('layers').innerHTML = layers.length ? layers.map((l, i) => `
-            <div class="layer ${i === sel ? 'on' : ''}" onclick="selectLayer(${i})">
-              <span>${esc(l.text)}</span>
-              <button onclick="event.stopPropagation();removeLayer(${i})">remove</button>
-            </div>`).join('') : '<p class="muted" style="padding:10px">None yet.</p>';
+        const t = document.getElementById('tools');
+        if (!t || !img) return;
+        t.innerHTML = `
+          <div class="tabs">
+            <button class="tab ${tab === 'logo' ? 'on' : ''}" onclick="setTab('logo')">Logo</button>
+            <button class="tab ${tab === 'bar'  ? 'on' : ''}" onclick="setTab('bar')">Details</button>
+            <button class="tab ${tab === 'text' ? 'on' : ''}" onclick="setTab('text')">Text</button>
+          </div>
+          ${tab === 'logo' ? panelLogo() : tab === 'bar' ? panelBar() : panelText()}`;
+        renderActions();
+    }
+    function setTab(t) { tab = t; renderSide(); }
 
-        const p = document.getElementById('props');
-        if (sel < 0 || !layers[sel]) { p.innerHTML = ''; return; }
-        const l = layers[sel];
-        p.innerHTML = `
+    /* ── logo ─────────────────────────────────────────────────────────── */
+    function panelLogo() {
+        if (!logo) return '';
+        const lo = Math.round(img.naturalHeight * 0.05), hi = Math.round(img.naturalHeight * 0.4);
+        return `
+          <div class="rowb" style="margin:14px 0 4px">
+            <span class="lbl" style="margin:0">Show logo</span>
+            <button class="tgl ${logo.visible ? 'on' : ''}" onclick="setLogoVisible(${!logo.visible})"
+            >${logo.visible ? 'On' : 'Off'}</button>
+          </div>
+          ${!logo.visible ? '' : `
+          <input type="file" accept="image/*" id="logofile" style="display:none" onchange="pickLogo(this)">
+          <button class="btn btn-ghost btn-lg" style="width:100%;margin-top:10px"
+                  onclick="document.getElementById('logofile').click()">Upload a logo</button>
+          ${logo.failed ? '<div class="warn">Your profile photo could not be loaded into the editor, '
+            + 'so your initial is shown instead. Upload a logo file to use your own artwork.</div>' : ''}
+          <label class="lbl">Shape</label>
+          <div class="seg">
+            <button class="${logo.shape === 'circle' ? 'on' : ''}" onclick="setLogoShape('circle')">Circle</button>
+            <button class="${logo.shape === 'square' ? 'on' : ''}" onclick="setLogoShape('square')">Square</button>
+            <button class="${logo.shape === 'rectangle' ? 'on' : ''}" onclick="setLogoShape('rectangle')">Wide</button>
+          </div>
+          <label class="lbl">Size</label>
+          <input type="range" min="${lo}" max="${hi}" value="${logo.size}" style="width:100%"
+                 oninput="setLogoSize(this.value)">
+          <p class="muted" style="margin-top:10px;font-size:.76rem">Drag the logo on the image to move it.</p>`}`;
+    }
+    function setLogoVisible(v) { logo.visible = v; if (!v && isSel('logo')) sel = null; renderSide(); draw(); }
+    function setLogoShape(s)   { logo.shape = s; renderSide(); draw(); }
+    function setLogoSize(v)    { logo.size = Number(v); draw(); }   // no re-render: it would kill the drag
+
+    /* ── details bar ──────────────────────────────────────────────────── */
+    function panelBar() {
+        if (!bar) return '';
+        const lo = Math.round(img.naturalHeight * 0.015), hi = Math.round(img.naturalHeight * 0.06);
+        return `
+          <div class="rowb" style="margin:14px 0 4px">
+            <span class="lbl" style="margin:0">Show details bar</span>
+            <button class="tgl ${bar.visible ? 'on' : ''}" onclick="setBarVisible(${!bar.visible})"
+            >${bar.visible ? 'On' : 'Off'}</button>
+          </div>
+          ${!bar.visible ? '' : `
+          <label class="lbl">Phone number</label>
+          <input class="inp" style="width:100%" value="${esc(bar.phone)}"
+                 oninput="setBarText('phone', this.value)" placeholder="+91 00000 00000">
+          <label class="lbl">Website / email</label>
+          <input class="inp" style="width:100%" value="${esc(bar.website)}"
+                 oninput="setBarText('website', this.value)" placeholder="www.example.com">
+          <label class="lbl">Text size</label>
+          <input type="range" min="${lo}" max="${hi}" value="${bar.size}" style="width:100%"
+                 oninput="setBarSize(this.value)">
+          <label class="lbl">Bar colour</label>
+          <div class="swatches">${BARPAL.map(c =>
+            sw(c, bar.bgColor === c, "setBarColor('bgColor'," + q(c) + ")")).join('')}</div>
+          <label class="lbl">Text colour</label>
+          <div class="swatches">${PALETTE.map(c =>
+            sw(c, bar.textColor === c, "setBarColor('textColor'," + q(c) + ")")).join('')}</div>`}`;
+    }
+    function setBarVisible(v) { bar.visible = v; renderSide(); draw(); }
+    // Text and slider changes only redraw. Re-rendering the panel on every
+    // keystroke would rebuild the <input> and throw the caret away.
+    function setBarText(f, v) { bar[f] = v; draw(); }
+    function setBarSize(v)    { bar.size = Number(v); draw(); }
+    function setBarColor(f, c) { bar[f] = c; renderSide(); draw(); }
+
+    /* ── text layers ──────────────────────────────────────────────────── */
+    function panelText() {
+        const i = sel && sel.t === 'text' ? sel.i : -1;
+        const l = i >= 0 ? layers[i] : null;
+        return `
+          <button class="btn btn-lg" style="width:100%;margin-top:14px" onclick="addLayer()">+ Add text</button>
+          <label class="lbl">Text layers</label>
+          <div class="layers" id="layers">${layers.length ? layers.map((x, k) => `
+            <div class="layer ${k === i ? 'on' : ''}" onclick="selectLayer(${k})">
+              <span>${esc(x.text || '(empty)')}</span>
+              <button onclick="event.stopPropagation();removeLayer(${k})">remove</button>
+            </div>`).join('') : '<p class="muted" style="padding:10px">None yet.</p>'}</div>
+          ${!l ? '' : `
           <label class="lbl">Text</label>
           <input class="inp" style="width:100%" value="${esc(l.text)}" oninput="setText(this.value)">
           <label class="lbl">Size</label>
@@ -458,44 +741,150 @@
                  style="width:100%" oninput="setSize(this.value)">
           <label class="lbl">Colour</label>
           <div class="swatches">${PALETTE.map(c =>
-            `<div class="sw ${l.color === c ? 'on' : ''}" style="background:${c}" onclick="setColor('${c}')"></div>`).join('')}</div>
+            sw(c, l.color === c, 'setColor(' + q(c) + ')')).join('')}</div>
+          <label class="lbl">Style</label>
+          <div class="seg">
+            <button class="${l.style === 'none' ? 'on' : ''}" onclick="setTextStyle('none')">None</button>
+            <button class="${l.style === 'border' ? 'on' : ''}" onclick="setTextStyle('border')">Border</button>
+            <button class="${l.style === 'underline' ? 'on' : ''}" onclick="setTextStyle('underline')">Underline</button>
+          </div>
+          ${l.style === 'none' ? '' : `
+          <label class="lbl">Border colour</label>
+          <div class="swatches">${PALETTE.map(c =>
+            sw(c, l.borderColor === c, 'setBorderColor(' + q(c) + ')')).join('')}</div>`}
           <label class="row" style="gap:7px;font-size:.8rem;margin-top:12px">
             <input type="checkbox" ${l.bold ? 'checked' : ''} onchange="setBold(this.checked)"> Bold
           </label>
-          <p class="muted" style="margin-top:10px;font-size:.76rem">Drag the text on the image to move it.</p>`;
+          <p class="muted" style="margin-top:10px;font-size:.76rem">Drag the text on the image to move it.</p>`}`;
     }
-    function selectLayer(i) { sel = i; renderSide(); draw(); }
-    function removeLayer(i) { layers.splice(i, 1); if (sel >= layers.length) sel = layers.length - 1; renderSide(); draw(); }
-    function setText(v) { layers[sel].text = v; renderSide(); draw(); }
-    function setSize(v) { layers[sel].size = Number(v); draw(); }
-    function setColor(c) { layers[sel].color = c; renderSide(); draw(); }
-    function setBold(b) { layers[sel].bold = b; draw(); }
+    const cur = () => (sel && sel.t === 'text' ? layers[sel.i] : null);
+    function selectLayer(i) { sel = { t: 'text', i: i }; renderSide(); draw(); }
+    function removeLayer(i) {
+        layers.splice(i, 1);
+        if (sel && sel.t === 'text') {
+            if (sel.i === i) sel = layers.length ? { t: 'text', i: Math.min(i, layers.length - 1) } : null;
+            else if (sel.i > i) sel = { t: 'text', i: sel.i - 1 };
+        }
+        renderSide(); draw();
+    }
+    function setText(v) {
+        const l = cur(); if (!l) return;
+        l.text = v;
+        // Update the layer row in place instead of re-rendering — a rebuilt
+        // <input> loses focus, which made typing one character at a time.
+        const row = document.querySelector('#layers .layer.on span');
+        if (row) row.textContent = v || '(empty)';
+        draw();
+    }
+    function setSize(v)        { const l = cur(); if (l) { l.size = Number(v); draw(); } }
+    function setColor(c)       { const l = cur(); if (l) { l.color = c; renderSide(); draw(); } }
+    function setBold(b)        { const l = cur(); if (l) { l.bold = b; draw(); } }
+    function setTextStyle(s)   { const l = cur(); if (l) { l.style = s; renderSide(); draw(); } }
+    function setBorderColor(c) { const l = cur(); if (l) { l.borderColor = c; renderSide(); draw(); } }
+
+    /* ── canvas ───────────────────────────────────────────────────────── */
+    function roundRect(ctx, x, y, w, h, r) {
+        r = Math.max(0, Math.min(r, w / 2, h / 2));
+        ctx.beginPath();
+        if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); return; }
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y,     x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x,     y + h, r);
+        ctx.arcTo(x,     y + h, x,     y,     r);
+        ctx.arcTo(x,     y,     x + w, y,     r);
+        ctx.closePath();
+    }
+
+    /** x,y are the logo's CENTRE, which keeps dragging and the shapes simple. */
+    function logoBox() {
+        const w = logo.shape === 'rectangle' ? logo.size * 2 : logo.size;
+        return { x: logo.x - w / 2, y: logo.y - logo.size / 2, w: w, h: logo.size };
+    }
+    function drawLogo(ctx) {
+        const b = logoBox();
+        ctx.save();
+        if (logo.shape === 'circle') { ctx.beginPath(); ctx.arc(logo.x, logo.y, logo.size / 2, 0, Math.PI * 2); }
+        else roundRect(ctx, b.x, b.y, b.w, b.h, logo.shape === 'square' ? logo.size * 0.08 : 0);
+        ctx.clip();
+        if (logo.img) {
+            // Cover-fit inside the shape, like the app's logo image.
+            const s = Math.max(b.w / logo.img.naturalWidth, b.h / logo.img.naturalHeight);
+            const dw = logo.img.naturalWidth * s, dh = logo.img.naturalHeight * s;
+            ctx.drawImage(logo.img, logo.x - dw / 2, logo.y - dh / 2, dw, dh);
+        } else {
+            ctx.fillStyle = '#153e3f';
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 ' + Math.round(logo.size * 0.42) + 'px Poppins, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(initial(), logo.x, logo.y);
+        }
+        ctx.restore();
+    }
+
+    function drawBar(ctx, W, H) {
+        const h = bar.size * 2.4;
+        ctx.fillStyle = bar.bgColor;
+        ctx.fillRect(0, H - h, W, h);
+        const parts = [bar.phone, bar.website].filter(t => String(t || '').trim());
+        if (!parts.length) return;
+        ctx.fillStyle = bar.textColor;
+        ctx.font = '600 ' + bar.size + 'px Poppins, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(parts.join('   •   '), W / 2, H - h / 2);
+    }
+
+    function drawText(ctx, l, selected) {
+        ctx.font = (l.bold ? '700 ' : '') + l.size + 'px Poppins, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const w = ctx.measureText(l.text).width;
+        // A dark halo so light text stays readable on a light photo.
+        ctx.lineWidth = Math.max(2, l.size / 12);
+        ctx.strokeStyle = 'rgba(0,0,0,.45)';
+        ctx.strokeText(l.text, l.x, l.y);
+        ctx.fillStyle = l.color;
+        ctx.fillText(l.text, l.x, l.y);
+
+        const pad = l.size * 0.38;
+        if (l.style === 'border') {
+            ctx.strokeStyle = l.borderColor || l.color;
+            ctx.lineWidth = Math.max(2, l.size / 14);
+            roundRect(ctx, l.x - w / 2 - pad, l.y - l.size * 0.8, w + pad * 2, l.size * 1.6, l.size * 0.18);
+            ctx.stroke();
+        } else if (l.style === 'underline') {
+            ctx.strokeStyle = l.borderColor || l.color;
+            ctx.lineWidth = Math.max(2, l.size / 14);
+            ctx.beginPath();
+            ctx.moveTo(l.x - w / 2, l.y + l.size * 0.72);
+            ctx.lineTo(l.x + w / 2, l.y + l.size * 0.72);
+            ctx.stroke();
+        }
+        if (selected) outline(ctx, { x: l.x - w / 2, y: l.y - l.size / 1.5, w: w, h: l.size * 1.4 });
+    }
+
+    function outline(ctx, b) {
+        ctx.strokeStyle = '#d19a66';
+        ctx.lineWidth = Math.max(2, b.h / 28);
+        ctx.setLineDash([Math.max(6, b.h / 10), Math.max(5, b.h / 14)]);
+        ctx.strokeRect(b.x - 8, b.y - 8, b.w + 16, b.h + 16);
+        ctx.setLineDash([]);
+    }
 
     function draw() {
         const cv = document.getElementById('stage');
         if (!cv || !img) return;
         const ctx = cv.getContext('2d');
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        try { ctx.drawImage(img, 0, 0, cv.width, cv.height); } catch (_) {}
-        layers.forEach((l, i) => {
-            ctx.font = (l.bold ? '700 ' : '') + l.size + 'px Poppins, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            // A dark halo so light text stays readable on a light photo.
-            ctx.lineWidth = Math.max(2, l.size / 12);
-            ctx.strokeStyle = 'rgba(0,0,0,.45)';
-            ctx.strokeText(l.text, l.x, l.y);
-            ctx.fillStyle = l.color;
-            ctx.fillText(l.text, l.x, l.y);
-            if (i === sel) {
-                const w = ctx.measureText(l.text).width;
-                ctx.strokeStyle = '#d19a66';
-                ctx.lineWidth = Math.max(1, l.size / 22);
-                ctx.setLineDash([8, 6]);
-                ctx.strokeRect(l.x - w / 2 - 8, l.y - l.size / 1.5, w + 16, l.size * 1.4);
-                ctx.setLineDash([]);
-            }
-        });
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        try { ctx.drawImage(img, 0, 0, W, H); } catch (_) {}
+
+        if (logo && logo.visible) drawLogo(ctx);
+        layers.forEach((l, i) => drawText(ctx, l, isSel('text', i)));
+        // The bar is painted last so it stays a clean strip, exactly as the
+        // app lays it out below the artwork.
+        if (bar && bar.visible) drawBar(ctx, W, H);
+        if (logo && logo.visible && isSel('logo')) outline(ctx, logoBox());
     }
 
     /** Canvas pixels are not CSS pixels — scale the pointer by the ratio. */
@@ -514,39 +903,137 @@
                 ctx.font = (l.bold ? '700 ' : '') + l.size + 'px Poppins, sans-serif';
                 const w = ctx.measureText(l.text).width;
                 if (Math.abs(p.x - l.x) <= w / 2 + 10 && Math.abs(p.y - l.y) <= l.size) {
-                    sel = i; drag = { dx: p.x - l.x, dy: p.y - l.y };
+                    sel = { t: 'text', i: i }; drag = { dx: p.x - l.x, dy: p.y - l.y };
                     cv.setPointerCapture(ev.pointerId);
-                    renderSide(); draw();
+                    tab = 'text'; renderSide(); draw();
                     return;
                 }
             }
+            // Text sits above the logo, so the logo is only picked up where no
+            // label covers it — which is what the drawing order implies.
+            if (logo && logo.visible) {
+                const b = logoBox();
+                if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) {
+                    sel = { t: 'logo' }; drag = { dx: p.x - logo.x, dy: p.y - logo.y };
+                    cv.setPointerCapture(ev.pointerId);
+                    tab = 'logo'; renderSide(); draw();
+                    return;
+                }
+            }
+            if (sel) { sel = null; renderSide(); draw(); }
         });
         cv.addEventListener('pointermove', (ev) => {
-            if (!drag || sel < 0) return;
+            if (!drag || !sel) return;
             const p = toCanvas(cv, ev);
-            layers[sel].x = p.x - drag.dx;
-            layers[sel].y = p.y - drag.dy;
+            if (sel.t === 'logo') { logo.x = p.x - drag.dx; logo.y = p.y - drag.dy; }
+            else if (layers[sel.i]) { layers[sel.i].x = p.x - drag.dx; layers[sel.i].y = p.y - drag.dy; }
             draw();
         });
         cv.addEventListener('pointerup', () => { drag = null; });
         cv.addEventListener('pointercancel', () => { drag = null; });
     }
 
-    function downloadImg() {
+    /* ── export & share ───────────────────────────────────────────────── */
+    function exportFailed() {
+        const t = document.getElementById('taint');
+        if (t) t.innerHTML = '<div class="warn">The image could not be exported from this browser. '
+            + 'Use <b>Open</b> on the design to download the original instead.</div>';
+    }
+    /** The finished artwork as a PNG blob, without the selection outline. */
+    function exportBlob() {
         const cv = document.getElementById('stage');
-        if (!cv || !img) return;
-        const keep = sel; sel = -1; draw();      // hide the selection outline from the export
+        if (!cv || !img) return Promise.resolve(null);
+        const keep = sel; sel = null; draw();
+        return new Promise((resolve, reject) => {
+            try { cv.toBlob(b => b ? resolve(b) : reject(new Error('empty')), 'image/png'); }
+            catch (e) { reject(e); }
+        }).finally(() => { sel = keep; draw(); });
+    }
+
+    function caption() {
+        return includeLink && websiteLink
+            ? 'Check out my design from Tapify!\n\nView my website: ' + websiteLink
+            : 'Check out my design from Tapify!';
+    }
+    function setIncludeLink(v) { includeLink = v; }
+
+    function renderActions() {
+        const el = document.getElementById('acts');
+        if (!el || !img) return;
+        el.innerHTML = `
+          ${websiteLink ? `
+          <label class="linkrow">
+            <span>Include my website link when sharing</span>
+            <input type="checkbox" ${includeLink ? 'checked' : ''} onchange="setIncludeLink(this.checked)">
+          </label>` : ''}
+          <div class="row" style="gap:8px;flex-wrap:nowrap">
+            <button class="btn btn-lg btn-ghost" style="flex:1" onclick="downloadImg()">Download</button>
+            <button class="btn btn-lg" style="flex:1" onclick="shareDesign()">Share</button>
+          </div>
+          ${shareOpen ? `
+          <div class="fallback">
+            <p>This browser can't attach an image to a share sheet. Copy the image, paste it into
+               WhatsApp Web or Instagram, then paste the caption under it.</p>
+            <div class="row" style="gap:6px">
+              <button class="btn btn-ghost" onclick="copyImage(this)">Copy image</button>
+              <button class="btn btn-ghost" onclick="copyCaption(this)">Copy caption</button>
+              <button class="btn btn-ghost" onclick="openWhatsApp()">WhatsApp Web</button>
+            </div>
+          </div>` : ''}`;
+    }
+
+    async function downloadImg() {
         try {
+            const blob = await exportBlob();
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = cv.toDataURL('image/png');
-            a.download = 'tapify-design.png';
-            a.click();
-        } catch (e) {
-            document.getElementById('taint').innerHTML =
-              '<div class="warn">The image could not be exported from this browser. '
-              + 'Use <b>Open</b> on the design to download the original instead.</div>';
+            a.href = url; a.download = 'tapify-design.png'; a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        } catch (e) { exportFailed(); }
+    }
+
+    async function shareDesign() {
+        let blob;
+        try { blob = await exportBlob(); } catch (e) { exportFailed(); return; }
+        if (!blob) return;
+        const file = new File([blob], 'tapify-design.png', { type: 'image/png' });
+
+        // On a phone (Android Chrome, iOS Safari) one sheet carries the image
+        // AND the caption straight into WhatsApp — the same single step the
+        // app gets from react-native-share.
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file], text: caption(), title: 'Share Design' });
+                return;
+            } catch (e) {
+                if (e && (e.name === 'AbortError' || /abort|cancel/i.test(e.message || ''))) return;
+            }
         }
-        sel = keep; draw();
+        // Desktop browsers can't put a file in a share sheet, so fall back to
+        // copy-image + copy-caption, which is how people actually paste into
+        // WhatsApp Web.
+        shareOpen = true; renderActions();
+    }
+
+    function flash(btn, msg) {
+        const old = btn.textContent;
+        btn.textContent = msg; btn.disabled = true;
+        setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
+    }
+    async function copyImage(btn) {
+        try {
+            const blob = await exportBlob();
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            flash(btn, 'Copied');
+        } catch (e) { flash(btn, 'Use Download'); }
+    }
+    async function copyCaption(btn) {
+        try { await navigator.clipboard.writeText(caption()); flash(btn, 'Copied'); }
+        catch (e) { flash(btn, 'Could not copy'); }
+    }
+    function openWhatsApp() {
+        window.open('https://wa.me/?text=' + encodeURIComponent(caption()), '_blank', 'noopener');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
