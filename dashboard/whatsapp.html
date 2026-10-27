@@ -97,6 +97,12 @@
         .bc-pick { display: inline-block; background: #25D366; color: #fff; font-weight: 700; font-size: .82rem; padding: 9px 16px; border-radius: 9px; cursor: pointer; }
         .bc-note { font-size: .76rem; color: #6b7280; margin-top: 8px; line-height: 1.5; }
         .bc-note.err { color: #dc2626; font-weight: 600; }
+        .ai-usage { display:flex; gap:26px; flex-wrap:wrap; }
+        .ai-usage div { display:flex; align-items:baseline; gap:7px }
+        .ai-usage b { font-size:1.6rem; font-weight:800; color:#153e3f }
+        .ai-usage span { font-size:.78rem; color:#6b7280 }
+        .ai-bar { height:6px; border-radius:4px; background:#eef2f0; margin-top:10px; overflow:hidden }
+        .ai-bar i { display:block; height:100%; background:linear-gradient(90deg,#27706e,#153e3f) }
         /* What Meta actually did with the messages, as opposed to how many it
            accepted. Shown only when the run was tracked. */
         .bc-note.bc-delivery { color: #153e3f; font-weight: 600; margin-top: 3px; }
@@ -270,6 +276,7 @@ const WA_API      = 'https://app.tapify.co.in/api/whatsapp/proxy.php';
 const WA_CONNECT  = 'https://app.tapify.co.in/api/whatsapp/connect.php';
 const WA_PRICING  = 'https://app.tapify.co.in/api/whatsapp/pricing.php';
 const WA_LEADS    = 'https://app.tapify.co.in/api/leads/list.php';
+const WA_AI       = 'https://app.tapify.co.in/api/ai/chatbot-config.php';
 const POLL_MS     = 15000;   // no websocket through the proxy, so poll
 
 let status = null, convos = [], activePhone = null, templates = [], pollTimer = null;
@@ -793,6 +800,7 @@ function barHtml(view) {
         <div class="wa-tabs">
           <button class="wa-tab ${view === 'inbox' ? 'active' : ''}" onclick="showInbox()">Inbox</button>
           <button class="wa-tab ${view === 'bot' ? 'active' : ''}" onclick="showBot()">Auto-replies</button>
+          <button class="wa-tab ${view === 'ai' ? 'active' : ''}" onclick="showAi()">AI Chatbot</button>
           <button class="wa-tab ${view === 'bc' ? 'active' : ''}" onclick="showBroadcast()">Broadcast</button>
           <button class="wa-tab ${view === 'tpl' ? 'active' : ''}" onclick="showTemplates()">Templates</button>
         </div>
@@ -1521,6 +1529,199 @@ async function bcSend() {
         fail(e.message);
         btn.disabled = false;
     }
+}
+
+/* ── AI chatbot ─────────────────────────────────────────────────────────
+ *
+ * The knowledge pack the bot answers from, plus the monthly allowance.
+ *
+ * The owner confirms every fact here, because the answers go out on their
+ * number in their name with nobody reading them first. `suggested` is what
+ * the platform already knows from their vCard, services and Google listing —
+ * offered as a one-tap fill rather than saved silently, so nothing is ever
+ * stated on their behalf that they have not seen.
+ */
+let ai = null, aiSuggested = {}, aiUsage = null, aiNote = '', aiErr = false;
+
+const AI_FIELDS = [
+    ['about',            'What your business does',    'We print visiting cards, banners and signage for businesses in Nagpur.', 3],
+    ['services',         'Services you offer',          'Visiting cards, flex banners, signage, letterheads, stickers', 2],
+    ['products_pricing', 'Products and prices',         'Visiting cards: 1000 for Rs 600. Flex banner: Rs 12 per sq ft.', 4],
+    ['hours',            'Opening hours',               'Mon to Sat, 10am to 8pm. Closed Sunday.', 2],
+    ['address',          'Address',                     'Wardhaman Nagar, near Lalita Public School, Nagpur 440008', 2],
+    ['phone',            'Phone',                       '080559 94515', 1],
+    ['website',          'Website',                     'https://mrprintworld.com', 1],
+    ['faqs',             'Common questions and answers', 'Q: Do you deliver?\nA: Yes, free delivery within Nagpur on orders above Rs 2000.', 5],
+    ['never_say',        'Things the bot must never say', 'Never promise same-day delivery. Never offer a discount.', 2],
+];
+
+async function showAi() {
+    clearInterval(pollTimer);
+    render(barHtml('ai') + '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+    try {
+        const d = await aiGet();
+        ai = d.config || {};
+        aiSuggested = d.suggested || {};
+        aiUsage = d.usage || null;
+    } catch (e) {
+        return render(barHtml('ai') + `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i>${esc(e.message)}</div>`);
+    }
+    renderAi();
+}
+
+async function aiGet(body) {
+    const r = await fetch(WA_AI, {
+        method: body ? 'POST' : 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined,
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!j.success) throw new Error(j.message || `Request failed (${r.status})`);
+    return j.data || {};
+}
+
+function renderAi() {
+    const u = aiUsage || { free_used: 0, free_total: 100, free_left: 100, paid_used: 0 };
+    const out = u.free_left <= 0;
+    const on = Number(ai.enabled) === 1;
+
+    render(barHtml('ai') + `
+      <div class="bot-card">
+        <div class="bc-head" style="margin:0">
+          <div>
+            <h3 style="margin:0">AI chatbot</h3>
+            <p class="sub" style="margin:4px 0 0">Answers your customers automatically, using only what you write below.</p>
+          </div>
+          <label class="row" style="gap:8px;font-size:.88rem;font-weight:700;color:#153e3f">
+            <input type="checkbox" id="aiOn" ${on ? 'checked' : ''}> ${on ? 'On' : 'Off'}
+          </label>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <h3>This month</h3>
+        <div class="ai-usage">
+          <div><b>${esc(u.free_used)}</b><span>of ${esc(u.free_total)} free replies used</span></div>
+          ${u.paid_used ? `<div><b>${esc(u.paid_used)}</b><span>paid replies</span></div>` : ''}
+        </div>
+        <div class="ai-bar"><i style="width:${Math.min(100, Math.round((u.free_used / (u.free_total || 1)) * 100))}%"></i></div>
+        ${out
+          ? `<p class="bc-note err" style="margin-top:10px">Your free replies for this month are used up.
+               Each further reply costs 25 paise from your wallet. With an empty wallet the chatbot stops
+               and your menu answers instead.
+               <a href="manage-subscription.html?tab=wallet" style="font-weight:700">Add money</a></p>`
+          : `<p class="bot-hint" style="margin-top:10px">${esc(u.free_left)} free replies left this month.
+               After that it is 25 paise each from your wallet. Repeated questions are answered from
+               memory and never counted.</p>`}
+      </div>
+
+      <div class="bot-card">
+        <div class="bc-head" style="margin:0 0 10px">
+          <h3 style="margin:0">What the chatbot knows</h3>
+          ${aiHasSuggestions() ? '<button class="btn-add" onclick="aiFillSuggested()">Fill from my business</button>' : ''}
+        </div>
+        <p class="sub">It answers ONLY from this. Anything you leave out, it will not guess — it sends your
+           handover message instead. Be specific about prices and timings.</p>
+
+        ${AI_FIELDS.map(([k, label, ph, rows]) => `
+          <div class="bot-field">
+            <label for="ai_${k}">${esc(label)}</label>
+            <textarea class="bot-input" id="ai_${k}" rows="${rows}"
+                      placeholder="${esc(ph)}">${esc(ai[k] || '')}</textarea>
+          </div>`).join('')}
+      </div>
+
+      <div class="bot-card">
+        <h3>How it should reply</h3>
+        <div class="bot-field">
+          <label for="aiTone">Style</label>
+          <select class="bot-input" id="aiTone">
+            ${[['friendly', 'Friendly — like a shop owner on WhatsApp'],
+               ['formal', 'Formal — polite and professional'],
+               ['short', 'Short — one or two lines, no small talk']]
+              .map(([v, l]) => `<option value="${v}" ${(ai.tone || 'friendly') === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="bot-field">
+          <label for="aiLangs">Languages you serve in</label>
+          <input class="bot-input" id="aiLangs" value="${esc(ai.languages || 'English, Hindi, Hinglish')}">
+          <p class="bot-hint">It replies in whichever of these the customer writes in.</p>
+        </div>
+        <div class="bot-field">
+          <label for="aiHandoff">When it does not know the answer</label>
+          <input class="bot-input" id="aiHandoff"
+                 value="${esc(ai.handoff_message || 'Let me check that with our team and get back to you shortly.')}">
+          <p class="bot-hint">Sent instead of a guess. The message still appears in your inbox for you to answer.</p>
+        </div>
+      </div>
+
+      <div class="bot-card">
+        <button class="btn-wa" onclick="aiSave()"><i class="fas fa-floppy-disk"></i> Save chatbot</button>
+        ${aiNote ? `<p class="bc-note ${aiErr ? 'err' : ''}" style="margin-top:10px">${esc(aiNote)}</p>` : ''}
+      </div>`);
+}
+
+function aiHasSuggestions() {
+    return Object.keys(aiSuggested || {}).some((k) => String(aiSuggested[k] || '').trim() !== '');
+}
+
+/** Copy what we already know into any field the owner has left empty. */
+function aiFillSuggested() {
+    let n = 0;
+    AI_FIELDS.forEach(([k]) => {
+        const el = document.getElementById('ai_' + k);
+        const val = String((aiSuggested || {})[k] || '').trim();
+        // Never overwrite something they typed — only fill the gaps.
+        if (el && val && !el.value.trim()) { el.value = val; n++; }
+    });
+    aiErr = false;
+    aiNote = n ? `Filled ${n} field(s) from your business details. Check them before saving.`
+               : 'Nothing new to fill — your details are already here.';
+    aiSyncFromForm();
+    renderAi();
+}
+
+/** Read the form back into `ai` so a re-render does not lose typing. */
+function aiSyncFromForm() {
+    AI_FIELDS.forEach(([k]) => {
+        const el = document.getElementById('ai_' + k);
+        if (el) ai[k] = el.value;
+    });
+    const g = (id) => (document.getElementById(id) || {}).value;
+    if (document.getElementById('aiOn')) ai.enabled = document.getElementById('aiOn').checked ? 1 : 0;
+    if (g('aiTone') !== undefined) ai.tone = g('aiTone');
+    if (g('aiLangs') !== undefined) ai.languages = g('aiLangs');
+    if (g('aiHandoff') !== undefined) ai.handoff_message = g('aiHandoff');
+}
+
+async function aiSave() {
+    aiSyncFromForm();
+
+    // Switching it on with nothing to say would answer every question with the
+    // handover line, which looks broken rather than helpful.
+    const hasKnowledge = ['about', 'services', 'products_pricing', 'faqs', 'hours']
+        .some((k) => String(ai[k] || '').trim() !== '');
+    if (Number(ai.enabled) === 1 && !hasKnowledge) {
+        aiErr = true;
+        aiNote = 'Add at least what your business does or the services you offer before switching it on.';
+        return renderAi();
+    }
+
+    aiErr = false; aiNote = 'Saving…'; renderAi();
+    try {
+        const d = await aiGet(ai);
+        ai = d.config || ai;
+        aiUsage = d.usage || aiUsage;
+        aiErr = false;
+        aiNote = Number(ai.enabled) === 1
+            ? 'Saved. Your chatbot is answering now.'
+            : 'Saved. The chatbot is off — switch it on when you are ready.';
+    } catch (e) {
+        aiErr = true;
+        aiNote = e.message;
+    }
+    renderAi();
 }
 
 /* ── auto-reply editor ─────────────────────────────────────────────────── */
