@@ -68,6 +68,42 @@
                 font-size: .8rem; cursor: pointer; font-weight: 600; color: #374151; }
         .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
 
+        /* Marketing score — the same gauge + fix-list the app shows on its
+           AI Growth Center screen, which is where the score lives there. */
+        .sc-head { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+        .gauge { position: relative; width: 112px; height: 112px; flex: 0 0 auto; border-radius: 50%; }
+        .gauge i { position: absolute; inset: 11px; background: #fff; border-radius: 50%;
+                   display: flex; flex-direction: column; align-items: center; justify-content: center;
+                   font-style: normal; }
+        .gauge b { font-size: 1.7rem; font-weight: 800; color: #153e3f; line-height: 1; }
+        .gauge s { text-decoration: none; font-size: .64rem; font-weight: 700; color: #9ca3af;
+                   text-transform: uppercase; letter-spacing: .6px; margin-top: 3px; }
+        .sc-sum { flex: 1; min-width: 210px; font-size: .86rem; color: #374151; line-height: 1.55; }
+        .sc-band { display: inline-block; font-size: .7rem; font-weight: 800; text-transform: uppercase;
+                   letter-spacing: .6px; padding: 3px 10px; border-radius: 20px; margin-bottom: 7px; }
+        .sc-grp { font-size: .7rem; font-weight: 800; color: #9ca3af; text-transform: uppercase;
+                  letter-spacing: .6px; margin: 16px 0 6px; }
+        .sc-it { display: flex; align-items: center; gap: 10px; padding: 9px 0;
+                 border-bottom: 1px solid #f0ece6; }
+        .sc-it:last-child { border-bottom: 0; }
+        .sc-tick { width: 20px; height: 20px; border-radius: 50%; flex: 0 0 auto; font-size: .66rem;
+                   display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .sc-tick.on { background: #dcfce7; color: #15803d; }
+        .sc-tick.off { background: #f3f4f6; color: #9ca3af; }
+        .sc-lbl { flex: 1; min-width: 0; font-size: .84rem; color: #374151; }
+        .sc-pts { font-size: .72rem; font-weight: 700; color: #9ca3af; white-space: nowrap; }
+
+        .fld { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: center;
+               padding: 9px 0; border-bottom: 1px solid #f0ece6; font-size: .85rem; }
+        .fld:last-child { border-bottom: 0; }
+        .fld span { font-size: .72rem; font-weight: 700; color: #9ca3af;
+                    text-transform: uppercase; letter-spacing: .5px; }
+        @media (max-width: 620px) { .fld { grid-template-columns: 1fr; gap: 3px; } }
+
+        .ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+        .ph-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px;
+                       border: 1px solid #e9e3dc; display: block; }
+
         .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .grow { flex: 1; min-width: 150px; }
         .muted { color: #9ca3af; font-size: .85rem; }
@@ -91,7 +127,6 @@
             <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
             <a href="profile.html" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
             <a href="lead-extractor.html" class="nav-item"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
-            <a href="ai-growth.html" class="nav-item"><i class="fas fa-wand-magic-sparkles nav-icon" style="color:#8338ec"></i><span>AI Growth Center</span></a>
             <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
             <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
             <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
@@ -150,14 +185,17 @@
     }
 
     const TABS = [
+        ['score',      'Score'],
+        ['info',       'Business info'],
         ['reviews',    'Reviews'],
         ['posts',      'Posts'],
+        ['photos',     'Photos'],
         ['insights',   'Insights'],
         ['services',   'Services'],
         ['attributes', 'Attributes'],
         ['ask',        'Get reviews'],
     ];
-    let tab = 'reviews';
+    let tab = 'score';
     let status = null;
 
     /* ───────────────────────────── connection bar ───────────────────── */
@@ -284,18 +322,206 @@
         renderTabs();
         const p = document.getElementById('panel');
         p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
-        ({ reviews: tabReviews, posts: tabPosts, insights: tabInsights,
-           services: tabServices, attributes: tabAttrs, ask: tabAsk }[k])(p);
+        ({ score: tabScore, info: tabInfo, reviews: tabReviews, posts: tabPosts,
+           photos: tabPhotos, insights: tabInsights, services: tabServices,
+           attributes: tabAttrs, ask: tabAsk }[k])(p);
     }
 
     const fail = (p) => (e) => { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; };
     const stars = (n) => '★★★★★'.slice(0, Math.max(0, Math.round(n || 0))).padEnd(5, '☆');
 
+    /* ── marketing score ──────────────────────────────────────────────── */
+    /**
+     * In the app the score lives on the AI Growth Center screen; here it is a
+     * tab on the listing it describes, because on a desktop sidebar the two
+     * pages sit one above the other and splitting them only hides it.
+     *
+     * Every item carries a fix_in telling the customer WHERE the missing point
+     * is earned — a score with no route to act on it is just a number.
+     */
+    const BAND = {
+        excellent: ['#15803d', '#dcfce7'],
+        good:      ['#0369a1', '#e0f2fe'],
+        fair:      ['#b45309', '#fef3c7'],
+        poor:      ['#b91c1c', '#fee2e2'],
+    };
+    // A score item's fix_in → the tab that fixes it. Anything unlisted falls
+    // back to the listing editor, so a new item can never dead-end.
+    const FIX_TAB = {
+        google_business: ['info',       'Edit'],
+        google_reviews:  ['reviews',    'Reply'],
+        request_review:  ['ask',        'Ask'],
+        google_posts:    ['posts',      'Post'],
+        services:        ['services',   'Add'],
+        attributes:      ['attributes', 'Set'],
+        photos:          ['photos',     'Upload'],
+    };
+
+    async function tabScore(p, refresh) {
+        try {
+            const d = await api('marketing-score.php' + (refresh ? '?refresh=1' : ''));
+            const band = BAND[d.band] || BAND.fair;
+            const pct = Math.max(0, Math.min(100, Math.round(d.score || 0)));
+            const items = d.items || [];
+            const groups = [];
+            items.forEach(it => { if (groups.indexOf(it.group) < 0) groups.push(it.group); });
+
+            p.innerHTML = `
+              <div class="card">
+                <div class="sc-head">
+                  <div class="gauge" style="background:conic-gradient(${band[0]} ${pct * 3.6}deg, #f0ece6 0)">
+                    <i><b>${pct}</b><s>of ${esc(d.max || 100)}</s></i>
+                  </div>
+                  <div class="sc-sum">
+                    <span class="sc-band" style="color:${band[0]};background:${band[1]}">${esc(d.band || '')}</span>
+                    <div>${esc(d.summary || '')}</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm" onclick="tabScore(document.getElementById('panel'), 1)">Recheck</button>
+                </div>
+              </div>
+              ${groups.map(g => `
+              <div class="card">
+                <div class="sc-grp" style="margin-top:0">${esc(g)}</div>
+                ${items.filter(it => it.group === g).map(renderScoreItem).join('')}
+              </div>`).join('')
+                || '<div class="card"><p class="muted">No score items came back from Google.</p></div>'}`;
+        } catch (e) { fail(p)(e); }
+    }
+
+    function renderScoreItem(it) {
+        const done = Number(it.earned || 0) >= Number(it.points || 0);
+        const fix = FIX_TAB[it.fix_in] || ['info', 'Fix'];
+        return `<div class="sc-it">
+            <span class="sc-tick ${done ? 'on' : 'off'}">${done ? '✓' : '!'}</span>
+            <span class="sc-lbl">${esc(it.label || it.key || '')}</span>
+            <span class="sc-pts">${esc(it.earned || 0)}/${esc(it.points || 0)}</span>
+            ${done ? '' : `<button class="btn btn-ghost btn-sm" onclick="openTab('${esc(fix[0])}')">${esc(fix[1])}</button>`}
+        </div>`;
+    }
+
+    /* ── business info ────────────────────────────────────────────────── */
+    /**
+     * The editable listing fields, mirroring the app's Google Business screen:
+     * what Google lets us PATCH on top, what it only lets us read underneath.
+     * `editable` comes from the server (FieldMap), so the form never offers a
+     * box for something the API will reject.
+     */
+    const FIELD_LABELS = {
+        business_name: 'Business name', description: 'Description',
+        phone: 'Phone', website: 'Website',
+        primary_category: 'Primary category', address: 'Address', hours: 'Hours',
+    };
+    const READONLY = ['primary_category', 'address', 'hours'];
+
+    async function tabInfo(p) {
+        try {
+            const d = await api('location.php');
+            const f = d.fields || {};
+            const editable = d.editable && d.editable.length
+                ? d.editable : ['business_name', 'description', 'phone', 'website'];
+            p.innerHTML = `
+              <div class="card">
+                <h3>Your Google listing</h3>
+                ${editable.map(k => `
+                  <label class="lbl">${esc(FIELD_LABELS[k] || k)}</label>
+                  ${k === 'description'
+                    ? `<textarea class="ta" id="f_${esc(k)}">${esc(f[k] || '')}</textarea>`
+                    : `<input class="inp" id="f_${esc(k)}" value="${esc(f[k] || '')}">`}`).join('')}
+                <div class="row" style="margin-top:14px">
+                  <button class="btn" id="infoSave" onclick="saveInfo()">Save to Google</button>
+                  <span class="muted" id="infoMsg"></span>
+                </div>
+                <p class="muted" style="margin-top:10px">Google reviews some edits before they go live,
+                   so a change can take a little while to appear publicly.</p>
+              </div>
+              <div class="card">
+                <h3>From your Google listing</h3>
+                ${READONLY.map(k => `<div class="fld"><span>${esc(FIELD_LABELS[k] || k)}</span>
+                    <div>${esc(f[k] || '—')}</div></div>`).join('')}
+              </div>`;
+            infoEditable = editable;
+        } catch (e) { fail(p)(e); }
+    }
+    let infoEditable = [];
+
+    async function saveInfo() {
+        const btn = document.getElementById('infoSave');
+        const msg = document.getElementById('infoMsg');
+        const body = {};
+        infoEditable.forEach(k => {
+            const el = document.getElementById('f_' + k);
+            if (el) body[k] = el.value;
+        });
+        btn.disabled = true; msg.textContent = 'Saving…';
+        try {
+            await api('update.php', { method: 'POST', body: JSON.stringify(body) });
+            msg.textContent = 'Saved to Google.';
+        } catch (e) { msg.textContent = ''; alert(e.message); }
+        btn.disabled = false;
+    }
+
+    /* ── photos ───────────────────────────────────────────────────────── */
+    /**
+     * Google fetches the image from the URL itself, so it has to be publicly
+     * hosted already — there is no byte upload to make here. Same constraint
+     * the app works under.
+     */
+    async function tabPhotos(p) {
+        try {
+            const d = await api('photos.php');
+            const cats = d.categories && d.categories.length
+                ? d.categories : ['ADDITIONAL', 'COVER', 'LOGO', 'INTERIOR', 'EXTERIOR'];
+            p.innerHTML = `
+              <div class="card">
+                <h3>Add a photo</h3>
+                <label class="lbl">Image link</label>
+                <input class="inp" id="phUrl" placeholder="https://…/photo.jpg">
+                <label class="lbl">Where it goes</label>
+                <select class="sel" id="phCat">
+                  ${cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+                </select>
+                <div class="row" style="margin-top:14px">
+                  <button class="btn" id="phBtn" onclick="addPhoto()">Add to Google</button>
+                  <span class="muted" id="phMsg"></span>
+                </div>
+                <p class="muted" style="margin-top:10px">Google downloads the image from this link,
+                   so it has to be a public URL — not a file on your computer.</p>
+              </div>
+              <div class="card">
+                <h3>On your listing (${esc(d.total || (d.photos || []).length || 0)})</h3>
+                ${(d.photos || []).length
+                  ? `<div class="ph-grid">${(d.photos || []).map(ph =>
+                      `<img src="${esc(ph.url || ph.source_url || '')}" alt="" loading="lazy">`).join('')}</div>`
+                  : '<p class="muted">No photos yet. Listings with photos are opened far more often.</p>'}
+              </div>`;
+        } catch (e) { fail(p)(e); }
+    }
+
+    async function addPhoto() {
+        const url = (document.getElementById('phUrl').value || '').trim();
+        const msg = document.getElementById('phMsg');
+        if (!url) { msg.textContent = 'Paste an image link first.'; return; }
+        const btn = document.getElementById('phBtn');
+        btn.disabled = true; msg.textContent = 'Sending to Google…';
+        try {
+            await api('photos.php', { method: 'POST', body: JSON.stringify({
+                source_url: url, category: document.getElementById('phCat').value,
+            }) });
+            openTab('photos');
+        } catch (e) { msg.textContent = ''; alert(e.message); btn.disabled = false; }
+    }
+
     /* ── reviews ──────────────────────────────────────────────────────── */
+    let lastReviews = [], lastLocationTitle = '';
+
     async function tabReviews(p) {
         try {
             const d = await api('reviews.php?limit=50');
             const ar = d.auto_reply || {};
+            // Kept so Suggest can read the review it is writing about without
+            // a second round trip.
+            lastReviews = d.reviews || [];
+            lastLocationTitle = d.location_title || '';
             p.innerHTML = `
               <div class="card">
                 <div class="stat-row">
@@ -339,9 +565,69 @@
                 ? `<div class="rev-reply"><b>Your reply</b>${esc(r.reply)}</div>`
                 : `<div class="row" style="margin-top:9px">
                      <input class="inp grow" id="rp_${id}" placeholder="Write a reply…">
+                     <button class="btn btn-ghost btn-sm" id="sg_${id}"
+                             onclick="suggest('${id}')">&#10024; Suggest</button>
                      <button class="btn btn-sm" onclick="reply('${id}')">Reply</button>
                    </div>`}
         </div>`;
+    }
+
+    /**
+     * Writes a reply with AI and drops it in the box, the way the app's Suggest
+     * button does. It is NOT posted — the customer reads and edits it first,
+     * because this goes out publicly under their business name.
+     *
+     * Press it again for a different tone. Warm first for praise, measured
+     * first for a complaint: a breezy "Thanks so much!" under a one-star review
+     * reads as not having read it. Once all four tones are used, the next press
+     * regenerates instead of returning the cached set again.
+     */
+    const suggestState = {};
+    async function suggest(id) {
+        const btn = document.getElementById('sg_' + id);
+        const box = document.getElementById('rp_' + id);
+        const r = (lastReviews || []).find(x => String(x.id || x.review_id) === String(id));
+        if (!r || !btn || !box) return;
+
+        const stars = Number(r.stars || r.rating || 0);
+        const order = stars >= 4
+            ? ['friendly', 'professional', 'short', 'formal']
+            : ['professional', 'formal', 'short', 'friendly'];
+        const seen = suggestState[id] || { tone: 0 };
+        const exhausted = seen.tone >= order.length;
+
+        const old = btn.innerHTML;
+        btn.disabled = true; btn.textContent = 'Writing…';
+        try {
+            const res = await fetch(API + '/api/ai/review-reply.php', {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    review: r.comment || '',
+                    business_name: (lastLocationTitle || ''),
+                    // reviewer, stars and review_id are not optional extras: without
+                    // them every short review generated the same sentence, and two
+                    // reviews with identical text were served the identical cached
+                    // reply — in public, under the customer's own name.
+                    reviewer: r.reviewer || r.author || '',
+                    stars: stars,
+                    review_id: id,
+                    regenerate: exhausted,
+                }),
+            });
+            const j = await res.json().catch(() => ({}));
+            if (!j.success) throw new Error(j.message || 'Could not write a reply.');
+
+            const out = (j.data && j.data.result) || {};
+            const idx = exhausted ? 0 : seen.tone;
+            const pick = order.slice(idx).map(k => out[k]).find(v => v && String(v).trim())
+                      || order.map(k => out[k]).find(v => v && String(v).trim());
+            suggestState[id] = { tone: exhausted ? 1 : seen.tone + 1 };
+
+            if (pick) { box.value = String(pick).trim(); box.focus(); }
+            else alert('The AI did not return a reply. Try again.');
+        } catch (e) { alert(e.message); }
+        btn.disabled = false; btn.innerHTML = old;
     }
 
     async function reply(id) {
