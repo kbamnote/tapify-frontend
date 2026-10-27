@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Orders - Tapify</title>
     <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link rel="preconnect" href="https://app.tapify.co.in" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../admin-style.css">
@@ -70,56 +74,56 @@
 
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
-            <a href="dashboard.html" class="sidebar-logo">
+            <a href="dashboard" class="sidebar-logo">
                 <img src="../images/tapify-logo-green.png" alt="Tapify"><span>Tapify</span>
             </a>
         </div>
         <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item">
+            <a href="dashboard" class="nav-item">
                 <i class="fas fa-chart-pie nav-icon"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="profile.html" class="nav-item">
+            <a href="profile" class="nav-item">
                 <i class="fas fa-user nav-icon"></i>
                 <span>My Profile</span>
             </a>
-            <a href="lead-extractor.html" class="nav-item"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
-            <a href="social.html" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
-            <a href="link-pages.html" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
-            <a href="my-designs.html" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
-            <a href="google-business.html" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
-            <a href="reviews.html" class="nav-item">
+            <a href="lead-extractor" class="nav-item"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
+            <a href="social" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="reviews" class="nav-item">
                 <i class="fas fa-star nav-icon"></i>
                 <span>Reviews Funnel</span>
             </a>
-            <a href="website-builder.html" class="nav-item">
+            <a href="website-builder" class="nav-item">
                 <i class="fas fa-globe nav-icon"></i>
                 <span>Website Builder</span>
             </a>
-            <a href="whatsapp.html" class="nav-item">
+            <a href="whatsapp" class="nav-item">
                 <i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i>
                 <span>WhatsApp</span>
             </a>
-            <a href="site-orders.html" class="nav-item">
+            <a href="site-orders" class="nav-item">
                 <i class="fas fa-receipt nav-icon"></i>
                 <span>Orders</span>
             </a>
-            <a href="site-inquiries.html" class="nav-item">
+            <a href="site-inquiries" class="nav-item">
                 <i class="fas fa-envelope-open-text nav-icon"></i>
                 <span>Inquiries</span>
             </a>
-            <a href="site-feedback.html" class="nav-item" data-feature="feedback" style="display:none">
+            <a href="site-feedback" class="nav-item" data-feature="feedback" style="display:none">
                 <i class="fas fa-star nav-icon"></i>
                 <span>Feedback</span>
             </a>
-            <a href="site-appointments.html" class="nav-item">
+            <a href="site-appointments" class="nav-item">
                 <i class="fas fa-calendar-day nav-icon"></i>
                 <span>Appointments</span>
             </a>
-            <a href="manage-subscription.html?tab=gateway" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+            <a href="manage-subscription?tab=gateway" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
         </nav>
         <div class="sidebar-footer">
-            <a href="manage-subscription.html" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="manage-subscription" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
             <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
         </div>
     </aside>
@@ -137,7 +141,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="dropdown-menu profile-menu" id="profileDropdown">
-                        <a href="profile.html"><i class="fas fa-user"></i> Account Settings</a>
+                        <a href="profile"><i class="fas fa-user"></i> Account Settings</a>
                         <a href="#" onclick="logout()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>

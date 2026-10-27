@@ -454,9 +454,159 @@ function animateCounters() {
     });
 }
 
+/* ==========================================================================
+   SIDEBAR NAVIGATION — which item is green, and how fast it feels
+   ==========================================================================
+
+   The dashboard is 23 separate HTML pages, not a single-page app. Two things
+   followed from that, and both were visible to the customer:
+
+   1. The green highlight was a hand-written class="nav-item active" in each
+      page. vcards-edit highlighted Dashboard, and six pages highlighted
+      nothing at all — so "clicking a sidebar item does not turn green" was
+      often literally true. It is derived from the URL below instead, which
+      fixes every page at once and cannot drift as pages are added.
+
+   2. A click starts a full page load, and the browser keeps showing the OLD
+      page until the new one paints. Nothing moved for the best part of a
+      second, so the click felt ignored. We now move the highlight and show a
+      progress bar immediately, and warm the next page before the click lands.
+   ========================================================================== */
+
+/** Pages with no sidebar entry of their own, mapped to the one they belong under. */
+const NAV_ALIASES = {
+    'whatsapp-stores': 'whatsapp',
+    'whatsapp-stores-edit': 'whatsapp',
+    'whatsapp-orders': 'whatsapp',
+    'appointments': 'site-appointments',
+    'inquiries': 'site-inquiries',
+    // The vCard editor is opened from the Dashboard's card list and has no
+    // sidebar entry of its own.
+    'vcards-edit': 'dashboard',
+};
+// settings.html and ai-growth.html are deliberately absent: nothing links to
+// either any more, so there is no sidebar item they could honestly light up.
+
+/** Resolve a link to {path, search}, with .html stripped so both link styles match. */
+function navTarget(href) {
+    try {
+        const u = new URL(href, window.location.href);
+        return { path: u.pathname.replace(/\.html$/, ''), search: u.search };
+    } catch (e) {
+        return { path: '', search: '' };
+    }
+}
+
+function markActiveNav() {
+    const nav = document.querySelector('.sidebar-nav');
+    if (!nav) return;
+
+    const herePath = window.location.pathname.replace(/\.html$/, '');
+    const hereSearch = window.location.search;
+    const page = herePath.split('/').pop() || 'dashboard';
+    const aliasPath = NAV_ALIASES[page]
+        ? herePath.replace(/[^/]*$/, NAV_ALIASES[page])
+        : null;
+
+    const links = [];
+    nav.querySelectorAll('.nav-item[href]').forEach(a => {
+        a.classList.remove('active');
+        links.push({ el: a, ...navTarget(a.getAttribute('href')) });
+    });
+
+    // Exact match first. "Payment Gateway" points at manage-subscription?tab=gateway,
+    // so without the query check it would also claim the bare Manage Subscription
+    // page — two different destinations sharing one path.
+    let hit = links.find(l => l.path === herePath && l.search === hereSearch)
+        || links.find(l => l.path === herePath && !l.search)
+        || (aliasPath && links.find(l => l.path === aliasPath && !l.search));
+
+    if (hit) hit.el.classList.add('active');
+
+    // Manage Subscription lives in the footer, not the nav, so light that
+    // instead rather than leaving the sidebar with nothing selected.
+    const sub = document.querySelector('.sidebar-footer .subscription-btn');
+    if (sub) sub.classList.toggle('active', !hit && page === 'manage-subscription');
+}
+
+/** Move the highlight and start the progress bar the instant a link is clicked. */
+function setupInstantNav() {
+    let bar = null;
+    const startBar = () => {
+        if (bar) return;
+        bar = document.createElement('div');
+        bar.className = 'nav-progress';
+        document.body.appendChild(bar);
+        requestAnimationFrame(() => bar.classList.add('go'));
+    };
+
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('.sidebar-nav .nav-item[href], .sidebar-footer .subscription-btn[href]');
+        if (!a) return;
+        // Leave modified clicks alone — they open a new tab, so this page stays.
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.target === '_blank' || (a.getAttribute('href') || '').startsWith('#')) return;
+
+        document.querySelectorAll('.sidebar-nav .nav-item.active, .sidebar-footer .subscription-btn.active')
+            .forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+        startBar();
+    }, true);
+
+    // A back/forward navigation restored from bfcache must not keep the old
+    // page's half-finished progress bar on screen.
+    window.addEventListener('pageshow', () => {
+        document.querySelectorAll('.nav-progress').forEach(b => b.remove());
+        bar = null;
+        markActiveNav();
+    });
+}
+
+/**
+ * Warm the next page before it is asked for.
+ *
+ * prefetch on hover costs one idle request and takes the HTML fetch off the
+ * click entirely. It downloads the document and nothing else — no scripts run,
+ * so it cannot have side effects.
+ *
+ * NOT prerender. The Speculation Rules API would go further and render the
+ * next page off-screen, which would make these navigations essentially
+ * instant. It also EXECUTES that page's JavaScript on hover, and these pages
+ * carry ~48 POST calls between them. Until every one is confirmed to be behind
+ * a user action rather than page load, hovering a link must not be able to
+ * mark records read or spend an AI credit. Worth revisiting after that audit.
+ */
+function setupNavPrefetch() {
+    const warmed = new Set();
+    const warm = (a) => {
+        const href = a && a.getAttribute('href');
+        if (!href || href.startsWith('#') || warmed.has(href)) return;
+        // Same-origin only: prefetching a third-party URL would leak the visit
+        // and cannot help the navigation anyway.
+        try {
+            if (new URL(href, location.href).origin !== location.origin) return;
+        } catch (e) { return; }
+        warmed.add(href);
+        const l = document.createElement('link');
+        l.rel = 'prefetch';
+        l.as = 'document';
+        l.href = href;
+        document.head.appendChild(l);
+    };
+    const onHover = (e) => {
+        const a = e.target.closest && e.target.closest('.sidebar-nav .nav-item[href]');
+        if (a) warm(a);
+    };
+    document.addEventListener('mouseover', onHover, { passive: true });
+    document.addEventListener('touchstart', onHover, { passive: true });
+}
+
 // ===== INITIALIZE ON LOAD =====
 document.addEventListener('DOMContentLoaded', () => {
     applySavedTheme();
+    markActiveNav();
+    setupInstantNav();
+    setupNavPrefetch();
     initAnalyticsChart();
     setupSidebarSearch();
     checkAuth();
