@@ -1546,16 +1546,39 @@ async function bcSend() {
  */
 let ai = null, aiSuggested = {}, aiUsage = null, aiNote = '', aiErr = false;
 
+/**
+ * The knowledge pack, in the order the form shows it.
+ *
+ * The first block is what the business IS. The second is how it WORKS — and
+ * that block is the one that stops wrong answers. Almost every handoff in
+ * practice was a question about delivery, timing, advance payment or what to
+ * send us: facts that lived in the owner's head and nowhere the bot could
+ * read, so it correctly refused the questions customers ask most.
+ *
+ * Every field is optional. An empty one simply means the bot keeps handing
+ * those questions to a human, which is the safe default, not a fault.
+ */
 const AI_FIELDS = [
-    ['about',            'What your business does',    'We print visiting cards, banners and signage for businesses in Nagpur.', 3],
+    ['about',            'What your business does',    'We print visiting cards, banners and signage for businesses in Nagpur.', 3, 'What your business is'],
     ['services',         'Services you offer',          'Visiting cards, flex banners, signage, letterheads, stickers', 2],
-    ['products_pricing', 'Products and prices',         'Visiting cards: 1000 for Rs 600. Flex banner: Rs 12 per sq ft.', 4],
-    ['hours',            'Opening hours',               'Mon to Sat, 10am to 8pm. Closed Sunday.', 2],
+    ['products_pricing', 'Products and prices',         'Visiting cards: 1000 for Rs 600.\nEverything else is quoted — never state a price that is not written here.', 4],
+    ['hours',            'Opening hours',               'Mon to Sat, 10am to 7pm. Closed Sunday.', 2],
     ['address',          'Address',                     'Wardhaman Nagar, near Lalita Public School, Nagpur 440008', 2],
-    ['phone',            'Phone',                       '080559 94515', 1],
+    ['phone',            'Phone',                       '+91 78418 40840', 1],
     ['website',          'Website',                     'https://mrprintworld.com', 1],
-    ['faqs',             'Common questions and answers', 'Q: Do you deliver?\nA: Yes, free delivery within Nagpur on orders above Rs 2000.', 5],
-    ['never_say',        'Things the bot must never say', 'Never promise same-day delivery. Never offer a discount.', 2],
+
+    ['service_area',     'Areas you serve',             'Nagpur city for site visits and installation. Across Maharashtra for projects. Courier across India.', 2, 'How you work — this is what stops wrong answers'],
+    ['delivery',         'Delivery and shipping',       'Free delivery within Nagpur on orders above Rs 2000.\nOutside Nagpur: by courier, charges confirmed with the quote.', 3],
+    ['turnaround',       'How long work takes',         'Visiting cards: 2 working days from approval.\nSign board with installation: 5 to 7 days.\nWe do not promise same-day work.', 3],
+    ['payment',          'Payment methods and terms',   'UPI, bank transfer or cash. 50% advance to start, balance on delivery. GST invoice on request.', 3],
+    ['min_order',        'Minimum order',               'Printing: 100 pieces. Signage and fabrication: no minimum, quoted per job.', 2],
+    ['requirements',     'What you need from the customer', 'Size, quantity, where it will be used, and your logo or artwork.\nFormats: AI, CDR, PDF or a high-resolution JPG.', 3],
+    ['offers',           'Offers running right now',    'No offers running at the moment.', 2],
+    ['policies',         'Cancellation, reprint and warranty', 'Once the proof is approved and production starts, the order cannot be cancelled.\nIf a job is wrong at our end we reprint free.', 3],
+
+    ['faqs',             'Common questions and answers', 'Q: Do you deliver?\nA: Yes, free delivery within Nagpur on orders above Rs 2000.', 5, 'Answers, and the limits'],
+    ['never_say',        'Things the bot must never say', 'Never promise same-day delivery. Never offer a discount. Never quote a price that is not written above.', 3],
+    ['escalate_when',    'Always get a human for these', 'Any complaint. Any discount request. Orders above Rs 50,000. Anyone asking for bank or GST details.', 3],
 ];
 
 async function showAi() {
@@ -1627,7 +1650,9 @@ function renderAi() {
         <p class="sub">It answers ONLY from this. Anything you leave out, it will not guess — it sends your
            handover message instead. Be specific about prices and timings.</p>
 
-        ${AI_FIELDS.map(([k, label, ph, rows]) => `
+        ${AI_FIELDS.map(([k, label, ph, rows, group]) => `
+          ${group ? `<p style="margin:22px 0 2px;font-size:.72rem;font-weight:800;letter-spacing:.6px;
+                               text-transform:uppercase;color:#9ca3af">${esc(group)}</p>` : ''}
           <div class="bot-field">
             <label for="ai_${k}">${esc(label)}</label>
             <textarea class="bot-input" id="ai_${k}" rows="${rows}"
