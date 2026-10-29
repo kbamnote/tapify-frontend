@@ -1623,6 +1623,30 @@ function renderAi() {
             <input type="checkbox" id="aiOn" ${on ? 'checked' : ''}> ${on ? 'On' : 'Off'}
           </label>
         </div>
+
+        <!-- Per channel, because the master switch above is not enough: a
+             customer who connects a Facebook Page to publish posts has not
+             agreed to have its DMs answered. Messenger and Instagram stay off
+             until they say so here. -->
+        <div style="margin-top:14px;border-top:1px solid #f0ece6;padding-top:12px">
+          <p class="sub" style="margin:0 0 9px">Answer on these channels</p>
+          <div class="row" style="gap:18px;flex-wrap:wrap">
+            ${[['ch_whatsapp', 'WhatsApp', 1], ['ch_messenger', 'Facebook Messenger', 0], ['ch_instagram', 'Instagram DMs', 0]]
+              .map(([k, label, dflt]) => {
+                // A config saved before the channel columns existed has no key
+                // at all — WhatsApp then keeps the behaviour it always had.
+                const v = (ai[k] === undefined || ai[k] === null) ? dflt : Number(ai[k]);
+                return `<label class="row" style="gap:7px;font-size:.86rem">
+                    <input type="checkbox" id="${k}" ${v === 1 ? 'checked' : ''} ${on ? '' : 'disabled'}>
+                    ${esc(label)}
+                  </label>`;
+              }).join('')}
+          </div>
+          ${on ? '' : '<p class="sub" style="margin:9px 0 0;color:#b45309">Turn the chatbot on first.</p>'}
+          <p class="sub" style="margin:9px 0 0">Messenger and Instagram also need the page connected under
+            <b>Social Media → Accounts</b>, and Instagram needs
+            <i>Settings → Messages → Connected Tools → Allow access to messages</i> switched on in the Instagram app.</p>
+        </div>
       </div>
 
       <div class="bot-card">
@@ -1718,6 +1742,10 @@ function aiSyncFromForm() {
     });
     const g = (id) => (document.getElementById(id) || {}).value;
     if (document.getElementById('aiOn')) ai.enabled = document.getElementById('aiOn').checked ? 1 : 0;
+    ['ch_whatsapp', 'ch_messenger', 'ch_instagram'].forEach(k => {
+        const el = document.getElementById(k);
+        if (el) ai[k] = el.checked ? 1 : 0;
+    });
     if (g('aiTone') !== undefined) ai.tone = g('aiTone');
     if (g('aiLangs') !== undefined) ai.languages = g('aiLangs');
     if (g('aiHandoff') !== undefined) ai.handoff_message = g('aiHandoff');

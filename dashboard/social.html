@@ -152,7 +152,8 @@
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     });
 
-    const TABS = [['compose', 'Compose'], ['history', 'History'], ['accounts', 'Accounts'], ['stats', 'Engagement']];
+    const TABS = [['compose', 'Compose'], ['inbox', 'Inbox'], ['history', 'History'],
+                  ['accounts', 'Accounts'], ['stats', 'Engagement']];
     let tab = 'compose';
     let conns = [];          // connected accounts
     let available = [];      // platforms that can be connected
@@ -191,7 +192,8 @@
         tab = k; renderTabs();
         const p = document.getElementById('panel');
         p.innerHTML = '<div class="card"><p class="muted">Loading…</p></div>';
-        ({ compose: tabCompose, history: tabHistory, accounts: tabAccounts, stats: tabStats }[k])(p);
+        ({ compose: tabCompose, inbox: tabInbox, history: tabHistory,
+           accounts: tabAccounts, stats: tabStats }[k])(p);
     }
 
     /**
@@ -223,6 +225,103 @@
               </div>
               ${opts.extra || ''}
             </div>`;
+    }
+
+    /* ── inbox ────────────────────────────────────────────────────────────
+       What the bot has been saying in the customer's name, and the way to take
+       a conversation over. Without this the only place to read a reply is
+       Meta's own inbox, which rather defeats the point of the bot being ours. */
+    let thread = null;   // { connection_id, contact_id, name }
+
+    const when = (s) => {
+        const d = new Date(String(s || '').replace(' ', 'T'));
+        return isNaN(d) ? '' : d.toLocaleString(undefined,
+            { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    };
+    const SRC = { ai: 'AI', handoff: 'Handover', human: 'You', contact: '' };
+
+    async function tabInbox(p) {
+        if (thread) return openThread(p);
+        try {
+            const d = await api('inbox.php');
+            const rows = d.threads || [];
+            p.innerHTML = `
+              <div class="card">
+                <h3>Messenger &amp; Instagram</h3>
+                <p class="hint" style="margin-top:0">Every message to your connected Pages and Instagram
+                  accounts, and every reply the chatbot sent. Open one to read it or answer yourself.</p>
+                ${rows.length ? rows.map(t => `
+                  <div class="acct" style="margin-bottom:8px"
+                       onclick="openThreadBy(${Number(t.connection_id)}, '${esc(t.contact_id)}', '${esc(t.contact_name || '')}')">
+                    <i class="${ICON[t.platform] || 'fa-solid fa-comment'} acct-ico"></i>
+                    <div class="acct-txt">
+                      <b>${esc(t.contact_name || ('Visitor ' + String(t.contact_id).slice(-6)))}</b>
+                      <span>${esc(t.account_name || t.platform)} &middot; ${esc(when(t.created_at))}</span>
+                      <span style="color:#374151">${t.direction === 'out' ? '↩ ' : ''}${esc(String(t.body || '').slice(0, 70))}</span>
+                    </div>
+                  </div>`).join('')
+                : '<p class="muted">No messages yet. They appear here once someone messages a connected Page or Instagram account.</p>'}
+              </div>`;
+        } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    function openThreadBy(cid, contact, name) {
+        thread = { connection_id: cid, contact_id: contact, name: name };
+        openTab('inbox');
+    }
+    function closeThread() { thread = null; openTab('inbox'); }
+
+    async function openThread(p) {
+        try {
+            const d = await api('inbox.php?connection_id=' + encodeURIComponent(thread.connection_id)
+                + '&contact_id=' + encodeURIComponent(thread.contact_id));
+            const msgs = d.messages || [];
+            p.innerHTML = `
+              <div class="card">
+                <div class="row" style="justify-content:space-between;margin-bottom:12px">
+                  <h3 style="margin:0">${esc(thread.name || ('Visitor ' + String(thread.contact_id).slice(-6)))}</h3>
+                  <button class="btn btn-ghost btn-sm" onclick="closeThread()">Back to inbox</button>
+                </div>
+                <div style="max-height:52vh;overflow:auto;padding-right:4px">
+                  ${msgs.map(m => {
+                    const out = m.direction === 'out';
+                    return `<div style="display:flex;justify-content:${out ? 'flex-end' : 'flex-start'};margin-bottom:9px">
+                      <div style="max-width:76%;padding:9px 12px;border-radius:12px;font-size:.86rem;line-height:1.45;
+                                  background:${out ? '#eef6f4' : '#f6f4f1'};border:1px solid #e9e3dc">
+                        <div>${esc(m.body || '')}</div>
+                        <div style="margin-top:4px;font-size:.68rem;color:#9ca3af">
+                          ${esc(SRC[m.source] || '')}${m.source && m.source !== 'contact' ? ' &middot; ' : ''}${esc(when(m.created_at))}
+                          ${m.error ? ' &middot; <span style="color:#b91c1c">not delivered</span>' : ''}
+                        </div>
+                      </div>
+                    </div>`;
+                  }).join('') || '<p class="muted">Nothing in this conversation yet.</p>'}
+                </div>
+                <div class="row" style="margin-top:14px">
+                  <input class="inp grow" id="replyBox" placeholder="Write a reply…"
+                         onkeydown="if(event.key==='Enter')sendReply()">
+                  <button class="btn" id="replyBtn" onclick="sendReply()">Send</button>
+                </div>
+                <p class="hint">Meta only allows a reply within 24 hours of their last message.</p>
+              </div>`;
+        } catch (e) { p.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+    }
+
+    async function sendReply() {
+        const box = document.getElementById('replyBox');
+        const text = (box.value || '').trim();
+        if (!text) return;
+        const btn = document.getElementById('replyBtn');
+        btn.disabled = true; box.disabled = true;
+        try {
+            await post('inbox.php', {
+                connection_id: thread.connection_id, contact_id: thread.contact_id, message: text,
+            });
+            openTab('inbox');
+        } catch (e) {
+            alert(e.message);
+            btn.disabled = false; box.disabled = false;
+        }
     }
 
     /* ── accounts ─────────────────────────────────────────────────────── */
