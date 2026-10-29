@@ -175,7 +175,12 @@
         try {
             const d = await api('connections.php');
             conns = d.connections || [];
-            available = d.available || [];
+            // The endpoint calls this `connectable`; this page read `available`
+            // and so always got an empty list — which is why the Accounts tab
+            // has never offered a Connect button and instead claimed no
+            // platform was configured on the server. Both keys are accepted so
+            // a rename on either side cannot silently break it again.
+            available = d.connectable || d.available || [];
         } catch (e) {
             document.getElementById('panel').innerHTML = '<div class="err">' + esc(e.message) + '</div>';
             return;
