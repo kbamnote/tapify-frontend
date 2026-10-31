@@ -220,6 +220,7 @@
             <a href="google-business" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
             <a href="website-builder" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
             <a href="whatsapp" class="nav-item active"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="inbox" class="nav-item"><i class="fas fa-inbox nav-icon" style="color:#7c3aed"></i><span>Inbox</span></a>
             <a href="site-orders" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
             <a href="site-inquiries" class="nav-item">
                 <i class="fas fa-envelope-open-text nav-icon"></i>
@@ -814,6 +815,11 @@ function barHtml(view) {
 function renderInbox() {
     render(barHtml('inbox') + `
       <div class="wa-cost-strip" id="waCostStrip"><i class="fas fa-wallet"></i> Loading charges…</div>
+      <div class="wa-cost-strip" style="background:#f5f3ff;border-color:#ddd6fe;color:#5b21b6">
+        <i class="fas fa-inbox"></i> This inbox is WhatsApp only.
+        <a href="inbox" style="color:#5b21b6;font-weight:800;text-decoration:underline">Open the Inbox</a>
+        to see WhatsApp, Messenger and Instagram together.
+      </div>
       <div class="wa-grid">
         <div class="wa-panel">
           <div class="wa-panel-head">Conversations <span id="convoCount" style="color:#9ca3af;font-weight:600"></span></div>

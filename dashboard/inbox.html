@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link rel="preconnect" href="https://app.tapify.co.in" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .ib { max-width: 1240px; margin: 18px auto; padding: 0 18px 32px; }
+
+        .chips { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+        .chip { border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
+                padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700;
+                display: inline-flex; align-items: center; gap: 7px; }
+        .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
+        .chip .n { background: rgba(0,0,0,.08); border-radius: 10px; padding: 1px 7px; font-size: .72rem; }
+        .chip.on .n { background: rgba(255,255,255,.22); }
+        .chip.off { opacity: .45; cursor: default; }
+
+        /* Two panes side by side on desktop. On a phone only one is shown at a
+           time — .ib-wrap.open flips to the thread — because a 300px list next
+           to a 60px thread is unusable, which is how it first came out. */
+        .ib-wrap { display: grid; grid-template-columns: 330px 1fr; gap: 14px;
+                   height: calc(100vh - 230px); min-height: 440px; }
+        .pane { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px;
+                display: flex; flex-direction: column; overflow: hidden; }
+
+        .pane-head { padding: 12px 15px; border-bottom: 1px solid #f0ebe4; font-weight: 800;
+                     font-size: .88rem; color: #153e3f; display: flex; align-items: center; gap: 9px; }
+        .pane-head .sub { font-weight: 500; color: #9ca3af; font-size: .76rem; }
+
+        .convos { overflow-y: auto; flex: 1; }
+        .convo { display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
+                 border-bottom: 1px solid #f6f2ed; }
+        .convo:hover { background: #fbf9f6; }
+        .convo.active { background: #f2f7f6; }
+        .avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; color: #fff;
+                  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .95rem; }
+        .avatar.whatsapp { background: #25D366; }
+        .avatar.facebook { background: #1877F2; }
+        .avatar.instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+        .cmain { min-width: 0; flex: 1; }
+        .cname { font-weight: 700; font-size: .87rem; color: #153e3f;
+                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cmeta { font-size: .7rem; color: #9ca3af; margin: 1px 0 2px; }
+        .cprev { font-size: .78rem; color: #6b7280;
+                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .badge-n { background: #25D366; color: #fff; font-size: .68rem; font-weight: 800;
+                   border-radius: 10px; padding: 1px 7px; align-self: center; }
+
+        .msgs { overflow-y: auto; flex: 1; padding: 16px; background: #fbf9f6;
+                display: flex; flex-direction: column; gap: 9px; }
+        .msg { max-width: 72%; padding: 9px 13px; border-radius: 13px; font-size: .86rem;
+               line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .msg.in  { background: #fff; border: 1px solid #ece6df; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg.out { background: #153e3f; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg .mm { font-size: .66rem; opacity: .62; margin-top: 5px; }
+        .msg.failed { border: 1px solid #dc2626; }
+        .msg .errline { font-size: .68rem; color: #fecaca; margin-top: 4px; }
+
+        .compose { border-top: 1px solid #f0ebe4; padding: 12px 14px; background: #fff; }
+        .compose textarea { width: 100%; min-height: 62px; resize: vertical; padding: 10px 12px;
+                            border: 1px solid #e3ddd5; border-radius: 10px; font: inherit; font-size: .86rem; }
+        .compose textarea:focus { outline: 2px solid #153e3f; outline-offset: 1px; }
+        .crow { display: flex; gap: 9px; align-items: center; margin-top: 9px; }
+        .btn-send { background: #153e3f; color: #fff; border: 0; border-radius: 9px; padding: 10px 20px;
+                    font: inherit; font-weight: 700; font-size: .84rem; cursor: pointer; }
+        .btn-send:disabled { opacity: .55; cursor: default; }
+        .notice { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px;
+                  padding: 11px 13px; font-size: .79rem; line-height: 1.55; }
+        .notice a { color: #9a3412; font-weight: 700; }
+
+        .empty { margin: auto; text-align: center; color: #9ca3af; font-size: .86rem; padding: 26px; }
+        .empty i { display: block; font-size: 1.9rem; margin-bottom: 11px; opacity: .45; }
+        .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+               border-radius: 10px; padding: 11px 13px; font-size: .82rem; margin-bottom: 12px; }
+        .warnbar { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 10px;
+                   padding: 10px 13px; font-size: .79rem; margin-bottom: 12px; line-height: 1.55; }
+        .warnbar a { color: #92400e; font-weight: 700; }
+        .back { display: none; background: none; border: 0; font: inherit; color: #153e3f;
+                font-weight: 700; cursor: pointer; padding: 0; }
+
+        @media (max-width: 860px) {
+            .ib-wrap { grid-template-columns: 1fr; height: calc(100vh - 210px); }
+            .ib-wrap > .pane:nth-child(2) { display: none; }
+            .ib-wrap.open > .pane:nth-child(1) { display: none; }
+            .ib-wrap.open > .pane:nth-child(2) { display: flex; }
+            .back { display: inline-block; }
+            .msg { max-width: 86%; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="profile" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+            <a href="lead-extractor" class="nav-item"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
+            <a href="social" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="link-pages" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="my-designs" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="google-business" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="website-builder" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="inbox" class="nav-item active"><i class="fas fa-inbox nav-icon" style="color:#7c3aed"></i><span>Inbox</span></a>
+            <a href="site-orders" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+            <a href="manage-subscription?tab=gateway" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">Inbox</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" id="refreshBtn"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="ib">
+                <div id="flash"></div>
+                <div class="chips" id="chips"></div>
+                <div class="ib-wrap" id="wrap">
+                    <div class="pane">
+                        <div class="pane-head">
+                            <span>Conversations</span>
+                            <span class="sub" id="convoCount"></span>
+                        </div>
+                        <div class="convos" id="convoList">
+                            <div class="empty"><i class="fas fa-spinner fa-spin"></i>Loading…</div>
+                        </div>
+                    </div>
+                    <div class="pane" id="threadPane">
+                        <div class="empty"><i class="far fa-comments"></i>Select a conversation</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    /* ──────────────────────────────────────────────────────────────────────
+       ONE INBOX OVER TWO BACKENDS.
+
+       WhatsApp conversations live in the Node CRM and are reached through
+       api/whatsapp/proxy.php. Messenger and Instagram live in this backend's
+       own social_messages table, behind api/social/inbox.php. The two return
+       different shapes and different envelopes (the proxy passes the CRM's
+       bare array straight through; the PHP endpoint wraps in {success,data}),
+       so each is fetched separately and then normalised into one list.
+
+       NEITHER CHANNEL IS ALLOWED TO BREAK THE PAGE. WhatsApp 503s when the CRM
+       is not configured, and the social side is empty until Meta approves the
+       messaging permissions for customers. Both are caught per-channel and
+       reported in the chip row, so an owner with only one of them still gets a
+       working inbox instead of an error screen.
+       ────────────────────────────────────────────────────────────────────── */
+    const API    = 'https://app.tapify.co.in';
+    const WA_API = API + '/api/whatsapp/proxy.php';
+
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    const CH = {
+        whatsapp:  { label: 'WhatsApp',  icon: 'fab fa-whatsapp' },
+        facebook:  { label: 'Messenger', icon: 'fab fa-facebook-messenger' },
+        instagram: { label: 'Instagram', icon: 'fab fa-instagram' },
+    };
+
+    /* MySQL hands back "YYYY-MM-DD HH:MM:SS", which Safari will not parse
+       without the T. The CRM hands back ISO. Both end up as epoch ms, or 0 so
+       an unparseable date sorts last instead of poisoning the sort. */
+    function ts(v) {
+        if (!v) return 0;
+        const d = new Date(String(v).replace(' ', 'T'));
+        return isNaN(d) ? 0 : d.getTime();
+    }
+    function when(v) {
+        const t = ts(v);
+        if (!t) return '';
+        const d = new Date(t), now = new Date();
+        const sameDay = d.toDateString() === now.toDateString();
+        return sameDay
+            ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            : d.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function waApi(action, opts = {}) {
+        const r = await fetch(WA_API + '?action=' + encodeURIComponent(action) + (opts.qs || ''), {
+            method: opts.method || 'GET',
+            credentials: 'include',
+            headers: opts.body ? { 'Content-Type': 'application/json' } : undefined,
+            body: opts.body ? JSON.stringify(opts.body) : undefined,
+        });
+        if (r.status === 401) { window.location.href = '../login'; throw new Error('auth'); }
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) { const e = new Error(j.message || j.error || 'Request failed'); e.status = r.status; throw e; }
+        return j;
+    }
+    async function soApi(path, opts) {
+        const r = await fetch(API + '/api/social/' + path,
+            Object.assign({ credentials: 'include' }, opts || {}));
+        if (r.status === 401) { window.location.href = '../login'; throw new Error('auth'); }
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    let filter   = 'all';
+    let convos   = [];     // normalised, newest first
+    let active   = null;   // the open conversation object
+    let chErr    = {};     // channel -> why it is unavailable
+    let loading  = false;
+
+    /* ── load ─────────────────────────────────────────────────────────── */
+    async function loadConvos(keepActive) {
+        if (loading) return;
+        loading = true;
+        const out = [];
+        chErr = {};
+
+        const [wa, so] = await Promise.allSettled([
+            waApi('conversations'),
+            soApi('inbox.php'),
+        ]);
+
+        if (wa.status === 'fulfilled' && Array.isArray(wa.value)) {
+            for (const c of wa.value) {
+                if (!c || !c.phone) continue;
+                out.push({
+                    ch: 'whatsapp',
+                    key: 'wa:' + c.phone,
+                    phone: c.phone,
+                    name: c.name || c.phone,
+                    account: 'WhatsApp Business',
+                    preview: (c.lastDirection === 'out' ? '↩ ' : '') + (c.lastMessage || ''),
+                    at: ts(c.updatedAt),
+                    unread: Number(c.unread || 0),
+                });
+            }
+        } else if (wa.status === 'rejected') {
+            chErr.whatsapp = wa.reason && wa.reason.message ? wa.reason.message : 'Not available';
+        }
+
+        if (so.status === 'fulfilled') {
+            for (const t of (so.value.threads || [])) {
+                const ch = t.platform === 'instagram' ? 'instagram' : 'facebook';
+                out.push({
+                    ch,
+                    key: 'so:' + t.connection_id + ':' + t.contact_id,
+                    connection_id: Number(t.connection_id),
+                    contact_id: String(t.contact_id),
+                    name: t.contact_name || ('Visitor ' + String(t.contact_id).slice(-6)),
+                    account: t.account_name || CH[ch].label,
+                    preview: (t.direction === 'out' ? '↩ ' : '') + (t.body || ''),
+                    at: ts(t.created_at),
+                    unread: 0,
+                });
+            }
+        } else {
+            chErr.social = so.reason && so.reason.message ? so.reason.message : 'Not available';
+        }
+
+        out.sort((a, b) => b.at - a.at);
+        convos = out;
+
+        // Keep the open thread selected across a refresh, but drop it if the
+        // conversation has gone — otherwise the pane shows a thread that the
+        // list no longer contains.
+        if (keepActive && active) {
+            const still = convos.find(c => c.key === active.key);
+            active = still || null;
+            if (!still) renderThread();
+        }
+        loading = false;
+        renderChips();
+        renderList();
+    }
+
+    /* ── chips ────────────────────────────────────────────────────────── */
+    function renderChips() {
+        const counts = { all: convos.length, whatsapp: 0, facebook: 0, instagram: 0 };
+        convos.forEach(c => counts[c.ch]++);
+
+        const one = (id, label, icon) => {
+            const dead = (id === 'whatsapp' && chErr.whatsapp)
+                      || ((id === 'facebook' || id === 'instagram') && chErr.social);
+            return `<button class="chip ${filter === id ? 'on' : ''} ${dead && !counts[id] ? 'off' : ''}"
+                            data-ch="${id}" ${dead && !counts[id] ? 'disabled' : ''}
+                            title="${dead ? esc(id === 'whatsapp' ? chErr.whatsapp : chErr.social) : ''}">
+                      ${icon ? `<i class="${icon}"></i>` : ''}${esc(label)}
+                      <span class="n">${counts[id]}</span>
+                    </button>`;
+        };
+        document.getElementById('chips').innerHTML =
+            one('all', 'All') +
+            one('whatsapp', CH.whatsapp.label, CH.whatsapp.icon) +
+            one('facebook', CH.facebook.label, CH.facebook.icon) +
+            one('instagram', CH.instagram.label, CH.instagram.icon);
+
+        // One combined warning rather than a red block per channel — most
+        // owners have exactly one side switched on and do not need the other
+        // reported as a failure every time they open the page.
+        const notes = [];
+        if (chErr.whatsapp) notes.push(`WhatsApp is not connected — <a href="whatsapp">set it up here</a>.`);
+        if (chErr.social)   notes.push(`Messenger and Instagram are not available yet — <a href="social">connect your Pages</a>.`);
+        document.getElementById('flash').innerHTML =
+            notes.length ? `<div class="warnbar">${notes.join('<br>')}</div>` : '';
+    }
+
+    /* ── list ─────────────────────────────────────────────────────────── */
+    function visible() {
+        return filter === 'all' ? convos : convos.filter(c => c.ch === filter);
+    }
+
+    function renderList() {
+        const rows = visible();
+        const list = document.getElementById('convoList');
+        document.getElementById('convoCount').textContent = rows.length ? rows.length : '';
+
+        if (!rows.length) {
+            list.innerHTML = `<div class="empty"><i class="far fa-comments"></i>
+                No conversations yet.<br><small>Messages to your WhatsApp number, Facebook Page
+                and Instagram account all arrive here.</small></div>`;
+            return;
+        }
+        list.innerHTML = rows.map(c => `
+          <div class="convo ${active && active.key === c.key ? 'active' : ''}" data-key="${esc(c.key)}">
+            <div class="avatar ${c.ch}">${esc((c.name || '?').trim().charAt(0).toUpperCase() || '?')}</div>
+            <div class="cmain">
+              <div class="cname">${esc(c.name)}</div>
+              <div class="cmeta"><i class="${CH[c.ch].icon}"></i> ${esc(c.account)} &middot; ${esc(when(c.at))}</div>
+              <div class="cprev">${esc(String(c.preview).slice(0, 80))}</div>
+            </div>
+            ${c.unread ? `<span class="badge-n">${c.unread}</span>` : ''}
+          </div>`).join('');
+    }
+
+    /* ── thread ───────────────────────────────────────────────────────── */
+    const SRC = { ai: 'AI', handoff: 'Handover', human: 'You', contact: '' };
+
+    function renderThread(html) {
+        document.getElementById('threadPane').innerHTML =
+            html || '<div class="empty"><i class="far fa-comments"></i>Select a conversation</div>';
+        document.getElementById('wrap').classList.toggle('open', !!active);
+    }
+
+    async function openThread(key) {
+        active = convos.find(c => c.key === key) || null;
+        if (!active) return;
+        renderList();
+        renderThread('<div class="empty"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+
+        try {
+            if (active.ch === 'whatsapp') await openWhatsapp(active);
+            else await openSocial(active);
+        } catch (e) {
+            renderThread(`<div class="empty">${esc(e.message)}</div>`);
+            return;
+        }
+        const box = document.getElementById('msgs');
+        if (box) box.scrollTop = box.scrollHeight;
+    }
+
+    function head(c) {
+        return `<div class="pane-head">
+                  <button class="back" data-back="1"><i class="fas fa-arrow-left"></i></button>
+                  <i class="${CH[c.ch].icon}"></i>
+                  <span>${esc(c.name)}</span>
+                  <span class="sub">${esc(c.account)}</span>
+                </div>`;
+    }
+
+    async function openWhatsapp(c) {
+        const msgs = await waApi('thread', { qs: '&phone=' + encodeURIComponent(c.phone) });
+        const list = Array.isArray(msgs) ? msgs : [];
+
+        // Meta only delivers free text within 24 hours of the contact's last
+        // inbound message. Worked out here so the composer can say so BEFORE
+        // something is typed that would be rejected.
+        const lastIn = [...list].reverse().find(m => m.direction === 'in');
+        const open = lastIn && (Date.now() - ts(lastIn.createdAt)) < 24 * 3600 * 1000;
+
+        renderThread(head(c) + `
+          <div class="msgs" id="msgs">${list.map(m => bubble({
+              direction: m.direction, body: m.body, at: m.createdAt,
+              note: ({ read: '✓✓', delivered: '✓✓', sent: '✓', queued: '🕓', failed: '⚠' }[m.status] || ''),
+          })).join('') || '<div class="empty">No messages</div>'}</div>
+          <div class="compose">
+            ${open ? `
+              <textarea id="replyBox" placeholder="Type a reply…"></textarea>
+              <div class="crow"><span style="flex:1"></span>
+                <button class="btn-send" data-send="1"><i class="fas fa-paper-plane"></i> Send</button>
+              </div>`
+            : `<div class="notice"><b>24-hour window closed.</b>
+                 ${esc(c.name)} has not messaged you in the last 24 hours, so WhatsApp will not deliver
+                 a typed reply. An approved template has to be used instead —
+                 <a href="whatsapp">send one from the WhatsApp page</a>.</div>`}
+          </div>`);
+    }
+
+    async function openSocial(c) {
+        const d = await soApi('inbox.php?connection_id=' + encodeURIComponent(c.connection_id)
+                            + '&contact_id=' + encodeURIComponent(c.contact_id));
+        const list = d.messages || [];
+        renderThread(head(c) + `
+          <div class="msgs" id="msgs">${list.map(m => bubble({
+              direction: m.direction, body: m.body, at: m.created_at,
+              note: SRC[m.source] || '', error: m.error,
+          })).join('') || '<div class="empty">No messages</div>'}</div>
+          <div class="compose">
+            <textarea id="replyBox" placeholder="Type a reply…"></textarea>
+            <div class="crow">
+              <span style="flex:1;font-size:.72rem;color:#9ca3af">
+                Meta allows a reply within 24 hours of their last message.</span>
+              <button class="btn-send" data-send="1"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+          </div>`);
+    }
+
+    function bubble(m) {
+        const out = m.direction === 'out';
+        const meta = [when(m.at), m.note].filter(Boolean).join(' · ');
+        return `<div class="msg ${out ? 'out' : 'in'} ${m.error ? 'failed' : ''}">${esc(m.body || '')}
+                  <div class="mm">${esc(meta)}</div>
+                  ${m.error ? `<div class="errline">Not delivered: ${esc(m.error)}</div>` : ''}
+                </div>`;
+    }
+
+    /* ── send ─────────────────────────────────────────────────────────── */
+    async function send() {
+        const box = document.getElementById('replyBox');
+        const btn = document.querySelector('[data-send]');
+        if (!box || !active) return;
+        const text = box.value.trim();
+        if (!text) return;
+
+        btn.disabled = true; box.disabled = true;
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+        try {
+            if (active.ch === 'whatsapp') {
+                await waApi('send', { method: 'POST', body: { phone: active.phone, body: text } });
+            } else {
+                await soApi('inbox.php', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        connection_id: active.connection_id,
+                        contact_id: active.contact_id,
+                        message: text,
+                    }),
+                });
+            }
+            box.value = '';
+            const key = active.key;
+            await loadConvos(true);
+            await openThread(key);
+        } catch (e) {
+            btn.disabled = false; box.disabled = false; btn.innerHTML = original;
+            const c = document.querySelector('.compose');
+            if (c && !c.querySelector('.err')) {
+                c.insertAdjacentHTML('afterbegin', `<div class="err">${esc(e.message)}</div>`);
+            }
+        }
+    }
+
+    /* ── wiring ───────────────────────────────────────────────────────── */
+    // Delegated, so a redraw never leaves a dead handler behind and a contact
+    // name containing a quote cannot break an inline onclick.
+    document.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (chip && !chip.disabled) { filter = chip.dataset.ch; renderChips(); renderList(); return; }
+
+        const row = e.target.closest('.convo');
+        if (row) { openThread(row.dataset.key); return; }
+
+        if (e.target.closest('[data-back]')) {
+            active = null; renderList(); renderThread(); return;
+        }
+        if (e.target.closest('[data-send]')) { send(); return; }
+        if (e.target.closest('#refreshBtn')) { loadConvos(true); return; }
+    });
+
+    // Enter sends, Shift+Enter is a newline — what everyone expects of a chat box.
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'replyBox') {
+            e.preventDefault(); send();
+        }
+    });
+
+    // Refresh the list while the tab is actually being looked at. Paused when
+    // hidden so a forgotten tab is not polling two backends all day.
+    setInterval(() => { if (!document.hidden && !active) loadConvos(true); }, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadConvos(true); });
+
+    document.addEventListener('DOMContentLoaded', () => loadConvos(false));
+    </script>
+</body>
+</html>

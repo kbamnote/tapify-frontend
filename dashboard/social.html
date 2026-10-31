@@ -102,6 +102,7 @@
             <a href="google-business" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
             <a href="website-builder" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
             <a href="whatsapp" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="inbox" class="nav-item"><i class="fas fa-inbox nav-icon" style="color:#7c3aed"></i><span>Inbox</span></a>
             <a href="site-orders" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
             <a href="site-inquiries" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
             <a href="site-feedback" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
@@ -251,6 +252,13 @@
             const d = await api('inbox.php');
             const rows = d.threads || [];
             p.innerHTML = `
+              <div class="card" style="background:#f5f3ff;border-color:#ddd6fe">
+                <h3 style="color:#5b21b6"><i class="fas fa-inbox"></i> WhatsApp, Messenger and Instagram in one place</h3>
+                <p class="hint" style="margin:0 0 10px">This tab shows Messenger and Instagram only. The
+                  Inbox page shows all three channels in one list.</p>
+                <a class="btn btn-sm" href="inbox" style="background:#7c3aed;color:#fff;border-color:#7c3aed">
+                  Open the Inbox <i class="fas fa-arrow-right"></i></a>
+              </div>
               <div class="card">
                 <h3>Messenger &amp; Instagram</h3>
                 <p class="hint" style="margin-top:0">Every message to your connected Pages and Instagram
