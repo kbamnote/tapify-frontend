@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Webinar — Grow Your Business With WhatsApp, Google &amp; Automation | Tapify</title>
-<meta name="description" content="Free 90-minute live workshop for business owners in Nagpur and across India. WhatsApp automation, Google reviews, a website that brings enquiries. Register free.">
+<title>Tapify Product Training — Live Session for Existing Customers | Tapify</title>
+<meta name="description" content="A free 90-minute live product training for existing Tapify customers. Complete walkthrough of your vCard, website builder, Google Business Profile, WhatsApp, AI chatbot and the mobile app.">
 <link rel="canonical" href="https://www.tapify.co.in/webinar-registration">
-<meta property="og:title" content="Free Live Webinar for Business Owners | Tapify">
-<meta property="og:description" content="Grow your business with WhatsApp automation, Google reviews and a website that actually brings enquiries. Free, live, 90 minutes.">
+<meta property="og:title" content="Tapify Product Training — Live, for Existing Customers">
+<meta property="og:description" content="You are already paying for all of it. This is the session where we show you how to use all of it. Free for Tapify customers, live on Zoom, 90 minutes.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.tapify.co.in/webinar-registration">
 <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
@@ -70,6 +70,20 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .tick i{color:var(--ok);margin-top:5px}
 .tick span{font-size:.98rem}
 
+/* running order */
+.run{max-width:760px;margin:0 auto;text-align:left}
+.runrow{display:grid;grid-template-columns:104px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+.runrow:last-child{border-bottom:0}
+.runrow b{color:var(--ink2);font-variant-numeric:tabular-nums;font-size:.95rem}
+.runrow h3{margin:0}
+.runrow p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+@media(max-width:560px){.runrow{grid-template-columns:1fr;gap:2px}}
+
+/* "not a customer yet" aside */
+.aside{max-width:720px;margin:26px auto 0;padding:16px 20px;border:1px dashed var(--line);
+  border-radius:12px;font-size:.9rem;color:var(--muted);text-align:center}
+.aside a{color:var(--ink2);font-weight:700}
+
 .cta2{background:var(--ink);color:#fff;text-align:center;padding:48px 20px}
 .cta2 h2{color:#fff}
 .cta2 p{color:#cfe0e0;max-width:620px;margin:0 auto 22px}
@@ -83,28 +97,28 @@ footer a{color:#ffd79a;text-decoration:none}
 <body>
 
 <div class="topbar">
-  📅 <b><span data-wb="dateLong">Sunday, 15 November 2026</span></b> &nbsp;·&nbsp;
-  <span data-wb="time">11:00 AM IST</span> &nbsp;·&nbsp; Live on Zoom &nbsp;·&nbsp; <b>Free</b>
+  📅 <b><span data-wb="dateLong">Sunday, 1 November 2026</span></b> &nbsp;·&nbsp;
+  <span data-wb="time">11:30 AM IST</span> &nbsp;·&nbsp; Live on Zoom &nbsp;·&nbsp; <b>Free for Tapify customers</b>
 </div>
 
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="pill" data-wb="duration">90-MINUTE LIVE WORKSHOP</span>
-      <h1>Get more customers with <span>WhatsApp, Google and a website that actually works</span></h1>
-      <p class="sub">A practical session for shop owners, clinics, dealers and service businesses — no technical background needed. You will leave knowing exactly what to set up first.</p>
+      <span class="pill" data-wb="duration">PRODUCT TRAINING · FOR EXISTING CUSTOMERS</span>
+      <h1>You are already paying for all of it. <span>This is how to use all of it.</span></h1>
+      <p class="sub">A complete, guided walkthrough of your Tapify account — the vCard, your website, Google Business Profile, WhatsApp, the AI chatbot, social posting and the mobile app. Nothing is sold in this session. It is training, start to finish, with your own questions answered live.</p>
       <div class="meta">
-        <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">15 Nov 2026</span></div>
-        <div><i class="fas fa-clock"></i><span data-wb="time">11:00 AM IST</span></div>
+        <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">1 Nov 2026</span></div>
+        <div><i class="fas fa-clock"></i><span data-wb="time">11:30 AM IST</span></div>
         <div><i class="fas fa-video"></i>Live on Zoom</div>
-        <div><i class="fas fa-indian-rupee-sign"></i>Free to attend</div>
+        <div><i class="fas fa-graduation-cap"></i>Included with your plan</div>
       </div>
     </div>
 
     <div class="card" id="formCard">
-      <span class="free">FREE REGISTRATION</span>
+      <span class="free">FREE FOR CUSTOMERS</span>
       <h3>Save your seat</h3>
-      <p style="margin:0;color:var(--muted);font-size:.9rem">Seats are limited so everyone gets their questions answered.</p>
+      <p style="margin:0;color:var(--muted);font-size:.9rem">Please register with the <b>same name and mobile number as your Tapify account</b>, so we can pull up the right account if you ask about yours.</p>
 
       <form id="regForm" autocomplete="on">
         <div class="hp"><label>Leave empty<input type="text" name="_hp" tabindex="-1" autocomplete="off"></label></div>
@@ -125,9 +139,9 @@ footer a{color:#ffd79a;text-decoration:none}
         <label for="f-city">City</label>
         <input id="f-city" name="city" type="text" autocomplete="address-level2" placeholder="Nagpur">
 
-        <button class="btn" id="submitBtn" type="submit">Register free</button>
+        <button class="btn" id="submitBtn" type="submit">Reserve my seat</button>
         <div class="msg" id="msg"></div>
-        <p class="tiny">We will send the joining link to your WhatsApp. No spam.</p>
+        <p class="tiny">The joining link comes to your WhatsApp. Join on a laptop if you can — you will want to follow along in your own dashboard.</p>
       </form>
     </div>
   </div>
@@ -135,53 +149,81 @@ footer a{color:#ffd79a;text-decoration:none}
 
 <section class="band">
   <div class="wrap center">
-    <h2>What you will learn</h2>
-    <p class="lead">Everything shown is something you can set up for your own business the same week.</p>
+    <h2>Complete product knowledge, module by module</h2>
+    <p class="lead">Every part of Tapify that is sitting in your account right now — what it does, where it lives, and how to switch it on. Shown live in a real dashboard, not on slides.</p>
     <div class="grid g3" style="text-align:left">
-      <div class="box"><i class="fab fa-whatsapp"></i><h3>WhatsApp that answers for you</h3><p>Auto-replies, a catalogue customers can order from, and broadcasts that reach people without getting your number blocked.</p></div>
-      <div class="box"><i class="fas fa-star"></i><h3>More Google reviews, on purpose</h3><p>Why most businesses have 11 reviews and their competitor has 200 — and the simple request flow that changes it.</p></div>
-      <div class="box"><i class="fas fa-location-dot"></i><h3>Showing up on Google Maps</h3><p>The parts of a Google Business Profile that actually move you up the map pack, and the ones that do nothing.</p></div>
-      <div class="box"><i class="fas fa-globe"></i><h3>A website that brings enquiries</h3><p>Not a brochure nobody visits. What a page needs so that someone searching your service in your city finds you and calls.</p></div>
-      <div class="box"><i class="fas fa-bullhorn"></i><h3>Ads without wasting money</h3><p>How to boost the right post to the right few thousand people nearby, instead of paying for views from the wrong city.</p></div>
-      <div class="box"><i class="fas fa-robot"></i><h3>Letting AI do the writing</h3><p>Product descriptions, replies and offers drafted in seconds, so the marketing actually gets done instead of postponed.</p></div>
+      <div class="box"><i class="fas fa-id-card"></i><h3>Your digital vCard</h3><p>Every tab in the editor — products, gallery, appointments, reviews, social links — plus templates, colours, the QR code and how to use the NFC card properly.</p></div>
+      <div class="box"><i class="fas fa-globe"></i><h3>Your website builder</h3><p>Adding pages and sections, uploading images, editing text, the SEO panel, and hitting publish. Also how a custom domain is attached once you own one.</p></div>
+      <div class="box"><i class="fas fa-store"></i><h3>Web store &amp; orders</h3><p>Listing products, variants and prices, taking orders, and where an order appears for you to confirm, complete or cancel.</p></div>
+      <div class="box"><i class="fas fa-location-dot"></i><h3>Google Business Profile</h3><p>Connecting your profile, the marketing score and what it is telling you, posting from Tapify, and the business info fields most people leave half-filled.</p></div>
+      <div class="box"><i class="fas fa-star"></i><h3>Reviews &amp; the review funnel</h3><p>Sending review requests one at a time or in bulk, automatic replies to new reviews, and handling a negative one before it sits there unanswered.</p></div>
+      <div class="box"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><p>Auto-replies, templates and approval, broadcasting to a list, and the inbox where you take over from the bot and reply yourself.</p></div>
+      <div class="box"><i class="fas fa-robot"></i><h3>The AI chatbot</h3><p>Filling in the knowledge pack so it answers correctly about <i>your</i> business instead of guessing — live on WhatsApp today, with Messenger and Instagram rolling out.</p></div>
+      <div class="box"><i class="fas fa-share-nodes"></i><h3>Social posting &amp; reels</h3><p>Connecting Facebook, Instagram and LinkedIn, scheduling posts ahead, uploading reels, and boosting a post from your wallet.</p></div>
+      <div class="box"><i class="fas fa-inbox"></i><h3>Enquiries, appointments &amp; leads</h3><p>Where every enquiry from your website, vCard and link page actually lands, who gets notified, and how to stop losing them.</p></div>
+      <div class="box"><i class="fas fa-mobile-screen"></i><h3>The Tapify mobile app</h3><p>Running the whole thing from your phone — leads, orders, appointments, editing your site, and getting notifications that actually arrive.</p></div>
+      <div class="box"><i class="fas fa-link"></i><h3>Link pages, designs &amp; QR</h3><p>Your one-link page for Instagram bios, the ready-made design templates you can customise and share, and where every QR code is generated.</p></div>
+      <div class="box"><i class="fas fa-wallet"></i><h3>Wallet, plans &amp; billing</h3><p>What your plan includes, what the points wallet pays for, how to top it up, and what happens at renewal.</p></div>
+    </div>
+    <div class="aside">
+      Not a Tapify customer yet? You are welcome to sit in and see what it does — but this session assumes you have an account open in front of you.
+      <a href="/plans">See the plans →</a>
     </div>
   </div>
 </section>
 
 <section class="band alt">
+  <div class="wrap center">
+    <h2>Running order</h2>
+    <p class="lead">Ninety minutes, and then questions for as long as there are questions. Join on a laptop and follow along in your own account.</p>
+    <div class="run">
+      <div class="runrow"><b>11:30 AM</b><div><h3>Your dashboard, explained</h3><p>Every number on the home screen, what it is counting, and what to click when it looks wrong.</p></div></div>
+      <div class="runrow"><b>11:40 AM</b><div><h3>vCard, link page and QR</h3><p>Finishing the card properly, choosing a template, and the two places people are supposed to scan.</p></div></div>
+      <div class="runrow"><b>11:55 AM</b><div><h3>Your website</h3><p>Pages, sections, images, text, SEO and publishing — live, from an empty starter site to a finished page.</p></div></div>
+      <div class="runrow"><b>12:10 PM</b><div><h3>Google Business Profile and reviews</h3><p>Connecting it, reading the marketing score, requesting reviews in bulk, and turning on automatic replies.</p></div></div>
+      <div class="runrow"><b>12:25 PM</b><div><h3>WhatsApp and the AI chatbot</h3><p>Auto-reply, broadcast, the inbox, and teaching the chatbot your prices, timings and policies so it stops guessing.</p></div></div>
+      <div class="runrow"><b>12:40 PM</b><div><h3>Social posting, designs and the mobile app</h3><p>Scheduling posts and reels, using the design templates, and running the whole account from your phone.</p></div></div>
+      <div class="runrow"><b>12:50 PM</b><div><h3>Wallet, plans and open Q&amp;A</h3><p>What your plan covers, what the wallet is for — then your questions about your own account, for as long as it takes.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
   <div class="wrap">
     <div class="grid g2">
       <div>
-        <h2>This is for you if…</h2>
-        <div class="tick"><i class="fas fa-check"></i><span>You run a shop, clinic, showroom or service business and do your own marketing.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>Customers message you on WhatsApp and you cannot keep up with replying.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>People nearby search for what you sell, and find your competitor instead.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>You have paid for a website before and it brought you nothing.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>You do not have time to learn software — you want the shortest path that works.</span></div>
+        <h2>Come if any of this sounds familiar</h2>
+        <div class="tick"><i class="fas fa-check"></i><span>You bought Tapify for the vCard and have never opened anything else in the dashboard.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Your website is still sitting on the starter content it was created with.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Your Google Business Profile is not connected, so review requests and auto-replies are doing nothing.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Enquiries are coming in and nobody on your team is sure where they land.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>You are on a plan and using maybe a third of what it includes.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Somebody new has joined your team and needs to be shown the whole thing once, properly.</span></div>
       </div>
       <div>
         <h2>What you walk away with</h2>
-        <div class="tick"><i class="fas fa-check"></i><span>A written list of what to fix first for your particular business.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>The WhatsApp setup that stops you losing enquiries after shop hours.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>A review request your customers will actually act on.</span></div>
-        <div class="tick"><i class="fas fa-check"></i><span>Live answers to your own questions — bring them.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>A clear list of what is switched off in your account, and the order to turn it on.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Your WhatsApp auto-reply answering with your own prices, timings and policies instead of guessing.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Certainty about where every enquiry, appointment and order lands, and who gets told.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>A team that can run it without calling support every time.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Straight answers about your own account, live, from the people who built it.</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="band center">
+<section class="band alt center">
   <div class="wrap">
     <h2>Who is running it</h2>
-    <p class="lead" data-wb="speakerBio">The Tapify team works with hundreds of businesses across Nagpur and Vidarbha — shops, clinics, dealers, salons and consultants — setting up exactly what is covered in this session. The workshop is run by <b data-wb="speakerName">the Tapify team</b>, using real examples from businesses you may already know.</p>
-    <a href="/businesses" style="color:var(--ink2);font-weight:700">See businesses already using Tapify →</a>
+    <p class="lead" data-wb="speakerBio">This is run by <b data-wb="speakerName">the Tapify product team</b> — the people who build and support the platform you are already using. It is a training session, not a sales pitch: nothing new is being sold, and every feature shown is already included in your account. Bring your login and your questions.</p>
+    <a href="/features" style="color:var(--ink2);font-weight:700">See everything Tapify includes →</a>
   </div>
 </section>
 
 <section class="cta2">
-  <h2>Save your seat — it's free</h2>
-  <p>Ninety minutes, live, with your questions answered. The joining link comes to your WhatsApp.</p>
-  <a href="#formCard">Register now</a>
+  <h2>Reserve your seat</h2>
+  <p>Ninety minutes of complete product training, free with your plan, and your questions answered live. The joining link comes to your WhatsApp.</p>
+  <a href="#formCard">Reserve my seat</a>
 </section>
 
 <footer>
@@ -195,14 +237,16 @@ footer a{color:#ffd79a;text-decoration:none}
    They are the facts I could not invent — set them before launch.
    ────────────────────────────────────────────────────────────── */
 const WEBINAR = {
-  slug:        '2026-11-15-growth',          // identifies this session in admin
-  dateLong:    'Sunday, 15 November 2026',   // 15 Nov 2026 is a Sunday
-  dateShort:   '15 Nov 2026',                // check the weekday whenever you edit this
-  time:        '11:00 AM IST',
-  duration:    '90-MINUTE LIVE WORKSHOP',
-  speakerName: 'the Tapify team',
-  speakerBio:  ''                            // leave blank to keep the default text
+  slug:        '2026-11-01-product-training',  // identifies this session in admin
+  dateLong:    'Sunday, 1 November 2026',      // 1 Nov 2026 is a Sunday
+  dateShort:   '1 Nov 2026',                   // check the weekday whenever you edit this
+  time:        '11:30 AM IST',
+  duration:    'PRODUCT TRAINING · FOR EXISTING CUSTOMERS',
+  speakerName: 'the Tapify product team',
+  speakerBio:  ''                              // leave blank to keep the default text
 };
+// NOTE: the times in the "Running order" section are plain HTML further up,
+// not driven by this config. If you move the start time, edit them too.
 
 const API = 'https://app.tapify.co.in/api/public/webinar-register.php';
 
@@ -249,13 +293,13 @@ form.addEventListener('submit', async (e) => {
     msg.className = 'msg ok';
     msg.textContent = j.data && j.data.already
       ? 'You are already registered — the joining link is on its way to your WhatsApp.'
-      : 'You are in. We have sent the joining link to your WhatsApp.';
+      : 'Your seat is booked. We have sent the joining link to your WhatsApp.';
     form.reset();
-    btn.textContent = 'Registered ✓';
+    btn.textContent = 'Seat reserved ✓';
   } catch (err) {
     msg.className = 'msg err';
     msg.textContent = err.message + ' You can also message us on WhatsApp to register.';
-    btn.disabled = false; btn.textContent = 'Register free';
+    btn.disabled = false; btn.textContent = 'Reserve my seat';
   }
 });
 </script>
