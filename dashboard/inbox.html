@@ -13,87 +13,159 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../admin-style.css">
     <style>
-        .ib { max-width: 1240px; margin: 18px auto; padding: 0 18px 32px; }
+        :root {
+            --wa: #25D366; --msgr: #0084FF; --ig: #DC2743;
+            --ink: #153e3f; --line: #e9e3dc; --soft: #6b7280;
+        }
+        .ib { max-width: 1320px; margin: 16px auto; padding: 0 18px 28px; }
 
-        .chips { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
-        .chip { border: 1px solid #e9e3dc; background: #fff; color: #6b7280; cursor: pointer;
-                padding: 8px 15px; border-radius: 20px; font: inherit; font-size: .82rem; font-weight: 700;
-                display: inline-flex; align-items: center; gap: 7px; }
-        .chip.on { background: #153e3f; border-color: #153e3f; color: #fff; }
-        .chip .n { background: rgba(0,0,0,.08); border-radius: 10px; padding: 1px 7px; font-size: .72rem; }
+        /* ── channel chips ─────────────────────────────────────────────── */
+        .chips { display: flex; gap: 7px; margin-bottom: 13px; flex-wrap: wrap; align-items: center; }
+        .chip { border: 1px solid var(--line); background: #fff; color: var(--soft); cursor: pointer;
+                padding: 7px 14px; border-radius: 20px; font: inherit; font-size: .81rem; font-weight: 700;
+                display: inline-flex; align-items: center; gap: 7px; transition: .15s; }
+        .chip:hover:not(:disabled) { border-color: #cfc7bd; }
+        .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+        .chip .n { background: rgba(0,0,0,.08); border-radius: 10px; padding: 1px 7px; font-size: .71rem; }
         .chip.on .n { background: rgba(255,255,255,.22); }
-        .chip.off { opacity: .45; cursor: default; }
+        .chip .dot { width: 7px; height: 7px; border-radius: 50%; }
+        .chip:disabled { opacity: .4; cursor: default; }
+        .chip .unread { background: #ef4444; color: #fff; border-radius: 10px; padding: 1px 6px; font-size: .68rem; }
 
-        /* Two panes side by side on desktop. On a phone only one is shown at a
-           time — .ib-wrap.open flips to the thread — because a 300px list next
-           to a 60px thread is unusable, which is how it first came out. */
-        .ib-wrap { display: grid; grid-template-columns: 330px 1fr; gap: 14px;
-                   height: calc(100vh - 230px); min-height: 440px; }
-        .pane { background: #fff; border: 1px solid #e9e3dc; border-radius: 15px;
-                display: flex; flex-direction: column; overflow: hidden; }
+        /* ── frame ─────────────────────────────────────────────────────── */
+        .ib-wrap { display: grid; grid-template-columns: 348px 1fr; gap: 0;
+                   height: calc(100vh - 212px); min-height: 520px;
+                   background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+                   box-shadow: 0 1px 3px rgba(21,62,63,.05); }
+        .pane { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+        .pane.list { border-right: 1px solid var(--line); background: #fff; }
 
-        .pane-head { padding: 12px 15px; border-bottom: 1px solid #f0ebe4; font-weight: 800;
-                     font-size: .88rem; color: #153e3f; display: flex; align-items: center; gap: 9px; }
-        .pane-head .sub { font-weight: 500; color: #9ca3af; font-size: .76rem; }
+        .lhead { padding: 13px 15px 11px; border-bottom: 1px solid #f3efe9; }
+        .lhead .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .lhead h2 { margin: 0; font-size: .95rem; font-weight: 800; color: var(--ink); }
+        .lhead .cnt { font-size: .74rem; color: #9ca3af; font-weight: 600; }
+        .search { position: relative; }
+        .search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+                    color: #b2aaa0; font-size: .8rem; pointer-events: none; }
+        .search input { width: 100%; padding: 9px 12px 9px 32px; border: 1px solid #ece6df;
+                        border-radius: 20px; font: inherit; font-size: .83rem; background: #faf8f5; }
+        .search input:focus { outline: none; border-color: var(--ink); background: #fff; }
 
         .convos { overflow-y: auto; flex: 1; }
-        .convo { display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
-                 border-bottom: 1px solid #f6f2ed; }
-        .convo:hover { background: #fbf9f6; }
-        .convo.active { background: #f2f7f6; }
-        .avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; color: #fff;
-                  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .95rem; }
-        .avatar.whatsapp { background: #25D366; }
-        .avatar.facebook { background: #1877F2; }
-        .avatar.instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+        .convos::-webkit-scrollbar, .msgs::-webkit-scrollbar { width: 7px; }
+        .convos::-webkit-scrollbar-thumb, .msgs::-webkit-scrollbar-thumb {
+            background: #ddd5cb; border-radius: 4px; }
+
+        .convo { display: flex; gap: 11px; align-items: center; padding: 11px 14px; cursor: pointer;
+                 border-left: 3px solid transparent; position: relative; }
+        .convo:hover { background: #faf8f5; }
+        .convo.active { background: #f1f6f5; border-left-color: var(--ink); }
+
+        /* Avatar with the channel badge welded to its corner. This is the one
+           detail that makes a merged list readable at a glance — without it
+           every row looks the same and you have to read the subtitle. */
+        .av { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+        .av .face { width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 700;
+                    font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        .av .badge { position: absolute; right: -2px; bottom: -2px; width: 18px; height: 18px;
+                     border-radius: 50%; border: 2px solid #fff; display: flex;
+                     align-items: center; justify-content: center; font-size: .56rem; color: #fff; }
+        .bg-whatsapp  { background: var(--wa); }
+        .bg-facebook  { background: linear-gradient(135deg, #00B2FF, #006AFF); }
+        .bg-instagram { background: linear-gradient(45deg, #F09433, #DC2743, #BC1888); }
+
         .cmain { min-width: 0; flex: 1; }
-        .cname { font-weight: 700; font-size: .87rem; color: #153e3f;
+        .ctop { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+        .cname { font-weight: 600; font-size: .87rem; color: var(--ink);
                  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .cmeta { font-size: .7rem; color: #9ca3af; margin: 1px 0 2px; }
-        .cprev { font-size: .78rem; color: #6b7280;
+        .ctime { font-size: .68rem; color: #a8a099; flex-shrink: 0; }
+        .cprev { font-size: .78rem; color: var(--soft); margin-top: 2px;
                  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .badge-n { background: #25D366; color: #fff; font-size: .68rem; font-weight: 800;
-                   border-radius: 10px; padding: 1px 7px; align-self: center; }
+        .convo.unread .cname { font-weight: 800; }
+        .convo.unread .cprev { color: #374151; font-weight: 600; }
+        .convo.unread .ctime { color: var(--ink); font-weight: 700; }
+        .pill { border-radius: 11px; min-width: 20px; height: 20px; padding: 0 6px; color: #fff;
+                font-size: .68rem; font-weight: 800; display: flex; align-items: center;
+                justify-content: center; flex-shrink: 0; }
 
-        .msgs { overflow-y: auto; flex: 1; padding: 16px; background: #fbf9f6;
-                display: flex; flex-direction: column; gap: 9px; }
-        .msg { max-width: 72%; padding: 9px 13px; border-radius: 13px; font-size: .86rem;
-               line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
-        .msg.in  { background: #fff; border: 1px solid #ece6df; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg.out { background: #153e3f; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg .mm { font-size: .66rem; opacity: .62; margin-top: 5px; }
-        .msg.failed { border: 1px solid #dc2626; }
-        .msg .errline { font-size: .68rem; color: #fecaca; margin-top: 4px; }
+        /* ── thread ────────────────────────────────────────────────────── */
+        .thead { display: flex; align-items: center; gap: 11px; padding: 11px 16px;
+                 border-bottom: 1px solid var(--line); background: #fff; flex-shrink: 0; }
+        .thead .who { min-width: 0; flex: 1; }
+        .thead .who b { display: block; font-size: .92rem; color: var(--ink);
+                        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .thead .who span { font-size: .73rem; color: #9ca3af; display: flex; align-items: center; gap: 5px; }
+        .back { display: none; background: none; border: 0; color: var(--ink); font-size: 1rem;
+                cursor: pointer; padding: 4px 6px 4px 0; }
 
-        .compose { border-top: 1px solid #f0ebe4; padding: 12px 14px; background: #fff; }
-        .compose textarea { width: 100%; min-height: 62px; resize: vertical; padding: 10px 12px;
-                            border: 1px solid #e3ddd5; border-radius: 10px; font: inherit; font-size: .86rem; }
-        .compose textarea:focus { outline: 2px solid #153e3f; outline-offset: 1px; }
-        .crow { display: flex; gap: 9px; align-items: center; margin-top: 9px; }
-        .btn-send { background: #153e3f; color: #fff; border: 0; border-radius: 9px; padding: 10px 20px;
-                    font: inherit; font-weight: 700; font-size: .84rem; cursor: pointer; }
-        .btn-send:disabled { opacity: .55; cursor: default; }
-        .notice { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px;
+        /* The faint cross-hatch is what makes a chat read as a chat rather
+           than a list of rows. Kept very low contrast so the bubbles lead. */
+        .msgs { overflow-y: auto; flex: 1; padding: 18px 20px 6px;
+                background-color: #f7f4f0;
+                background-image: radial-gradient(#e6ded3 0.9px, transparent 0.9px);
+                background-size: 17px 17px;
+                display: flex; flex-direction: column; }
+
+        .daysep { align-self: center; margin: 12px 0 14px; background: #ebe4da; color: #7a7066;
+                  font-size: .69rem; font-weight: 700; padding: 4px 13px; border-radius: 12px; }
+
+        .msg { max-width: 68%; padding: 8px 13px 7px; font-size: .865rem; line-height: 1.5;
+               white-space: pre-wrap; word-break: break-word; position: relative;
+               box-shadow: 0 1px 1px rgba(0,0,0,.05); margin-bottom: 2px; }
+        .msg.in  { background: #fff; color: #1f2937; align-self: flex-start;
+                   border-radius: 14px 14px 14px 5px; }
+        .msg.out { background: var(--ink); color: #fff; align-self: flex-end;
+                   border-radius: 14px 14px 5px 14px; }
+        /* Consecutive messages from the same side read as one block. */
+        .msg.cont.in  { border-top-left-radius: 5px; }
+        .msg.cont.out { border-top-right-radius: 5px; }
+        .msg.last { margin-bottom: 10px; }
+        .mm { font-size: .64rem; opacity: .6; margin-top: 4px; text-align: right;
+              display: flex; gap: 5px; align-items: center; justify-content: flex-end; }
+        .msg.in .mm { color: #9ca3af; opacity: 1; }
+        .src { background: rgba(255,255,255,.2); border-radius: 7px; padding: 0 5px;
+               font-size: .6rem; font-weight: 700; letter-spacing: .2px; }
+        .msg.failed { background: #fef2f2; color: #7f1d1d; border: 1px solid #fecaca; }
+        .msg.failed .mm { color: #b91c1c; }
+        .errline { font-size: .67rem; margin-top: 4px; color: #b91c1c; font-weight: 600; }
+
+        /* ── composer ──────────────────────────────────────────────────── */
+        .compose { border-top: 1px solid var(--line); padding: 11px 14px; background: #fff; flex-shrink: 0; }
+        .cbox { display: flex; gap: 9px; align-items: flex-end; }
+        .cbox textarea { flex: 1; max-height: 130px; min-height: 42px; resize: none; padding: 11px 15px;
+                         border: 1px solid #e3ddd5; border-radius: 21px; font: inherit; font-size: .86rem;
+                         line-height: 1.45; background: #faf8f5; }
+        .cbox textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
+        .sendbtn { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--ink);
+                   color: #fff; cursor: pointer; flex-shrink: 0; font-size: .92rem; }
+        .sendbtn:disabled { opacity: .45; cursor: default; }
+        .chint { font-size: .68rem; color: #a8a099; margin: 7px 2px 0; }
+
+        .notice { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 11px;
                   padding: 11px 13px; font-size: .79rem; line-height: 1.55; }
         .notice a { color: #9a3412; font-weight: 700; }
-
-        .empty { margin: auto; text-align: center; color: #9ca3af; font-size: .86rem; padding: 26px; }
-        .empty i { display: block; font-size: 1.9rem; margin-bottom: 11px; opacity: .45; }
         .err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
-               border-radius: 10px; padding: 11px 13px; font-size: .82rem; margin-bottom: 12px; }
-        .warnbar { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 10px;
-                   padding: 10px 13px; font-size: .79rem; margin-bottom: 12px; line-height: 1.55; }
+               border-radius: 10px; padding: 10px 12px; font-size: .8rem; margin-bottom: 10px; }
+        .warnbar { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; border-radius: 11px;
+                   padding: 10px 13px; font-size: .79rem; margin-bottom: 12px; line-height: 1.6; }
         .warnbar a { color: #92400e; font-weight: 700; }
-        .back { display: none; background: none; border: 0; font: inherit; color: #153e3f;
-                font-weight: 700; cursor: pointer; padding: 0; }
 
-        @media (max-width: 860px) {
-            .ib-wrap { grid-template-columns: 1fr; height: calc(100vh - 210px); }
-            .ib-wrap > .pane:nth-child(2) { display: none; }
-            .ib-wrap.open > .pane:nth-child(1) { display: none; }
-            .ib-wrap.open > .pane:nth-child(2) { display: flex; }
+        .empty { margin: auto; text-align: center; color: #a8a099; font-size: .86rem;
+                 padding: 30px 26px; max-width: 330px; }
+        .empty .ic { width: 62px; height: 62px; border-radius: 50%; background: #f4f0ea;
+                     display: flex; align-items: center; justify-content: center;
+                     margin: 0 auto 14px; font-size: 1.5rem; color: #c3bab0; }
+        .empty b { display: block; color: var(--ink); font-size: .94rem; margin-bottom: 5px; }
+
+        @media (max-width: 880px) {
+            .ib { padding: 0 10px 20px; }
+            .ib-wrap { grid-template-columns: 1fr; height: calc(100vh - 196px); border-radius: 13px; }
+            .ib-wrap > .pane.thread { display: none; }
+            .ib-wrap.open > .pane.list { display: none; }
+            .ib-wrap.open > .pane.thread { display: flex; }
+            .pane.list { border-right: 0; }
             .back { display: inline-block; }
-            .msg { max-width: 86%; }
+            .msg { max-width: 84%; }
         }
     </style>
 </head>
@@ -144,18 +216,22 @@
                 <div id="flash"></div>
                 <div class="chips" id="chips"></div>
                 <div class="ib-wrap" id="wrap">
-                    <div class="pane">
-                        <div class="pane-head">
-                            <span>Conversations</span>
-                            <span class="sub" id="convoCount"></span>
+                    <div class="pane list">
+                        <div class="lhead">
+                            <div class="row">
+                                <h2>Conversations</h2>
+                                <span class="cnt" id="convoCount"></span>
+                            </div>
+                            <div class="search">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="search" id="q" placeholder="Search name or message…" autocomplete="off">
+                            </div>
                         </div>
                         <div class="convos" id="convoList">
-                            <div class="empty"><i class="fas fa-spinner fa-spin"></i>Loading…</div>
+                            <div class="empty"><div class="ic"><i class="fas fa-spinner fa-spin"></i></div>Loading…</div>
                         </div>
                     </div>
-                    <div class="pane" id="threadPane">
-                        <div class="empty"><i class="far fa-comments"></i>Select a conversation</div>
-                    </div>
+                    <div class="pane thread" id="threadPane"></div>
                 </div>
             </div>
         </main>
@@ -166,18 +242,18 @@
     /* ──────────────────────────────────────────────────────────────────────
        ONE INBOX OVER TWO BACKENDS.
 
-       WhatsApp conversations live in the Node CRM and are reached through
-       api/whatsapp/proxy.php. Messenger and Instagram live in this backend's
-       own social_messages table, behind api/social/inbox.php. The two return
-       different shapes and different envelopes (the proxy passes the CRM's
-       bare array straight through; the PHP endpoint wraps in {success,data}),
-       so each is fetched separately and then normalised into one list.
+       WhatsApp conversations live in the Node CRM, reached through
+       api/whatsapp/proxy.php, which passes the CRM's BARE array straight
+       through. Messenger and Instagram live in this backend's social_messages
+       table behind api/social/inbox.php, wrapped in {success,data}. Different
+       shapes, different envelopes, different timestamp formats — so each is
+       fetched separately and normalised into one list before anything renders.
 
-       NEITHER CHANNEL IS ALLOWED TO BREAK THE PAGE. WhatsApp 503s when the CRM
-       is not configured, and the social side is empty until Meta approves the
-       messaging permissions for customers. Both are caught per-channel and
-       reported in the chip row, so an owner with only one of them still gets a
-       working inbox instead of an error screen.
+       NEITHER CHANNEL MAY BREAK THE PAGE. WhatsApp 503s when the CRM is not
+       configured; the social side is empty until Meta approves the messaging
+       permissions for customers. Promise.allSettled keeps one failure from
+       blanking the other, and the reason surfaces as a chip tooltip plus one
+       combined warning bar.
        ────────────────────────────────────────────────────────────────────── */
     const API    = 'https://app.tapify.co.in';
     const WA_API = API + '/api/whatsapp/proxy.php';
@@ -186,27 +262,37 @@
         c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
     const CH = {
-        whatsapp:  { label: 'WhatsApp',  icon: 'fab fa-whatsapp' },
-        facebook:  { label: 'Messenger', icon: 'fab fa-facebook-messenger' },
-        instagram: { label: 'Instagram', icon: 'fab fa-instagram' },
+        whatsapp:  { label: 'WhatsApp',  icon: 'fab fa-whatsapp',            dot: '#25D366' },
+        facebook:  { label: 'Messenger', icon: 'fab fa-facebook-messenger',  dot: '#0084FF' },
+        instagram: { label: 'Instagram', icon: 'fab fa-instagram',           dot: '#DC2743' },
     };
 
-    /* MySQL hands back "YYYY-MM-DD HH:MM:SS", which Safari will not parse
-       without the T. The CRM hands back ISO. Both end up as epoch ms, or 0 so
-       an unparseable date sorts last instead of poisoning the sort. */
+    /* MySQL hands back "YYYY-MM-DD HH:MM:SS", which Safari refuses without the
+       T; the CRM hands back ISO. Both become epoch ms, or 0 so an unparseable
+       date sorts last instead of poisoning the whole sort. */
     function ts(v) {
         if (!v) return 0;
         const d = new Date(String(v).replace(' ', 'T'));
         return isNaN(d) ? 0 : d.getTime();
     }
-    function when(v) {
-        const t = ts(v);
-        if (!t) return '';
+    const clock = (t) => new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    function listTime(v) {
+        const t = ts(v); if (!t) return '';
         const d = new Date(t), now = new Date();
-        const sameDay = d.toDateString() === now.toDateString();
-        return sameDay
-            ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            : d.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        const days = Math.round((new Date(now.toDateString()) - new Date(d.toDateString())) / 86400000);
+        if (days === 0) return clock(t);
+        if (days === 1) return 'Yesterday';
+        if (days < 7)   return d.toLocaleDateString([], { weekday: 'short' });
+        return d.toLocaleDateString([], { day: 'numeric', month: 'short' });
+    }
+    function dayLabel(t) {
+        const d = new Date(t), now = new Date();
+        const days = Math.round((new Date(now.toDateString()) - new Date(d.toDateString())) / 86400000);
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        return d.toLocaleDateString([], { day: 'numeric', month: 'long', year:
+            d.getFullYear() === now.getFullYear() ? undefined : 'numeric' });
     }
 
     async function waApi(action, opts = {}) {
@@ -230,11 +316,7 @@
         return j.data || {};
     }
 
-    let filter   = 'all';
-    let convos   = [];     // normalised, newest first
-    let active   = null;   // the open conversation object
-    let chErr    = {};     // channel -> why it is unavailable
-    let loading  = false;
+    let filter = 'all', query = '', convos = [], active = null, chErr = {}, loading = false;
 
     /* ── load ─────────────────────────────────────────────────────────── */
     async function loadConvos(keepActive) {
@@ -243,98 +325,107 @@
         const out = [];
         chErr = {};
 
-        const [wa, so] = await Promise.allSettled([
-            waApi('conversations'),
-            soApi('inbox.php'),
-        ]);
+        const [wa, so] = await Promise.allSettled([waApi('conversations'), soApi('inbox.php')]);
 
         if (wa.status === 'fulfilled' && Array.isArray(wa.value)) {
             for (const c of wa.value) {
                 if (!c || !c.phone) continue;
                 out.push({
-                    ch: 'whatsapp',
-                    key: 'wa:' + c.phone,
-                    phone: c.phone,
-                    name: c.name || c.phone,
-                    account: 'WhatsApp Business',
-                    preview: (c.lastDirection === 'out' ? '↩ ' : '') + (c.lastMessage || ''),
-                    at: ts(c.updatedAt),
-                    unread: Number(c.unread || 0),
+                    ch: 'whatsapp', key: 'wa:' + c.phone, phone: c.phone,
+                    name: c.name || c.phone, account: 'WhatsApp Business',
+                    preview: (c.lastDirection === 'out' ? 'You: ' : '') + (c.lastMessage || ''),
+                    at: ts(c.updatedAt), unread: Number(c.unread || 0),
                 });
             }
         } else if (wa.status === 'rejected') {
-            chErr.whatsapp = wa.reason && wa.reason.message ? wa.reason.message : 'Not available';
+            chErr.whatsapp = (wa.reason && wa.reason.message) || 'Not available';
         }
 
         if (so.status === 'fulfilled') {
             for (const t of (so.value.threads || [])) {
                 const ch = t.platform === 'instagram' ? 'instagram' : 'facebook';
                 out.push({
-                    ch,
-                    key: 'so:' + t.connection_id + ':' + t.contact_id,
-                    connection_id: Number(t.connection_id),
-                    contact_id: String(t.contact_id),
+                    ch, key: 'so:' + t.connection_id + ':' + t.contact_id,
+                    connection_id: Number(t.connection_id), contact_id: String(t.contact_id),
                     name: t.contact_name || ('Visitor ' + String(t.contact_id).slice(-6)),
                     account: t.account_name || CH[ch].label,
-                    preview: (t.direction === 'out' ? '↩ ' : '') + (t.body || ''),
-                    at: ts(t.created_at),
-                    unread: 0,
+                    preview: (t.direction === 'out' ? 'You: ' : '') + (t.body || ''),
+                    at: ts(t.created_at), unread: Number(t.unread || 0),
                 });
             }
         } else {
-            chErr.social = so.reason && so.reason.message ? so.reason.message : 'Not available';
+            chErr.social = (so.reason && so.reason.message) || 'Not available';
         }
 
         out.sort((a, b) => b.at - a.at);
         convos = out;
 
         // Keep the open thread selected across a refresh, but drop it if the
-        // conversation has gone — otherwise the pane shows a thread that the
-        // list no longer contains.
+        // conversation has gone — otherwise the pane shows a thread the list
+        // no longer contains.
         if (keepActive && active) {
             const still = convos.find(c => c.key === active.key);
-            active = still || null;
-            if (!still) renderThread();
+            if (still) { still.unread = 0; active = still; }
+            else { active = null; renderThread(); }
         }
         loading = false;
         renderChips();
         renderList();
+        setTitle();
+    }
+
+    function setTitle() {
+        const n = convos.reduce((a, c) => a + (c.unread || 0), 0);
+        document.title = n ? `(${n}) Inbox - Tapify` : 'Inbox - Tapify';
     }
 
     /* ── chips ────────────────────────────────────────────────────────── */
     function renderChips() {
-        const counts = { all: convos.length, whatsapp: 0, facebook: 0, instagram: 0 };
-        convos.forEach(c => counts[c.ch]++);
+        const n = { all: 0, whatsapp: 0, facebook: 0, instagram: 0 };
+        const u = { all: 0, whatsapp: 0, facebook: 0, instagram: 0 };
+        convos.forEach(c => { n[c.ch]++; n.all++; u[c.ch] += c.unread || 0; u.all += c.unread || 0; });
 
-        const one = (id, label, icon) => {
+        const one = (id, label, meta) => {
             const dead = (id === 'whatsapp' && chErr.whatsapp)
                       || ((id === 'facebook' || id === 'instagram') && chErr.social);
-            return `<button class="chip ${filter === id ? 'on' : ''} ${dead && !counts[id] ? 'off' : ''}"
-                            data-ch="${id}" ${dead && !counts[id] ? 'disabled' : ''}
-                            title="${dead ? esc(id === 'whatsapp' ? chErr.whatsapp : chErr.social) : ''}">
-                      ${icon ? `<i class="${icon}"></i>` : ''}${esc(label)}
-                      <span class="n">${counts[id]}</span>
+            const off = dead && !n[id];
+            return `<button class="chip ${filter === id ? 'on' : ''}" data-ch="${id}" ${off ? 'disabled' : ''}
+                            title="${off ? esc(id === 'whatsapp' ? chErr.whatsapp : chErr.social) : ''}">
+                      ${meta ? `<span class="dot" style="background:${meta.dot}"></span><i class="${meta.icon}"></i>` : ''}
+                      ${esc(label)}
+                      <span class="n">${n[id]}</span>
+                      ${u[id] ? `<span class="unread">${u[id]}</span>` : ''}
                     </button>`;
         };
         document.getElementById('chips').innerHTML =
-            one('all', 'All') +
-            one('whatsapp', CH.whatsapp.label, CH.whatsapp.icon) +
-            one('facebook', CH.facebook.label, CH.facebook.icon) +
-            one('instagram', CH.instagram.label, CH.instagram.icon);
+            one('all', 'All') + one('whatsapp', CH.whatsapp.label, CH.whatsapp)
+          + one('facebook', CH.facebook.label, CH.facebook)
+          + one('instagram', CH.instagram.label, CH.instagram);
 
-        // One combined warning rather than a red block per channel — most
-        // owners have exactly one side switched on and do not need the other
-        // reported as a failure every time they open the page.
+        // One combined note rather than a red block per channel — most owners
+        // have exactly one side switched on and do not need the other reported
+        // as a failure every time they open the page.
         const notes = [];
-        if (chErr.whatsapp) notes.push(`WhatsApp is not connected — <a href="whatsapp">set it up here</a>.`);
-        if (chErr.social)   notes.push(`Messenger and Instagram are not available yet — <a href="social">connect your Pages</a>.`);
+        if (chErr.whatsapp) notes.push('WhatsApp is not connected — <a href="whatsapp">set it up here</a>.');
+        if (chErr.social)   notes.push('Messenger and Instagram are not available yet — <a href="social">connect your Pages</a>.');
         document.getElementById('flash').innerHTML =
             notes.length ? `<div class="warnbar">${notes.join('<br>')}</div>` : '';
     }
 
     /* ── list ─────────────────────────────────────────────────────────── */
     function visible() {
-        return filter === 'all' ? convos : convos.filter(c => c.ch === filter);
+        const q = query.trim().toLowerCase();
+        return convos.filter(c =>
+            (filter === 'all' || c.ch === filter) &&
+            (!q || c.name.toLowerCase().includes(q) || String(c.preview).toLowerCase().includes(q)));
+    }
+
+    function avatar(c, size) {
+        const letter = (c.name || '?').trim().charAt(0).toUpperCase() || '?';
+        return `<div class="av" ${size ? `style="width:${size}px;height:${size}px"` : ''}>
+                  <div class="face bg-${c.ch}" ${size ? `style="width:${size}px;height:${size}px;font-size:${size/2.6}px"` : ''}>${esc(letter)}</div>
+                  <div class="badge bg-${c.ch}"><i class="${CH[c.ch].icon}"></i></div>
+                </div>`;
     }
 
     function renderList() {
@@ -343,61 +434,109 @@
         document.getElementById('convoCount').textContent = rows.length ? rows.length : '';
 
         if (!rows.length) {
-            list.innerHTML = `<div class="empty"><i class="far fa-comments"></i>
-                No conversations yet.<br><small>Messages to your WhatsApp number, Facebook Page
-                and Instagram account all arrive here.</small></div>`;
+            const searching = query.trim() !== '';
+            list.innerHTML = `<div class="empty"><div class="ic"><i class="${searching ? 'fas fa-magnifying-glass' : 'far fa-comments'}"></i></div>
+                <b>${searching ? 'Nothing matched' : 'No conversations yet'}</b>
+                ${searching ? 'Try a different name or word.'
+                            : 'Messages to your WhatsApp number, Facebook Page and Instagram account all arrive here.'}</div>`;
             return;
         }
         list.innerHTML = rows.map(c => `
-          <div class="convo ${active && active.key === c.key ? 'active' : ''}" data-key="${esc(c.key)}">
-            <div class="avatar ${c.ch}">${esc((c.name || '?').trim().charAt(0).toUpperCase() || '?')}</div>
+          <div class="convo ${active && active.key === c.key ? 'active' : ''} ${c.unread ? 'unread' : ''}"
+               data-key="${esc(c.key)}">
+            ${avatar(c)}
             <div class="cmain">
-              <div class="cname">${esc(c.name)}</div>
-              <div class="cmeta"><i class="${CH[c.ch].icon}"></i> ${esc(c.account)} &middot; ${esc(when(c.at))}</div>
-              <div class="cprev">${esc(String(c.preview).slice(0, 80))}</div>
+              <div class="ctop">
+                <span class="cname">${esc(c.name)}</span>
+                <span class="ctime">${esc(listTime(c.at))}</span>
+              </div>
+              <div class="cprev">${esc(String(c.preview).slice(0, 90))}</div>
             </div>
-            ${c.unread ? `<span class="badge-n">${c.unread}</span>` : ''}
+            ${c.unread ? `<span class="pill" style="background:${CH[c.ch].dot}">${c.unread > 99 ? '99+' : c.unread}</span>` : ''}
           </div>`).join('');
     }
 
     /* ── thread ───────────────────────────────────────────────────────── */
-    const SRC = { ai: 'AI', handoff: 'Handover', human: 'You', contact: '' };
+    const SRC = { ai: 'AI', handoff: 'Auto', human: '' };
 
     function renderThread(html) {
-        document.getElementById('threadPane').innerHTML =
-            html || '<div class="empty"><i class="far fa-comments"></i>Select a conversation</div>';
+        document.getElementById('threadPane').innerHTML = html || `
+            <div class="empty"><div class="ic"><i class="far fa-comments"></i></div>
+              <b>Select a conversation</b>
+              Pick someone on the left to read the thread and reply.</div>`;
         document.getElementById('wrap').classList.toggle('open', !!active);
     }
 
     async function openThread(key) {
         active = convos.find(c => c.key === key) || null;
         if (!active) return;
-        renderList();
-        renderThread('<div class="empty"><i class="fas fa-spinner fa-spin"></i>Loading…</div>');
+        // Cleared straight away so the badge does not linger while the thread
+        // loads; the server clears it for real on the same request.
+        active.unread = 0;
+        renderList(); setTitle();
+        renderThread('<div class="empty"><div class="ic"><i class="fas fa-spinner fa-spin"></i></div>Loading…</div>');
 
         try {
             if (active.ch === 'whatsapp') await openWhatsapp(active);
             else await openSocial(active);
         } catch (e) {
-            renderThread(`<div class="empty">${esc(e.message)}</div>`);
+            renderThread(`<div class="empty"><div class="ic"><i class="fas fa-triangle-exclamation"></i></div>
+                          <b>Could not open this conversation</b>${esc(e.message)}</div>`);
             return;
         }
         const box = document.getElementById('msgs');
         if (box) box.scrollTop = box.scrollHeight;
+        const ta = document.getElementById('replyBox');
+        if (ta && window.innerWidth > 880) ta.focus();
     }
 
     function head(c) {
-        return `<div class="pane-head">
+        return `<div class="thead">
                   <button class="back" data-back="1"><i class="fas fa-arrow-left"></i></button>
-                  <i class="${CH[c.ch].icon}"></i>
-                  <span>${esc(c.name)}</span>
-                  <span class="sub">${esc(c.account)}</span>
+                  ${avatar(c, 38)}
+                  <div class="who">
+                    <b>${esc(c.name)}</b>
+                    <span><i class="${CH[c.ch].icon}" style="color:${CH[c.ch].dot}"></i>
+                          ${esc(CH[c.ch].label)} &middot; ${esc(c.account)}</span>
+                  </div>
                 </div>`;
     }
 
+    /* Bubbles, grouped by sender and split by day. Only the last message of a
+       run carries a timestamp — a time on every line is what makes a homemade
+       chat UI look homemade. */
+    // One helper for all three comparisons. Doing it inline got it wrong: an
+    // unparseable date gives ts()===0, and `new Date(0).toDateString()` is a
+    // real-looking "Thu Jan 01 1970" that would compare unequal to the ''
+    // used for the current message, splitting a run for no visible reason.
+    const dayOf = (v) => { const t = ts(v); return t ? new Date(t).toDateString() : ''; };
+
+    function renderMsgs(items) {
+        let html = '', lastDay = '';
+        items.forEach((m, i) => {
+            const t = ts(m.at);
+            const day = dayOf(m.at);
+            if (day && day !== lastDay) { html += `<div class="daysep">${esc(dayLabel(t))}</div>`; lastDay = day; }
+
+            const prev = items[i - 1], next = items[i + 1];
+            const cont = prev && prev.direction === m.direction && dayOf(prev.at) === day;
+            const last = !next || next.direction !== m.direction || dayOf(next.at) !== day;
+
+            const out = m.direction === 'out';
+            const meta = last || m.error
+                ? `<div class="mm">${m.src ? `<span class="src">${esc(m.src)}</span>` : ''}
+                     ${t ? esc(clock(t)) : ''} ${m.tick ? esc(m.tick) : ''}</div>` : '';
+            html += `<div class="msg ${out ? 'out' : 'in'} ${cont ? 'cont' : ''} ${last ? 'last' : ''} ${m.error ? 'failed' : ''}">`
+                  + esc(m.body || '') + meta
+                  + (m.error ? `<div class="errline">Not delivered: ${esc(m.error)}</div>` : '')
+                  + '</div>';
+        });
+        return html || `<div class="empty"><div class="ic"><i class="far fa-comment-dots"></i></div>No messages yet</div>`;
+    }
+
     async function openWhatsapp(c) {
-        const msgs = await waApi('thread', { qs: '&phone=' + encodeURIComponent(c.phone) });
-        const list = Array.isArray(msgs) ? msgs : [];
+        const r = await waApi('thread', { qs: '&phone=' + encodeURIComponent(c.phone) });
+        const list = Array.isArray(r) ? r : [];
 
         // Meta only delivers free text within 24 hours of the contact's last
         // inbound message. Worked out here so the composer can say so BEFORE
@@ -405,50 +544,37 @@
         const lastIn = [...list].reverse().find(m => m.direction === 'in');
         const open = lastIn && (Date.now() - ts(lastIn.createdAt)) < 24 * 3600 * 1000;
 
-        renderThread(head(c) + `
-          <div class="msgs" id="msgs">${list.map(m => bubble({
-              direction: m.direction, body: m.body, at: m.createdAt,
-              note: ({ read: '✓✓', delivered: '✓✓', sent: '✓', queued: '🕓', failed: '⚠' }[m.status] || ''),
-          })).join('') || '<div class="empty">No messages</div>'}</div>
-          <div class="compose">
-            ${open ? `
-              <textarea id="replyBox" placeholder="Type a reply…"></textarea>
-              <div class="crow"><span style="flex:1"></span>
-                <button class="btn-send" data-send="1"><i class="fas fa-paper-plane"></i> Send</button>
-              </div>`
+        renderThread(head(c)
+          + `<div class="msgs" id="msgs">${renderMsgs(list.map(m => ({
+                direction: m.direction, body: m.body, at: m.createdAt,
+                tick: ({ read: '✓✓', delivered: '✓✓', sent: '✓', queued: '🕓', failed: '⚠' }[m.status] || ''),
+             })))}</div>`
+          + `<div class="compose">${open ? composer('Message ' + c.name,
+                'Replies go out from your WhatsApp Business number.')
             : `<div class="notice"><b>24-hour window closed.</b>
                  ${esc(c.name)} has not messaged you in the last 24 hours, so WhatsApp will not deliver
                  a typed reply. An approved template has to be used instead —
-                 <a href="whatsapp">send one from the WhatsApp page</a>.</div>`}
-          </div>`);
+                 <a href="whatsapp">send one from the WhatsApp page</a>.</div>`}</div>`);
     }
 
     async function openSocial(c) {
         const d = await soApi('inbox.php?connection_id=' + encodeURIComponent(c.connection_id)
                             + '&contact_id=' + encodeURIComponent(c.contact_id));
-        const list = d.messages || [];
-        renderThread(head(c) + `
-          <div class="msgs" id="msgs">${list.map(m => bubble({
-              direction: m.direction, body: m.body, at: m.created_at,
-              note: SRC[m.source] || '', error: m.error,
-          })).join('') || '<div class="empty">No messages</div>'}</div>
-          <div class="compose">
-            <textarea id="replyBox" placeholder="Type a reply…"></textarea>
-            <div class="crow">
-              <span style="flex:1;font-size:.72rem;color:#9ca3af">
-                Meta allows a reply within 24 hours of their last message.</span>
-              <button class="btn-send" data-send="1"><i class="fas fa-paper-plane"></i> Send</button>
-            </div>
-          </div>`);
+        renderThread(head(c)
+          + `<div class="msgs" id="msgs">${renderMsgs((d.messages || []).map(m => ({
+                direction: m.direction, body: m.body, at: m.created_at,
+                src: SRC[m.source] || '', error: m.error,
+             })))}</div>`
+          + `<div class="compose">${composer('Message ' + c.name,
+                'Meta allows a reply within 24 hours of their last message.')}</div>`);
     }
 
-    function bubble(m) {
-        const out = m.direction === 'out';
-        const meta = [when(m.at), m.note].filter(Boolean).join(' · ');
-        return `<div class="msg ${out ? 'out' : 'in'} ${m.error ? 'failed' : ''}">${esc(m.body || '')}
-                  <div class="mm">${esc(meta)}</div>
-                  ${m.error ? `<div class="errline">Not delivered: ${esc(m.error)}</div>` : ''}
-                </div>`;
+    function composer(placeholder, hint) {
+        return `<div class="cbox">
+                  <textarea id="replyBox" rows="1" placeholder="${esc(placeholder)}"></textarea>
+                  <button class="sendbtn" data-send="1" title="Send"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div class="chint">${esc(hint)} Enter sends, Shift+Enter makes a new line.</div>`;
     }
 
     /* ── send ─────────────────────────────────────────────────────────── */
@@ -460,8 +586,7 @@
         if (!text) return;
 
         btn.disabled = true; box.disabled = true;
-        const original = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         try {
             if (active.ch === 'whatsapp') {
                 await waApi('send', { method: 'POST', body: { phone: active.phone, body: text } });
@@ -480,7 +605,8 @@
             await loadConvos(true);
             await openThread(key);
         } catch (e) {
-            btn.disabled = false; box.disabled = false; btn.innerHTML = original;
+            btn.disabled = false; box.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             const c = document.querySelector('.compose');
             if (c && !c.querySelector('.err')) {
                 c.insertAdjacentHTML('afterbegin', `<div class="err">${esc(e.message)}</div>`);
@@ -489,35 +615,37 @@
     }
 
     /* ── wiring ───────────────────────────────────────────────────────── */
-    // Delegated, so a redraw never leaves a dead handler behind and a contact
-    // name containing a quote cannot break an inline onclick.
+    // Delegated, so a redraw never strands a handler and a contact name
+    // containing a quote cannot break an inline onclick.
     document.addEventListener('click', (e) => {
         const chip = e.target.closest('.chip');
         if (chip && !chip.disabled) { filter = chip.dataset.ch; renderChips(); renderList(); return; }
-
         const row = e.target.closest('.convo');
         if (row) { openThread(row.dataset.key); return; }
-
-        if (e.target.closest('[data-back]')) {
-            active = null; renderList(); renderThread(); return;
-        }
+        if (e.target.closest('[data-back]')) { active = null; renderList(); renderThread(); return; }
         if (e.target.closest('[data-send]')) { send(); return; }
         if (e.target.closest('#refreshBtn')) { loadConvos(true); return; }
     });
 
-    // Enter sends, Shift+Enter is a newline — what everyone expects of a chat box.
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'replyBox') {
-            e.preventDefault(); send();
+    document.addEventListener('input', (e) => {
+        if (e.target.id === 'q') { query = e.target.value; renderList(); return; }
+        if (e.target.id === 'replyBox') {   // grow with the message, up to the CSS cap
+            e.target.style.height = 'auto';
+            e.target.style.height = Math.min(e.target.scrollHeight, 130) + 'px';
         }
     });
 
-    // Refresh the list while the tab is actually being looked at. Paused when
-    // hidden so a forgotten tab is not polling two backends all day.
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'replyBox') { e.preventDefault(); send(); }
+        if (e.key === 'Escape' && active && window.innerWidth <= 880) { active = null; renderList(); renderThread(); }
+    });
+
+    // Poll only while the tab is actually being looked at, and only when no
+    // thread is open, so a refresh cannot yank the conversation being read.
     setInterval(() => { if (!document.hidden && !active) loadConvos(true); }, 30000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) loadConvos(true); });
 
-    document.addEventListener('DOMContentLoaded', () => loadConvos(false));
+    document.addEventListener('DOMContentLoaded', () => { renderThread(); loadConvos(false); });
     </script>
 </body>
 </html>
