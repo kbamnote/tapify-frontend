@@ -406,8 +406,8 @@
                 <p>Explore real professionals and brands using Tapify NFC digital cards. Click any card to view their live digital profile.</p>
                 <div class="hero-stats">
                     <div class="hero-stat">
-                        <div class="hero-stat-num" id="statTotal">230+</div>
-                        <div class="hero-stat-label">Active Profiles &amp; Growing</div>
+                        <div class="hero-stat-num" id="statTotal">—</div>
+                        <div class="hero-stat-label">Active Profiles</div>
                     </div>
                     <div class="hero-stat">
                         <div class="hero-stat-num">10K+</div>
@@ -519,26 +519,6 @@
         let isLoading   = false;
         let totalCount  = 0;
         let searchTimer = null;
-
-        /**
-         * The headline "Active Profiles" figure never drops below this.
-         *
-         * WHY A FLOOR RATHER THAN THE RAW COUNT. The API returns only the
-         * profiles that are published AND listed in the public directory,
-         * which is a small slice of the businesses actually on Tapify — so the
-         * raw number understates the network badly and reads as "nobody uses
-         * this". The other three stats beside it (10K+, 50K+, 20+) are already
-         * rounded figures of the same kind.
-         *
-         * KEEP THIS HONEST. It is a claim on a public page about how many
-         * businesses use Tapify. It should be a number the business can stand
-         * behind, not a number that looks good — and it is written here, once,
-         * so it is obvious that it is a marketing figure and not live data.
-         *
-         * Math.max means the moment the real listed count passes it, the real
-         * one takes over and this line stops mattering.
-         */
-        const MIN_DISPLAY_PROFILES = 230;
 
         const grid         = document.getElementById('bizGrid');
         const bizCount     = document.getElementById('bizCount');
@@ -658,8 +638,7 @@
 
                 if (page === 1) {
                     grid.innerHTML = '';
-                    statTotal.textContent =
-                        Math.max(totalCount, MIN_DISPLAY_PROFILES).toLocaleString() + '+';
+                    statTotal.textContent = totalCount.toLocaleString();
                 }
 
                 if (page === 1 && vcards.length === 0) {
@@ -668,13 +647,7 @@
                 } else {
                     grid.insertAdjacentHTML('beforeend', vcards.map(cardHtml).join(''));
                     const visible = grid.querySelectorAll('.biz-card').length;
-                    // "of N+" so this does not contradict the hero figure above
-                    // it. Without it the page says 230+ at the top and then 23
-                    // immediately below, which just looks broken.
-                    const shown = totalCount.toLocaleString();
-                    bizCount.textContent = totalCount < MIN_DISPLAY_PROFILES
-                        ? `Showing ${shown} of ${MIN_DISPLAY_PROFILES.toLocaleString()}+ businesses`
-                        : `${shown} Business${totalCount !== 1 ? 'es' : ''}`;
+                    bizCount.textContent = `${totalCount.toLocaleString()} Business${totalCount !== 1 ? 'es' : ''}`;
                     attachCardClicks();
                 }
 
@@ -751,6 +724,5 @@
         // ===== INIT =====
         loadPage(1);
     </script>
-    <script src="webinar-popup.js" defer></script>
 </body>
 </html>

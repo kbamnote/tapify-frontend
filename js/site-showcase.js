@@ -14,6 +14,24 @@
     var API  = 'https://app.tapify.co.in/api/public/sites-showcase.php';
     var LIST = document.body.getAttribute('data-showcase') === 'demo' ? 'demo' : 'network';
 
+    /**
+     * Floor for the "Live Websites" headline on Our Network.
+     *
+     * The API returns only the sites an admin has PICKED for the showcase, so
+     * the raw number counts the shortlist rather than the network — it read
+     * "23 Live Websites" next to a heading that says "Real businesses running
+     * on websites we built", which undersells it badly.
+     *
+     * NETWORK ONLY. The Website Demo page keeps its true count: that number is
+     * a promise about how many demos you can actually click, and inflating it
+     * would be a list that does not match its own heading.
+     *
+     * Math.max means the real figure takes over the moment it passes this, so
+     * this line quietly stops applying rather than needing maintenance. Keep
+     * it to a number the business can stand behind — it is a public claim.
+     */
+    var MIN_LIVE_SITES = (LIST === 'network') ? 230 : 0;
+
     var grid       = document.getElementById('siteGrid');
     var countEl    = document.getElementById('siteCount');
     var statTotal  = document.getElementById('statTotal');
@@ -95,7 +113,15 @@
         var list = filtered();
         grid.innerHTML = list.map(function (s) { return cardHtml(s, all.indexOf(s)); }).join('');
         stateEmpty.style.display = list.length ? 'none' : 'block';
-        countEl.textContent = list.length + ' Website' + (list.length === 1 ? '' : 's');
+        // "of 230+" so this chip does not sit under a 230+ headline saying 23
+        // and make the page look broken. Dropped once the real count passes
+        // the floor, and never shown while a search or industry filter is on —
+        // "3 of 230+" for a filtered view would be nonsense.
+        var plain = list.length + ' Website' + (list.length === 1 ? '' : 's');
+        countEl.textContent = (MIN_LIVE_SITES && list.length === all.length
+                               && all.length < MIN_LIVE_SITES)
+            ? 'Showing ' + list.length + ' of ' + MIN_LIVE_SITES.toLocaleString() + '+'
+            : plain;
     }
 
     function buildPills() {
@@ -132,7 +158,11 @@
             .then(function (json) {
                 if (!json.success) throw new Error(json.message || 'API error');
                 all = (json.data && json.data.sites) || [];
-                if (statTotal) statTotal.textContent = all.length;
+                if (statTotal) {
+                    statTotal.textContent = MIN_LIVE_SITES
+                        ? Math.max(all.length, MIN_LIVE_SITES).toLocaleString() + '+'
+                        : all.length;
+                }
                 buildPills();
                 render();
             })
