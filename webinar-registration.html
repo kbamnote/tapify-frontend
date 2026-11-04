@@ -79,6 +79,40 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .runrow p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 @media(max-width:560px){.runrow{grid-template-columns:1fr;gap:2px}}
 
+/* speaker cut-out in the hero — the PNGs have transparent backgrounds, so they
+   sit straight on the gradient with no card or frame around them */
+.hero .wrap { position: relative; }
+.hero-figure { display: none; }
+@media(min-width:1180px){
+  .hero-figure{ display:block; position:absolute; right:-18px; bottom:-60px;
+    width:300px; pointer-events:none; z-index:0;
+    filter:drop-shadow(0 22px 40px rgba(0,0,0,.4)); opacity:.97 }
+  .hero .card{ position:relative; z-index:1 }
+}
+
+/* host */
+.host{ display:grid; grid-template-columns:300px 1fr; gap:34px; align-items:center }
+.host-pic{ position:relative }
+.host-pic img{ width:100%; display:block;
+  filter:drop-shadow(0 16px 32px rgba(21,62,63,.26)) }
+.host-pic::after{ content:''; position:absolute; inset:auto 6% 0 6%; height:16px;
+  border-radius:50%; background:rgba(21,62,63,.13); filter:blur(9px) }
+.host h2{ margin-bottom:4px }
+.host .role{ color:var(--gold); font-weight:800; font-size:.8rem;
+  letter-spacing:.6px; text-transform:uppercase; margin:0 0 14px }
+.host .tick span{ font-size:.95rem }
+@media(max-width:820px){
+  .host{ grid-template-columns:1fr; gap:14px; text-align:left }
+  .host-pic{ max-width:220px; margin:0 auto }
+}
+
+/* the real-event photo */
+.proof{ margin-top:26px; border-radius:16px; overflow:hidden;
+  box-shadow:0 16px 42px rgba(21,62,63,.2) }
+.proof img{ width:100%; display:block }
+.proof figcaption{ background:var(--ink); color:#cfe0e0; font-size:.78rem;
+  padding:11px 16px; text-align:center }
+
 /* "not a customer yet" aside */
 .aside{max-width:720px;margin:26px auto 0;padding:16px 20px;border:1px dashed var(--line);
   border-radius:12px;font-size:.9rem;color:var(--muted);text-align:center}
@@ -114,6 +148,9 @@ footer a{color:#ffd79a;text-decoration:none}
         <div><i class="fas fa-indian-rupee-sign"></i>Free to attend</div>
       </div>
     </div>
+    <!-- Decorative: the host also appears, named and described, further down.
+         Desktop only — at tablet width it would sit on top of the form. -->
+    <img class="hero-figure" src="images/abid-khan-speaker.png" alt="" aria-hidden="true">
 
     <div class="card" id="formCard">
       <span class="free">FREE REGISTRATION</span>
@@ -135,6 +172,24 @@ footer a{color:#ffd79a;text-decoration:none}
 
         <label for="f-biz">Business name</label>
         <input id="f-biz" name="business_name" type="text" placeholder="Your shop or company">
+
+        <label for="f-cat">Business category</label>
+        <select id="f-cat" name="business_category">
+          <option value="">Select your category</option>
+          <option>Retail shop / Store</option>
+          <option>Restaurant, Cafe &amp; Food</option>
+          <option>Clinic, Hospital &amp; Healthcare</option>
+          <option>Salon, Spa &amp; Wellness</option>
+          <option>Real estate &amp; Construction</option>
+          <option>Automobile &amp; Service</option>
+          <option>Education &amp; Coaching</option>
+          <option>Jewellery &amp; Fashion</option>
+          <option>Manufacturing &amp; Wholesale</option>
+          <option>Printing &amp; Advertising</option>
+          <option>Travel &amp; Events</option>
+          <option>Professional services (CA, Legal, Consulting)</option>
+          <option>Other</option>
+        </select>
 
         <label for="f-city">City</label>
         <input id="f-city" name="city" type="text" autocomplete="address-level2" placeholder="Nagpur">
@@ -209,11 +264,28 @@ footer a{color:#ffd79a;text-decoration:none}
   </div>
 </section>
 
-<section class="band alt center">
+<section class="band alt">
   <div class="wrap">
-    <h2>Who is running it</h2>
-    <p class="lead" data-wb="speakerBio">Run by <b data-wb="speakerName">the Tapify team</b>, who work with hundreds of businesses across Nagpur and Vidarbha — shops, clinics, dealers, salons and consultants — setting up exactly what is covered here. Every example is from a real account, and nothing is sold on the call.</p>
-    <a href="/businesses" style="color:var(--ink2);font-weight:700">See businesses already using Tapify →</a>
+    <div class="host">
+      <div class="host-pic">
+        <img src="images/abid-khan-podium.png" alt="Abid Khan speaking at the Business Leadership Summit">
+      </div>
+      <div>
+        <h2>Taken by Abid Khan</h2>
+        <p class="role">Founder, Tapify &amp; MR Print World · 13+ years</p>
+        <div class="tick"><i class="fas fa-check"></i><span><b>13+ years</b> running businesses in Vidarbha — not advice from someone who has only read about it.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Spent those years watching good local businesses lose customers to weaker ones that simply showed up on Google first.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Built <b>Tapify</b> to fix exactly that problem, and has set it up for hundreds of shops, clinics, dealers and salons.</span></div>
+        <div class="tick"><i class="fas fa-check"></i><span>Takes this session himself. Every example is a real account, and nothing is sold on the call.</span></div>
+        <a href="/businesses" style="color:var(--ink2);font-weight:700;font-size:.92rem">See businesses already using Tapify →</a>
+      </div>
+    </div>
+
+    <figure class="proof">
+      <img src="images/abid-khan-summit.jpg"
+           alt="Abid Khan addressing business owners at the Business Leadership Summit" loading="lazy">
+      <figcaption>Abid Khan at the Business Leadership Summit — the same session, condensed to ninety minutes.</figcaption>
+    </figure>
   </div>
 </section>
 

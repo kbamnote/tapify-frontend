@@ -81,11 +81,11 @@
     <div class="vcards-table-wrapper">
       <table class="vcards-table">
         <thead><tr>
-          <th>Name</th><th>WhatsApp</th><th>Business</th><th>City</th>
+          <th>Name</th><th>WhatsApp</th><th>Business</th><th>Category</th><th>City</th>
           <th>Source</th><th>Confirmed</th><th>Registered</th><th>Attended</th>
         </tr></thead>
         <tbody id="wbBody">
-          <tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
+          <tr><td colspan="9" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -118,7 +118,7 @@ function params() {
 
 async function loadWb() {
   const body = document.getElementById('wbBody');
-  body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
+  body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#6b7280">Loading…</td></tr>';
 
   const q = params();
   document.getElementById('wbExport').href = WB_API + '?' + q.toString() + '&export=csv';
@@ -131,7 +131,7 @@ async function loadWb() {
     renderSlugs((j.data && j.data.webinars) || []);
     renderRows((j.data && j.data.registrations) || []);
   } catch (e) {
-    body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#dc2626">${esc(e.message)}</td></tr>`;
+    body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:#dc2626">${esc(e.message)}</td></tr>`;
   }
 }
 
@@ -163,7 +163,7 @@ function renderSlugs(list) {
 function renderRows(rows) {
   const body = document.getElementById('wbBody');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No registrations yet.</td></tr>';
+    body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#6b7280">No registrations yet.</td></tr>';
     return;
   }
   body.innerHTML = rows.map(r => `
@@ -175,6 +175,7 @@ function renderRows(rows) {
       <td><a href="https://wa.me/91${esc(r.phone)}" target="_blank" rel="noopener"
              style="color:#16a34a;font-weight:600;text-decoration:none">${esc(r.phone)}</a></td>
       <td style="font-size:.86rem">${esc(r.business_name || '—')}</td>
+      <td style="font-size:.86rem">${esc(r.business_category || '—')}</td>
       <td style="font-size:.86rem">${esc(r.city || '—')}</td>
       <td style="font-size:.8rem;color:#6b7280">${esc(r.utm_source || 'direct')}</td>
       <td><span class="badge ${Number(r.whatsapp_sent) ? 'b-yes' : 'b-no'}">${Number(r.whatsapp_sent) ? 'SENT' : 'NO'}</span></td>
