@@ -218,53 +218,58 @@ function leadsFromExtracted(rows) {
 }
 
 /**
- * A .vcf (vCard) export → recipients.
+ * A .vcf (vCard) export -> recipients.
  *
  * This is how a phone hands over its contacts: "export contacts" on Android
  * and iOS both produce one .vcf holding every entry. Feeding that to
- * leadsFromText() half-works and is worse than failing — the delimiter guess
+ * leadsFromText() half-works and is worse than failing -- the delimiter guess
  * lands on ';', phone numbers survive by accident because normalisePhone
  * strips the non-digits, and every name is lost, so a 6,000-contact import
  * silently becomes 6,000 messages addressed to nobody.
  *
- * Handles the three things real exports actually do:
+ * ---- WHY THIS IS A LINE WALK AND NOT A FEW REGEXES ----
  *
- *   LINE FOLDING (RFC 6350) — a long value continues on the next line,
- *   marked by a leading space or tab. Unfolded first, or a long name arrives
- *   cut in half.
+ * Real exports are mostly photographs. A measured Samsung export of 6,112
+ * contacts was 39 MB, of which 37.3 MB -- 96% -- was base64 PHOTO data. Doing
+ * `src.replace(...).split('
+')` on that allocates several 39 MB strings and a
+ * million-element array before a single contact is read, which is enough to
+ * hang or kill a browser tab. PHOTO and LOGO payloads are therefore skipped as
+ * the lines stream past, and nothing but the handful of fields we need is ever
+ * held. The same file drops to well under 2 MB of real content.
  *
- *   QUOTED-PRINTABLE — Android and feature-phone exports write non-ASCII
- *   names as `FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=E0=A4=B0...`.
- *   Without decoding, every Hindi or Marathi name imports as mojibake. Its
- *   own soft line breaks ("=" at end of line) are joined before decoding.
+ * Also handled, because real exports do all of it:
  *
- *   SEVERAL NUMBERS PER CONTACT — one person, one message, so a CELL/MOBILE
- *   number wins over a home or work landline; otherwise the first that can
- *   receive WhatsApp at all.
+ *   LINE FOLDING (RFC 6350) -- a long value continues on the next line, marked
+ *   by a leading space or tab. Joined as we go, or a long name arrives cut in
+ *   half.
+ *
+ *   QUOTED-PRINTABLE -- Android writes non-ASCII names as
+ *   `FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=E0=A4=B0...`. Without
+ *   decoding, every Hindi or Marathi name imports as mojibake.
+ *
+ *   SEVERAL NUMBERS PER CONTACT -- one person, one message, so a CELL/MOBILE
+ *   number wins; otherwise the first that can receive WhatsApp at all.
+ *
+ * NO LANDLINE GUARD, AND THAT IS DELIBERATE. An earlier version rejected a
+ * number labelled HOME/WORK when the contact had no CELL, to catch landlines
+ * like Nagpur's 0712 numbers that survive normalisePhone (the trunk 0 strips
+ * off and 7122345678 looks like a mobile). Measuring the real export killed
+ * the idea: 457 numbers were labelled HOME and the samples were ordinary
+ * mobiles people had filed under the wrong label, while the genuine landlines
+ * were a handful and several were labelled CELL. The rule would have dropped
+ * hundreds of real customers to catch a few bad numbers. normalisePhone stays
+ * the only gate.
  */
 function leadsFromVcf(text) {
-  const src = String(text == null ? '' : text).replace(/^﻿/, '');
-  if (!/BEGIN:VCARD/i.test(src)) return { leads: [], invalid: 0, duplicates: 0, notVcf: true };
-
-  // Unfold: join any line that begins with a space or tab onto the one before.
-  const lines = src.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '').split('\n');
-
-  const cards = [];
-  let cur = null;
-  for (const line of lines) {
-    if (/^BEGIN:VCARD/i.test(line)) { cur = []; continue; }
-    if (/^END:VCARD/i.test(line)) { if (cur) cards.push(cur); cur = null; continue; }
-    if (cur) cur.push(line);
+  const src = String(text == null ? '' : text);
+  if (src.indexOf('BEGIN:VCARD') === -1 && src.indexOf('begin:vcard') === -1) {
+    return { leads: [], invalid: 0, duplicates: 0, notVcf: true };
   }
-  if (cur && cur.length) cards.push(cur);      // a file truncated mid-card
 
-  // Deliberately NOT TextDecoder: it is not reliably present in React Native,
-  // and this file is shared with the app. Re-encoding the bytes as percent
-  // escapes and handing them to decodeURIComponent does the same UTF-8 decode
-  // using only what both runtimes have had for years.
   const decodeQP = (s) => {
     try {
-      const joined = s.replace(/=\n/g, '');     // quoted-printable soft breaks
+      const joined = s.replace(/=$/, '');
       let out = '';
       for (let i = 0; i < joined.length; i++) {
         if (joined[i] === '=' && /^[0-9A-Fa-f]{2}$/.test(joined.substr(i + 1, 2))) {
@@ -276,8 +281,7 @@ function leadsFromVcf(text) {
       }
       return decodeURIComponent(out);
     } catch (e) {
-      // A malformed escape must not lose the whole contact — fall back to the
-      // raw value, which is still better than dropping the name.
+      // A malformed escape must not lose the whole contact.
       return s;
     }
   };
@@ -286,51 +290,101 @@ function leadsFromVcf(text) {
   const leads = [];
   let invalid = 0, duplicates = 0;
 
-  for (const card of cards) {
-    let name = '', structured = '', best = '', firstAny = '';
+  // Per-card state, reset at every BEGIN.
+  let open = false, name = '', structured = '', best = '', firstAny = '';
+  let pending = null;          // a property still collecting folded/soft-wrapped lines
+  let qpWrap = false;          // that property is quoted-printable and ended with "="
+  let skipping = false;        // inside a PHOTO/LOGO payload
 
-    for (const line of card) {
-      const colon = line.indexOf(':');
-      if (colon === -1) continue;
-      const rawKey = line.slice(0, colon);
-      let value = line.slice(colon + 1);
-      const key = rawKey.split(';')[0].toUpperCase().replace(/^ITEM\d+\./, '');
-      const params = rawKey.toUpperCase();
-      if (/ENCODING=QUOTED-PRINTABLE/.test(params)) value = decodeQP(value);
+  const takeProperty = (line) => {
+    const colon = line.indexOf(':');
+    if (colon === -1) return;
+    const rawKey = line.slice(0, colon);
+    let value = line.slice(colon + 1);
+    const params = rawKey.toUpperCase();
+    const key = params.split(';')[0].replace(/^ITEM\d+\./, '');
+    if (params.indexOf('QUOTED-PRINTABLE') !== -1) value = decodeQP(value);
 
-      if (key === 'FN') name = value;
-      else if (key === 'N' && !structured) {
-        // N is Family;Given;Middle;Prefix;Suffix — read it as Given Family.
-        const p = value.split(';');
-        structured = [p[1], p[0]].filter((x) => x && x.trim()).join(' ');
-      } else if (key === 'TEL') {
-        const phone = normalisePhone(value);
-        if (!phone) continue;
-        const isMobile = /CELL|MOBILE/.test(params);
-        // A LANDLINE CAN SURVIVE normalisePhone. "0712 2345678" is a Nagpur
-        // landline: the trunk 0 is stripped, leaving 7122345678, which starts
-        // with a 7 and passes the 6-9 mobile test. Several Indian STD codes do
-        // this (712, 731, 821, 824...), and in Nagpur it will be common.
-        //
-        // The TYPE on a vCard is real signal that a pasted CSV does not have,
-        // so it is used here rather than loosening normalisePhone — that
-        // function is shared with the app and the spreadsheet path, and
-        // guessing there would quietly drop good mobiles from every import.
-        // A number explicitly marked HOME/WORK/FAX and never CELL is taken as
-        // a landline: messaging it is a guaranteed failure, and failures are
-        // what cost the quality rating this whole import is trying to protect.
-        const landlineOnly = !isMobile && /TYPE=(HOME|WORK|FAX)|;(HOME|WORK|FAX)/.test(params);
-        if (!firstAny && !landlineOnly) firstAny = phone;
-        if (!best && isMobile) best = phone;
+    if (key === 'FN') { if (!name) name = value; }
+    else if (key === 'N') {
+      if (!structured) {
+        // N is Family;Given;Middle;Prefix;Suffix -- read it as Given Family.
+        const parts = value.split(';');
+        structured = [parts[1], parts[0]].filter((x) => x && x.trim()).join(' ');
       }
+    } else if (key === 'TEL') {
+      const phone = normalisePhone(value);
+      if (!phone) return;
+      if (!firstAny) firstAny = phone;
+      if (!best && /CELL|MOBILE/.test(params)) best = phone;
+    }
+  };
+
+  const closeCard = () => {
+    if (pending !== null) { takeProperty(pending); pending = null; qpWrap = false; }
+    const phone = best || firstAny;
+    if (!phone) invalid++;
+    else if (seen.has(phone)) duplicates++;
+    else {
+      seen.add(phone);
+      leads.push({ phone, name: cleanLeadName(name || structured) });
+    }
+    open = false; name = ''; structured = ''; best = ''; firstAny = ''; skipping = false;
+  };
+
+  // One pass. Nothing larger than a single line is ever kept.
+  let start = 0;
+  const len = src.length;
+  while (start <= len) {
+    let nl = src.indexOf('\n', start);
+    if (nl === -1) nl = len;
+    let line = src.slice(start, nl);
+    start = nl + 1;
+    if (line.charCodeAt(line.length - 1) === 13) line = line.slice(0, -1);   // CR
+    if (line === '') continue;
+
+    // QUOTED-PRINTABLE SOFT WRAP. This is NOT RFC 6350 folding and the
+    // difference matters: a QP value too long for one line ends with "=" and
+    // continues on the next line with NO leading space. In the measured
+    // Samsung export, 186 of 260 QP lines wrapped this way — so treating the
+    // continuation as a fresh property cut every long Devanagari name in half
+    // AND left it encoded, because the severed tail was an incomplete UTF-8
+    // sequence that made decodeURIComponent throw straight into the fallback.
+    // Joined here, before anything else looks at the line.
+    if (qpWrap && pending !== null) {
+      pending = pending.slice(0, -1) + line;        // drop the "=", append
+      qpWrap = line.charCodeAt(line.length - 1) === 61;   // wraps can chain
+      continue;
     }
 
-    const phone = best || firstAny;
-    if (!phone) { invalid++; continue; }
-    if (seen.has(phone)) { duplicates++; continue; }
-    seen.add(phone);
-    leads.push({ phone, name: cleanLeadName(name || structured) });
+    const folded = line.charCodeAt(0) === 32 || line.charCodeAt(0) === 9;
+    if (folded) {
+      if (skipping) continue;                       // more base64, drop it
+      if (pending !== null) pending += line.slice(1);
+      continue;
+    }
+
+    // A real property line ends whatever was being collected.
+    if (pending !== null) { takeProperty(pending); pending = null; qpWrap = false; }
+    skipping = false;
+
+    const upper = line.length > 6 ? line.slice(0, 11).toUpperCase() : line.toUpperCase();
+    if (upper.indexOf('BEGIN:VCARD') === 0) {
+      if (open) closeCard();                        // a card with no END
+      open = true; name = ''; structured = ''; best = ''; firstAny = '';
+      continue;
+    }
+    if (upper.indexOf('END:VCARD') === 0) { if (open) closeCard(); continue; }
+    if (!open) continue;
+
+    if (/^(PHOTO|LOGO|SOUND|KEY)[;:]/i.test(line)) { skipping = true; continue; }
+    pending = line;
+    // Only a QP property may soft-wrap; a normal value ending in "=" is just
+    // a value ending in "=".
+    qpWrap = line.charCodeAt(line.length - 1) === 61
+          && line.slice(0, line.indexOf(':')).toUpperCase().indexOf('QUOTED-PRINTABLE') !== -1;
   }
+  if (open) closeCard();                            // file truncated mid-card
 
   return { leads, invalid, duplicates };
 }
