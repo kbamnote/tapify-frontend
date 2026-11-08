@@ -218,6 +218,124 @@ function leadsFromExtracted(rows) {
 }
 
 /**
+ * A .vcf (vCard) export → recipients.
+ *
+ * This is how a phone hands over its contacts: "export contacts" on Android
+ * and iOS both produce one .vcf holding every entry. Feeding that to
+ * leadsFromText() half-works and is worse than failing — the delimiter guess
+ * lands on ';', phone numbers survive by accident because normalisePhone
+ * strips the non-digits, and every name is lost, so a 6,000-contact import
+ * silently becomes 6,000 messages addressed to nobody.
+ *
+ * Handles the three things real exports actually do:
+ *
+ *   LINE FOLDING (RFC 6350) — a long value continues on the next line,
+ *   marked by a leading space or tab. Unfolded first, or a long name arrives
+ *   cut in half.
+ *
+ *   QUOTED-PRINTABLE — Android and feature-phone exports write non-ASCII
+ *   names as `FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:=E0=A4=B0...`.
+ *   Without decoding, every Hindi or Marathi name imports as mojibake. Its
+ *   own soft line breaks ("=" at end of line) are joined before decoding.
+ *
+ *   SEVERAL NUMBERS PER CONTACT — one person, one message, so a CELL/MOBILE
+ *   number wins over a home or work landline; otherwise the first that can
+ *   receive WhatsApp at all.
+ */
+function leadsFromVcf(text) {
+  const src = String(text == null ? '' : text).replace(/^﻿/, '');
+  if (!/BEGIN:VCARD/i.test(src)) return { leads: [], invalid: 0, duplicates: 0, notVcf: true };
+
+  // Unfold: join any line that begins with a space or tab onto the one before.
+  const lines = src.replace(/\r\n/g, '\n').replace(/\n[ \t]/g, '').split('\n');
+
+  const cards = [];
+  let cur = null;
+  for (const line of lines) {
+    if (/^BEGIN:VCARD/i.test(line)) { cur = []; continue; }
+    if (/^END:VCARD/i.test(line)) { if (cur) cards.push(cur); cur = null; continue; }
+    if (cur) cur.push(line);
+  }
+  if (cur && cur.length) cards.push(cur);      // a file truncated mid-card
+
+  // Deliberately NOT TextDecoder: it is not reliably present in React Native,
+  // and this file is shared with the app. Re-encoding the bytes as percent
+  // escapes and handing them to decodeURIComponent does the same UTF-8 decode
+  // using only what both runtimes have had for years.
+  const decodeQP = (s) => {
+    try {
+      const joined = s.replace(/=\n/g, '');     // quoted-printable soft breaks
+      let out = '';
+      for (let i = 0; i < joined.length; i++) {
+        if (joined[i] === '=' && /^[0-9A-Fa-f]{2}$/.test(joined.substr(i + 1, 2))) {
+          out += '%' + joined.substr(i + 1, 2); i += 2;
+        } else {
+          const ch = joined[i];
+          out += /[A-Za-z0-9\-_.!~*'()]/.test(ch) ? ch : encodeURIComponent(ch);
+        }
+      }
+      return decodeURIComponent(out);
+    } catch (e) {
+      // A malformed escape must not lose the whole contact — fall back to the
+      // raw value, which is still better than dropping the name.
+      return s;
+    }
+  };
+
+  const seen = new Set();
+  const leads = [];
+  let invalid = 0, duplicates = 0;
+
+  for (const card of cards) {
+    let name = '', structured = '', best = '', firstAny = '';
+
+    for (const line of card) {
+      const colon = line.indexOf(':');
+      if (colon === -1) continue;
+      const rawKey = line.slice(0, colon);
+      let value = line.slice(colon + 1);
+      const key = rawKey.split(';')[0].toUpperCase().replace(/^ITEM\d+\./, '');
+      const params = rawKey.toUpperCase();
+      if (/ENCODING=QUOTED-PRINTABLE/.test(params)) value = decodeQP(value);
+
+      if (key === 'FN') name = value;
+      else if (key === 'N' && !structured) {
+        // N is Family;Given;Middle;Prefix;Suffix — read it as Given Family.
+        const p = value.split(';');
+        structured = [p[1], p[0]].filter((x) => x && x.trim()).join(' ');
+      } else if (key === 'TEL') {
+        const phone = normalisePhone(value);
+        if (!phone) continue;
+        const isMobile = /CELL|MOBILE/.test(params);
+        // A LANDLINE CAN SURVIVE normalisePhone. "0712 2345678" is a Nagpur
+        // landline: the trunk 0 is stripped, leaving 7122345678, which starts
+        // with a 7 and passes the 6-9 mobile test. Several Indian STD codes do
+        // this (712, 731, 821, 824...), and in Nagpur it will be common.
+        //
+        // The TYPE on a vCard is real signal that a pasted CSV does not have,
+        // so it is used here rather than loosening normalisePhone — that
+        // function is shared with the app and the spreadsheet path, and
+        // guessing there would quietly drop good mobiles from every import.
+        // A number explicitly marked HOME/WORK/FAX and never CELL is taken as
+        // a landline: messaging it is a guaranteed failure, and failures are
+        // what cost the quality rating this whole import is trying to protect.
+        const landlineOnly = !isMobile && /TYPE=(HOME|WORK|FAX)|;(HOME|WORK|FAX)/.test(params);
+        if (!firstAny && !landlineOnly) firstAny = phone;
+        if (!best && isMobile) best = phone;
+      }
+    }
+
+    const phone = best || firstAny;
+    if (!phone) { invalid++; continue; }
+    if (seen.has(phone)) { duplicates++; continue; }
+    seen.add(phone);
+    leads.push({ phone, name: cleanLeadName(name || structured) });
+  }
+
+  return { leads, invalid, duplicates };
+}
+
+/**
  * Fold new recipients into the list already on screen.
  *
  * Someone already in the inbox keeps their existing entry — their name there
@@ -255,6 +373,7 @@ global.LeadImport = {
   leadsFromText: leadsFromText,
   leadsFromContacts: leadsFromContacts,
   leadsFromExtracted: leadsFromExtracted,
+  leadsFromVcf: leadsFromVcf,
   mergeLeads: mergeLeads,
 };
 })(typeof window !== 'undefined' ? window : this);

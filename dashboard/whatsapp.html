@@ -1314,12 +1314,12 @@ function renderBroadcast() {
 
       <div class="bot-card">
         <h3>2. Choose who receives it</h3>
-        <p class="sub">People who have messaged you, plus anyone you add. Up to ${BC_MAX} per broadcast.</p>
+        <p class="sub">People who have messaged you, plus anyone you add. Excel, CSV or a <b>.vcf</b> contacts export from your phone. Up to ${BC_MAX} per broadcast.</p>
 
         <div class="bc-drop">
           <label class="bc-pick">
             Upload Excel or CSV
-            <input type="file" accept=".xlsx,.xls,.csv,.tsv,.txt" onchange="bcFile(this)">
+            <input type="file" accept=".xlsx,.xls,.csv,.tsv,.txt,.vcf" onchange="bcFile(this)">
           </label>
           <p class="bc-note">A column of numbers is enough. Headings like Name and Phone are understood in any order.</p>
         </div>
@@ -1483,6 +1483,21 @@ async function bcFile(input) {
     if (!file) return;
     const xlsx = /\.(xlsx|xls)$/i.test(file.name);
     try {
+        // A phone's own "export contacts" produces one .vcf holding every
+        // entry, which is how most customers actually have their list. It must
+        // NOT go through leadsFromText: the delimiter guess lands on ';', the
+        // numbers survive by accident and every name is lost, so the import
+        // looks like it worked and then greets several thousand people by no
+        // name at all.
+        if (/\.vcf$/i.test(file.name)) {
+            const r = LeadImport.leadsFromVcf(await file.text());
+            if (r.notVcf) {
+                bcErr = true;
+                bcNote = `${file.name} does not look like a contacts export — no vCard entries in it.`;
+                return renderBroadcast();
+            }
+            return bcTake(r);
+        }
         if (!xlsx) {
             // CSV/TSV is text; no library needed.
             return bcTake(LeadImport.leadsFromText(await file.text()));
