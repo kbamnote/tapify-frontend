@@ -106,6 +106,7 @@
             <div class="im">
                 <div id="msg"></div>
                 <div id="conn"></div>
+                <div id="jd"></div>
                 <div id="leadsWrap"></div>
             </div>
         </main>
@@ -224,6 +225,74 @@
             () => note('err', 'Could not copy — select the text and copy it manually.'));
     }
 
+    /* ── JustDial ───────────────────────────────────────────────────────── */
+
+    function renderJustdial(s) {
+        if (!s || !s.connected) {
+            document.getElementById('jd').innerHTML = `
+              <div class="card">
+                <h3>JustDial</h3>
+                <p class="hint">JustDial has no API and no self-serve setup. We can give you a
+                   URL, but <b>their team has to switch it on for you</b> — their seller portal
+                   has no screen for it. Needs a paid JustDial listing.</p>
+                <button class="btn btn-ghost btn-sm" onclick="jdConnect()">Get my JustDial URL</button>
+              </div>`;
+            return;
+        }
+        document.getElementById('jd').innerHTML = `
+          <div class="card">
+            <h3>JustDial ${s.receiving
+                ? '&mdash; receiving leads'
+                : '&mdash; <span style="color:#92400e">waiting for JustDial</span>'}</h3>
+            <p class="hint">${s.receiving
+                ? 'Leads are arriving' + (s.last_push_at ? ' &mdash; last one ' + esc(s.last_push_at) : '') + '.'
+                : 'Send this URL to your JustDial account manager and ask them to forward your leads to it. Nothing arrives until their backend team sets it up, and that is out of our hands.'}</p>
+            <div class="urlbox">
+              <input class="inp" id="jdUrl" readonly value="${esc(s.push_url)}">
+              <button class="btn btn-ghost btn-sm" onclick="copyJd()">Copy</button>
+            </div>
+            <p class="hint" style="margin-top:8px">
+              Keep this URL private &mdash; anyone who has it can post leads into your inbox.
+              ${s.leads.total ? '<b>' + s.leads.total + '</b> JustDial lead(s) so far.' : ''}</p>
+            <div style="margin-top:14px">
+              <button class="btn btn-red btn-sm" onclick="jdDisconnect()">Switch off</button>
+            </div>
+          </div>`;
+    }
+
+    async function jdApi(qs, body) {
+        const r = await fetch(API + '/api/marketplace/justdial-connect.php' + (qs || ''), {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    async function jdConnect() {
+        try { renderJustdial(await jdApi('', {})); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+    async function jdDisconnect() {
+        if (!confirm('Switch JustDial off? You will also need to ask JustDial to stop sending.')) return;
+        try { await jdApi('?action=disconnect', {}); await loadJustdial(); note('okbar', 'Switched off.'); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+    function copyJd() {
+        const el = document.getElementById('jdUrl');
+        el.select(); el.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(el.value).then(
+            () => note('okbar', 'URL copied. Send it to your JustDial account manager.'),
+            () => note('err', 'Could not copy — select the text and copy it manually.'));
+    }
+    async function loadJustdial() {
+        try { renderJustdial(await jdApi()); }
+        catch (e) { renderJustdial(null); }
+    }
+
     /* ── leads ──────────────────────────────────────────────────────────── */
 
     let filters = { status: '', q: '' };
@@ -307,6 +376,9 @@
             note('err', esc(e.message));
             renderDisconnected();
         }
+        // JustDial is independent of IndiaMART — a customer may have one,
+        // both or neither, so its panel loads either way.
+        await loadJustdial();
     }
     boot();
     </script>
