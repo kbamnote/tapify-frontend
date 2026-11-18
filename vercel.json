@@ -57,6 +57,11 @@
     ],
     "redirects": [
         {
+            "source": "/dashboard/indiamart",
+            "destination": "/dashboard/b2b-marketplace",
+            "permanent": false
+        },
+        {
             "source": "/admin/login",
             "destination": "/login",
             "permanent": false

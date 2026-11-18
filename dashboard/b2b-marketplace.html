@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Market Place - Tapify</title>
+    <link rel="icon" type="image/png" href="../images/tapify-logo-green.png">
+    <link rel="preconnect" href="https://app.tapify.co.in" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../admin-style.css">
+    <style>
+        .im { max-width: 1150px; margin: 20px auto; padding: 0 20px 48px; }
+        .card { background:#fff; border:1px solid #e9e3dc; border-radius:15px; padding:18px; margin-bottom:14px; }
+        .card h3 { margin:0 0 4px; font-size:.95rem; font-weight:800; color:#153e3f; }
+        .card .hint { margin:0 0 12px; font-size:.8rem; color:#6b7280; line-height:1.5; }
+
+        .inp { border:1px solid #e9e3dc; border-radius:10px; padding:10px 12px; font:inherit;
+               font-size:.87rem; background:#fff; width:100%; max-width:420px; }
+        .btn { background:#153e3f; color:#fff; border:0; border-radius:10px; padding:10px 18px;
+               font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; text-decoration:none;
+               display:inline-block; }
+        .btn:disabled { opacity:.5; cursor:default; }
+        .btn-ghost { background:none; color:#153e3f; border:1px solid #153e3f; }
+        .btn-sm { padding:6px 12px; font-size:.77rem; }
+        .btn-red { color:#b91c1c; border-color:#b91c1c; background:none; border:1px solid #b91c1c; }
+
+        .steps { margin:0 0 14px; padding-left:18px; font-size:.83rem; color:#374151; line-height:1.8; }
+        .steps code { background:#f4f4f5; padding:1px 5px; border-radius:4px; font-size:.95em; }
+
+        .stat-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+        .stat { flex:1; min-width:120px; background:#fff; border:1px solid #e9e3dc; border-radius:12px; padding:12px 14px; }
+        .stat b { display:block; font-size:1.4rem; color:#153e3f; }
+        .stat span { font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:#6b7280; }
+
+        .warn { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:10px;
+                padding:10px 12px; font-size:.82rem; margin-bottom:10px; line-height:1.55; }
+        .okbar { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; border-radius:10px;
+                 padding:10px 12px; font-size:.82rem; margin-bottom:10px; }
+        .err { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:10px;
+               padding:10px 12px; font-size:.82rem; margin-bottom:10px; }
+
+        .urlbox { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .urlbox input { flex:1; min-width:260px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.76rem; }
+
+        table { width:100%; border-collapse:collapse; font-size:.84rem; }
+        th { text-align:left; font-size:.7rem; text-transform:uppercase; letter-spacing:.5px;
+             color:#6b7280; padding:8px 6px; border-bottom:1px solid #e9e3dc; }
+        td { padding:9px 6px; border-bottom:1px solid #f0ece6; vertical-align:top; }
+        tr.unread td { background:#fcfdf7; }
+        .pill { display:inline-block; font-size:.68rem; font-weight:700; padding:2px 8px;
+                border-radius:20px; background:#f1f5f9; color:#475569; }
+        .muted { color:#6b7280; font-size:.78rem; }
+        .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+        .filters .inp { max-width:220px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="dashboard" class="sidebar-logo">
+                <img src="../images/tapify-logo-green.png" alt="Tapify">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard" class="nav-item"><i class="fas fa-chart-pie nav-icon"></i><span>Dashboard</span></a>
+            <a href="google-business" class="nav-item"><i class="fab fa-google nav-icon" style="color:#4285F4"></i><span>Google Business</span></a>
+            <a href="website-builder" class="nav-item"><i class="fas fa-globe nav-icon"></i><span>Website Builder</span></a>
+            <a href="whatsapp" class="nav-item"><i class="fab fa-whatsapp nav-icon" style="color:#25D366"></i><span>WhatsApp</span></a>
+            <a href="social" class="nav-item"><i class="fas fa-bullhorn nav-icon" style="color:#e1306c"></i><span>Social Media</span></a>
+            <a href="inbox" class="nav-item"><i class="fas fa-inbox nav-icon" style="color:#7c3aed"></i><span>Inbox</span></a>
+            <a href="site-orders" class="nav-item"><i class="fas fa-receipt nav-icon"></i><span>Orders</span></a>
+            <a href="site-inquiries" class="nav-item"><i class="fas fa-envelope-open-text nav-icon"></i><span>Inquiries</span></a>
+            <a href="site-feedback" class="nav-item" data-feature="feedback" style="display:none"><i class="fas fa-star nav-icon"></i><span>Feedback</span></a>
+            <a href="site-appointments" class="nav-item"><i class="fas fa-calendar-day nav-icon"></i><span>Appointments</span></a>
+            <a href="manage-subscription?tab=gateway" class="nav-item"><i class="fas fa-credit-card nav-icon" style="color:#16a34a"></i><span>Payment Gateway</span></a>
+            <a href="my-designs" class="nav-item"><i class="fas fa-palette nav-icon" style="color:#f59e0b"></i><span>My Designs</span></a>
+            <a href="link-pages" class="nav-item"><i class="fas fa-link nav-icon" style="color:#0ea5e9"></i><span>Link Page</span></a>
+            <a href="lead-extractor" class="nav-item"><i class="fas fa-magnifying-glass-location nav-icon" style="color:#0f766e"></i><span>Lead Extractor</span></a>
+            <a href="b2b-marketplace" class="nav-item active"><i class="fas fa-store nav-icon" style="color:#2d3092"></i><span>B2B Market Place</span></a>
+            <a href="profile" class="nav-item"><i class="fas fa-user nav-icon"></i><span>My Profile</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="manage-subscription" class="subscription-btn"><i class="fas fa-gem"></i><span>Manage Subscription</span></a>
+            <a href="#" onclick="logout()" class="nav-item text-danger"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </aside>
+
+    <div class="admin-main" id="adminMain">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title">B2B Market Place</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-new-vcard" onclick="boot()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="im">
+                <div id="msg"></div>
+                <div id="conn"></div>
+                <div id="jd"></div>
+                <div id="leadsWrap"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../admin.js"></script>
+    <script>
+    const API = 'https://app.tapify.co.in';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+        c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    async function api(path, body) {
+        const r = await fetch(API + '/api/marketplace/' + path, {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    const note = (cls, html) => { document.getElementById('msg').innerHTML =
+        '<div class="' + cls + '">' + html + '</div>'; };
+
+    /* ── connect panel ──────────────────────────────────────────────────── */
+
+    function renderDisconnected() {
+        document.getElementById('conn').innerHTML = `
+          <div class="card">
+            <h3>Connect your IndiaMART account</h3>
+            <p class="hint">Your buyer enquiries land here automatically, so you can reply on
+               WhatsApp without logging into IndiaMART. Needs a paid IndiaMART seller account.</p>
+            <ol class="steps">
+              <li>Open <code>seller.indiamart.com/leadmanager/crmapi</code> and sign in.</li>
+              <li>Generate a <b>Pull API key</b> (version 2) and copy it.</li>
+              <li>Paste it below.</li>
+            </ol>
+            <div class="urlbox">
+              <input class="inp" id="key" type="password" autocomplete="off"
+                     placeholder="Paste your IndiaMART Pull API key">
+              <button class="btn" id="goBtn" onclick="connect()">Connect</button>
+            </div>
+            <p class="hint" style="margin-top:10px">
+              Treat this key like a password — anyone holding it can read every lead in your
+              IndiaMART account. We never show it again once saved.</p>
+          </div>`;
+    }
+
+    function renderConnected(s) {
+        const warn = (s.warnings || []).map(w => '<div class="warn">' + esc(w) + '</div>').join('');
+        document.getElementById('conn').innerHTML = warn + `
+          <div class="stat-row">
+            <div class="stat"><b>${s.leads.total}</b><span>Total leads</span></div>
+            <div class="stat"><b>${s.leads.unread}</b><span>Unread</span></div>
+            <div class="stat"><b>${s.leads.last7}</b><span>Last 7 days</span></div>
+          </div>
+          <div class="card">
+            <h3>IndiaMART connected</h3>
+            <p class="hint">Key <code>${esc(s.api_key)}</code> &middot;
+               last checked ${s.last_pull_at ? esc(s.last_pull_at) : 'not yet'}
+               ${s.last_status ? '&middot; ' + esc(s.last_status) : ''}</p>
+
+            <h3 style="margin-top:16px">Get leads instantly (optional)</h3>
+            <p class="hint">Without this, we check IndiaMART every few minutes. Add the URL below
+               in your seller panel and leads arrive the moment they are raised.</p>
+            <ol class="steps">
+              <li>IndiaMART &rarr; <b>Lead Manager</b> &rarr; three-dot menu &rarr;
+                  <b>Import/Export Leads</b> &rarr; <b>Push API</b>.</li>
+              <li>Choose <b>Other</b> as the CRM, name it <code>Tapify</code>, and paste this URL:</li>
+            </ol>
+            <div class="urlbox">
+              <input class="inp" id="pushUrl" readonly value="${esc(s.push_url)}">
+              <button class="btn btn-ghost btn-sm" onclick="copyUrl()">Copy</button>
+            </div>
+            <p class="hint" style="margin-top:8px">
+              ${s.push_enabled
+                 ? 'Instant delivery is active' + (s.last_push_at ? ' &mdash; last lead ' + esc(s.last_push_at) : '') + '.'
+                 : 'Not active yet. This URL is a secret &mdash; anyone who has it can post leads into your inbox, so do not share it in a screenshot.'}
+            </p>
+            <div style="margin-top:16px">
+              <button class="btn btn-red btn-sm" onclick="disconnect()">Disconnect</button>
+            </div>
+          </div>`;
+    }
+
+    async function connect() {
+        const key = document.getElementById('key').value.trim();
+        if (!key) return note('err', 'Paste your Pull API key first.');
+        const btn = document.getElementById('goBtn');
+        btn.disabled = true; btn.textContent = 'Checking…';
+        try {
+            const r = await api('indiamart-connect.php', { api_key: key });
+            note('okbar', 'Connected. ' + (r.imported
+                ? r.imported + ' recent lead(s) imported.'
+                : 'No leads in the last few days — new ones will appear here.'));
+            await boot();
+        } catch (e) {
+            note('err', esc(e.message));
+            btn.disabled = false; btn.textContent = 'Connect';
+        }
+    }
+
+    async function disconnect() {
+        if (!confirm('Disconnect IndiaMART? Leads already received stay here.')) return;
+        try { await api('indiamart-disconnect.php', {}); note('okbar', 'Disconnected.'); await boot(); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+
+    function copyUrl() {
+        const el = document.getElementById('pushUrl');
+        el.select(); el.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(el.value).then(
+            () => note('okbar', 'URL copied. Paste it into IndiaMART, then keep it private.'),
+            () => note('err', 'Could not copy — select the text and copy it manually.'));
+    }
+
+    /* ── JustDial ───────────────────────────────────────────────────────── */
+
+    function renderJustdial(s) {
+        if (!s || !s.connected) {
+            document.getElementById('jd').innerHTML = `
+              <div class="card">
+                <h3>JustDial</h3>
+                <p class="hint">JustDial has no API and no self-serve setup. We can give you a
+                   URL, but <b>their team has to switch it on for you</b> — their seller portal
+                   has no screen for it. Needs a paid JustDial listing.</p>
+                <button class="btn btn-ghost btn-sm" onclick="jdConnect()">Get my JustDial URL</button>
+              </div>`;
+            return;
+        }
+        document.getElementById('jd').innerHTML = `
+          <div class="card">
+            <h3>JustDial ${s.receiving
+                ? '&mdash; receiving leads'
+                : '&mdash; <span style="color:#92400e">waiting for JustDial</span>'}</h3>
+            <p class="hint">${s.receiving
+                ? 'Leads are arriving' + (s.last_push_at ? ' &mdash; last one ' + esc(s.last_push_at) : '') + '.'
+                : 'Send this URL to your JustDial account manager and ask them to forward your leads to it. Nothing arrives until their backend team sets it up, and that is out of our hands.'}</p>
+            <div class="urlbox">
+              <input class="inp" id="jdUrl" readonly value="${esc(s.push_url)}">
+              <button class="btn btn-ghost btn-sm" onclick="copyJd()">Copy</button>
+            </div>
+            <p class="hint" style="margin-top:8px">
+              Keep this URL private &mdash; anyone who has it can post leads into your inbox.
+              ${s.leads.total ? '<b>' + s.leads.total + '</b> JustDial lead(s) so far.' : ''}</p>
+            <div style="margin-top:14px">
+              <button class="btn btn-red btn-sm" onclick="jdDisconnect()">Switch off</button>
+            </div>
+          </div>`;
+    }
+
+    async function jdApi(qs, body) {
+        const r = await fetch(API + '/api/marketplace/justdial-connect.php' + (qs || ''), {
+            method: body ? 'POST' : 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.success) throw new Error(j.message || ('Request failed (' + r.status + ')'));
+        return j.data || {};
+    }
+
+    async function jdConnect() {
+        try { renderJustdial(await jdApi('', {})); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+    async function jdDisconnect() {
+        if (!confirm('Switch JustDial off? You will also need to ask JustDial to stop sending.')) return;
+        try { await jdApi('?action=disconnect', {}); await loadJustdial(); note('okbar', 'Switched off.'); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+    function copyJd() {
+        const el = document.getElementById('jdUrl');
+        el.select(); el.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(el.value).then(
+            () => note('okbar', 'URL copied. Send it to your JustDial account manager.'),
+            () => note('err', 'Could not copy — select the text and copy it manually.'));
+    }
+    async function loadJustdial() {
+        try { renderJustdial(await jdApi()); }
+        catch (e) { renderJustdial(null); }
+    }
+
+    /* ── leads ──────────────────────────────────────────────────────────── */
+
+    let filters = { status: '', q: '' };
+
+    async function loadLeads() {
+        const qs = new URLSearchParams();
+        if (filters.status) qs.set('status', filters.status);
+        if (filters.q) qs.set('q', filters.q);
+        const d = await api('leads.php' + (qs.toString() ? '?' + qs : ''));
+        renderLeads(d.leads || []);
+    }
+
+    function waLink(phone, name, source) {
+        const n = String(phone || '').replace(/[^0-9]/g, '');
+        if (!n) return '';
+        const num = n.length === 10 ? '91' + n : n;
+        const src = String(source || '').toLowerCase();
+        const sourceName = src.includes('justdial') ? 'JustDial' : (src.includes('indiamart') ? 'IndiaMART' : '');
+        const msg = 'Hi ' + (name || '') + ', thank you for your enquiry' + (sourceName ? ' on ' + sourceName : '') + '.';
+        return 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+    }
+
+    function renderLeads(rows) {
+        const head = `
+          <div class="filters">
+            <input class="inp" placeholder="Search name, phone, product…" value="${esc(filters.q)}"
+                   oninput="filters.q=this.value" onkeydown="if(event.key==='Enter')loadLeads()">
+            <select class="inp" onchange="filters.status=this.value;loadLeads()">
+              <option value="">All statuses</option>
+              ${['new','contacted','interested','not_interested','converted'].map(s =>
+                `<option value="${s}"${filters.status===s?' selected':''}>${s.replace('_',' ')}</option>`).join('')}
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="loadLeads()">Apply</button>
+          </div>`;
+
+        if (!rows.length) {
+            document.getElementById('leadsWrap').innerHTML = head +
+              '<div class="card"><p class="hint" style="margin:0">No leads yet. ' +
+              'New B2B marketplace enquiries will appear here within a few minutes.</p></div>';
+            return;
+        }
+
+        document.getElementById('leadsWrap').innerHTML = head + '<div class="card"><table>' +
+          '<thead><tr><th>Buyer</th><th>Enquiry</th><th>When</th><th>Status</th><th></th></tr></thead><tbody>' +
+          rows.map(l => {
+            const wa = waLink(l.phone, l.name, l.source || l.marketplace);
+            return `<tr class="${l.is_read == 0 ? 'unread' : ''}">
+              <td><b>${esc(l.name)}</b>${l.company ? '<div class="muted">' + esc(l.company) + '</div>' : ''}
+                  ${l.phone ? '<div class="muted">' + esc(l.phone) + '</div>' : ''}
+                  ${[l.city, l.state].filter(Boolean).length
+                      ? '<div class="muted">' + esc([l.city, l.state].filter(Boolean).join(', ')) + '</div>' : ''}</td>
+              <td>${l.product ? '<b>' + esc(l.product) + '</b><br>' : ''}
+                  <span class="muted">${esc((l.message || '').slice(0, 180))}</span>
+                  ${l.query_type ? ' <span class="pill">' + esc(l.query_type) + '</span>' : ''}</td>
+              <td class="muted">${esc(l.queried_at || l.created_at || '')}</td>
+              <td><select class="inp" style="padding:5px 8px;font-size:.76rem"
+                     onchange="setStatus(${l.id}, this.value)">
+                    ${['new','contacted','interested','not_interested','converted'].map(s =>
+                      `<option value="${s}"${l.status===s?' selected':''}>${s.replace('_',' ')}</option>`).join('')}
+                  </select></td>
+              <td>${wa ? '<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="' + esc(wa) +
+                     '" onclick="markRead(' + l.id + ')"><i class="fab fa-whatsapp"></i> Reply</a>' : ''}</td>
+            </tr>`;
+          }).join('') + '</tbody></table></div>';
+    }
+
+    async function setStatus(id, status) {
+        try { await api('leads.php', { id, status, is_read: 1 }); }
+        catch (e) { note('err', esc(e.message)); }
+    }
+    async function markRead(id) {
+        try { await api('leads.php', { id, is_read: 1 }); } catch (e) { /* not worth interrupting */ }
+    }
+
+    /* ── boot ───────────────────────────────────────────────────────────── */
+
+    async function boot() {
+        try {
+            const s = await api('indiamart-status.php');
+            if (s.connected) { renderConnected(s); await loadLeads(); }
+            else { renderDisconnected(); document.getElementById('leadsWrap').innerHTML = ''; }
+        } catch (e) {
+            note('err', esc(e.message));
+            renderDisconnected();
+        }
+        // JustDial is independent of IndiaMART — a customer may have one,
+        // both or neither, so its panel loads either way.
+        await loadJustdial();
+    }
+    boot();
+    </script>
+</body>
+</html>

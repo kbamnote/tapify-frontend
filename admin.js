@@ -542,6 +542,7 @@ const NAV_ALIASES = {
     // listing the reviews are about. reviews.html still works for anyone with
     // a bookmark, so point its highlight at where the feature now lives.
     'reviews': 'google-business',
+    'indiamart': 'b2b-marketplace',
 };
 // settings.html and ai-growth.html are deliberately absent: nothing links to
 // either any more, so there is no sidebar item they could honestly light up.
