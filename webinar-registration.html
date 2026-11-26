@@ -31,9 +31,28 @@ h3{font-size:1.05rem;margin:0 0 6px}
 
 /* banner video */
 .banner-video-wrap{max-width:1080px;margin:0 auto 36px;padding:0 20px}
-.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15)}
-.banner-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-@media(max-width:860px){.banner-video-wrap{margin-bottom:26px}}
+.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.banner-video{width:100%;height:100%;display:block;object-fit:cover;border-radius:16px;cursor:pointer}
+/* sound toggle button */
+.sound-toggle-btn{position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,.75);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 15px;font-family:inherit;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:7px;cursor:pointer;z-index:10;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .2s ease;box-shadow:0 4px 15px rgba(0,0,0,.4);user-select:none}
+.sound-toggle-btn:hover{background:rgba(21,62,63,.95);border-color:var(--gold);transform:scale(1.04)}
+.sound-toggle-btn i{font-size:.92rem;color:var(--gold)}
+.sound-toggle-btn.unmuted{background:rgba(21,62,63,.85);border-color:#10b981}
+.sound-toggle-btn.unmuted i{color:#10b981}
+@media(max-width:860px){
+  .hero{padding:28px 0 44px}
+  .banner-video-wrap{margin-bottom:24px;padding:0 16px}
+  .banner-video-container{border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+  .banner-video{border-radius:12px}
+  .sound-toggle-btn{bottom:12px;right:12px;padding:7px 13px;font-size:.78rem}
+}
+@media(max-width:480px){
+  .hero{padding:20px 0 36px}
+  .banner-video-wrap{margin-bottom:18px;padding:0 12px}
+  .banner-video-container{border-radius:10px}
+  .banner-video{border-radius:10px}
+  .sound-toggle-btn{bottom:10px;right:10px;padding:6px 11px;font-size:.73rem}
+}
 
 /* hero */
 .hero{background:linear-gradient(160deg,#153e3f 0%,#1d5253 60%,#27696a 100%);color:#fff;padding:54px 0 60px}
@@ -144,7 +163,13 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="hero">
   <div class="banner-video-wrap">
     <div class="banner-video-container">
-      <iframe src="https://drive.google.com/file/d/1XCMyLeWXlA4RNT6IrRsBku8jGFPMI8I-/preview" title="Webinar Preview Video" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      <video class="banner-video" autoplay loop playsinline preload="auto" disablepictureinpicture disableremoteplayback>
+        <source src="images/webinar-banner.mp4" type="video/mp4">
+        <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
+      </video>
+      <button class="sound-toggle-btn" id="soundToggleBtn" type="button" aria-label="Toggle sound">
+        <i class="fas fa-volume-xmark"></i> <span>Tap for Sound</span>
+      </button>
     </div>
   </div>
   <div class="wrap">
@@ -331,6 +356,77 @@ const WEBINAR = {
 const API = 'https://app.tapify.co.in/api/public/webinar-register.php';
 
 document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Auto-play and smart sound management
+const bannerVideo = document.querySelector('.banner-video');
+const soundBtn = document.getElementById('soundToggleBtn');
+
+function updateSoundUI() {
+  if (!soundBtn || !bannerVideo) return;
+  if (bannerVideo.muted) {
+    soundBtn.innerHTML = '<i class="fas fa-volume-xmark"></i> <span>Tap for Sound</span>';
+    soundBtn.classList.remove('unmuted');
+  } else {
+    soundBtn.innerHTML = '<i class="fas fa-volume-high"></i> <span>Sound On</span>';
+    soundBtn.classList.add('unmuted');
+  }
+}
+
+if (bannerVideo) {
+  // 1. First, attempt unmuted playback directly
+  bannerVideo.muted = false;
+  bannerVideo.volume = 1;
+  const p = bannerVideo.play();
+
+  if (p !== undefined) {
+    p.then(() => {
+      // Browser allowed unmuted autoplay!
+      updateSoundUI();
+    }).catch(() => {
+      // Browser policy requires mute for initial autoplay
+      bannerVideo.muted = true;
+      bannerVideo.play().catch(() => {});
+      updateSoundUI();
+
+      // Automatically enable sound on the user's very first interaction on the page!
+      const unmuteOnInteraction = () => {
+        bannerVideo.muted = false;
+        bannerVideo.volume = 1;
+        bannerVideo.play().catch(() => {});
+        updateSoundUI();
+        ['click', 'touchstart', 'keydown'].forEach(evt => {
+          document.removeEventListener(evt, unmuteOnInteraction);
+        });
+      };
+      ['click', 'touchstart', 'keydown'].forEach(evt => {
+        document.addEventListener(evt, unmuteOnInteraction, { once: true, passive: true });
+      });
+    });
+  }
+
+  // Toggle sound when clicking the sound button
+  if (soundBtn) {
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      bannerVideo.muted = !bannerVideo.muted;
+      if (!bannerVideo.muted) {
+        bannerVideo.volume = 1;
+        bannerVideo.play().catch(() => {});
+      }
+      updateSoundUI();
+    });
+  }
+
+  // Also toggle sound when clicking directly on the video
+  bannerVideo.addEventListener('click', () => {
+    bannerVideo.muted = !bannerVideo.muted;
+    if (!bannerVideo.muted) {
+      bannerVideo.volume = 1;
+      bannerVideo.play().catch(() => {});
+    }
+    updateSoundUI();
+  });
+}
 
 // Fill every [data-wb] placeholder from the config above.
 document.querySelectorAll('[data-wb]').forEach(el => {
