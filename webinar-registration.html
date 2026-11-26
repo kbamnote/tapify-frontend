@@ -155,7 +155,7 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="hero">
   <div class="banner-video-wrap">
     <div class="banner-video-container">
-      <video class="banner-video" autoplay loop playsinline preload="auto" disablepictureinpicture disableremoteplayback>
+      <video class="banner-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback>
         <source src="images/webinar-banner.mp4" type="video/mp4">
         <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
       </video>
@@ -163,38 +163,30 @@ footer a{color:#ffd79a;text-decoration:none}
       (function() {
         var vid = document.querySelector('.banner-video');
         if (!vid) return;
+
+        // Guarantee immediate video motion on page load/refresh
+        vid.play().catch(function() {});
+
+        // Attempt immediate unmuted playback
         vid.muted = false;
         vid.volume = 1;
-
-        var audioStarted = false;
-        function startSyncAudio() {
-          if (audioStarted) return;
-          vid.muted = false;
-          vid.volume = 1;
-          if (vid.currentTime > 0.2) {
-            vid.currentTime = 0;
-          }
-          var playP = vid.play();
-          if (playP !== undefined) {
-            playP.then(function() {
-              audioStarted = true;
-              cleanup();
-            }).catch(function() {});
-          }
-        }
-
         var p = vid.play();
         if (p !== undefined) {
           p.then(function() {
-            audioStarted = true;
+            // Direct sound allowed by browser
           }).catch(function() {
+            // Keep playing continuously on refresh
             vid.muted = true;
             vid.play().catch(function() {});
+
             var events = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown', 'wheel', 'mousemove'];
-            function cleanup() {
-              events.forEach(function(e) { window.removeEventListener(e, startSyncAudio, true); });
+            function enableSound() {
+              vid.muted = false;
+              vid.volume = 1;
+              vid.play().catch(function() {});
+              events.forEach(function(e) { window.removeEventListener(e, enableSound, true); });
             }
-            events.forEach(function(e) { window.addEventListener(e, startSyncAudio, { capture: true, passive: true }); });
+            events.forEach(function(e) { window.addEventListener(e, enableSound, { capture: true, passive: true }); });
           });
         }
       })();
