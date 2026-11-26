@@ -31,8 +31,8 @@ h3{font-size:1.05rem;margin:0 0 6px}
 
 /* banner video */
 .banner-video-wrap{max-width:1080px;margin:0 auto 36px;padding:0 20px}
-.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
-.banner-video{width:100%;height:100%;display:block;object-fit:cover;border-radius:16px}
+.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.banner-video{width:100%;height:100%;display:block;object-fit:cover;border-radius:16px;pointer-events:none;user-select:none;-webkit-user-select:none}
 @media(max-width:860px){
   .hero{padding:28px 0 44px}
   .banner-video-wrap{margin-bottom:24px;padding:0 16px}
@@ -155,7 +155,7 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="hero">
   <div class="banner-video-wrap">
     <div class="banner-video-container">
-      <video class="banner-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback>
+      <video class="banner-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback>
         <source src="images/webinar-banner.mp4" type="video/mp4">
         <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
       </video>
@@ -164,31 +164,54 @@ footer a{color:#ffd79a;text-decoration:none}
         var vid = document.querySelector('.banner-video');
         if (!vid) return;
 
-        // Guarantee immediate video motion on page load/refresh
+        // Auto-resume if anything attempts to pause it (never stop on hover)
+        vid.addEventListener('pause', function() {
+          vid.play().catch(function() {});
+        });
+        vid.addEventListener('ended', function() {
+          vid.currentTime = 0;
+          vid.play().catch(function() {});
+        });
+
+        // Guarantee immediate video playback on load/refresh
         vid.play().catch(function() {});
 
-        // Attempt immediate unmuted playback
-        vid.muted = false;
-        vid.volume = 1;
-        var p = vid.play();
-        if (p !== undefined) {
-          p.then(function() {
-            // Direct sound allowed by browser
-          }).catch(function() {
-            // Keep playing continuously on refresh
-            vid.muted = true;
-            vid.play().catch(function() {});
-
-            var events = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown', 'wheel', 'mousemove'];
-            function enableSound() {
-              vid.muted = false;
-              vid.volume = 1;
-              vid.play().catch(function() {});
-              events.forEach(function(e) { window.removeEventListener(e, enableSound, true); });
-            }
-            events.forEach(function(e) { window.addEventListener(e, enableSound, { capture: true, passive: true }); });
+        var events = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'click', 'keydown'];
+        function cleanup() {
+          events.forEach(function(e) {
+            window.removeEventListener(e, onInteract, true);
+            document.removeEventListener(e, onInteract, true);
           });
         }
+        function tryUnmute() {
+          vid.muted = false;
+          vid.volume = 1;
+          var p = vid.play();
+          if (p !== undefined) {
+            p.then(function() {
+              cleanup();
+            }).catch(function() {
+              // If browser blocks audio before touch, keep video looping smoothly
+              vid.muted = true;
+              vid.play().catch(function() {});
+            });
+          }
+        }
+
+        function onInteract() {
+          tryUnmute();
+        }
+
+        // Try unmuting immediately on start
+        tryUnmute();
+        document.addEventListener('DOMContentLoaded', tryUnmute);
+        window.addEventListener('load', tryUnmute);
+
+        // On mobile and desktop, unlock audio on the very first touch/interaction anywhere on the screen
+        events.forEach(function(e) {
+          window.addEventListener(e, onInteract, { capture: true, passive: true });
+          document.addEventListener(e, onInteract, { capture: true, passive: true });
+        });
       })();
       </script>
     </div>
