@@ -29,6 +29,12 @@ h3{font-size:1.05rem;margin:0 0 6px}
 .topbar{background:var(--ink);color:#fff;text-align:center;padding:11px 16px;font-size:.92rem;font-weight:600}
 .topbar b{color:#ffd79a}
 
+/* banner video */
+.banner-video-wrap{max-width:1080px;margin:0 auto 36px;padding:0 20px}
+.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15)}
+.banner-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+@media(max-width:860px){.banner-video-wrap{margin-bottom:26px}}
+
 /* hero */
 .hero{background:linear-gradient(160deg,#153e3f 0%,#1d5253 60%,#27696a 100%);color:#fff;padding:54px 0 60px}
 .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:start}
@@ -136,6 +142,11 @@ footer a{color:#ffd79a;text-decoration:none}
 </div>
 
 <section class="hero">
+  <div class="banner-video-wrap">
+    <div class="banner-video-container">
+      <iframe src="https://drive.google.com/file/d/1XCMyLeWXlA4RNT6IrRsBku8jGFPMI8I-/preview" title="Webinar Preview Video" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+  </div>
   <div class="wrap">
     <div>
       <span class="pill" data-wb="duration">FREE LIVE SESSION · 90 MINUTES</span>
