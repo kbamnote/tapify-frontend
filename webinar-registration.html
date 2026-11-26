@@ -159,6 +159,46 @@ footer a{color:#ffd79a;text-decoration:none}
         <source src="images/webinar-banner.mp4" type="video/mp4">
         <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
       </video>
+      <script>
+      (function() {
+        var vid = document.querySelector('.banner-video');
+        if (!vid) return;
+        vid.muted = false;
+        vid.volume = 1;
+
+        var audioStarted = false;
+        function startSyncAudio() {
+          if (audioStarted) return;
+          vid.muted = false;
+          vid.volume = 1;
+          if (vid.currentTime > 0.2) {
+            vid.currentTime = 0;
+          }
+          var playP = vid.play();
+          if (playP !== undefined) {
+            playP.then(function() {
+              audioStarted = true;
+              cleanup();
+            }).catch(function() {});
+          }
+        }
+
+        var p = vid.play();
+        if (p !== undefined) {
+          p.then(function() {
+            audioStarted = true;
+          }).catch(function() {
+            vid.muted = true;
+            vid.play().catch(function() {});
+            var events = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown', 'wheel', 'mousemove'];
+            function cleanup() {
+              events.forEach(function(e) { window.removeEventListener(e, startSyncAudio, true); });
+            }
+            events.forEach(function(e) { window.addEventListener(e, startSyncAudio, { capture: true, passive: true }); });
+          });
+        }
+      })();
+      </script>
     </div>
   </div>
   <div class="wrap">
@@ -345,31 +385,6 @@ const WEBINAR = {
 const API = 'https://app.tapify.co.in/api/public/webinar-register.php';
 
 document.getElementById('yr').textContent = new Date().getFullYear();
-
-// Video banner: sound always on, no buttons
-const bannerVideo = document.querySelector('.banner-video');
-if (bannerVideo) {
-  bannerVideo.muted = false;
-  bannerVideo.volume = 1;
-
-  // 1. Attempt unmuted playback immediately
-  bannerVideo.play().catch(() => {
-    // If browser autoplay policy requires user interaction before audio,
-    // start visually muted, then immediately turn sound ON upon any user touch/click/scroll/keypress
-    bannerVideo.muted = true;
-    bannerVideo.play().catch(() => {});
-
-    const activateAudio = () => {
-      bannerVideo.muted = false;
-      bannerVideo.volume = 1;
-      bannerVideo.play().catch(() => {});
-    };
-
-    ['pointerdown', 'touchstart', 'click', 'scroll', 'keydown'].forEach(evt => {
-      window.addEventListener(evt, activateAudio, { once: true, passive: true });
-    });
-  });
-}
 
 // Fill every [data-wb] placeholder from the config above.
 document.querySelectorAll('[data-wb]').forEach(el => {
