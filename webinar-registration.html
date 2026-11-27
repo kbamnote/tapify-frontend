@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How to Grow Your Business With Tapify — Free Live Session | Tapify</title>
-<meta name="description" content="A free 90-minute live session on growing your business with Tapify: get found on Google, collect reviews, never miss a WhatsApp enquiry, and turn a card tap into a customer. Sunday 15 November, 11:30 AM.">
+<meta name="description" content="A free 90-minute live session on growing your business with Tapify: get found on Google, collect reviews, never miss a WhatsApp enquiry, and turn a card tap into a customer. Sunday 6 December, 11:30 AM.">
 <link rel="canonical" href="https://www.tapify.co.in/webinar-registration">
 <meta property="og:title" content="How to Grow Your Business With Tapify — Free Live Session">
-<meta property="og:description" content="More customers found you on Google, more reviews, no enquiry missed. Ninety minutes, live on Google Meet, free. Sunday 15 November, 11:30 AM IST.">
+<meta property="og:description" content="More customers found you on Google, more reviews, no enquiry missed. Ninety minutes, live on Google Meet, free. Sunday 6 December 2026, 11:30 AM IST.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.tapify.co.in/webinar-registration">
 <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
@@ -26,9 +26,28 @@ h3{font-size:1.05rem;margin:0 0 6px}
 .lead{color:var(--muted);margin:0 auto 28px;max-width:720px}
 .center{text-align:center}
 
-/* top bar */
-.topbar{background:var(--ink);color:#fff;text-align:center;padding:11px 16px;font-size:.92rem;font-weight:600}
+/* top bar & curiosity timer */
+.topbar{background:linear-gradient(90deg,#0a2425 0%,#153e3f 50%,#0a2425 100%);color:#fff;padding:9px 16px;font-size:.86rem;border-bottom:1px solid rgba(255,215,154,.25);box-shadow:0 4px 15px rgba(0,0,0,.25);position:relative;z-index:10}
 .topbar b{color:#ffd79a}
+.topbar-content{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 14px}
+.topbar-item{display:inline-flex;align-items:center;gap:6px}
+.topbar-sep{color:rgba(255,255,255,.3)}
+.topbar-timer-wrap{display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,.4);padding:3px 12px;border-radius:999px;border:1px solid rgba(209,154,102,.55)}
+.topbar-timer-label{color:#ffd79a;font-size:.8rem;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.topbar-countdown{display:inline-flex;align-items:center;gap:3px}
+.t-box{background:#1a4d4e;border:1px solid rgba(255,215,154,.35);border-radius:5px;padding:1px 6px;display:inline-flex;align-items:baseline;gap:1px}
+.t-box b{color:#fff;font-size:.85rem;font-family:monospace,sans-serif}
+.t-box small{color:#ffd79a;font-size:.66rem;font-weight:700}
+.t-colon{color:#ffd79a;font-weight:700;font-size:.78rem}
+.pulse-icon{display:inline-block;animation:pulse-flame 1.3s infinite ease-in-out}
+@keyframes pulse-flame{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+
+/* card urgency timer */
+.card-timer-header{margin-bottom:12px}
+.card-urgency{display:flex;align-items:center;gap:7px;background:rgba(209,154,102,.12);border:1px dashed rgba(209,154,102,.5);border-radius:8px;padding:7px 10px;font-size:.8rem;color:#2b1c0c;margin-top:6px}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#e53e3e;box-shadow:0 0 0 0 rgba(229,62,62,.7);animation:dot-pulse 1.4s infinite;flex-shrink:0}
+@keyframes dot-pulse{0%{box-shadow:0 0 0 0 rgba(229,62,62,.7)}70%{box-shadow:0 0 0 6px rgba(229,62,62,0)}100%{box-shadow:0 0 0 0 rgba(229,62,62,0)}}
+.card-timer-inline{font-weight:800;color:#b42318;font-family:monospace,sans-serif;margin-left:auto;font-size:.84rem}
 
 /* banner video */
 .banner-video-wrap{max-width:1080px;margin:0 auto 36px;padding:0 20px}
@@ -164,9 +183,26 @@ footer a{color:#ffd79a;text-decoration:none}
 <body>
 
 <div class="topbar">
-  📅 <b><span data-wb="dateLong">Sunday, 15 November 2026</span></b> &nbsp;·&nbsp;
-  <span data-wb="time">11:30 AM IST</span> &nbsp;·&nbsp; Live on Google Meet &nbsp;·&nbsp;
-  <b>Workshop Fee: <s style="opacity:.75;font-weight:500">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span></b>
+  <div class="topbar-content">
+    <span class="topbar-item"><span class="pulse-icon">🔥</span> <b>LIVE WORKSHOP:</b> 📅 <b><span data-wb="dateLong">Sunday, 6 December 2026</span></b></span>
+    <span class="topbar-sep">·</span>
+    <span class="topbar-item">⏰ <b><span data-wb="time">11:30 AM IST</span></b></span>
+    <span class="topbar-sep">·</span>
+    <span class="topbar-item">🎟️ <b>Fee: <s style="opacity:.75">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span></b></span>
+    <span class="topbar-sep">·</span>
+    <div class="topbar-timer-wrap">
+      <span class="topbar-timer-label">⏳ <b>FREE PASS CLOSES IN:</b></span>
+      <div class="topbar-countdown">
+        <span class="t-box"><b data-timer="d">08</b><small>d</small></span>
+        <span class="t-colon">:</span>
+        <span class="t-box"><b data-timer="h">23</b><small>h</small></span>
+        <span class="t-colon">:</span>
+        <span class="t-box"><b data-timer="m">59</b><small>m</small></span>
+        <span class="t-colon">:</span>
+        <span class="t-box"><b data-timer="s">59</b><small>s</small></span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <section class="hero">
@@ -239,7 +275,7 @@ footer a{color:#ffd79a;text-decoration:none}
       <h1>How to actually grow your business <span>using Tapify</span></h1>
       <p class="sub">Not a feature tour. Ninety minutes on the things that bring customers in — getting found on Google, collecting reviews on purpose, answering every WhatsApp enquiry even at midnight, and turning one card tap into a paying customer. Shown live in a real account, with your questions answered.</p>
       <div class="meta">
-        <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">15 Nov 2026</span></div>
+        <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">6 Dec 2026</span></div>
         <div><i class="fas fa-clock"></i><span data-wb="time">11:30 AM IST</span></div>
         <div><i class="fas fa-video"></i>Live on Google Meet</div>
         <div><i class="fas fa-indian-rupee-sign"></i>Workshop Fee: <s style="opacity:.75">₹999</s> <b style="color:#ffd79a">FREE</b></div>
@@ -254,7 +290,16 @@ footer a{color:#ffd79a;text-decoration:none}
     <img class="hero-figure" src="images/abid-khan-speaker.png" alt="Abid Khan" aria-hidden="true">
 
     <div class="card" id="formCard">
-      <span class="free">WORKSHOP FEE: <s style="opacity:.65;font-weight:600">₹999</s> 100% FREE</span>
+      <div class="card-timer-header">
+        <span class="free">🎟️ WORKSHOP FEE: <s style="opacity:.65;font-weight:600">₹999</s> 100% FREE</span>
+        <div class="card-urgency">
+          <span class="pulse-dot"></span>
+          <span>⚡ <b>Limited Free Seats</b> · Closes in:</span>
+          <span class="card-timer-inline">
+            <b data-timer="d">08</b>d : <b data-timer="h">23</b>h : <b data-timer="m">59</b>m : <b data-timer="s">59</b>s
+          </span>
+        </div>
+      </div>
       <h3>Save your seat</h3>
       <p style="margin:0;color:var(--muted);font-size:.9rem">Already a Tapify customer? Register with the <b>same mobile number as your account</b>, so we can pull it up if you ask about your own setup.</p>
 
@@ -410,9 +455,9 @@ footer a{color:#ffd79a;text-decoration:none}
    They are the facts I could not invent — set them before launch.
    ────────────────────────────────────────────────────────────── */
 const WEBINAR = {
-  slug:        '2026-11-15-growth',            // identifies this session in admin
-  dateLong:    'Sunday, 15 November 2026',     // 15 Nov 2026 is a Sunday
-  dateShort:   '15 Nov 2026',                  // check the weekday whenever you edit this
+  slug:        '2026-12-06-growth',            // identifies this session in admin
+  dateLong:    'Sunday, 6 December 2026',      // 6 Dec 2026 is a Sunday
+  dateShort:   '6 Dec 2026',                   // check the weekday whenever you edit this
   time:        '11:30 AM IST',
   duration:    'LIVE WORKSHOP · 90 MINS &nbsp;·&nbsp; WORKSHOP FEE: <s style="opacity:.75">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span>',
   speakerName: 'the Tapify team',
@@ -484,6 +529,28 @@ document.querySelectorAll('.reg-cta-btn').forEach(function(cta) {
     }, 400);
   });
 });
+
+// Curiosity Countdown Timer to 6 December 2026, 11:30 AM IST
+(function() {
+  var target = new Date('2026-12-06T11:30:00+05:30').getTime();
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function tick() {
+    var now = new Date().getTime();
+    var diff = target - now;
+    if (diff <= 0) diff = 0;
+    var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    var s = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.querySelectorAll('[data-timer="d"]').forEach(function(el) { el.textContent = pad(d); });
+    document.querySelectorAll('[data-timer="h"]').forEach(function(el) { el.textContent = pad(h); });
+    document.querySelectorAll('[data-timer="m"]').forEach(function(el) { el.textContent = pad(m); });
+    document.querySelectorAll('[data-timer="s"]').forEach(function(el) { el.textContent = pad(s); });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
 </script>
 </body>
 </html>
