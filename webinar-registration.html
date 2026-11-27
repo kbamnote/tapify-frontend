@@ -14,6 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
+html{scroll-behavior:smooth}
 :root{--ink:#153e3f;--ink2:#1d5253;--gold:#d19a66;--bg:#f6eee6;--muted:#5b7d7e;--line:#e3dad0;--ok:#157f3c}
 *{box-sizing:border-box}
 body{margin:0;font-family:Poppins,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
@@ -96,16 +97,22 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .runrow p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 @media(max-width:560px){.runrow{grid-template-columns:1fr;gap:2px}}
 
-/* speaker cut-out in the hero — the PNGs have transparent backgrounds, so they
-   sit straight on the gradient with no card or frame around them */
+/* speaker cut-out in the hero — shifted to the left side */
 .hero .wrap { position: relative; }
 .hero-figure { display: none; }
-@media(min-width:1180px){
-  .hero-figure{ display:block; position:absolute; right:-18px; bottom:-60px;
-    width:300px; pointer-events:none; z-index:0;
+@media(min-width:1020px){
+  .hero-figure{ display:block; position:absolute; left:20px; bottom:-60px;
+    width:280px; pointer-events:none; z-index:1;
     filter:drop-shadow(0 22px 40px rgba(0,0,0,.4)); opacity:.97 }
-  .hero .card{ position:relative; z-index:1 }
+  .hero .card{ position:relative; z-index:2 }
 }
+
+/* mid-page registration buttons */
+.reg-cta-wrap{text-align:center;margin:32px 0 10px}
+.reg-cta-btn{display:inline-block;background:var(--gold);color:#2b1c0c;padding:14px 36px;
+  border-radius:11px;font-weight:800;font-size:1.02rem;text-decoration:none;
+  box-shadow:0 8px 24px rgba(209,154,102,.35);transition:transform .15s ease,box-shadow .15s ease}
+.reg-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(209,154,102,.45)}
 
 /* host */
 .host{ display:grid; grid-template-columns:300px 1fr; gap:34px; align-items:center }
@@ -301,6 +308,9 @@ footer a{color:#ffd79a;text-decoration:none}
       this is the session where it starts earning. New to Tapify? Come and see what it does first.
       <a href="/plans">See the plans →</a>
     </div>
+    <div class="reg-cta-wrap">
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
+    </div>
   </div>
 </section>
 
@@ -316,6 +326,9 @@ footer a{color:#ffd79a;text-decoration:none}
       <div class="runrow"><b>12:25 PM</b><div><h3>A website and a card that convert</h3><p>Building a page that ranks for your service in your city, and making an NFC tap end in a phone number you can call back.</p></div></div>
       <div class="runrow"><b>12:40 PM</b><div><h3>Staying visible, and taking payment</h3><p>Scheduled posts and reels, boosting to the right few thousand people nearby, and letting customers pay you online.</p></div></div>
       <div class="runrow"><b>12:50 PM</b><div><h3>What to do first, and open Q&amp;A</h3><p>The order to do all of this in for your particular business — then your questions, for as long as it takes.</p></div></div>
+    </div>
+    <div class="reg-cta-wrap">
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
     </div>
   </div>
 </section>
@@ -358,14 +371,11 @@ footer a{color:#ffd79a;text-decoration:none}
         <div class="tick"><i class="fas fa-check"></i><span>Built <b>Tapify</b> to fix exactly that problem, and has set it up for hundreds of shops, clinics, dealers and salons.</span></div>
         <div class="tick"><i class="fas fa-check"></i><span>Takes this session himself. Every example is a real account, and nothing is sold on the call.</span></div>
         <a href="/businesses" style="color:var(--ink2);font-weight:700;font-size:.92rem">See businesses already using Tapify →</a>
+        <div style="margin-top:22px">
+          <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
+        </div>
       </div>
     </div>
-
-    <figure class="proof">
-      <img src="images/abid-khan-summit.jpg"
-           alt="Abid Khan addressing business owners at the Business Leadership Summit" loading="lazy">
-      <figcaption>Abid Khan at the Business Leadership Summit — the same session, condensed to ninety minutes.</figcaption>
-    </figure>
   </div>
 </section>
 
@@ -450,6 +460,15 @@ form.addEventListener('submit', async (e) => {
     msg.textContent = err.message + ' You can also message us on WhatsApp to register.';
     btn.disabled = false; btn.textContent = 'Reserve my seat';
   }
+});
+
+document.querySelectorAll('.reg-cta-btn').forEach(function(cta) {
+  cta.addEventListener('click', function(e) {
+    setTimeout(function() {
+      var nameField = document.getElementById('f-name');
+      if (nameField) nameField.focus();
+    }, 400);
+  });
 });
 </script>
 </body>
