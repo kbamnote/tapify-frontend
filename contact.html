@@ -42,6 +42,11 @@
            ============================================= */
         *, body { font-family: 'Outfit', 'Poppins', sans-serif; }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             background-color: #f6eee6;
         }
@@ -357,15 +362,21 @@
             box-shadow: 0 8px 22px rgba(201,147,58,0.35);
         }
         .main-navbar .navbar-toggler {
-            border: 1px solid rgba(246,238,230,0.3);
-            padding: 6px 10px;
+            border: 1px solid rgba(246,238,230,0.3) !important;
+            padding: 8px 10px !important;
         }
-        .main-navbar .navbar-toggler .toggler-icon span {
+        .main-navbar .navbar-toggler .hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            width: 24px;
+            height: 18px;
+            justify-content: space-between;
+        }
+        .main-navbar .navbar-toggler .hamburger-icon span {
             display: block;
-            width: 22px;
+            width: 100%;
             height: 2px;
-            background: #c9933a;
-            margin: 5px 0;
+            background: #f6eee6;
             border-radius: 2px;
         }
 
@@ -420,7 +431,7 @@
                 <img src="images/tapify-logo-white-removebg-preview.png" alt="Tapify" class="logo-img">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="toggler-icon"><span></span><span></span><span></span></span>
+                <span class="hamburger-icon"><span></span><span></span><span></span></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav mx-auto">

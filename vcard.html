@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading... | Tapify</title>
+    <meta name="description" content="View digital business card profile powered by Tapify.">
     <link rel="icon" type="image/png" href="/images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -73,7 +74,7 @@
                 <div style="max-width: 500px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.1);">
                     <div style="height: 200px; background: ${vcard.primary_color || '#8338ec'}; background-image: url('${coverUrl}'); background-size: cover; background-position: center;"></div>
                     <div style="text-align: center; margin-top: -60px; padding: 0 20px;">
-                        <img src="${profileUrl}" style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid white; background: white; object-fit: cover;">
+                        <img src="${profileUrl}" alt="${vcard.vcard_name || 'Profile picture'}" style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid white; background: white; object-fit: cover;">
                         <h1 style="margin: 15px 0 5px;">${vcard.vcard_name}</h1>
                         <p style="color: #6b7280; margin: 0;">${vcard.occupation || ''}</p>
                         <div style="margin: 20px 0; font-size: 0.95rem; line-height: 1.6;">${vcard.description || ''}</div>

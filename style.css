@@ -2015,8 +2015,8 @@ img {
     background: var(--teal-dark);
     color: var(--cream);
     padding: 20px 0;
-    z-index: 998;
-    box-shadow: 0 -6px 30px rgba(13, 40, 41, 0.3);
+    z-index: 10000;
+    box-shadow: 0 -6px 30px rgba(13, 40, 41, 0.4);
     transform: translateY(100%);
     transition: transform 0.4s ease;
     border-top: 2px solid rgba(201, 147, 58, 0.4);
@@ -2030,6 +2030,19 @@ img {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 20px;
+    padding-right: 80px; /* leaves clearance for floating WhatsApp button */
+}
+
+@media (max-width: 768px) {
+    .cookie-content {
+        padding-right: 0;
+        justify-content: center;
+        text-align: center;
+    }
+    .cookie-buttons {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 .cookie-content p {
@@ -2205,6 +2218,27 @@ img {
         border-radius: 16px;
         margin-top: 14px;
         border: 1px solid rgba(246, 238, 230, 0.1);
+    }
+
+    .navbar-collapse .navbar-nav {
+        align-items: flex-start;
+    }
+
+    .navbar-collapse .navbar-nav .nav-link {
+        display: inline-block;
+        width: fit-content;
+        padding: 8px 0 !important;
+        margin: 4px 0;
+    }
+
+    .navbar-collapse .navbar-nav .nav-link::after {
+        left: 0;
+        transform: none;
+    }
+
+    .navbar-collapse .navbar-nav .nav-link:hover::after,
+    .navbar-collapse .navbar-nav .nav-link.active::after {
+        width: 100%;
     }
 
     .hero-title { font-size: 2.6rem; }
@@ -4303,7 +4337,7 @@ img {
     50%       { box-shadow: 0 0 0 7px rgba(46, 204, 113, 0); }
 }
 @media (max-width: 480px) {
-    .live-toast { left: 12px; right: 12px; min-width: unset; max-width: unset; bottom: 16px; }
+    .live-toast { left: 12px; right: 12px; min-width: unset; max-width: unset; bottom: 84px; }
 }
 
 /* ============================================
@@ -4491,6 +4525,23 @@ body.dark-mode .btn-darkmode i::before { content: '\f185'; } /* fa-sun */
     .main-navbar .navbar-collapse {
         background: rgba(13, 40, 41, 0.98);
         padding: 22px; border-radius: 16px; margin-top: 12px;
+    }
+    .main-navbar .navbar-nav {
+        align-items: flex-start;
+    }
+    .main-navbar .navbar-nav .nav-link {
+        display: inline-block;
+        width: fit-content;
+        padding: 8px 0 !important;
+        margin: 4px 0;
+    }
+    .main-navbar .navbar-nav .nav-link::after {
+        left: 0;
+        transform: none;
+    }
+    .main-navbar .navbar-nav .nav-link:hover::after,
+    .main-navbar .navbar-nav .nav-link.active::after {
+        width: 100%;
     }
 }
 

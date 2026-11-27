@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plans &amp; Pricing - Tapify</title>
+    <title>Plans & Pricing - Tapify</title>
     <meta name="description" content="Tapify plans: a website, AI Growth Center, designs and the review funnel from ₹499/month. Pay yearly and save up to 40%.">
+    <link rel="canonical" href="https://www.tapify.co.in/plans">
     <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +20,7 @@
         header a.back{color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
         .hero{text-align:center;padding:48px 0 10px}
         .hero h1{font-size:2.1rem;margin:0 0 10px;letter-spacing:-.5px}
-        .hero p{color:var(--muted);margin:0;font-size1.02rem;line-height:1.6}
+        .hero p{color:var(--muted);margin:0;font-size:1.02rem;line-height:1.6}
 
         .toggle{display:flex;gap:6px;background:rgba(21,62,63,.07);border-radius:14px;padding:5px;margin:28px auto 6px;max-width:330px}
         .toggle button{flex:1;padding:11px 8px;border:0;background:transparent;border-radius:10px;cursor:pointer;
@@ -134,7 +135,14 @@ if (qs.has('paid')) {
 
 async function load() {
     try {
-        const r = await fetch(LIST, { credentials: 'include' });
+        let r;
+        try {
+            r = await fetch(LIST, { credentials: 'include' });
+            if (!r.ok) throw new Error('Fetch failed');
+        } catch (corsErr) {
+            // Fallback if backend returns Access-Control-Allow-Origin: *
+            r = await fetch(LIST);
+        }
         const j = await r.json();
         plans   = (j.data && j.data.plans) || [];
         current = (j.data && j.data.current) || null;

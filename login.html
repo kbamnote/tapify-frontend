@@ -45,6 +45,11 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
@@ -54,7 +59,7 @@
             justify-content: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         /* Animated background blobs */
@@ -441,9 +446,9 @@
     </a>
 
     <div class="language-selector">
-        <button class="lang-btn">
-            <i class="fas fa-globe me-1"></i> English <i class="fas fa-chevron-down ms-1"></i>
-        </button>
+        <span class="lang-btn" style="cursor: default;">
+            <i class="fas fa-globe me-1"></i> English
+        </span>
     </div>
 
     <div class="login-container">
@@ -480,7 +485,7 @@
                     <input type="checkbox" id="remember">
                     Remember me
                 </label>
-                <a href="#" class="forgot-link">Forgot password?</a>
+                <a href="https://wa.me/917378633764?text=Hi%20Tapify,%20I%20need%20help%20resetting%20my%20account%20password" target="_blank" rel="noopener" class="forgot-link">Forgot password?</a>
             </div>
 
             <button type="submit" class="login-btn">
