@@ -97,15 +97,24 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .runrow p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 @media(max-width:560px){.runrow{grid-template-columns:1fr;gap:2px}}
 
-/* speaker cut-out in the hero — shifted to the left side */
+/* speaker cut-out in the hero — positioned and grounded on the left */
 .hero .wrap { position: relative; }
 .hero-figure { display: none; }
 @media(min-width:1020px){
-  .hero-figure{ display:block; position:absolute; left:20px; bottom:-60px;
-    width:280px; pointer-events:none; z-index:1;
-    filter:drop-shadow(0 22px 40px rgba(0,0,0,.4)); opacity:.97 }
+  .hero-figure{ display:block; position:absolute; left:90px; bottom:-60px;
+    width:320px; pointer-events:none; z-index:1;
+    filter:drop-shadow(0 20px 40px rgba(0,0,0,.45)); opacity:.98 }
   .hero .card{ position:relative; z-index:2 }
 }
+
+.hero-speaker-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.2);
+  padding:6px 14px; border-radius:999px; font-size:.84rem;
+  margin-top:14px; backdrop-filter:blur(4px);
+}
+.hsb-dot{ width:8px; height:8px; border-radius:50%; background:var(--gold); }
+.hsb-title b{ color:#ffd79a; }
 
 /* mid-page registration buttons */
 .reg-cta-wrap{text-align:center;margin:32px 0 10px}
@@ -156,7 +165,8 @@ footer a{color:#ffd79a;text-decoration:none}
 
 <div class="topbar">
   📅 <b><span data-wb="dateLong">Sunday, 15 November 2026</span></b> &nbsp;·&nbsp;
-  <span data-wb="time">11:30 AM IST</span> &nbsp;·&nbsp; Live on Google Meet &nbsp;·&nbsp; <b>Free</b>
+  <span data-wb="time">11:30 AM IST</span> &nbsp;·&nbsp; Live on Google Meet &nbsp;·&nbsp;
+  <b>Workshop Fee: <s style="opacity:.75;font-weight:500">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span></b>
 </div>
 
 <section class="hero">
@@ -225,22 +235,26 @@ footer a{color:#ffd79a;text-decoration:none}
   </div>
   <div class="wrap">
     <div>
-      <span class="pill" data-wb="duration">FREE LIVE SESSION · 90 MINUTES</span>
+      <span class="pill" data-wb="duration">LIVE WORKSHOP · 90 MINS &nbsp;·&nbsp; WORKSHOP FEE: <s style="opacity:.75">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span></span>
       <h1>How to actually grow your business <span>using Tapify</span></h1>
       <p class="sub">Not a feature tour. Ninety minutes on the things that bring customers in — getting found on Google, collecting reviews on purpose, answering every WhatsApp enquiry even at midnight, and turning one card tap into a paying customer. Shown live in a real account, with your questions answered.</p>
       <div class="meta">
         <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">15 Nov 2026</span></div>
         <div><i class="fas fa-clock"></i><span data-wb="time">11:30 AM IST</span></div>
         <div><i class="fas fa-video"></i>Live on Google Meet</div>
-        <div><i class="fas fa-indian-rupee-sign"></i>Free to attend</div>
+        <div><i class="fas fa-indian-rupee-sign"></i>Workshop Fee: <s style="opacity:.75">₹999</s> <b style="color:#ffd79a">FREE</b></div>
+      </div>
+      <div class="hero-speaker-badge">
+        <span class="hsb-dot"></span>
+        <span class="hsb-title">Session Speaker: <b>Abid Khan</b> (Founder, Tapify)</span>
       </div>
     </div>
     <!-- Decorative: the host also appears, named and described, further down.
          Desktop only — at tablet width it would sit on top of the form. -->
-    <img class="hero-figure" src="images/abid-khan-speaker.png" alt="" aria-hidden="true">
+    <img class="hero-figure" src="images/abid-khan-speaker.png" alt="Abid Khan" aria-hidden="true">
 
     <div class="card" id="formCard">
-      <span class="free">FREE REGISTRATION</span>
+      <span class="free">WORKSHOP FEE: <s style="opacity:.65;font-weight:600">₹999</s> 100% FREE</span>
       <h3>Save your seat</h3>
       <p style="margin:0;color:var(--muted);font-size:.9rem">Already a Tapify customer? Register with the <b>same mobile number as your account</b>, so we can pull it up if you ask about your own setup.</p>
 
@@ -281,7 +295,7 @@ footer a{color:#ffd79a;text-decoration:none}
         <label for="f-city">City</label>
         <input id="f-city" name="city" type="text" autocomplete="address-level2" placeholder="Nagpur">
 
-        <button class="btn" id="submitBtn" type="submit">Reserve my seat</button>
+        <button class="btn" id="submitBtn" type="submit">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</button>
         <div class="msg" id="msg"></div>
         <p class="tiny">The joining link comes to your WhatsApp. No spam. Join on a laptop if you can — a lot of this is worth following along with.</p>
       </form>
@@ -309,7 +323,7 @@ footer a{color:#ffd79a;text-decoration:none}
       <a href="/plans">See the plans →</a>
     </div>
     <div class="reg-cta-wrap">
-      <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
     </div>
   </div>
 </section>
@@ -328,7 +342,7 @@ footer a{color:#ffd79a;text-decoration:none}
       <div class="runrow"><b>12:50 PM</b><div><h3>What to do first, and open Q&amp;A</h3><p>The order to do all of this in for your particular business — then your questions, for as long as it takes.</p></div></div>
     </div>
     <div class="reg-cta-wrap">
-      <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
     </div>
   </div>
 </section>
@@ -372,7 +386,7 @@ footer a{color:#ffd79a;text-decoration:none}
         <div class="tick"><i class="fas fa-check"></i><span>Takes this session himself. Every example is a real account, and nothing is sold on the call.</span></div>
         <a href="/businesses" style="color:var(--ink2);font-weight:700;font-size:.92rem">See businesses already using Tapify →</a>
         <div style="margin-top:22px">
-          <a href="#formCard" class="reg-cta-btn">Reserve my seat — Free</a>
+          <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
         </div>
       </div>
     </div>
@@ -380,9 +394,9 @@ footer a{color:#ffd79a;text-decoration:none}
 </section>
 
 <section class="cta2">
-  <h2>Save your seat — it's free</h2>
+  <h2>Save your seat — Workshop Fee: <s style="opacity:.7;font-weight:400">₹999</s> <span style="color:#ffd79a">FREE</span></h2>
   <p>Ninety minutes on what actually brings customers in, with your own questions answered. The joining link comes to your WhatsApp.</p>
-  <a href="#formCard">Register now</a>
+  <a href="#formCard">Register now — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
 </section>
 
 <footer>
@@ -400,7 +414,7 @@ const WEBINAR = {
   dateLong:    'Sunday, 15 November 2026',     // 15 Nov 2026 is a Sunday
   dateShort:   '15 Nov 2026',                  // check the weekday whenever you edit this
   time:        '11:30 AM IST',
-  duration:    'FREE LIVE SESSION · 90 MINUTES',
+  duration:    'LIVE WORKSHOP · 90 MINS &nbsp;·&nbsp; WORKSHOP FEE: <s style="opacity:.75">₹999</s> <span style="color:#ffd79a;font-weight:800">FREE</span>',
   speakerName: 'the Tapify team',
   speakerBio:  ''                              // leave blank to keep the default text
 };
@@ -414,7 +428,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 // Fill every [data-wb] placeholder from the config above.
 document.querySelectorAll('[data-wb]').forEach(el => {
   const v = WEBINAR[el.getAttribute('data-wb')];
-  if (v) el.textContent = v;
+  if (v) el.innerHTML = v;
 });
 
 const form = document.getElementById('regForm');
