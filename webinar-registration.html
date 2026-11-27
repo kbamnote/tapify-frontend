@@ -247,7 +247,7 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="hero">
   <div class="banner-video-wrap">
     <div class="banner-video-container">
-      <video class="banner-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback>
+      <video class="banner-video" autoplay loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback>
         <source src="images/webinar-banner.mp4" type="video/mp4">
         <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
       </video>
@@ -256,7 +256,7 @@ footer a{color:#ffd79a;text-decoration:none}
         var vid = document.querySelector('.banner-video');
         if (!vid) return;
 
-        // Auto-resume if anything attempts to pause it (never stop on hover)
+        // Auto-resume if anything attempts to pause it
         vid.addEventListener('pause', function() {
           vid.play().catch(function() {});
         });
@@ -265,44 +265,46 @@ footer a{color:#ffd79a;text-decoration:none}
           vid.play().catch(function() {});
         });
 
-        // Guarantee immediate video playback on load/refresh
-        vid.play().catch(function() {});
+        // Any user touch, swipe, scroll, or gesture instantly unlocks audio
+        var unlockEvents = ['touchstart', 'touchend', 'touchmove', 'scroll', 'pointerdown', 'pointerup', 'pointermove', 'mousedown', 'mouseup', 'click', 'keydown', 'wheel'];
 
-        var events = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'click', 'keydown'];
-        function cleanup() {
-          events.forEach(function(e) {
-            window.removeEventListener(e, onInteract, true);
-            document.removeEventListener(e, onInteract, true);
+        function removeUnlockEvents() {
+          unlockEvents.forEach(function(e) {
+            window.removeEventListener(e, attemptUnmute, true);
+            document.removeEventListener(e, attemptUnmute, true);
           });
         }
-        function tryUnmute() {
+
+        function attemptUnmute() {
           vid.muted = false;
           vid.volume = 1;
           var p = vid.play();
           if (p !== undefined) {
             p.then(function() {
-              cleanup();
+              // Successfully playing with audio
+              removeUnlockEvents();
             }).catch(function() {
-              // If browser blocks audio before touch, keep video looping smoothly
+              // If browser OS policy restricts unmuted play before first touch, keep video looping
               vid.muted = true;
               vid.play().catch(function() {});
             });
           }
         }
 
-        function onInteract() {
-          tryUnmute();
-        }
+        // 1. Immediately attempt unmuted playback as page loads/refreshes
+        attemptUnmute();
 
-        // Try unmuting immediately on start
-        tryUnmute();
-        document.addEventListener('DOMContentLoaded', tryUnmute);
-        window.addEventListener('load', tryUnmute);
+        // 2. Try on DOMContentLoaded, window load, and tab visibility change
+        document.addEventListener('DOMContentLoaded', attemptUnmute);
+        window.addEventListener('load', attemptUnmute);
+        document.addEventListener('visibilitychange', function() {
+          if (!document.hidden) attemptUnmute();
+        });
 
-        // On mobile and desktop, unlock audio on the very first touch/interaction anywhere on the screen
-        events.forEach(function(e) {
-          window.addEventListener(e, onInteract, { capture: true, passive: true });
-          document.addEventListener(e, onInteract, { capture: true, passive: true });
+        // 3. Listen on window and document so the instant the user touches or scrolls on phone/laptop, sound plays
+        unlockEvents.forEach(function(e) {
+          window.addEventListener(e, attemptUnmute, { capture: true, passive: true });
+          document.addEventListener(e, attemptUnmute, { capture: true, passive: true });
         });
       })();
       </script>
