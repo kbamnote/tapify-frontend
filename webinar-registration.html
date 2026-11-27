@@ -116,16 +116,16 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .runrow p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 @media(max-width:560px){.runrow{grid-template-columns:1fr;gap:2px}}
 
-/* speaker cut-out in the hero — responsive on both mobile and desktop */
+/* speaker cut-out & nameplate in the hero — matching Image 2 */
 .hero .wrap { position: relative; }
 .hero-speaker-wrap{
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   margin: 24px auto 28px;
-  width: 270px;
-  max-width: 82%;
+  width: 300px;
+  max-width: 90%;
   z-index: 1;
 }
 .hero-figure{
@@ -135,27 +135,53 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
   filter: drop-shadow(0 16px 32px rgba(0,0,0,.4));
   opacity: .98;
 }
-.hero-speaker-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+.hero-speaker-card{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  border-left: 5px solid #ffb703;
+  padding: 6px 14px 7px 14px;
   background: rgba(10,36,37,.94);
-  border: 1px solid rgba(255,215,154,.45);
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: .78rem;
-  margin-top: -24px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 10px 28px rgba(0,0,0,.5);
+  margin-top: -38px;
+  margin-left: 10px;
   z-index: 3;
-  text-align: center;
+  backdrop-filter: blur(8px);
+  width: fit-content;
+  max-width: 95%;
+  pointer-events: auto;
+}
+.hsc-name{
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: .6px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+.hsc-title1{
+  font-size: .84rem;
+  color: #e2e8f0;
+  font-weight: 500;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+.hsc-title2{
+  font-size: .88rem;
+  color: #ffd79a;
+  font-weight: 700;
+  margin-top: 2px;
+  line-height: 1.3;
 }
 @media(min-width:1020px){
   .hero-speaker-wrap{
     position: absolute;
-    left: 75px;
-    bottom: 45px;
-    width: 375px;
+    left: 70px;
+    bottom: 35px;
+    width: 380px;
     margin: 0;
     pointer-events: none;
     z-index: 1;
@@ -163,23 +189,229 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
   .hero-figure{
     filter: drop-shadow(0 22px 42px rgba(0,0,0,.45));
   }
-  .hero-speaker-badge{
-    font-size: .84rem;
-    padding: 7px 18px;
-    margin-top: -32px;
-    pointer-events: auto;
+  .hero-speaker-card{
+    margin-top: -42px;
+    margin-left: 14px;
+    padding: 8px 16px 8px 16px;
+  }
+  .hsc-name{
+    font-size: 1.85rem;
+  }
+  .hsc-title1{
+    font-size: .88rem;
+  }
+  .hsc-title2{
+    font-size: .92rem;
   }
   .hero .card{ position: relative; z-index: 2; }
 }
-.hsb-dot{ width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
-.hsb-title b{ color: #ffd79a; }
 
-/* mid-page registration buttons */
-.reg-cta-wrap{text-align:center;margin:32px 0 10px}
-.reg-cta-btn{display:inline-block;background:var(--gold);color:#2b1c0c;padding:14px 36px;
-  border-radius:11px;font-weight:800;font-size:1.02rem;text-decoration:none;
-  box-shadow:0 8px 24px rgba(209,154,102,.35);transition:transform .15s ease,box-shadow .15s ease}
-.reg-cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(209,154,102,.45)}
+/* flashy reserve button styling */
+.btn, .reg-cta-btn, .cta2 a{
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f7c385 0%, #d19a66 40%, #eab479 70%, #c48950 100%);
+  background-size: 200% 200%;
+  color: #241609;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: .4px;
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 16px rgba(255,183,3,.4), 0 8px 24px rgba(209,154,102,.38);
+  transition: transform .18s ease, box-shadow .2s ease;
+  text-decoration: none;
+  line-height: 1.2;
+  animation: btn-flash-glow 2.4s infinite ease-in-out;
+}
+.btn{
+  width: 100%;
+  margin-top: 16px;
+  padding: 18px 24px;
+  font-size: 1.25rem;
+  letter-spacing: .4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+.reg-cta-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 32px auto 14px;
+  text-align: center;
+  width: 100%;
+  max-width: 440px;
+}
+.reg-cta-btn, .cta2 a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  padding: 18px 36px;
+  font-size: 1.25rem;
+  letter-spacing: .4px;
+  text-align: center;
+  box-sizing: border-box;
+}
+/* flashy light sweep shine on buttons */
+.btn::after, .reg-cta-btn::after, .cta2 a::after{
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: rotate(25deg);
+  animation: btn-shine-sweep 3s infinite ease-in-out;
+  pointer-events: none;
+}
+@keyframes btn-shine-sweep{
+  0%{ left: -80%; }
+  32%, 100%{ left: 140%; }
+}
+@keyframes btn-flash-glow{
+  0%, 100%{
+    transform: scale(1);
+    box-shadow: 0 0 14px rgba(255,183,3,.4), 0 8px 22px rgba(209,154,102,.35);
+  }
+  50%{
+    transform: scale(1.02);
+    box-shadow: 0 0 28px rgba(255,183,3,.85), 0 0 38px rgba(255,215,154,.55);
+  }
+}
+.btn:hover, .reg-cta-btn:hover, .cta2 a:hover{
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 32px rgba(255,183,3,.9), 0 12px 30px rgba(209,154,102,.55);
+}
+.btn:disabled{ opacity: .6; cursor: default; animation: none; }
+
+/* separate, larger flashy popping fee badge */
+.fee-pop-badge{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+.fee-badge-pill{
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #092627 0%, #154c4d 50%, #092627 100%);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: .95rem;
+  font-weight: 700;
+  border: 1.5px solid #ffb703;
+  box-shadow: 0 0 16px rgba(255,183,3,.45), 0 6px 22px rgba(0,0,0,.35);
+  animation: flash-pulse 2s infinite ease-in-out;
+  box-sizing: border-box;
+}
+/* flashy light sweep shine */
+.fee-badge-pill::after{
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: rotate(25deg);
+  animation: light-sweep 2.6s infinite ease-in-out;
+  pointer-events: none;
+}
+.fee-badge-pill .fee-old{
+  color: #9cb8b8;
+  text-decoration: line-through;
+  font-size: .95rem;
+  font-weight: 600;
+}
+.fee-badge-pill .fee-free{
+  display: inline-block;
+  background: #ffb703;
+  color: #112d2e;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: .5px;
+  box-shadow: 0 0 12px rgba(255,183,3,.8);
+  animation: badge-flash 1.3s infinite alternate ease-in-out;
+}
+
+@keyframes light-sweep{
+  0%{ left: -80%; }
+  35%, 100%{ left: 140%; }
+}
+@keyframes flash-pulse{
+  0%, 100%{
+    transform: scale(1);
+    border-color: #ffb703;
+    box-shadow: 0 0 14px rgba(255,183,3,.4), 0 4px 18px rgba(0,0,0,.35);
+  }
+  50%{
+    transform: scale(1.05);
+    border-color: #ffe082;
+    box-shadow: 0 0 28px rgba(255,183,3,.85), 0 0 38px rgba(255,215,154,.6);
+  }
+}
+@keyframes badge-flash{
+  0%{
+    background: #ffb703;
+    color: #112d2e;
+    box-shadow: 0 0 8px rgba(255,183,3,.6);
+  }
+  100%{
+    background: #ffe082;
+    color: #0b1e1f;
+    box-shadow: 0 0 18px rgba(255,224,130,1), 0 0 26px rgba(255,183,3,.8);
+    transform: scale(1.04);
+  }
+}
+@media(max-width:520px){
+  .reg-cta-wrap{
+    max-width: 100%;
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
+  }
+  .reg-cta-btn, .cta2 a{
+    max-width: 100%;
+    width: 100%;
+    font-size: 1.12rem;
+    padding: 16px 20px;
+  }
+  .btn{
+    font-size: 1.12rem;
+    padding: 16px 20px;
+  }
+  .fee-pop-badge{
+    max-width: 100%;
+  }
+  .fee-badge-pill{
+    padding: 7px 14px;
+    font-size: .84rem;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .fee-badge-pill .fee-free{
+    font-size: .86rem;
+    padding: 2px 7px;
+  }
+}
 
 /* host */
 .host{ display:grid; grid-template-columns:300px 1fr; gap:34px; align-items:center }
@@ -212,11 +444,201 @@ input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border
 .cta2{background:var(--ink);color:#fff;text-align:center;padding:48px 20px}
 .cta2 h2{color:#fff}
 .cta2 p{color:#cfe0e0;max-width:620px;margin:0 auto 22px}
-.cta2 a{display:inline-block;background:var(--gold);color:#2b1c0c;padding:15px 34px;
-  border-radius:11px;font-weight:800;text-decoration:none}
 footer{background:#0f2f30;color:#9fb9b9;text-align:center;padding:26px 20px;font-size:.85rem}
 footer a{color:#ffd79a;text-decoration:none}
 @media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero h1{font-size:1.9rem}h2{font-size:1.5rem}}
+
+/* Full-screen width sticky bottom pop-up bar for "Reserve my seat" */
+.scroll-reserve-popup{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 9999;
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1), opacity .3s ease;
+}
+.scroll-reserve-popup.visible{
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.srp-inner{
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(8, 28, 29, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 0;
+  border-top: 2px solid #ffb703;
+  box-shadow: 0 -8px 35px rgba(0,0,0,.7), 0 -2px 25px rgba(255,183,3,.4);
+  padding: 14px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.srp-close{
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #ffb703;
+  background: #113435;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+  transition: background .15s ease, transform .15s ease;
+  z-index: 2;
+}
+.srp-close:hover{
+  background: #ffb703;
+  color: #0d2627;
+  transform: scale(1.1);
+}
+.srp-info{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  max-width: 60%;
+}
+.srp-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .84rem;
+  color: #ffd79a;
+  font-weight: 700;
+}
+.srp-pulse-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e53e3e;
+  box-shadow: 0 0 0 0 rgba(229,62,62,.7);
+  animation: dot-pulse 1.8s infinite;
+}
+.srp-title{
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+}
+.srp-title span{
+  color: #ffd79a;
+}
+.srp-speaker{
+  font-size: .86rem;
+  color: var(--muted);
+}
+.srp-action{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-right: 28px;
+}
+.srp-btn{
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f7c385 0%, #d19a66 40%, #eab479 70%, #c48950 100%);
+  color: #241609;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: .4px;
+  padding: 14px 40px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 0 18px rgba(255,183,3,.45), 0 6px 18px rgba(0,0,0,.3);
+  transition: transform .15s ease, box-shadow .15s ease;
+  animation: btn-flash-glow 2.4s infinite ease-in-out;
+  white-space: nowrap;
+}
+.srp-btn::after{
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: rotate(25deg);
+  animation: btn-shine-sweep 3s infinite ease-in-out;
+  pointer-events: none;
+}
+.srp-btn:hover{
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 28px rgba(255,183,3,.9), 0 10px 24px rgba(209,154,102,.55);
+}
+.srp-fee{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .88rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.srp-fee .srp-old{
+  color: #9cb8b8;
+  text-decoration: line-through;
+  font-size: .85rem;
+}
+.srp-fee .srp-free{
+  color: #ffb703;
+  font-weight: 900;
+  font-size: .92rem;
+  background: rgba(255,183,3,.15);
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,183,3,.4);
+}
+
+@media(max-width: 768px){
+  .srp-inner{
+    flex-direction: column;
+    padding: 14px 16px 16px;
+    gap: 12px;
+    text-align: center;
+  }
+  .srp-close{
+    top: 8px;
+    right: 10px;
+  }
+  .srp-info{
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .srp-speaker{
+    display: none;
+  }
+  .srp-title{
+    font-size: .98rem;
+  }
+  .srp-action{
+    width: 100%;
+    margin-right: 0;
+  }
+  .srp-btn{
+    width: 100%;
+    padding: 14px 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
 </style>
 </head>
 <body>
@@ -322,12 +744,13 @@ footer a{color:#ffd79a;text-decoration:none}
         <div><i class="fas fa-indian-rupee-sign"></i>Workshop Fee: <s style="opacity:.75">₹999</s> <b style="color:#ffd79a">FREE</b></div>
       </div>
     </div>
-    <!-- Session Speaker: photo shifted up, larger, with name badge anchored at the bottom -->
+    <!-- Session Speaker: photo shifted up, larger, with Image 2 nameplate layout -->
     <div class="hero-speaker-wrap">
       <img class="hero-figure" src="images/abid-khan-speaker.png" alt="Abid Khan" aria-hidden="true">
-      <div class="hero-speaker-badge">
-        <span class="hsb-dot"></span>
-        <span class="hsb-title">Session Speaker: <b>Abid Khan</b> (Founder, Tapify)</span>
+      <div class="hero-speaker-card">
+        <div class="hsc-name">ABID KHAN</div>
+        <div class="hsc-title1">Founder &amp; MD – Mr. Print World Pvt. Ltd.</div>
+        <div class="hsc-title2">Founder – Tapify</div>
       </div>
     </div>
 
@@ -382,7 +805,14 @@ footer a{color:#ffd79a;text-decoration:none}
         <label for="f-city">City</label>
         <input id="f-city" name="city" type="text" autocomplete="address-level2" placeholder="Nagpur">
 
-        <button class="btn" id="submitBtn" type="submit">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</button>
+        <button class="btn" id="submitBtn" type="submit">Reserve my seat</button>
+        <div class="fee-pop-badge">
+          <span class="fee-badge-pill">
+            <span>🎟️ Workshop Fee:</span>
+            <s class="fee-old">₹999</s>
+            <b class="fee-free">100% FREE</b>
+          </span>
+        </div>
         <div class="msg" id="msg"></div>
         <p class="tiny">The joining link comes to your WhatsApp. No spam. Join on a laptop if you can — a lot of this is worth following along with.</p>
       </form>
@@ -410,7 +840,14 @@ footer a{color:#ffd79a;text-decoration:none}
       <a href="/plans">See the plans →</a>
     </div>
     <div class="reg-cta-wrap">
-      <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat</a>
+      <div class="fee-pop-badge">
+        <span class="fee-badge-pill">
+          <span>🎟️ Workshop Fee:</span>
+          <s class="fee-old">₹999</s>
+          <b class="fee-free">100% FREE</b>
+        </span>
+      </div>
     </div>
   </div>
 </section>
@@ -429,7 +866,14 @@ footer a{color:#ffd79a;text-decoration:none}
       <div class="runrow"><b>12:50 PM</b><div><h3>What to do first, and open Q&amp;A</h3><p>The order to do all of this in for your particular business — then your questions, for as long as it takes.</p></div></div>
     </div>
     <div class="reg-cta-wrap">
-      <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
+      <a href="#formCard" class="reg-cta-btn">Reserve my seat</a>
+      <div class="fee-pop-badge">
+        <span class="fee-badge-pill">
+          <span>🎟️ Workshop Fee:</span>
+          <s class="fee-old">₹999</s>
+          <b class="fee-free">100% FREE</b>
+        </span>
+      </div>
     </div>
   </div>
 </section>
@@ -472,8 +916,15 @@ footer a{color:#ffd79a;text-decoration:none}
         <div class="tick"><i class="fas fa-check"></i><span>Built <b>Tapify</b> to fix exactly that problem, and has set it up for hundreds of shops, clinics, dealers and salons.</span></div>
         <div class="tick"><i class="fas fa-check"></i><span>Takes this session himself. Every example is a real account, and nothing is sold on the call.</span></div>
         <a href="/businesses" style="color:var(--ink2);font-weight:700;font-size:.92rem">See businesses already using Tapify →</a>
-        <div style="margin-top:22px">
-          <a href="#formCard" class="reg-cta-btn">Reserve my seat — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
+        <div class="reg-cta-wrap" style="margin:24px 0 0; align-items:center; max-width:420px">
+          <a href="#formCard" class="reg-cta-btn">Reserve my seat</a>
+          <div class="fee-pop-badge" style="width:100%; justify-content:center">
+            <span class="fee-badge-pill">
+              <span>🎟️ Workshop Fee:</span>
+              <s class="fee-old">₹999</s>
+              <b class="fee-free">100% FREE</b>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -483,8 +934,40 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="cta2">
   <h2>Save your seat — Workshop Fee: <s style="opacity:.7;font-weight:400">₹999</s> <span style="color:#ffd79a">FREE</span></h2>
   <p>Ninety minutes on what actually brings customers in, with your own questions answered. The joining link comes to your WhatsApp.</p>
-  <a href="#formCard">Register now — <s style="opacity:.75;font-weight:500">₹999</s> FREE</a>
+  <div class="reg-cta-wrap">
+    <a href="#formCard" class="reg-cta-btn">Reserve my seat</a>
+    <div class="fee-pop-badge">
+      <span class="fee-badge-pill">
+        <span>🎟️ Workshop Fee:</span>
+        <s class="fee-old">₹999</s>
+        <b class="fee-free">100% FREE</b>
+      </span>
+    </div>
+  </div>
 </section>
+
+<!-- Scroll Floating Pop-up for "Reserve my seat" -->
+<div class="scroll-reserve-popup" id="scrollReservePopup" role="dialog" aria-label="Reserve your seat popup">
+  <div class="srp-inner">
+    <button class="srp-close" id="srpCloseBtn" type="button" aria-label="Close popup">&times;</button>
+    <div class="srp-info">
+      <div class="srp-badge">
+        <span class="srp-pulse-dot"></span>
+        <span>⚡ <b>Limited Free Seats</b> · 6 Dec 2026, 11:30 AM</span>
+      </div>
+      <div class="srp-title">How to actually grow your business <span>using Tapify</span></div>
+      <div class="srp-speaker">Speaker: <b>Abid Khan</b> (Founder, Tapify)</div>
+    </div>
+    <div class="srp-action">
+      <a href="#formCard" class="srp-btn" id="srpReserveBtn">Reserve my seat</a>
+      <div class="srp-fee">
+        <span>🎟️ Fee:</span>
+        <s class="srp-old">₹999</s>
+        <b class="srp-free">100% FREE</b>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer>
   © <span id="yr"></span> Tapify · <a href="/">tapify.co.in</a> ·
@@ -559,7 +1042,8 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     msg.className = 'msg err';
     msg.textContent = err.message + ' You can also message us on WhatsApp to register.';
-    btn.disabled = false; btn.textContent = 'Reserve my seat';
+    btn.disabled = false;
+    btn.textContent = 'Reserve my seat';
   }
 });
 
@@ -592,6 +1076,68 @@ document.querySelectorAll('.reg-cta-btn').forEach(function(cta) {
   }
   tick();
   setInterval(tick, 1000);
+})();
+
+// Floating Scroll Pop-up for "Reserve my seat"
+(function() {
+  var popup = document.getElementById('scrollReservePopup');
+  var formCard = document.getElementById('formCard');
+  var closeBtn = document.getElementById('srpCloseBtn');
+  var srpBtn = document.getElementById('srpReserveBtn');
+  if (!popup || !formCard) return;
+
+  var dismissed = false;
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      dismissed = true;
+      popup.classList.remove('visible');
+    });
+  }
+
+  if (srpBtn) {
+    srpBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      formCard.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(function() {
+        var nameInput = document.getElementById('f-name');
+        if (nameInput) nameInput.focus();
+      }, 500);
+    });
+  }
+
+  function checkScroll() {
+    if (dismissed) return;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var videoWrap = document.querySelector('.banner-video-wrap') || document.querySelector('.banner-video');
+    var cta2 = document.querySelector('.cta2');
+    var cta2InView = false;
+    if (cta2) {
+      var cRect = cta2.getBoundingClientRect();
+      if (cRect.top < window.innerHeight - 80) {
+        cta2InView = true;
+      }
+    }
+    // Trigger as soon as the user scrolls past the top banner video (or y > 220px)
+    var scrolledPastVideo = false;
+    if (videoWrap) {
+      var vRect = videoWrap.getBoundingClientRect();
+      scrolledPastVideo = vRect.bottom < (window.innerHeight * 0.55) || y > 220;
+    } else {
+      scrolledPastVideo = y > 220;
+    }
+
+    if (scrolledPastVideo && !cta2InView) {
+      popup.classList.add('visible');
+    } else {
+      popup.classList.remove('visible');
+    }
+  }
+
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  window.addEventListener('resize', checkScroll, { passive: true });
+  checkScroll();
 })();
 </script>
 </body>
