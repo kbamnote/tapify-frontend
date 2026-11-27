@@ -245,19 +245,108 @@ h3{font-size:1.05rem;margin:0 0 6px}
 
 /* banner video */
 .banner-video-wrap{max-width:1080px;margin:0 auto 36px;padding:0 20px}
-.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.banner-video-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);background:#000;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .banner-video{width:100%;height:100%;display:block;object-fit:cover;border-radius:16px;pointer-events:none;user-select:none;-webkit-user-select:none}
+
+/* Enable Sound Floating Button */
+.banner-sound-btn {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  z-index: 25;
+  pointer-events: auto;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(13, 40, 41, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  border: 1.5px solid rgba(255, 215, 154, 0.65);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+}
+
+.banner-sound-btn.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.banner-sound-btn:hover {
+  background: rgba(21, 62, 63, 0.96);
+  border-color: #ffd79a;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 14px rgba(255, 215, 154, 0.3);
+  transform: translateY(-2px);
+}
+
+.banner-sound-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.banner-sound-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #ffd79a;
+  font-size: 0.95rem;
+}
+
+.banner-sound-btn.is-muted .banner-sound-icon {
+  animation: sound-pulse 1.6s infinite ease-in-out;
+}
+
+@keyframes sound-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); color: #fff; }
+}
+
+.banner-sound-text {
+  color: #fff;
+  white-space: nowrap;
+}
+
+.banner-sound-btn.is-unmuted {
+  padding: 8px 14px;
+  background: rgba(13, 40, 41, 0.65);
+  border-color: rgba(255, 255, 255, 0.25);
+  opacity: 0.85;
+}
+
+.banner-sound-btn.is-unmuted:hover {
+  opacity: 1;
+  background: rgba(13, 40, 41, 0.9);
+  border-color: #ffd79a;
+}
+
 @media(max-width:860px){
   .hero{padding:28px 0 44px}
   .banner-video-wrap{margin-bottom:24px;padding:0 16px}
   .banner-video-container{border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
   .banner-video{border-radius:12px}
+  .banner-sound-btn{bottom:14px;right:14px;padding:9px 16px;font-size:0.84rem}
 }
 @media(max-width:480px){
   .hero{padding:20px 0 36px}
   .banner-video-wrap{margin-bottom:18px;padding:0 12px}
   .banner-video-container{border-radius:10px}
   .banner-video{border-radius:10px}
+  .banner-sound-btn{bottom:10px;right:10px;padding:7px 12px;font-size:0.78rem;gap:5px}
+  .banner-sound-icon{font-size:0.85rem;width:16px;height:16px}
 }
 
 /* hero */
@@ -880,15 +969,26 @@ footer a{color:#ffd79a;text-decoration:none}
 
 <section class="hero">
   <div class="banner-video-wrap">
-    <div class="banner-video-container">
-      <video class="banner-video" autoplay loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback>
+    <div class="banner-video-container" id="bannerVideoContainer">
+      <video class="banner-video" id="bannerVideo" autoplay loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback>
         <source src="images/webinar-banner.mp4" type="video/mp4">
         <source src="images/WhatsApp%20Video%202026-11-26%20at%2012.29.52%20PM.mp4" type="video/mp4">
       </video>
+
+      <!-- Clear, attractive Enable Sound button (Industry-standard graceful autoplay fallback) -->
+      <button type="button" class="banner-sound-btn" id="bannerSoundBtn" aria-label="Enable sound">
+        <span class="banner-sound-icon"><i class="fas fa-volume-xmark" id="soundIcon"></i></span>
+        <span class="banner-sound-text" id="soundText">Enable Sound</span>
+      </button>
+
       <script>
       (function() {
-        var vid = document.querySelector('.banner-video');
-        if (!vid) return;
+        var vid = document.getElementById('bannerVideo');
+        var soundBtn = document.getElementById('bannerSoundBtn');
+        var soundIcon = document.getElementById('soundIcon');
+        var soundText = document.getElementById('soundText');
+        var container = document.getElementById('bannerVideoContainer');
+        if (!vid || !soundBtn) return;
 
         // Auto-resume if anything attempts to pause it
         vid.addEventListener('pause', function() {
@@ -899,47 +999,86 @@ footer a{color:#ffd79a;text-decoration:none}
           vid.play().catch(function() {});
         });
 
-        // Any user touch, swipe, scroll, or gesture instantly unlocks audio
-        var unlockEvents = ['touchstart', 'touchend', 'touchmove', 'scroll', 'pointerdown', 'pointerup', 'pointermove', 'mousedown', 'mouseup', 'click', 'keydown', 'wheel'];
-
-        function removeUnlockEvents() {
-          unlockEvents.forEach(function(e) {
-            window.removeEventListener(e, attemptUnmute, true);
-            document.removeEventListener(e, attemptUnmute, true);
-          });
+        function updateUI(isMuted) {
+          soundBtn.classList.add('is-visible');
+          if (isMuted) {
+            soundBtn.classList.add('is-muted');
+            soundBtn.classList.remove('is-unmuted');
+            if (soundIcon) soundIcon.className = 'fas fa-volume-xmark';
+            if (soundText) soundText.textContent = 'Enable Sound';
+            soundBtn.setAttribute('aria-label', 'Sound is muted. Click to enable sound.');
+          } else {
+            soundBtn.classList.remove('is-muted');
+            soundBtn.classList.add('is-unmuted');
+            if (soundIcon) soundIcon.className = 'fas fa-volume-high';
+            if (soundText) soundText.textContent = 'Sound On';
+            soundBtn.setAttribute('aria-label', 'Sound is on. Click to mute.');
+          }
         }
 
-        function attemptUnmute() {
+        // 1. Attempt unmuted playback by default on load (Requirements 1, 2, 5, 6, 8)
+        function startPlayback() {
           vid.muted = false;
-          vid.volume = 1;
-          var p = vid.play();
-          if (p !== undefined) {
-            p.then(function() {
-              // Successfully playing with audio
-              removeUnlockEvents();
-            }).catch(function() {
-              // If browser OS policy restricts unmuted play before first touch, keep video looping
+          vid.volume = 1.0;
+
+          var playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.then(function() {
+              // Browser permitted autoplay WITH AUDIO (e.g. high MEI, Edge/Firefox rule, or returning visitor)
+              updateUI(false);
+            }).catch(function(error) {
+              // Browser autoplay policy blocked unmuted playback (NotAllowedError)
+              // Gracefully fallback to muted playback WITHOUT stopping the video, and display Enable Sound button
               vid.muted = true;
-              vid.play().catch(function() {});
+              vid.play().then(function() {
+                updateUI(true);
+              }).catch(function() {
+                updateUI(true);
+              });
             });
           }
         }
 
-        // 1. Immediately attempt unmuted playback as page loads/refreshes
-        attemptUnmute();
+        // Start playback immediately
+        startPlayback();
 
-        // 2. Try on DOMContentLoaded, window load, and tab visibility change
-        document.addEventListener('DOMContentLoaded', attemptUnmute);
-        window.addEventListener('load', attemptUnmute);
+        // Also handle visibility changes (tab switch)
         document.addEventListener('visibilitychange', function() {
-          if (!document.hidden) attemptUnmute();
+          if (!document.hidden && vid.paused) {
+            vid.play().catch(function() {});
+          }
         });
 
-        // 3. Listen on window and document so the instant the user touches or scrolls on phone/laptop, sound plays
-        unlockEvents.forEach(function(e) {
-          window.addEventListener(e, attemptUnmute, { capture: true, passive: true });
-          document.addEventListener(e, attemptUnmute, { capture: true, passive: true });
-        });
+        // 2. Click handler: Unmutes existing video smoothly without restarting (Requirement 10)
+        function toggleAudio(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          if (vid.muted) {
+            vid.muted = false;
+            vid.volume = 1.0;
+            // Ensure video remains playing from current timestamp
+            if (vid.paused) {
+              vid.play().catch(function() {});
+            }
+            updateUI(false);
+          } else {
+            vid.muted = true;
+            updateUI(true);
+          }
+        }
+
+        soundBtn.addEventListener('click', toggleAudio);
+
+        // Also permit tapping anywhere on the container as an intuitive secondary option
+        if (container) {
+          container.addEventListener('click', function(e) {
+            if (e.target !== soundBtn && !soundBtn.contains(e.target)) {
+              toggleAudio(e);
+            }
+          });
+        }
       })();
       </script>
     </div>
