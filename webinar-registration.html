@@ -7,7 +7,7 @@
 <meta name="description" content="A free 90-minute live session on growing your business with Tapify: get found on Google, collect reviews, never miss a WhatsApp enquiry, and turn a card tap into a customer. Sunday 6 December, 11:30 AM.">
 <link rel="canonical" href="https://www.tapify.co.in/webinar-registration">
 <meta property="og:title" content="How to Grow Your Business With Tapify — Free Live Session">
-<meta property="og:description" content="More customers found you on Google, more reviews, no enquiry missed. Ninety minutes, live on Google Meet, free. Sunday 6 December 2026, 11:30 AM IST.">
+<meta property="og:description" content="More customers found you on Google, more reviews, no enquiry missed. 90 minutes, live on Google Meet, free. Sunday 6 December 2026, 11:30 AM IST.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.tapify.co.in/webinar-registration">
 <link rel="icon" type="image/png" href="images/tapify-logo-green.png">
@@ -925,6 +925,45 @@ footer a{color:#ffd79a;text-decoration:none}
     box-sizing: border-box;
   }
 }
+
+/* ── seat-confirmed celebration ───────────────────────────────────────────
+   Replaces the form inside the same card once a seat is taken, rather than
+   adding a line under it: the form has done its job and leaving it there
+   invites a second submission. */
+.seat-done{text-align:center;padding:6px 2px 4px;animation:seatIn .45s cubic-bezier(.22,1,.36,1) both}
+@keyframes seatIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+
+.seat-done .tick{width:62px;height:62px;margin:2px auto 14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#e8b989);display:grid;place-items:center;
+  color:#fff;font-size:1.6rem;box-shadow:0 10px 26px rgba(209,154,102,.42);
+  animation:tickPop .5s cubic-bezier(.34,1.56,.64,1) .1s both}
+@keyframes tickPop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+
+.seat-done h3{font-size:1.45rem;margin:0 0 6px;letter-spacing:-.4px;line-height:1.25}
+.seat-done .sub{color:var(--muted);font-size:.9rem;margin:0 auto 16px;max-width:330px}
+
+/* The seat number is the thing that makes it feel earned rather than issued. */
+.seat-no{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;
+  background:var(--ink);color:#fff;font-weight:800;font-size:.95rem;letter-spacing:.2px;margin-bottom:14px}
+.seat-no .hash{color:var(--gold);font-size:1.15rem}
+.seat-no.free{background:linear-gradient(135deg,var(--ink),#1d5253);
+  box-shadow:0 0 0 2px rgba(209,154,102,.35),0 8px 22px rgba(21,62,63,.28)}
+
+.seat-note{display:flex;align-items:flex-start;gap:9px;text-align:left;background:var(--bg);
+  border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:0 0 10px;
+  font-size:.83rem;color:var(--ink2);line-height:1.5}
+.seat-note i{color:var(--gold);margin-top:2px}
+
+/* Confetti: a dozen absolutely-positioned pieces, no library, removed after
+   the animation so nothing keeps painting behind the card. */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti i{position:absolute;top:-12px;width:9px;height:14px;opacity:.9;
+  animation:confFall linear forwards}
+@keyframes confFall{to{transform:translateY(102vh) rotate(620deg);opacity:.15}}
+@media (prefers-reduced-motion:reduce){
+  .seat-done,.seat-done .tick{animation:none}
+  .confetti{display:none}
+}
 </style>
 </head>
 <body>
@@ -932,8 +971,7 @@ footer a{color:#ffd79a;text-decoration:none}
 <div class="topbar">
   <div class="topbar-content">
     <div class="topbar-row-1">
-      <span class="live-badge"><span class="live-pulse-dot"></span> LIVE</span>
-      <b>WORKSHOP</b>
+      <span class="live-badge"><span class="live-pulse-dot"></span> LIVE WORKSHOP</span>
       <span class="topbar-sep">·</span>
       <span class="topbar-date">
         <span class="desktop-date">🗓️ <b><span data-wb="dateLong">Sunday, 6 December 2026</span></b></span>
@@ -1087,7 +1125,7 @@ footer a{color:#ffd79a;text-decoration:none}
     <div>
       <span class="pill" data-wb="duration">LIVE WORKSHOP · 90 MINS &nbsp;·&nbsp; FREE FOR FIRST 100 USERS (<s style="opacity:.75">₹999</s> <span style="color:#ffd79a;font-weight:800">100% FREE</span>)</span>
       <h1>How to actually grow your business <span>using Tapify</span></h1>
-      <p class="sub">Not a feature tour. Ninety minutes on the things that bring customers in — getting found on Google, collecting reviews on purpose, answering every WhatsApp enquiry even at midnight, and turning one card tap into a paying customer. Shown live in a real account, with your questions answered.</p>
+      <p class="sub">Not a feature tour. 90 minutes on the things that bring customers in — getting found on Google, collecting reviews on purpose, answering every WhatsApp enquiry even at midnight, and turning one card tap into a paying customer. Shown live in a real account, with your questions answered.</p>
       <div class="meta">
         <div><i class="fas fa-calendar-day"></i><span data-wb="dateShort">6 Dec 2026</span></div>
         <div><i class="fas fa-clock"></i><span data-wb="time">11:30 AM IST</span></div>
@@ -1107,7 +1145,6 @@ footer a{color:#ffd79a;text-decoration:none}
 
     <div class="card" id="formCard">
       <div class="card-timer-header">
-        <span class="free">🎟️ FREE FOR FIRST 100 USERS: <s style="opacity:.65;font-weight:600">₹999</s> 100% FREE</span>
         <div class="card-urgency">
           <span class="pulse-dot"></span>
           <span>⚡ <b>Free for First 100 Users Only</b> · Closes in:</span>
@@ -1206,7 +1243,7 @@ footer a{color:#ffd79a;text-decoration:none}
 <section class="band alt">
   <div class="wrap center">
     <h2>Workshop Schedule</h2>
-    <p class="lead">Ninety minutes, then questions for as long as there are questions. Join on a laptop if you can — most of this is worth following along with.</p>
+    <p class="lead">90 minutes, then questions for as long as there are questions. Join on a laptop if you can — most of this is worth following along with.</p>
     <div class="run">
       <div class="runrow"><b>11:30 AM</b><div><h3>Where your customers actually come from</h3><p>The four places a local business gets found in 2026, and roughly what each is worth. Five minutes, so the rest makes sense.</p></div></div>
       <div class="runrow"><b>11:40 AM</b><div><h3>Getting found on Google</h3><p>Your Google Business Profile, the fields that move the map ranking, and posting to it without opening Google at all.</p></div></div>
@@ -1284,7 +1321,7 @@ footer a{color:#ffd79a;text-decoration:none}
 
 <section class="cta2">
   <h2>Save your seat — Free for first 100 users (<s style="opacity:.7;font-weight:400">₹999</s> <span style="color:#ffd79a">100% FREE</span>)</h2>
-  <p>Ninety minutes on what actually brings customers in, with your own questions answered. The joining link comes to your WhatsApp.</p>
+  <p>90 minutes on what actually brings customers in, with your own questions answered. The joining link comes to your WhatsApp.</p>
   <div class="reg-cta-wrap">
     <a href="#formCard" class="reg-cta-btn">Reserve my seat</a>
     <div class="fee-pop-badge">
@@ -1359,6 +1396,85 @@ const msg  = document.getElementById('msg');
 // utm_source, so you can tell which channel the registration came from.
 const utm = new URLSearchParams(location.search).get('utm_source') || 'direct';
 
+/* ── seat confirmed ──────────────────────────────────────────────────────
+ * Swaps the form out for a confirmation inside the same card.
+ *
+ * The seat number comes from the server, not from the page. The page
+ * advertises a free pass for the first 100, so telling registrant 140 they
+ * are one of them would be a promise we cannot keep — and the one thing
+ * worse than a plain confirmation is a celebratory false one. When the
+ * server cannot work out a seat number, this falls back to confirming the
+ * seat without claiming a position.
+ */
+function celebrate(fullName, d) {
+  const first = (fullName.split(/\s+/)[0] || '').replace(/[<>&"']/g, '');
+  const seat  = Number(d.seat) || null;
+  const free  = !!d.freePass;
+  const total = Number(d.freeSeats) || 100;
+
+  const headline = d.already
+    ? (first ? `You're already in, ${first}` : `You're already in`)
+    : (first ? `Congratulations, ${first}!` : `Congratulations!`);
+
+  const sub = free
+    ? `Your free pass is confirmed — you got in among the first ${total}.`
+    : `Your seat is confirmed. We'll see you on the 6th.`;
+
+  const seatPill = seat
+    ? `<div class="seat-no${free ? ' free' : ''}"><span class="hash">#</span>Seat ${seat}${free ? ` of ${total} free passes` : ''}</div>`
+    : '';
+
+  document.getElementById('formCard').innerHTML = `
+    <div class="seat-done">
+      <div class="tick"><i class="fas fa-check"></i></div>
+      <h3>${headline}</h3>
+      <p class="sub">${sub}</p>
+      ${seatPill}
+      <div class="seat-note">
+        <i class="fab fa-whatsapp"></i>
+        <span>The joining link is on its way to your WhatsApp${
+          d.already ? '' : ' — save our number so it does not get missed'}.
+          We'll send a reminder the morning of the workshop too.</span>
+      </div>
+      <div class="seat-note">
+        <i class="fas fa-circle-info"></i>
+        <span>Sunday 6 December, 11:30 AM IST · 90 minutes, live on Google Meet.
+          Join on a laptop if you can — most of it is worth following along with.</span>
+      </div>
+    </div>`;
+
+  document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // The seat is taken, so stop asking for it. The sticky strip and both
+  // "Reserve my seat" blocks would otherwise keep selling a seat they
+  // already have, which reads as the page not having noticed.
+  const popup = document.getElementById('scrollReservePopup');
+  if (popup) { popup.classList.remove('visible'); popup.style.display = 'none'; }
+  document.querySelectorAll('.reg-cta-wrap').forEach((el) => { el.style.display = 'none'; });
+
+  if (!d.already) confetti();
+}
+
+function confetti() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#d19a66', '#153e3f', '#e8b989', '#1d5253', '#ffd79a'];
+  const box = document.createElement('div');
+  box.className = 'confetti';
+  for (let i = 0; i < 70; i++) {
+    const p = document.createElement('i');
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = (2.4 + Math.random() * 1.8) + 's';
+    p.style.animationDelay = (Math.random() * 0.5) + 's';
+    if (i % 3 === 0) p.style.borderRadius = '50%';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  // Take it back out: it covers the viewport, and leaving it would sit over
+  // every click target on the page once the animation stopped.
+  setTimeout(() => box.remove(), 5200);
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   msg.className = 'msg'; msg.textContent = '';
@@ -1384,12 +1500,7 @@ form.addEventListener('submit', async (e) => {
     const j = await r.json();
     if (!j.success) throw new Error(j.message || 'Could not register.');
 
-    msg.className = 'msg ok';
-    msg.textContent = j.data && j.data.already
-      ? 'You are already registered — the joining link is on its way to your WhatsApp.'
-      : 'Your seat is booked. We have sent the joining link to your WhatsApp.';
-    form.reset();
-    btn.textContent = 'Seat reserved ✓';
+    celebrate(String(data.name || '').trim(), j.data || {});
   } catch (err) {
     msg.className = 'msg err';
     msg.textContent = err.message + ' You can also message us on WhatsApp to register.';
