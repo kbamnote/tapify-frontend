@@ -943,11 +943,6 @@ footer a{color:#ffd79a;text-decoration:none}
 .seat-done .sub{color:var(--muted);font-size:.9rem;margin:0 auto 16px;max-width:330px}
 
 /* The seat number is the thing that makes it feel earned rather than issued. */
-.seat-no{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;
-  background:var(--ink);color:#fff;font-weight:800;font-size:.95rem;letter-spacing:.2px;margin-bottom:14px}
-.seat-no .hash{color:var(--gold);font-size:1.15rem}
-.seat-no.free{background:linear-gradient(135deg,var(--ink),#1d5253);
-  box-shadow:0 0 0 2px rgba(209,154,102,.35),0 8px 22px rgba(21,62,63,.28)}
 
 .seat-note{display:flex;align-items:flex-start;gap:9px;text-align:left;background:var(--bg);
   border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:0 0 10px;
@@ -1403,12 +1398,13 @@ const utm = new URLSearchParams(location.search).get('utm_source') || 'direct';
  * advertises a free pass for the first 100, so telling registrant 140 they
  * are one of them would be a promise we cannot keep — and the one thing
  * worse than a plain confirmation is a celebratory false one. When the
- * server cannot work out a seat number, this falls back to confirming the
- * seat without claiming a position.
+ * server cannot work out a seat number, freePass comes back false and this
+ * confirms the seat without mentioning the pass.
+ *
+ * The seat number itself is never shown — see below.
  */
 function celebrate(fullName, d) {
   const first = (fullName.split(/\s+/)[0] || '').replace(/[<>&"']/g, '');
-  const seat  = Number(d.seat) || null;
   const free  = !!d.freePass;
   const total = Number(d.freeSeats) || 100;
 
@@ -1420,16 +1416,15 @@ function celebrate(fullName, d) {
     ? `Your free pass is confirmed — you got in among the first ${total}.`
     : `Your seat is confirmed. We'll see you on the 6th.`;
 
-  const seatPill = seat
-    ? `<div class="seat-no${free ? ' free' : ''}"><span class="hash">#</span>Seat ${seat}${free ? ` of ${total} free passes` : ''}</div>`
-    : '';
-
+  // The seat NUMBER is deliberately not shown. It is still what decides
+  // whether the free pass is real, but printing it tells an early registrant
+  // that almost nobody has signed up yet — which undercuts the scarcity the
+  // whole page is built on. "Seat 2 of 100" reads as an empty room.
   document.getElementById('formCard').innerHTML = `
     <div class="seat-done">
       <div class="tick"><i class="fas fa-check"></i></div>
       <h3>${headline}</h3>
       <p class="sub">${sub}</p>
-      ${seatPill}
       <div class="seat-note">
         <i class="fab fa-whatsapp"></i>
         <span>The joining link is on its way to your WhatsApp${
